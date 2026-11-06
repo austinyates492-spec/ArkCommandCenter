@@ -1,0 +1,12 @@
+[package]
+name = "ark-command-center"
+version = "0.1.0"
+description = "Private ARK tribe companion"
+authors = ["ARK Command Center"]
+edition = "2021"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
