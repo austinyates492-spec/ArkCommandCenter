@@ -47,4 +47,6 @@ export const wikiSpawn=(map)=>`https://ark.wiki.gg/wiki/Spawn_Map/${encodeURICom
 export const creatureSpawnUrl=(map,creature)=>`${wikiSpawn(map)}?creature=${encodeURIComponent(({Rex:'T-Rex',Triceratops:'Trike'}[creature]||creature))}`;
 export const resources=['Metal','Rich Metal','Crystal','Obsidian','Oil','Silica Pearls','Black Pearls','Rare Flowers','Rare Mushrooms','Sulfur','Salt','Cactus Sap','Red Gems','Blue Gems','Green Gems','Element'];
 const mapSlugs={'The Island':'the-island','Scorched Earth':'scorched-earth','The Center':'the-center','Aberration':'aberration','Extinction':'extinction','Ragnarok':'ragnarok','Valguero':'valguero','Astraeos':'astraeos','Lost Colony':'lost-colony'};
-export const resourceMapUrl=(map,resource)=>`https://wikily.gg/ark-survival-ascended/maps/${mapSlugs[map]||'the-island'}?layer=resources&resource=${encodeURIComponent(resource)}`;
+// The map provider does not document a stable resource query-string filter.
+export const resourceMapUrl=(map)=>`https://wikily.gg/ark-survival-ascended/maps/${mapSlugs[map]||'the-island'}`;
+export const wikiResourceMapUrl=(map)=>`https://ark.wiki.gg/wiki/Resource_Map/${encodeURIComponent(map.replaceAll(' ','_'))}`;

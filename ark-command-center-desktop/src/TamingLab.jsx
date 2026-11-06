@@ -2,6 +2,7 @@ import React,{useEffect,useMemo,useState} from 'react';
 import {ExternalLink,Timer} from 'lucide-react';
 import {tameCreatures,maps} from './data';
 import {availableFoods,calculateTame,knockoutProfiles} from './taming-engine';
+import {knockoutEstimate} from './knockout-engine';
 
 const numberFormat=new Intl.NumberFormat('en-US');
 const duration=(seconds)=>{const h=Math.floor(seconds/3600),m=Math.floor(seconds%3600/60),s=seconds%60;return [h?`${h}h`:null,m?`${m}m`:null,`${s}s`].filter(Boolean).join(' ')};
@@ -13,6 +14,7 @@ export default function TamingLab({rates,onTimer}){
  const [map,setMap]=useState('The Island');
  const [manualFood,setManualFood]=useState('');
  const [manualMinutes,setManualMinutes]=useState('');
+ const [weaponQuality,setWeaponQuality]=useState(100);
  const foods=useMemo(()=>availableFoods(creature),[creature]);
  useEffect(()=>{if(foods.length&&!foods.includes(food))setFood(foods[0]);},[foods,food]);
  const selectedFood=foods.includes(food)?food:(foods[0]||'');
@@ -20,6 +22,7 @@ export default function TamingLab({rates,onTimer}){
  const isManual=!result.ok;
  const finalMinutes=isManual?Number(manualMinutes):result.minutes;
  const canStart=Number.isFinite(finalMinutes)&&finalMinutes>0;
+ const knockout=knockoutEstimate({creature,level,weaponQuality});
  const wikiUrl=`https://ark.wiki.gg/wiki/${encodeURIComponent(creature.replaceAll(' ','_'))}`;
  const dododexUrl=`https://www.dododex.com/taming/${encodeURIComponent(creature.toLowerCase().replaceAll(' ','-'))}`;
  return <>
@@ -42,5 +45,10 @@ export default function TamingLab({rates,onTimer}){
     <div className="notice">Sources: ARK Official Community Wiki taming modules. Special/passive tames are excluded from the automatic knockout model.</div>
    </section>
   </div>
+  <section className="panel knockout-panel"><div className="panelhead"><h2>Tranquilizer & Knockout Planner</h2><span className="badge gold">ESTIMATED AMMO</span></div>
+   <div className="formgrid"><label className="field"><span>Weapon damage percentage</span><input type="number" min="1" max="1000" value={weaponQuality} onChange={e=>setWeaponQuality(e.target.value)}/></label><div className="keyrow"><span>Target torpor</span><strong>{knockout.ok?numberFormat.format(knockout.totalTorpor):'—'}</strong></div></div>
+   {knockout.ok?<><div className="tablewrap"><table><thead><tr><th>AMMO / WEAPON</th><th>BODY SHOTS</th><th>HEAD SHOTS</th></tr></thead><tbody>{knockout.rows.map(item=><tr key={item.id}><td><strong>{item.label}</strong></td><td>{numberFormat.format(item.body)}</td><td>{item.head===null?'No verified bonus':numberFormat.format(item.head)}</td></tr>)}</tbody></table></div><div className="notice">Estimates assume every shot lands, full torpor-over-time takes effect, and the target has no torpor loss between shots. Headshots are displayed only for verified bonus damage targets ({knockout.headMultiplier}× on this creature). Weapon quality scales the ammunition's torpor. Actual counts can be higher due to torpor drain, reloads and misses. Flying creature projectile modifiers are included where verified.</div></>:<div className="notice">{knockout.reason} Check Dododex until the creature's torpor and multipliers are verified.</div>}
+   <div className="actionrow"><a className="ghost linkbtn" href="https://ark.wiki.gg/wiki/Tranquilizer_Comparison_Table" target="_blank" rel="noreferrer">Ammo values source <ExternalLink size={15}/></a></div>
+  </section>
  </>;
 }

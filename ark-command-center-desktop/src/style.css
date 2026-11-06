@@ -6,3 +6,5 @@
 .tame-results strong{font-size:27px;color:#e3fff0}
 .tame-results strong small{font-size:13px;color:#add0bf}
 button:disabled{cursor:not-allowed;opacity:.45}
+.knockout-panel{margin-top:20px}
+.knockout-panel .tablewrap{margin-top:20px}
