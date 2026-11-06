@@ -1,0 +1,7 @@
+.resourceFilters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;max-width:680px}
+.resourceTiles{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;margin:8px 0 20px}
+.resourceTile{border:1px solid #2e4944;background:#13262a;color:#a0c0b5;padding:11px 7px;border-radius:7px;font-size:11px;display:flex;align-items:center;justify-content:center;gap:7px}
+.resourceTile.active,.resourceTile:hover{border-color:#5cdbab;background:#1b4538;color:#8bf0c2}
+.mapviewerbar strong{display:flex;align-items:center;gap:8px}
+@media(max-width:1050px){.resourceTiles{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:650px){.resourceFilters{grid-template-columns:1fr}.resourceTiles{grid-template-columns:repeat(2,1fr)}}

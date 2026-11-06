@@ -1,9 +1,9 @@
 {
   "name": "ark-command-center-desktop",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "private": true,
   "type": "module",
-  "scripts": {"dev":"vite", "build":"vite build", "desktop":"tauri dev", "installer":"tauri build"},
+  "scripts": {"dev":"vite", "build":"vite build", "desktop":"tauri dev", "installer":"tauri build", "test":"node --test src/taming-engine.test.js"},
   "dependencies": {"@tauri-apps/api":"^2.0.0", "lucide-react":"^0.468.0", "react":"^19.0.0", "react-dom":"^19.0.0"},
   "devDependencies": {"@tauri-apps/cli":"^2.0.0", "@vitejs/plugin-react":"^4.3.4", "vite":"^6.0.0"}
 }
