@@ -1,6 +1,6 @@
 {
   "name": "ark-command-center-desktop",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "type": "module",
   "scripts": {"dev":"vite", "build":"vite build", "desktop":"tauri dev", "installer":"tauri build", "test":"node --test src/*.test.js"},

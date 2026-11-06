@@ -8,3 +8,10 @@
 .craftleaf{padding-top:8px;padding-bottom:8px;font-size:14px;color:#c5dfd4;display:flex;align-items:center;gap:8px}.craftleaf small{margin-left:auto;font-size:10px;color:#82b9a0}.craftnode-dot{width:6px;height:6px;background:#69cfa1;border-radius:50%;flex-shrink:0}
 .craft-custom{margin-top:25px;padding-top:20px;border-top:1px solid rgba(255,255,255,.1)}.craft-custom>p{font-size:13px;color:#a7bab5}.craft-custom details>summary{cursor:pointer;color:#9cdec0;padding:10px 0}.craft-editor{padding:10px 0}.craft-editor .field{margin:10px 0}.craft-import{display:inline-flex;align-items:center;gap:8px;padding:12px 0;color:#a3e2c1;cursor:pointer}.craft-import input{display:none}
 @media(max-width:1040px){.craft-layout{grid-template-columns:1fr}}
+/* Place the planning tree ahead of the saved tribe queue. */
+.craft-workspace{display:flex;flex-direction:column;gap:18px}
+.craft-layout{display:contents}
+.craft-layout>section:first-child{order:1}
+.craft-workspace>.knockout-panel{order:2;margin-top:0}
+.craft-layout>section:nth-child(2){order:3}
+.craft-workspace>.notice{order:4}

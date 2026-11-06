@@ -36,7 +36,7 @@ export default function CraftingPage(){
  const importData=async file=>{if(!file)return;try{const data=JSON.parse(await file.text());if(!data||Array.isArray(data)||typeof data!=='object')throw new Error('Expected a recipe object keyed by item name.');const next={...extra,...data};validateRecipes({...starterRecipes,...next});setExtra(next);setError(`Imported ${Object.keys(data).length} recipes. Existing custom entries with identical names were updated.`);}catch(e){setError('Import failed: '+e.message)}};
  const totals=Object.entries(result?.materials||{}).sort((a,b)=>b[1]-a[1]);
  const crafts=Object.entries(result?.crafts||{}).sort((a,b)=>b[1]-a[1]);
- return <>
+ return <div className="craft-workspace">
   <div className="pagetitle"><span className="eyebrow">LOGISTICS / CRAFTING</span><h1>Crafting Calculator</h1><p>Build a shopping list for your tribe, combine quantities, and expand every intermediate crafting step.</p></div>
   <div className="craft-layout"><section className="panel"><div className="panelhead"><h2>Recipe Catalog</h2><span className="badge gold">{Object.keys(recipes).length} RECIPES</span></div>
    <div className="notice"><strong>{Object.keys(wikiRecipes).length.toLocaleString()} Official Community Wiki recipe records</strong> and 22 reviewed starter recipes are included. Wiki records have not all been checked for current ASA availability and crafting batch yields. The optional broader community export may contain mods and outdated costs.</div>
@@ -56,5 +56,5 @@ export default function CraftingPage(){
   </section></div>
   {!!result?.trees?.length&&<section className="panel knockout-panel"><div className="panelhead"><h2>Ingredient Dependency Trees</h2><span className="badge green">EXPANDABLE</span></div><div className="notice">Open any branch to see its ingredients. The combined total above consolidates shared intermediate crafting batches across all selected projects.</div>{result.trees.map(tree=><div className="craft-tree-root" key={tree.name}><RecipeNode node={tree}/></div>)}</section>}
   <div className="notice">Source: ARK Official Community Wiki Craftables table (cross-edition). Known Primitive Plus and mobile-only entries are excluded, but this is not yet a certified official ASA-only manifest. Unreviewed wiki recipes currently assume a one-item output batch; some may have different yields. Optional third-party community data can include mods. Resource substitutions are not automatically optimized.</div>
- </>;
+ </div>;
 }

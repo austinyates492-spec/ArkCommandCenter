@@ -20,7 +20,7 @@ const candidates={};
 for(const name of eligible){
  const display=displayAliases[name]||name;
  const mod=moduleByName.get(name),base=mod?.base||statByName.get(name);
- if(!base||mod?.passive||manual.includes(display)||candidates[display]||['Maewing','Tropeognathus'].includes(display))continue;
+ if(!base||mod?.passive||manual.includes(display)||candidates[display]||['Maewing','Tropeognathus','Electrophorus'].includes(display))continue;
  candidates[display]={torpor:base,perLevel:mod?.growth??Math.round(base*0.06*1000)/1000,head:1,projectile:1,
    verification:mod?'wiki-torpor':'wiki-base-6pct',source:mod?'https://ark.wiki.gg/wiki/Module:TamingTable/creatures':'https://ark.wiki.gg/wiki/Special:CargoTables/CreatureStats'};
 }

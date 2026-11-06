@@ -44,3 +44,14 @@ test('100 available knockout profiles include conventional creatures and variant
   assert.ok(result.totalTorpor>0,name);
  }
 });
+test('unreviewed creatures with wiki torpor stats show reference-only estimates',()=>{
+ const r=knockoutEstimate({creature:'Aberrant Baryonyx',level:150});
+ assert.equal(r.ok,true);
+ assert.equal(r.referenceOnly,true);
+ assert.equal(r.rows[0].head,null);
+});
+test('passive and boss creatures do not automatically gain a knockout method',()=>{
+ for(const creature of ['Ovis','Manta','Broodmother Lysrix','Wyvern']){
+  assert.equal(knockoutEstimate({creature,level:150}).ok,false,creature);
+ }
+});

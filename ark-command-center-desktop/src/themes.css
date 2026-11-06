@@ -26,4 +26,31 @@
 .shell .maptile.active,.shell .maptile:hover{border-color:var(--ark-accent);background:var(--ark-deep)}
 .shell .tame-results>div,.shell .craft-material{border-color:var(--ark-border);background:var(--ark-glow)}
 .shell .theme-option.active{border-color:var(--ark-accent)}
+/* Full-surface palettes: every mode recolors foundations, panels, inputs,
+   controls, map cards, overlays, and supporting text rather than accents only. */
+.shell{--ark-bg:#09120f;--ark-sidebar:#0d1d19;--ark-surface:#11231e;--ark-surface-2:#173229;--ark-input:#0b1c17;--ark-muted:#86b1a0;--ark-line:#2b5547;--ark-heading:#e2fff1}
+.shell[data-theme=red]{--ark-bg:#0d090b;--ark-sidebar:#170b10;--ark-surface:#211016;--ark-surface-2:#33131c;--ark-input:#190c12;--ark-muted:#c59aa5;--ark-line:#65303c;--ark-heading:#ffe9ed}
+.shell[data-theme=purple]{--ark-bg:#0b0813;--ark-sidebar:#130b20;--ark-surface:#1c102d;--ark-surface-2:#29153d;--ark-input:#120b20;--ark-muted:#ad94c9;--ark-line:#573977;--ark-heading:#f5eaff}
+.shell[data-theme=orange]{--ark-bg:#130d08;--ark-sidebar:#201208;--ark-surface:#2b180d;--ark-surface-2:#3c2210;--ark-input:#1b1009;--ark-muted:#cbb096;--ark-line:#79502d;--ark-heading:#fff0dc}
+.shell[data-theme=pink]{--ark-bg:#120911;--ark-sidebar:#220d1b;--ark-surface:#2e1126;--ark-surface-2:#401631;--ark-input:#1e0c1a;--ark-muted:#d0a3bd;--ark-line:#814263;--ark-heading:#ffe9f6}
+.shell[data-theme=gold]{--ark-bg:#100e08;--ark-sidebar:#211b0c;--ark-surface:#2a2311;--ark-surface-2:#3b3015;--ark-input:#1e180b;--ark-muted:#c1b18a;--ark-line:#75613a;--ark-heading:#fff3d2}
+.shell{background:radial-gradient(circle at 75% -15%,var(--ark-radial),transparent 43%),var(--ark-bg);color:var(--ark-heading)}
+.shell .sidebar{background:var(--ark-sidebar);border-color:var(--ark-line)}
+.shell .main,.shell .content{background:transparent}
+.shell .topbar{background:var(--ark-sidebar);border-color:var(--ark-line)}
+.shell .panel,.shell .metric,.shell .theme-option{background:var(--ark-surface);border-color:var(--ark-line);color:var(--ark-heading)}
+.shell .maptile,.shell .resourceTile,.shell .atlas-preview,.shell .mapviewer{background:var(--ark-surface-2);border-color:var(--ark-line);color:var(--ark-heading)}
+.shell .mapviewerbar,.shell .craft-cart-row,.shell .craftbranch,.shell .craftleaf{background:var(--ark-surface);border-color:var(--ark-line)}
+.shell .notice,.shell .empty{background:var(--ark-surface-2);border-color:var(--ark-line);color:var(--ark-muted)}
+.shell .field input,.shell .field select,.shell .field textarea,.shell .filters select,.shell .searchbox,.shell .craft-cart-row input{background:var(--ark-input);border-color:var(--ark-line);color:var(--ark-heading)}
+.shell .searchbox input{background:transparent;border:0}
+.shell .hero{background:linear-gradient(105deg,var(--ark-surface-2),var(--ark-surface));border-color:var(--ark-line)}
+.shell .metric strong,.shell .panelhead h2,.shell .pagetitle h1,.shell .breadcrumbs strong,.shell .listrow strong,.shell .timerrow strong,.shell td strong,.shell .milestone strong,.shell .growhead strong{color:var(--ark-heading)}
+.shell .metric span,.shell .metric small,.shell .pagetitle p,.shell .field>span,.shell .keyrow span,.shell .mapselection,.shell .minor,.shell td,.shell th,.shell .sectioncap,.shell .sidegroup,.shell .breadcrumbs,.shell .listrow small,.shell .timerrow small{color:var(--ark-muted)}
+.shell td,.shell th,.shell .keyrow,.shell .listrow,.shell .timerrow,.shell .sidebottom{border-color:var(--ark-line)}
+.shell .avatar,.shell .counter{background:var(--ark-surface-2);border-color:var(--ark-line);color:var(--ark-bright)}
+.shell .navitem{color:var(--ark-muted)}
+.shell .navitem.selected{background:var(--ark-surface-2);color:var(--ark-bright);border-color:var(--ark-line)}
+.shell .badge.gold,.shell .badge.red,.shell .badge.muted{background:var(--ark-surface-2);border-color:var(--ark-line);color:var(--ark-bright)}
+.shell .featureart{background:radial-gradient(circle,var(--ark-deep),var(--ark-surface))}
 @media(max-width:900px){.theme-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}

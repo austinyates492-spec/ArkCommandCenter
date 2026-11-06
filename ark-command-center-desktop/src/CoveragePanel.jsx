@@ -18,6 +18,7 @@ export default function CoveragePanel(){
   ['Total catalog selections',totals.catalog,'Also includes non-tameable creatures'],
   ['Breeding profile selections',totals.breeding,'Base species and variants'],
   ['Knockout calculator profiles',totals.autoKnockout,'Includes wiki-derived and variant-assumed torpor values'],
+  ['Additional torpor-only references',totals.torporReferences,'Theoretical ammo math; knockout method not verified'],
   ['Full taming food/time profiles',totals.foodCalculators,'Independently modeled food requirements and time'],
   ['Passive taming method guides',totals.passiveGuides,'Most still require manual feed timing'],
   ['Hatch / gestation profiles',totals.verifiedHatch,'Separate baseline available']
@@ -27,7 +28,7 @@ export default function CoveragePanel(){
   <div className="notice">Reference: Dododex ASA category, excluding its explicit mod entry. Different sources count variants, bosses and entities differently. A name in the catalog is not itself validation of a taming formula.</div>
   <h3 className="sectioncap">CREATURE-BY-CREATURE AUDIT</h3>
   <div className="formgrid"><label className="field"><span>Search the ASA catalog</span><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Rex, Giga, Wyvern..."/></label><label className="field"><span>Coverage filter</span><select value={filter} onChange={e=>setFilter(e.target.value)}>{['All','Needs knockout data','Knockout verified','Passive guide','No breeding baseline'].map(name=><option key={name}>{name}</option>)}</select></label></div>
-  <div className="tablewrap coverage-scroll"><table><thead><tr><th>CREATURE</th><th>KNOCKOUT</th><th>FOOD/TIME</th><th>BREEDING</th><th>HATCH / BIRTH</th></tr></thead><tbody>{view.map(row=><tr key={row.name}><td>{row.name}</td><td>{row.knockout?'Torpor model':'Needs verification'}</td><td>{row.food?'Calculated':row.passive?'Passive guide':'Needs data'}</td><td>{row.maturation?'Maturation timed':'Not verified'}</td><td>{row.incubation?'Baseline':'Not verified'}</td></tr>)}</tbody></table></div>
+  <div className="tablewrap coverage-scroll"><table><thead><tr><th>CREATURE</th><th>KNOCKOUT</th><th>FOOD/TIME</th><th>BREEDING</th><th>HATCH / BIRTH</th></tr></thead><tbody>{view.map(row=><tr key={row.name}><td>{row.name}</td><td>{row.knockout?'Torpor model':row.torporReference?'Torpor only · unverified':'Needs verification'}</td><td>{row.food?'Calculated':row.passive?'Passive guide':'Needs data'}</td><td>{row.maturation?'Maturation timed':'Not verified'}</td><td>{row.incubation?'Baseline':'Not verified'}</td></tr>)}</tbody></table></div>
   <div className="notice">Showing {view.length} of {rows.length}. Use the gaps above as the validation queue. Specialized/untameable creatures must not be forced through ordinary knockout formulas.</div>
  </section>;
 }

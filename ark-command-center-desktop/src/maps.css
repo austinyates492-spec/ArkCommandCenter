@@ -7,3 +7,16 @@
 .mapviewer iframe{display:block;width:100%;height:530px;border:0;background:#0d1a1e}
 .mapviewer .notice{margin:0;border:0;border-top:1px solid #31534d;border-radius:0}
 @media(max-width:800px){.mapchooser{display:block}.mapchooser .field{width:100%;margin-bottom:12px}.mapviewer iframe{height:400px}}
+.mapviewerbar strong{display:flex;gap:8px;align-items:center}
+.map-tools{display:flex;align-items:end;gap:8px;flex-wrap:wrap;padding:12px 15px;background:var(--ark-surface-2,#122d2a)}
+.map-tools .field{flex:1;min-width:170px;margin:0}
+.map-tools .field select{padding:10px}
+.map-tools button{white-space:nowrap}
+.map-instructions{display:flex;gap:10px;align-items:flex-start;padding:14px 16px;font-size:12px;line-height:1.6;color:var(--ark-muted,#91bcb0);background:var(--ark-surface-2,#122d2a)}
+.map-instructions svg{flex-shrink:0}
+.spawn-selector-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px}
+.compact-map-grid{grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:8px;margin-bottom:16px}
+.compact-map-grid .maptile{min-height:75px;padding:12px;gap:4px}
+.compact-map-grid .maptile strong{font-size:12px}
+.embedded-atlas{margin-top:15px}
+@media(max-width:950px){.spawn-selector-grid{grid-template-columns:1fr}.map-tools{align-items:stretch}.map-tools .field{flex-basis:100%}}

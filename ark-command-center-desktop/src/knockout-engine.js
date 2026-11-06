@@ -3,6 +3,9 @@
 // Head modifiers: https://ark.wiki.gg/wiki/T._rex and /wiki/Allosaurus
 // Argentavis has NO post-TLC headshot bonus; projectile multiplier is 1.5x.
 import wikiKnockoutProfiles from './wiki-knockout-profiles.json' with {type:'json'};
+import torporReferences from './wiki-torpor-references.json' with {type:'json'};
+import {passiveProfiles} from './passive-taming.js';
+import {breedingVariants} from './breeding-variants.js';
 export const knockoutSpecies={
   ...wikiKnockoutProfiles,
   Rex:{torpor:1550,perLevel:93,head:1.5,projectile:1},
@@ -31,7 +34,10 @@ export function knockoutEstimate({creature,level,weaponQuality=100,targetTorpor}
  const verified=knockoutSpecies[creature];
  const entered=Number(targetTorpor);
  const hasOverride=targetTorpor!==undefined&&targetTorpor!==''&&Number.isFinite(entered)&&entered>0;
- const entry=verified|| (hasOverride?{torpor:entered,perLevel:0,head:1,projectile:1}:null);
+ const nonKnockout=new Set(['Broodmother Lysrix','Dragon','Megapithecus','Manticore','Overseer','King Titan','Desert Titan','Forest Titan','Ice Titan','Attack Drone','Defense Unit','Deathworm','DodoRex','Dodo Wyvern','Giant Bee','Giant Queen Bee','Wyvern','Ovis','Oasisaur','Ammonite','Coelacanth','Cnidaria','Piranha','Leedsichthys','Sabertooth Salmon','Trilobite','Meganeura','Titanomyrma','Glowbug','Jug Bug','Eurypterid','Leech','Lamprey','Nameless','Seeker','Yeti']);
+ const parent=breedingVariants[creature];
+ const reference=(!passiveProfiles[creature]&&!passiveProfiles[parent]&&!nonKnockout.has(creature)&&!nonKnockout.has(parent))?(torporReferences[creature]||(parent&&torporReferences[parent])):null;
+ const entry=verified||(hasOverride?{torpor:entered,perLevel:0,head:1,projectile:1}:null)||reference;
  if(!entry)return {ok:false,reason:'Automatic torpor data is not verified for this creature. Enter the target torpor shown in-game to calculate a basic body-shot estimate.'};
  const lvl=Number(level),quality=Number(weaponQuality);
  if(!Number.isInteger(lvl)||lvl<1||lvl>1000)return {ok:false,reason:'Enter a wild level from 1 to 1000.'};
@@ -43,5 +49,5 @@ export function knockoutEstimate({creature,level,weaponQuality=100,targetTorpor}
   const head=entry.head>1?Math.ceil(totalTorpor/(bodyPerShot*entry.head)):null;
   return {...item,body,head};
  });
- return {ok:true,totalTorpor,headMultiplier:entry.head,projectileMultiplier:entry.projectile,rows,manual:!verified,verification:entry.verification||'reviewed'};
+ return {ok:true,totalTorpor,headMultiplier:entry.head,projectileMultiplier:entry.projectile,rows,manual:!verified&&hasOverride,referenceOnly:!verified&&!!reference&&!hasOverride,verification:entry.verification||'reviewed'};
 }
