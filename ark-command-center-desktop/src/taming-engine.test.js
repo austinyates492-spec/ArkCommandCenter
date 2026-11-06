@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {calculateTame,availableFoods} from './taming-engine.js';
+import {calculateTame,availableFoods,knockoutProfiles} from './taming-engine.js';
 
 test('Rex level 150 at 10x: preferred kibble count and feeding time',()=>{
  const result=calculateTame({creature:'Rex',level:150,food:'Exceptional Kibble'});
@@ -29,4 +29,12 @@ test('unsupported and invalid combinations refuse a calculation',()=>{
  assert.equal(calculateTame({creature:'Rex',level:0,food:'Raw Meat'}).ok,false);
  assert.equal(calculateTame({creature:'Rex',level:150,food:'Mejoberries'}).ok,false);
  assert.ok(!availableFoods('Wyvern').length);
+});
+test('14 audited knockout profiles supply food and duration by level',()=>{
+ assert.equal(Object.keys(knockoutProfiles).length,14);
+ for(const creature of ['Rex','Argentavis','Allosaurus','Giganotosaurus','Stegosaurus','Therizinosaurus','Pteranodon','Tapejara','Raptor','Sabertooth','Sarcosuchus','Triceratops','Ankylosaurus','Quetzal']){
+  const result=calculateTame({creature,level:150,food:availableFoods(creature)[0],tamingRate:10});
+  assert.equal(result.ok,true,creature);
+  assert.ok(result.foodPieces>=1,creature);
+ }
 });

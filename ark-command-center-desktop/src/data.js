@@ -1,6 +1,9 @@
 // Vanilla 1x breeding baseline, sourced from https://ark.wiki.gg/wiki/Breeding
+import {breedingRoster} from './breeding-roster.js';
+import {breedingVariants} from './breeding-variants.js';
+import {asaBaseCreatures,asaReferenceCounts} from './asa-official-catalog.js';
 const hr=(d,h,m)=>(d*24+h+m/60);
-export const species={
+const baseSpecies={
   Rex:{mature:hr(3,20,35),hatch:hr(0,4,59),category:'Carnivore'},
   Argentavis:{mature:hr(2,6,27),hatch:hr(0,2,56),category:'Carnivore'},
   Ankylosaurus:{mature:hr(2,0,43),hatch:hr(0,2,37),category:'Herbivore'},
@@ -36,11 +39,21 @@ export const species={
   Astrodelphis:{mature:hr(2,6,27),gestation:hr(0,7,56),category:'Carnivore'},
   Ferox:{mature:hr(3,20,35),gestation:hr(0,9,55),category:'Omnivore'}
 };
+const mainSpecies=Object.fromEntries(Object.entries(breedingRoster).map(([name,record])=>{
+  const previous=baseSpecies[name]||{};
+  const kind=record.method==='Egg'?'hatch':record.method==='Gestation'?'gestation':null;
+  return [name,{...record,category:previous.category||'Unknown',...(kind&&Number.isFinite(previous[kind])?{[kind]:previous[kind]}:{})}];
+}));
+export const species={...mainSpecies,...Object.fromEntries(Object.entries(breedingVariants).filter(([,base])=>mainSpecies[base]).map(([name,base])=>[name,{...mainSpecies[base],variantOf:base}]))};
 export const maps=['The Island','Scorched Earth','The Center','Aberration','Extinction','Ragnarok','Valguero','Astraeos','Lost Colony'];
 // Creature picker options, not a claim that every species has a built-in taming formula.
-export const tameCreatures = [
+const baseTameCreatures = [
   'Achatina','Allosaurus','Amargasaurus','Anglerfish','Ankylosaurus','Araneo','Archaeopteryx','Argentavis','Arthropluera','Baryonyx','Basilosaurus','Beelzebufo','Bloodstalker','Brontosaurus','Bulbdog','Carbonemys','Carnotaurus','Castoroides','Carcharodontosaurus','Chalicotherium','Compy','Daeodon','Deinonychus','Desmodus','Dilophosaur','Dimetrodon','Dimorphodon','Diplocaulus','Diplodocus','Direbear','Direwolf','Dodo','Doedicurus','Dung Beetle','Equus','Featherlight','Gallimimus','Gasbags','Giganotosaurus','Gigantopithecus','Griffin','Hyaenodon','Ichthyosaurus','Iguanodon','Kairuku','Kaprosuchus','Karkinos','Kentrosaurus','Lymantria','Mammoth','Managarmr','Mantis','Megalania','Megaloceros','Megalodon','Megalosaurus','Megatherium','Mesopithecus','Microraptor','Morellatops','Moschops','Mosasaurus','Oviraptor','Ovis','Pachy','Pachyrhinosaurus','Paraceratherium','Parasaur','Pegomastax','Pelagornis','Phiomia','Plesiosaur','Procoptodon','Pteranodon','Pulmonoscorpius','Purlovia','Quetzal','Raptor','Ravager','Rex','Rock Drake','Rock Elemental','Roll Rat','Sabertooth','Sarcosuchus','Shadowmane','Shinehorn','Snow Owl','Spinosaurus','Stegosaurus','Tapejara','Terror Bird','Therizinosaurus','Thorny Dragon','Thylacoleo','Titanoboa','Triceratops','Troodon','Tusoteuthis','Velonasaur','Woolly Rhino','Wyvern','Yutyrannus'
-].sort();
+];
+// The UI's official-only picker uses the ASA category roster, not the broader
+// ASE/modded list above. Ferox is additionally in the ASA breeding roster.
+export const tameCreatures=[...new Set([...asaBaseCreatures,'Ferox',...Object.keys(breedingVariants)])].sort();
+export const asaCoverage={reference:asaReferenceCounts,baseInApp:asaBaseCreatures.length+1,variantsInApp:Object.keys(breedingVariants).length};
 export const defaults={taming:10,hatch:10,mature:10,cuddle:0.1,breeding:0.1,food:1};
 export const hoursText=(hours)=>{const minutes=Math.round(hours*60);const days=Math.floor(minutes/1440),h=Math.floor(minutes%1440/60),m=minutes%60;return [days?`${days}d`:null,h?`${h}h`:null,`${m}m`].filter(Boolean).join(' ')};
 export const wikiSpawn=(map)=>`https://ark.wiki.gg/wiki/Spawn_Map/${encodeURIComponent(map.replaceAll(' ','_'))}`;

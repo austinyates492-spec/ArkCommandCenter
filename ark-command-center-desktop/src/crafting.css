@@ -1,0 +1,10 @@
+.craft-layout{display:grid;grid-template-columns:minmax(290px,1fr) minmax(350px,1.2fr);gap:20px;align-items:start}
+.craft-layout .panel>.field{margin-bottom:15px}
+.craft-cart-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.craft-cart-row>div{flex:1;min-width:0}.craft-cart-row strong{display:block}.craft-cart-row small{display:block;color:#a8b9b7;margin-top:4px}.craft-cart-row input{width:95px;min-width:60px}
+.craft-material-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:16px 0}.craft-material{border:1px solid rgba(95,199,159,.22);background:rgba(71,164,128,.08);padding:16px;border-radius:11px}.craft-material strong{font-size:24px;color:#b9fbd8;display:block}.craft-material span{color:#b0c3bf;font-size:13px}
+.craft-tree-root{margin-top:14px;padding:12px;border-radius:11px;background:rgba(15,25,33,.55);border:1px solid rgba(255,255,255,.09)}
+.craftbranch>summary{display:flex;align-items:center;gap:8px;padding:10px 6px;cursor:pointer;list-style:none}.craftbranch>summary::-webkit-details-marker{display:none}.craftbranch>summary>span{margin-left:auto;color:#91aaa3;font-size:12px}.craftbranch[open]>summary svg{transform:rotate(90deg)}
+.craftleaf{padding-top:8px;padding-bottom:8px;font-size:14px;color:#c5dfd4;display:flex;align-items:center;gap:8px}.craftleaf small{margin-left:auto;font-size:10px;color:#82b9a0}.craftnode-dot{width:6px;height:6px;background:#69cfa1;border-radius:50%;flex-shrink:0}
+.craft-custom{margin-top:25px;padding-top:20px;border-top:1px solid rgba(255,255,255,.1)}.craft-custom>p{font-size:13px;color:#a7bab5}.craft-custom details>summary{cursor:pointer;color:#9cdec0;padding:10px 0}.craft-editor{padding:10px 0}.craft-editor .field{margin:10px 0}.craft-import{display:inline-flex;align-items:center;gap:8px;padding:12px 0;color:#a3e2c1;cursor:pointer}.craft-import input{display:none}
+@media(max-width:1040px){.craft-layout{grid-template-columns:1fr}}

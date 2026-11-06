@@ -9,28 +9,32 @@ const duration=(seconds)=>{const h=Math.floor(seconds/3600),m=Math.floor(seconds
 
 export default function TamingLab({rates,onTimer}){
  const [creature,setCreature]=useState('Rex');
+ const [creatureQuery,setCreatureQuery]=useState('');
  const [level,setLevel]=useState(150);
  const [food,setFood]=useState('Exceptional Kibble');
  const [map,setMap]=useState('The Island');
  const [manualFood,setManualFood]=useState('');
  const [manualMinutes,setManualMinutes]=useState('');
  const [weaponQuality,setWeaponQuality]=useState(100);
+ const [targetTorpor,setTargetTorpor]=useState('');
  const foods=useMemo(()=>availableFoods(creature),[creature]);
+ const matchingCreatures=useMemo(()=>tameCreatures.filter(name=>name.toLowerCase().includes(creatureQuery.toLowerCase())),[creatureQuery]);
  useEffect(()=>{if(foods.length&&!foods.includes(food))setFood(foods[0]);},[foods,food]);
  const selectedFood=foods.includes(food)?food:(foods[0]||'');
  const result=calculateTame({creature,level,food:selectedFood,tamingRate:rates.taming,foodDrainRate:rates.food});
  const isManual=!result.ok;
  const finalMinutes=isManual?Number(manualMinutes):result.minutes;
  const canStart=Number.isFinite(finalMinutes)&&finalMinutes>0;
- const knockout=knockoutEstimate({creature,level,weaponQuality});
+ const knockout=knockoutEstimate({creature,level,weaponQuality,targetTorpor});
  const wikiUrl=`https://ark.wiki.gg/wiki/${encodeURIComponent(creature.replaceAll(' ','_'))}`;
  const dododexUrl=`https://www.dododex.com/taming/${encodeURIComponent(creature.toLowerCase().replaceAll(' ','-'))}`;
  return <>
-  <div className="pagetitle"><span className="eyebrow">FIELD OPERATIONS / 01</span><h1>Taming Lab</h1><p>Choose a creature, wild level and food. Verified knockout profiles calculate your {rates.taming}× cluster automatically.</p></div>
+  <div className="pagetitle"><span className="eyebrow">FIELD OPERATIONS / 01</span><h1>Taming Lab</h1><p>Search {tameCreatures.length} species and forms. 100 knockout torpor profiles estimate ammo use; review wiki-derived and variant assumptions before a real tame.</p></div>
   <div className="two wideleft">
    <section className="panel"><div className="panelhead"><h2>Plan a Tame</h2><span className="badge gold">{rates.taming}× PROFILE</span></div>
+    <label className="field"><span>Search creatures and variants</span><input value={creatureQuery} onChange={e=>setCreatureQuery(e.target.value)} placeholder="Rex, Tek, Aberrant, Giga..."/></label>
     <div className="formgrid">
-     <label className="field"><span>Creature</span><select value={creature} onChange={e=>setCreature(e.target.value)}>{tameCreatures.map(name=><option key={name}>{name}</option>)}</select></label>
+     <label className="field"><span>Creature ({matchingCreatures.length} matches)</span><select value={matchingCreatures.includes(creature)?creature:''} onChange={e=>setCreature(e.target.value)}>{!matchingCreatures.includes(creature)&&<option value="">Select a creature</option>}{matchingCreatures.map(name=><option key={name}>{name}</option>)}</select></label>
      <label className="field"><span>Wild Level</span><input type="number" min="1" max="1000" value={level} onChange={e=>setLevel(e.target.value)}/></label>
      <label className="field"><span>Food</span><select value={selectedFood} disabled={!foods.length} onChange={e=>setFood(e.target.value)}>{foods.length?foods.map(name=><option key={name}>{name}</option>):<option value="">Manual verification required</option>}</select></label>
      <label className="field"><span>Map</span><select value={map} onChange={e=>setMap(e.target.value)}>{maps.map(name=><option key={name}>{name}</option>)}</select></label>
@@ -46,8 +50,8 @@ export default function TamingLab({rates,onTimer}){
    </section>
   </div>
   <section className="panel knockout-panel"><div className="panelhead"><h2>Tranquilizer & Knockout Planner</h2><span className="badge gold">ESTIMATED AMMO</span></div>
-   <div className="formgrid"><label className="field"><span>Weapon damage percentage</span><input type="number" min="1" max="1000" value={weaponQuality} onChange={e=>setWeaponQuality(e.target.value)}/></label><div className="keyrow"><span>Target torpor</span><strong>{knockout.ok?numberFormat.format(knockout.totalTorpor):'—'}</strong></div></div>
-   {knockout.ok?<><div className="tablewrap"><table><thead><tr><th>AMMO / WEAPON</th><th>BODY SHOTS</th><th>HEAD SHOTS</th></tr></thead><tbody>{knockout.rows.map(item=><tr key={item.id}><td><strong>{item.label}</strong></td><td>{numberFormat.format(item.body)}</td><td>{item.head===null?'No verified bonus':numberFormat.format(item.head)}</td></tr>)}</tbody></table></div><div className="notice">Estimates assume every shot lands, full torpor-over-time takes effect, and the target has no torpor loss between shots. Headshots are displayed only for verified bonus damage targets ({knockout.headMultiplier}× on this creature). Weapon quality scales the ammunition's torpor. Actual counts can be higher due to torpor drain, reloads and misses. Flying creature projectile modifiers are included where verified.</div></>:<div className="notice">{knockout.reason} Check Dododex until the creature's torpor and multipliers are verified.</div>}
+   <div className="formgrid"><label className="field"><span>Weapon damage percentage</span><input type="number" min="1" max="1000" value={weaponQuality} onChange={e=>setWeaponQuality(e.target.value)}/></label><label className="field"><span>Target torpor (for unsupported creatures)</span><input type="number" min="1" placeholder="Use in-game stat if no built-in profile" value={targetTorpor} onChange={e=>setTargetTorpor(e.target.value)}/></label><div className="keyrow"><span>Target torpor</span><strong>{knockout.ok?numberFormat.format(knockout.totalTorpor):'—'}</strong></div></div>
+   {knockout.ok?<><div className="tablewrap"><table><thead><tr><th>AMMO / WEAPON</th><th>BODY SHOTS</th><th>HEAD SHOTS</th></tr></thead><tbody>{knockout.rows.map(item=><tr key={item.id}><td><strong>{item.label}</strong></td><td>{numberFormat.format(item.body)}</td><td>{item.head===null?'No verified bonus':numberFormat.format(item.head)}</td></tr>)}</tbody></table></div><div className="notice">{knockout.manual?'Manual torpor mode uses your in-game torpor and neutral damage modifiers. ':knockout.verification!=='reviewed'?'Wiki-derived torpor profile: headshot/resistance effects are not independently verified. Some forms assume the standard 6% wild-level torpor increase; confirm against your game before committing expensive ammunition. ':''}Estimates assume every shot lands, full torpor-over-time takes effect, and the target has no torpor loss between shots. Actual counts can be higher due to torpor drain, reloads and misses.</div></>:<div className="notice">{knockout.reason} Check Dododex until the creature's torpor and multipliers are verified.</div>}
    <div className="actionrow"><a className="ghost linkbtn" href="https://ark.wiki.gg/wiki/Tranquilizer_Comparison_Table" target="_blank" rel="noreferrer">Ammo values source <ExternalLink size={15}/></a></div>
   </section>
  </>;

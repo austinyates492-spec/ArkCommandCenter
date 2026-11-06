@@ -8,3 +8,4 @@
 button:disabled{cursor:not-allowed;opacity:.45}
 .knockout-panel{margin-top:20px}
 .knockout-panel .tablewrap{margin-top:20px}
+.coverage-scroll{max-height:460px;overflow:auto}
