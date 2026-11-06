@@ -8,7 +8,9 @@ An ARK: Survival Ascended companion app built for a small private tribe. This is
 - Scouting board: add, search, filter, and remove server statuses with notes and map names.
 - Raising planner: eight species with verified vanilla breeding baselines, scaled to your 10× maturation/hatching profile. Start a local countdown for hatching or adulthood.
 - Taming planner: creature, wild level, food selection and server rate reference; opens Dododex for species-specific food and time. Start a countdown using the verified time you enter.
+- Taming Lab now has an alphabetized creature dropdown with over 100 options. The list is a convenience picker; creature-specific tame values still come from Dododex.
 - Spawn map launcher for supported official maps.
+- Maps page includes a creature dropdown and an embedded community-wiki spawn-map preview, with a direct external map link as fallback. Embedded display depends on whether the wiki allows framing; it may not load in every installation. The map displays *possible spawn areas*, not guaranteed live positions.
 - Live countdown list with completion status while the app is open.
 - Rate settings default to 10× taming, hatching and maturation; 0.1× mating/cuddle intervals; 1× food drain.
 - Local persistence between app sessions using WebView local storage.

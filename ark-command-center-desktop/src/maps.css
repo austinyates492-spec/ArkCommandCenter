@@ -1,0 +1,9 @@
+.mapchooser{display:flex;align-items:end;gap:22px;margin-bottom:18px}
+.mapchooser .field{width:270px;margin:0}
+.mapselection{color:#83aca0;display:flex;gap:8px;align-items:center;font-size:12px;padding-bottom:12px;flex-wrap:wrap}
+.mapselection strong{color:#72e5b2}
+.mapviewer{margin-top:20px;border:1px solid #31534d;border-radius:10px;overflow:hidden;background:#0c161c}
+.mapviewerbar{display:flex;justify-content:space-between;align-items:center;padding:13px 17px;border-bottom:1px solid #31534d;background:#12312b;font-size:11px;letter-spacing:1.2px}
+.mapviewer iframe{display:block;width:100%;height:530px;border:0;background:#0d1a1e}
+.mapviewer .notice{margin:0;border:0;border-top:1px solid #31534d;border-radius:0}
+@media(max-width:800px){.mapchooser{display:block}.mapchooser .field{width:100%;margin-bottom:12px}.mapviewer iframe{height:400px}}
