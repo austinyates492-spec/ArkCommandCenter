@@ -20,8 +20,10 @@ test('ordinary knockout remains available for Rex',()=>{
  assert.equal(getTamingMethod('Rex'),null);
  assert.equal(knockoutEstimate({creature:'Rex',level:150}).ok,true);
 });
-test('unreviewed special methods never invent a specific item',()=>{
- const method=getTamingMethod('Cosmo');
- assert.equal(method.status,'needs-review');
+test('announced special methods never invent a specific item',()=>{
+ const method=getTamingMethod('Xeranox');
+ assert.equal(method.status,'unreleased');
  assert.deepEqual(method.items,[]);
+ assert.equal(getTamingMethod('Enigmasaur').status,'unreleased');
+ assert.equal(getTamingMethod('DodoRex').status,'unavailable');
 });

@@ -15,20 +15,20 @@ export default function CoveragePanel(){
   ['ASA baseline excluding labeled mod',asaCoverage.reference.baseOfficial,'Dododex comparison roster'],
   ['Reference names covered',asaCoverage.reference.baseOfficial,'All non-mod names matched'],
   ['Additional ASA breeder listing',1,'Ferox, absent from the comparison roster'],
-  ['Documented ASA variant forms',asaCoverage.variantsInApp,'Shared base maturation timing'],
+  ['Documented ASA variant forms',asaCoverage.variantsInApp,'Source-documented forms sharing base reproduction times'],
   ['Total catalog selections',totals.catalog,'Also includes non-tameable creatures'],
   ['Conventional Taming Lab species/forms',knockoutRoster.length,'Only tranq knockout methods'],
-  ['Specialty Taming Lab species/forms',specialtyRoster.length,'Heavy projectiles, eggs, offerings or unreviewed specials'],
+  ['Specialty Taming Lab species/forms',specialtyRoster.length,'Wiki-documented heavy, egg, offering and encounter methods; some are unreleased or unquantified'],
   ['Passive Taming Lab species/forms',passiveRoster.length,'Nonviolent species with wiki or reviewed feeding methods'],
   ['Knockout-category selections',rows.filter(r=>r.method.includes('Knockout')).length,'Base ASA classification inherited by variants'],
   ['Passive/special-category selections',rows.filter(r=>r.method.includes('Passive')).length,'Not necessarily ordinary passive feeding'],
   ['Untameable selections',rows.filter(r=>r.method==='Untameable').length,'Never shown as ordinary knockout tames'],
-  ['Breeding profile selections',totals.breeding,'Base species and variants'],
+  ['Breeding profile selections',totals.breeding,'156 source-reviewed base entries plus 64 forms'],
   ['Knockout calculator profiles',totals.autoKnockout,'Includes wiki-derived and variant-assumed torpor values'],
   ['Special / unclassified method entries',totals.methodUnclassified,'Require individual page or game-specific mechanics review'],
   ['Taming food/time profiles',totals.foodCalculators,'14 previously reviewed; others imported from published wiki baseline'],
   ['Passive taming method guides',totals.passiveGuides,'Most still require manual feed timing'],
-  ['Hatch / gestation profiles',totals.verifiedHatch,'Separate baseline available']
+  ['Hatch / gestation profiles',totals.verifiedHatch,'Source-reviewed 1× incubation / gestation baseline; special reproduction may differ']
  ];
  return <section className="panel knockout-panel"><div className="panelhead"><h2>ASA Database Coverage</h2><span className="badge gold">OFFICIAL MAPS + DLC</span></div>
   <div className="tablewrap"><table><thead><tr><th>DATASET</th><th>COUNT</th><th>NOTES</th></tr></thead><tbody>{data.map(([label,count,note])=><tr key={label}><td><strong>{label}</strong></td><td>{count}</td><td>{note}</td></tr>)}</tbody></table></div>

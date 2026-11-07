@@ -17,6 +17,17 @@ test('weapon damage percent scales shot count',()=>{
  const improved=knockoutEstimate({creature:'Allosaurus',level:150,weaponQuality:200});
  assert.ok(improved.rows[0].body<basic.rows[0].body);
 });
+test('NomadARK Longneck 300% applies to darts, not arrows',()=>{
+ const base=knockoutEstimate({creature:'Rex',level:150,weaponQuality:100,longneckBuffPercent:100});
+ const nomad=knockoutEstimate({creature:'Rex',level:150,weaponQuality:100,longneckBuffPercent:300});
+ for(const id of ['bow','crossbow','compound']){
+  assert.equal(nomad.rows.find(row=>row.id===id).body,base.rows.find(row=>row.id===id).body,id);
+ }
+ for(const id of ['dart','shocking']){
+  assert.ok(nomad.rows.find(row=>row.id===id).body<base.rows.find(row=>row.id===id).body,id);
+ }
+ assert.equal(knockoutEstimate({creature:'Rex',level:150,longneckBuffPercent:0}).ok,false);
+});
 test('invalid creature or rate refuses estimates',()=>{
  assert.equal(knockoutEstimate({creature:'Wyvern',level:150}).ok,false);
  assert.equal(knockoutEstimate({creature:'Rex',level:150,weaponQuality:0}).ok,false);

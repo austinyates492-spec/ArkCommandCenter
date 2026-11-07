@@ -621,5 +621,9 @@ export const breedingRoster = {
   "Yi Ling": {
     "mature": 46.29638888888889,
     "method": "Egg"
+  },
+  "Yutyrannus": {
+    "mature": 185.18518527777777,
+    "method": "Egg"
   }
 };

@@ -1,12 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {specialtyAmmoOptions,estimateSpecialtyKnockout,specialtyFeeding} from './specialty-engine.js';
-import {knockoutRoster,passiveRoster,specialtyRoster,tamingCategory} from './special-taming-methods.js';
+import {specialtyAmmoOptions,estimateSpecialtyKnockout,specialtyFeeding,specialtyFixedSupply,specialtyFoodOptions} from './specialty-engine.js';
+import {knockoutRoster,passiveRoster,specialtyRoster,tamingCategory,getTamingMethod} from './special-taming-methods.js';
 import {tameCreatures} from './data.js';
 import {availableFoods,calculateTame} from './taming-engine.js';
 import {passiveFoodPlan} from './passive-taming.js';
 
-test('mutually exclusive tab rosters cover the complete 278-entry catalog',()=>{
+test('mutually exclusive tab rosters cover the complete 279-entry catalog',()=>{
  const groups=[...knockoutRoster,...passiveRoster,...specialtyRoster];
  assert.equal(new Set(groups).size,groups.length);
  assert.equal(groups.length+tameCreatures.filter(name=>tamingCategory(name)==='untameable').length,tameCreatures.length);
@@ -51,4 +51,47 @@ test('published food values cover additional conventional and passive tames',()=
  assert.equal(tek.ok,true);
  assert.equal(a.ok,true);
  assert.equal(a.approximate,true);
+});
+test('all 72 specialty roster forms have species-specific sourced methods or explicit unavailable status',()=>{
+ assert.equal(specialtyRoster.length,72);
+ for(const creature of specialtyRoster){
+  const method=getTamingMethod(creature);
+  assert.ok(method,creature);
+  assert.ok(/^https:\/\/ark\.wiki\.gg\/wiki\//.test(method.source),`${creature}: missing wiki source`);
+  assert.ok(method.instructions.length>35,`${creature}: missing procedure`);
+  assert.ok(['documented','unreleased','unavailable'].includes(method.status),`${creature}: ${method.status}`);
+ }
+ assert.equal(tamingCategory('Cerberax'),'specialty');
+ assert.ok(!knockoutRoster.includes('Cerberax'));
+});
+test('Bloodstalker blood packs use level and NomadARK rate, with an explicit supply buffer',()=>{
+ const vanilla=specialtyFeeding({creature:'Bloodstalker',level:150,food:'Blood Pack',tamingRate:1});
+ assert.equal(vanilla.foodPieces,1500);
+ const nomad=specialtyFeeding({creature:'Bloodstalker',level:150,food:'Blood Pack',tamingRate:10,foodDrainRate:0.5});
+ assert.equal(nomad.ok,true);
+ assert.equal(nomad.foodPieces,150);
+ assert.equal(nomad.bufferPieces,188);
+ assert.equal(nomad.seconds,null);
+ assert.equal(specialtyFeeding({creature:'Bloodstalker',level:300,food:'Blood Pack',tamingRate:10}).foodPieces,300);
+ assert.equal(specialtyFeeding({creature:'Bloodstalker',level:150,food:'Blood Pack',tamingRate:0}).ok,false);
+ assert.deepEqual(specialtyFoodOptions('Bloodstalker'),['Blood Pack']);
+});
+test('Palaeoctopus counts minimum Bio Toxin bite interactions, not post-knockout food',()=>{
+ const result=specialtyFeeding({creature:'Palaeoctopus',level:150,food:'Bio Toxin',tamingRate:10});
+ assert.equal(result.ok,true);
+ assert.equal(result.totalTorpor,19880);
+ assert.equal(result.foodPieces,25);
+ assert.equal(result.minBiteSeconds,360);
+ assert.equal(result.maxBiteSeconds,480);
+ assert.equal(result.minutes,null);
+ assert.ok(getTamingMethod('Palaeoctopus').postKnockoutFoods.includes('Black Pearls'));
+ assert.ok(specialtyAmmoOptions('Palaeoctopus').length===0);
+});
+test('fish baskets and nest eggs require one capture item; unsupported interactions give no invented count',()=>{
+ assert.deepEqual(specialtyFixedSupply('Piranha'),{item:'Fish Basket',amount:1,caveat:'One basket per captured creature; it is not a feeding-based tame.'});
+ assert.equal(specialtyFixedSupply('Magmasaur').amount,1);
+ assert.equal(specialtyFixedSupply('Desmodus'),null);
+ assert.equal(specialtyFeeding({creature:'Desmodus',food:'Blood Pack',level:150,tamingRate:10}).ok,false);
+ assert.deepEqual(specialtyFoodOptions('Cosmo'),['Plant Species Z Seed','Chitin']);
+ assert.equal(specialtyFeeding({creature:'Cosmo',food:'Chitin',level:150,tamingRate:10}).ok,false);
 });

@@ -36,7 +36,7 @@ export default function PassiveLab({rates,onTimer}){
      <label className="field"><span>Food or interaction</span><select value={selectedFood} disabled={!foods.length} onChange={e=>setFood(e.target.value)}>{foods.length?foods.map(name=><option key={name}>{name}</option>):<option value="">Species-specific verification needed</option>}</select></label>
     </div>
     {plan.ok&&<div className="tame-results"><div><span>ESTIMATED FOOD REQUIRED</span><strong>{fmt.format(plan.pieces)} <small>{selectedFood}</small></strong></div><div><span>{plan.seconds===0?'FEEDING':'THEORETICAL HUNGER DURATION'}</span><strong>{plan.seconds===0?'One feed':timeText(plan.seconds)}</strong></div></div>}
-    {plan.approximate&&<div className="notice">Published food affinity provides a quantity estimate. Passive intervals, approach conditions and interaction bonuses can change the real time substantially—check your next feeding prompt.</div>}
+    {plan.approximate&&<div className="notice">Published food affinity provides a quantity estimate. Passive intervals, approach conditions and interaction bonuses can change the real time substantially. NomadARK's creature food-drain multiplier is not publicly verified—check your next feeding prompt.</div>}
     {!plan.ok&&<div className="notice">{plan.reason}</div>}
     <div className="notice">{entry?.notes||method?.instructions||'Follow the creature-specific passive taming interaction.'}</div>
     {!plan.ok&&<label className="field"><span>Verified food count (optional)</span><input type="number" min="1" value={foodCount} onChange={e=>setFoodCount(e.target.value)} placeholder="Verified on your cluster"/></label>}

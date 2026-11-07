@@ -54,7 +54,8 @@ export function calculatedWikiFeed({creature,level,food,tamingRate=10,foodDrainR
  if(!Number.isInteger(lvl)||lvl<1||lvl>1000||!Number.isFinite(rate)||rate<=0||!Number.isFinite(drain)||drain<=0)return {ok:false,reason:'Enter a valid level and positive taming / food rates.'};
  if(!wikiFoodOptions(creature).includes(food))return {ok:false,reason:'Choose a compatible food from the official wiki list.'};
  const key=food.endsWith(' Kibble')?'Kibble':inverseFoodAliases[food]||food;
- const custom=record.specialFoodValues?.[key];const general=wikiTaming.food[key];
+ const custom=record.specialFoodValues?.[key]||record.specialFoodValues?.[food];
+ const general=wikiTaming.food[key]||wikiTaming.food[food];
  const affinity=custom?.affinity??general?.affinity;
  const value=custom?.value??general?.foodValue;
  if(!Number.isFinite(affinity)||affinity<=0||!Number.isFinite(value)||value<=0)return {ok:false,reason:'The wiki does not include valid affinity and food-value numbers for this option.'};

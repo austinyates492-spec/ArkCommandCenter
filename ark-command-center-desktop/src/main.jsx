@@ -10,6 +10,8 @@ import PassiveLab from './PassiveLab';
 import CoveragePanel from './CoveragePanel';
 import CraftingPage from './CraftingPage';
 import ThemePicker from './ThemePicker';
+import ClusterSettings from './ClusterSettings';
+import {migrateOldRatePreset} from './nomadark-profile.js';
 import {species,maps,tameCreatures,defaults,hoursText,creatureSpawnUrl} from './data';
 import './style.css';
 import './maps.css';
@@ -22,7 +24,15 @@ function Badge({children,tone='green'}){return <span className={'badge '+tone}>{
 function Panel({title,aside,children,className=''}){return <section className={'panel '+className}><div className="panelhead"><h2>{title}</h2>{aside}</div>{children}</section>}
 function Field({label,children}){return <label className="field"><span>{label}</span>{children}</label>}
 function App(){
- const [page,setPage]=useState('overview'),[rates,setRates]=useStored('ark.rates',defaults),[servers,setServers]=useStored('ark.servers',[]),[timers,setTimers]=useStored('ark.timers',[]),[theme,setTheme]=useStored('ark.theme','emerald'),[now,setNow]=useState(Date.now());
+ const [page,setPage]=useState('overview'),[savedRates,setRates]=useStored('ark.rates',defaults),[servers,setServers]=useStored('ark.servers',[]),[timers,setTimers]=useStored('ark.timers',[]),[theme,setTheme]=useStored('ark.theme','emerald'),[now,setNow]=useState(Date.now());
+ const rates=savedRates;
+ useEffect(()=>{
+  try{
+   if(localStorage.getItem('ark.ratePresetVersion')==='nomadark-2026-11-06-v2')return;
+   setRates(previous=>migrateOldRatePreset(previous,defaults));
+   localStorage.setItem('ark.ratePresetVersion','nomadark-2026-11-06-v2');
+  }catch{/* Without local storage, keep current rate input and run locally. */}
+ },[setRates]);
  const [selectedMap,setSelectedMap]=useState('The Island'),[mapCreature,setMapCreature]=useState('Rex');
  const [form,setForm]=useState({map:'Ragnarok',name:'',status:'Unscouted',notes:''}),[query,setQuery]=useState(''),[filter,setFilter]=useState('All');
  useEffect(()=>{const id=setInterval(()=>setNow(Date.now()),1000);return()=>clearInterval(id)},[]);
@@ -35,7 +45,7 @@ function App(){
   <aside className="sidebar"><div className="brand"><div className="brandmark"><Shield size={24}/></div><div><strong>ARK <em>COMMAND</em></strong><small>CENTER // TRIBE EDITION</small></div></div>
   <div className="sidegroup">WORKSPACE</div><nav>{nav.map(([key,label,Icon])=><button key={key} className={'navitem '+(page===key?'selected':'')} onClick={()=>setPage(key)}><Icon size={18}/><span>{label}</span>{key==='timers'&&active.length>0?<b className="counter">{active.length}</b>:null}</button>)}</nav>
   <div className="sidebottom"><div className="live-dot"/><span>LOCAL WORKSPACE<br/><small>Private tribe build</small></span></div></aside>
-  <main className="main"><header className="topbar"><div className="breadcrumbs">ARK COMMAND CENTER <ChevronRight size={15}/> <strong>{pageName.toUpperCase()}</strong></div><div className="topright"><Badge tone="green">● 10× CLUSTER</Badge><div className="avatar">AY</div></div></header>
+  <main className="main"><header className="topbar"><div className="breadcrumbs">ARK COMMAND CENTER <ChevronRight size={15}/> <strong>{pageName.toUpperCase()}</strong></div><div className="topright"><Badge tone="green">● NOMADARK · {rates.taming}× TAME</Badge><div className="avatar">AY</div></div></header>
   <div className="content">
   {page==='overview'&&<><div className="hero"><div className="heroeyebrow">WELCOME BACK, SURVIVOR</div><h1>Your tribe.<br/><span>Your command.</span></h1><p>Every tame, timer and server decision in one place. Built for your private ARK squad.</p><div className="heroactions"><button className="primary" onClick={()=>setPage('taming')}>Open Taming Lab <ChevronRight size={17}/></button><button className="ghost" onClick={()=>setPage('servers')}>View Servers</button></div><div className="heroart">◈</div></div>
    <div className="metrics"><div className="metric"><span><Server size={18}/> Tracked Servers</span><strong>{servers.length}</strong><small>Scouted locations</small></div><div className="metric"><span><Clock3 size={18}/> Active Timers</span><strong>{active.length}</strong><small>Counting down</small></div><div className="metric"><span><Egg size={18}/> Supported Species</span><strong>{Object.keys(species).length}</strong><small>Validated breeding baselines</small></div><div className="metric"><span><Activity size={18}/> Taming Rate</span><strong>{rates.taming}×</strong><small>Default cluster multiplier</small></div></div>
@@ -48,7 +58,7 @@ function App(){
   {page==='maps'&&<SpawnPage/>}
   {page==='resources'&&<ResourcePage/>}
   {page==='timers'&&<><div className="pagetitle"><span className="eyebrow">OPERATIONS / 05</span><h1>Live Timers</h1><p>Countdowns for tames, breeding, hatching and anything else your tribe needs.</p></div><div className="two wideleft"><Panel title="Active Countdowns" aside={<Badge>{active.length} RUNNING</Badge>}>{active.length?active.map(t=><div className="timerrow" key={t.id}><div className="roundicon"><Clock3 size={19}/></div><div className="timerinfo"><strong>{t.name}</strong><small>{t.type} · {new Date(t.end).toLocaleString()}</small><div className="smalltrack"><div style={{width:`${Math.max(0,Math.min(100,(now-t.created)/(t.end-t.created)*100))}%`}}/></div></div><div className="timerend">{clock(t.end-now)}</div><button className="iconbtn" title="Remove timer" onClick={()=>setTimers(p=>p.filter(x=>x.id!==t.id))}><Trash2 size={17}/></button></div>):<div className="empty">No active timers. Start one in the Taming or Breeding Lab.</div>}{finished.length>0&&<><h3 className="sectioncap">COMPLETED</h3>{finished.slice(0,6).map(t=><div className="listrow" key={t.id}><CheckCircle2 size={18} color="#65cc9c"/><div><strong>{t.name}</strong><small>{t.type}</small></div><button className="iconbtn push" onClick={()=>setTimers(p=>p.filter(x=>x.id!==t.id))}><Trash2 size={16}/></button></div>)}</>}</Panel><Panel title="Quick Timer"><QuickTimer onAdd={addTimer}/><div className="notice"><Bell size={16}/> Timers count down while the app is open. This first release does not send system or Discord notifications while closed.</div></Panel></div></>}
-  {page==='settings'&&<><div className="pagetitle"><span className="eyebrow">CONFIGURATION / 06</span><h1>Cluster Settings</h1><p>Default values are tailored to your tribe's unofficial 10× cluster.</p></div><div className="two wideleft"><Panel title="Multiplier Profile"><div className="formgrid">{[['taming','Taming speed'],['hatch','Egg hatch speed'],['mature','Baby maturation'],['cuddle','Imprint interval'],['breeding','Mating interval'],['food','Food drain / consumption']].map(([key,name])=><Field key={key} label={name}><input type="number" min="0.001" step="0.1" value={rates[key]} onChange={e=>setRates(p=>({...p,[key]:Number(e.target.value)}))}/></Field>)}</div><div className="actionrow"><button className="ghost" onClick={()=>setRates(defaults)}>Restore 10× Defaults</button><Badge>Saved automatically</Badge></div></Panel><Panel title="Private Tribe Mode"><div className="milestone"><Shield/><div><strong>Local-first privacy</strong><small>Your server records and timers stay on this PC.</small></div></div><div className="milestone"><Save/><div><strong>Automatic local saves</strong><small>Data is saved in the app's local browser storage.</small></div></div><div className="milestone"><Activity/><div><strong>Shared sync — planned</strong><small>Railway API + authentication will connect multiple tribe PCs later.</small></div></div><div className="notice">Do not assume edits made on one tribe member's computer appear on the others yet. The existing Discord bot remains a separate service.</div></Panel></div></>}
+  {page==='settings'&&<ClusterSettings rates={rates} setRates={setRates}/>}
   {page==='settings'&&<CoveragePanel/>}
   {page==='settings'&&<ThemePicker value={theme} onChange={setTheme}/>}
   {page==='crafting'&&<CraftingPage/>}

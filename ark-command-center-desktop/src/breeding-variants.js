@@ -62,5 +62,6 @@ export const breedingVariants = {
   "X-Tapejara": "Tapejara",
   "Aberrant Triceratops": "Triceratops",
   "X-Triceratops": "Triceratops",
-  "X-Woolly Rhino": "Woolly Rhino"
+  "X-Woolly Rhino": "Woolly Rhino",
+  "X-Yutyrannus": "Yutyrannus"
 };

@@ -1,0 +1,1731 @@
+{
+  "source": "https://www.dinoindex.com/breeding",
+  "sourceAttribution": "ARK Smart Breeding (MIT-licensed data), crosschecked by DinoIndex for ASA",
+  "datasetVersion": "1.15.0",
+  "reviewedAt": "2026-10-22",
+  "asaVersion": "94.7.2",
+  "baseVersion": "358.17.12291776",
+  "creatures": {
+    "Achatina": {
+      "method": "Gestation",
+      "preSeconds": 28571.4286,
+      "matureSeconds": 333333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": [
+        "Aberrant Achatina"
+      ]
+    },
+    "Acrocanthosaurus": {
+      "method": "Egg",
+      "preSeconds": 17998.5601,
+      "matureSeconds": 333333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        43,
+        44
+      ],
+      "variants": []
+    },
+    "Allosaurus": {
+      "method": "Egg",
+      "preSeconds": 5999.52004,
+      "matureSeconds": 166666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        26,
+        32
+      ],
+      "variants": [
+        "X-Allosaurus"
+      ]
+    },
+    "Anglerfish": {
+      "method": "Egg",
+      "preSeconds": 17998.5601,
+      "matureSeconds": 133333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": [
+        "Aberrant Anglerfish"
+      ]
+    },
+    "Ankylosaurus": {
+      "method": "Egg",
+      "preSeconds": 9472.92638,
+      "matureSeconds": 175438.596,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        16,
+        20
+      ],
+      "variants": [
+        "Aberrant Ankylosaurus",
+        "X-Ankylosaurus"
+      ]
+    },
+    "Araneo": {
+      "method": "Egg",
+      "preSeconds": 5142.44575,
+      "matureSeconds": 90090.0901,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        4,
+        12
+      ],
+      "variants": [
+        "Aberrant Araneo"
+      ]
+    },
+    "Archaeopteryx": {
+      "method": "Egg",
+      "preSeconds": 9472.92638,
+      "matureSeconds": 55555.5556,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        16,
+        20
+      ],
+      "variants": []
+    },
+    "Archelon": {
+      "method": "Egg",
+      "preSeconds": 17998.5601,
+      "matureSeconds": 666666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        26,
+        29
+      ],
+      "variants": []
+    },
+    "Argentavis": {
+      "method": "Egg",
+      "preSeconds": 10587.3883,
+      "matureSeconds": 196078.431,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        12,
+        13.5
+      ],
+      "variants": [
+        "X-Argentavis"
+      ]
+    },
+    "Armadoggo": {
+      "method": "Gestation",
+      "preSeconds": 28571.4286,
+      "matureSeconds": 196078.431,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Arthropluera": {
+      "method": "Egg",
+      "preSeconds": 8999.28006,
+      "matureSeconds": 185185.185,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        18,
+        22
+      ],
+      "variants": [
+        "Aberrant Arthropluera"
+      ]
+    },
+    "Astrocetus": {
+      "method": "Gestation",
+      "preSeconds": 28571.4286,
+      "matureSeconds": 333333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Aureliax": {
+      "method": "Egg",
+      "preSeconds": 17998.5601,
+      "matureSeconds": 333333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        24,
+        34
+      ],
+      "variants": []
+    },
+    "Baryonyx": {
+      "method": "Egg",
+      "preSeconds": 7199.42405,
+      "matureSeconds": 166666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        29,
+        35
+      ],
+      "variants": [
+        "Aberrant Baryonyx"
+      ]
+    },
+    "Basilisk": {
+      "method": "Egg",
+      "preSeconds": 22498.2001,
+      "matureSeconds": 666666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        32,
+        38
+      ],
+      "variants": []
+    },
+    "Basilosaurus": {
+      "method": "Gestation",
+      "preSeconds": 28571.4286,
+      "matureSeconds": 416666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": [
+        "X-Basilosaurus"
+      ]
+    },
+    "Beelzebufo": {
+      "method": "Egg",
+      "preSeconds": 17998.5601,
+      "matureSeconds": 133333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": [
+        "Aberrant Beelzebufo"
+      ]
+    },
+    "Bison": {
+      "method": "Gestation",
+      "preSeconds": 12987.013,
+      "matureSeconds": 151515.152,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Bloodstalker": {
+      "method": "Egg",
+      "preSeconds": 10587.3883,
+      "matureSeconds": 196078.431,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        27,
+        30
+      ],
+      "variants": []
+    },
+    "Boaratos": {
+      "method": "Gestation",
+      "preSeconds": 28571.4286,
+      "matureSeconds": 296296.296,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Brontosaurus": {
+      "method": "Egg",
+      "preSeconds": 17998.5601,
+      "matureSeconds": 333333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        28,
+        31
+      ],
+      "variants": []
+    },
+    "Bulbdog": {
+      "method": "Gestation",
+      "preSeconds": 15037.594,
+      "matureSeconds": 175438.596,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Burrowbuck": {
+      "method": "Gestation",
+      "preSeconds": 21978.022,
+      "matureSeconds": 256410.256,
+      "cooldownMinSeconds": 32400,
+      "cooldownMaxSeconds": 64800,
+      "variants": []
+    },
+    "Carbonemys": {
+      "method": "Egg",
+      "preSeconds": 4499.64003,
+      "matureSeconds": 83333.3333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        30,
+        34
+      ],
+      "variants": [
+        "Aberrant Carbonemys"
+      ]
+    },
+    "Carcharodontosaurus": {
+      "method": "Egg",
+      "preSeconds": 179985.601,
+      "matureSeconds": 878348.704,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        37,
+        39
+      ],
+      "variants": []
+    },
+    "Carnotaurus": {
+      "method": "Egg",
+      "preSeconds": 5999.52004,
+      "matureSeconds": 166666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        26,
+        32
+      ],
+      "variants": [
+        "Aberrant Carnotaurus"
+      ]
+    },
+    "Castoroides": {
+      "method": "Gestation",
+      "preSeconds": 28571.4286,
+      "matureSeconds": 222222.222,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 142800,
+      "variants": []
+    },
+    "Cat": {
+      "method": "Gestation",
+      "preSeconds": 9523.80952,
+      "matureSeconds": 111111.111,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Ceratosaurus": {
+      "method": "Egg",
+      "preSeconds": 17998.5601,
+      "matureSeconds": 476190.476,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        32,
+        34
+      ],
+      "variants": []
+    },
+    "Cerberax": {
+      "method": "Gestation",
+      "preSeconds": 35714.2857,
+      "matureSeconds": 416666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Chalicotherium": {
+      "method": "Gestation",
+      "preSeconds": 28571.4286,
+      "matureSeconds": 296296.296,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Compy": {
+      "method": "Egg",
+      "preSeconds": 2999.76002,
+      "matureSeconds": 75757.5758,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        24,
+        32
+      ],
+      "variants": []
+    },
+    "Concavenator": {
+      "method": "Egg",
+      "preSeconds": 17998.5601,
+      "matureSeconds": 166666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        50,
+        53
+      ],
+      "variants": []
+    },
+    "Cosmo": {
+      "method": "Egg",
+      "preSeconds": 5142.44575,
+      "matureSeconds": 333333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        4,
+        12
+      ],
+      "variants": []
+    },
+    "Cryolophosaurus": {
+      "method": "Egg",
+      "preSeconds": 17998.5601,
+      "matureSeconds": 666666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        12,
+        16
+      ],
+      "variants": []
+    },
+    "Daeodon": {
+      "method": "Gestation",
+      "preSeconds": 28571.4286,
+      "matureSeconds": 175438.596,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Deinonychus": {
+      "method": "Egg",
+      "preSeconds": 7199.42405,
+      "matureSeconds": 133333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        40,
+        45
+      ],
+      "variants": []
+    },
+    "Deinosuchus": {
+      "method": "Egg",
+      "preSeconds": 8999.28006,
+      "matureSeconds": 333333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        30,
+        34
+      ],
+      "variants": []
+    },
+    "Deinotherium": {
+      "method": "Gestation",
+      "preSeconds": 28571.4286,
+      "matureSeconds": 666666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Desmodus": {
+      "method": "Gestation",
+      "preSeconds": 28571.4286,
+      "matureSeconds": 256410.256,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Dilophosaur": {
+      "method": "Egg",
+      "preSeconds": 4090.58184,
+      "matureSeconds": 75757.5758,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        28,
+        32
+      ],
+      "variants": []
+    },
+    "Dimetrodon": {
+      "method": "Egg",
+      "preSeconds": 8999.28006,
+      "matureSeconds": 166666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        30,
+        34
+      ],
+      "variants": [
+        "Aberrant Dimetrodon"
+      ]
+    },
+    "Dimorphodon": {
+      "method": "Egg",
+      "preSeconds": 4864.47571,
+      "matureSeconds": 90090.0901,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        35,
+        38
+      ],
+      "variants": [
+        "Aberrant Dimorphodon"
+      ]
+    },
+    "Diplocaulus": {
+      "method": "Egg",
+      "preSeconds": 17998.5601,
+      "matureSeconds": 133333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": [
+        "Aberrant Diplocaulus"
+      ]
+    },
+    "Diplodocus": {
+      "method": "Egg",
+      "preSeconds": 17998.5601,
+      "matureSeconds": 333333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        26,
+        29
+      ],
+      "variants": [
+        "Aberrant Diplodocus"
+      ]
+    },
+    "Dire Bear": {
+      "method": "Gestation",
+      "preSeconds": 14285.7143,
+      "matureSeconds": 166666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": [
+        "Aberrant Dire Bear"
+      ]
+    },
+    "Direwolf": {
+      "method": "Gestation",
+      "preSeconds": 15037.594,
+      "matureSeconds": 175438.596,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Dodo": {
+      "method": "Egg",
+      "preSeconds": 2999.76002,
+      "matureSeconds": 55555.5556,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        22,
+        30
+      ],
+      "variants": [
+        "Aberrant Dodo"
+      ]
+    },
+    "Doedicurus": {
+      "method": "Gestation",
+      "preSeconds": 17857.1429,
+      "matureSeconds": 208333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": [
+        "Aberrant Doedicurus"
+      ]
+    },
+    "Drakeling": {
+      "method": "Egg",
+      "preSeconds": 4499.64003,
+      "matureSeconds": 90090.0901,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        17,
+        20
+      ],
+      "variants": []
+    },
+    "Dreadmare": {
+      "method": "Gestation",
+      "preSeconds": 28571.4286,
+      "matureSeconds": 416666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Dreadnoughtus": {
+      "method": "Egg",
+      "preSeconds": 17998.5601,
+      "matureSeconds": 666666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        40,
+        42
+      ],
+      "variants": []
+    },
+    "Dunkleosteus": {
+      "method": "Gestation",
+      "preSeconds": 28571.4286,
+      "matureSeconds": 296296.296,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": [
+        "X-Dunkleosteus"
+      ]
+    },
+    "Elderclaw": {
+      "method": "Egg",
+      "preSeconds": 100,
+      "matureSeconds": 333333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Electrophorus": {
+      "method": "Egg",
+      "preSeconds": 17998.5601,
+      "matureSeconds": 166666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": [
+        "Aberrant Electrophorus"
+      ]
+    },
+    "Equus": {
+      "method": "Gestation",
+      "preSeconds": 28571.4286,
+      "matureSeconds": 166666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": [
+        "Aberrant Equus"
+      ]
+    },
+    "Fasolasuchus": {
+      "method": "Egg",
+      "preSeconds": 17998.5601,
+      "matureSeconds": 666666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        47,
+        50
+      ],
+      "variants": [
+        "Aberrant Fasolasuchus"
+      ]
+    },
+    "Featherlight": {
+      "method": "Egg",
+      "preSeconds": 5999.52004,
+      "matureSeconds": 175438.596,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        29,
+        32
+      ],
+      "variants": []
+    },
+    "Ferox": {
+      "method": "Gestation",
+      "preSeconds": 35714.2857,
+      "matureSeconds": 333333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Gacha": {
+      "method": "Gestation",
+      "preSeconds": 28571.4286,
+      "matureSeconds": 416666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Gallimimus": {
+      "method": "Egg",
+      "preSeconds": 5142.44575,
+      "matureSeconds": 95238.0952,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        24,
+        28
+      ],
+      "variants": []
+    },
+    "Gargantar": {
+      "method": "Egg",
+      "preSeconds": 17998.5601,
+      "matureSeconds": 333333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        80,
+        90
+      ],
+      "variants": []
+    },
+    "Gasbags": {
+      "method": "Gestation",
+      "preSeconds": 28571.4286,
+      "matureSeconds": 166666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Gigadesmodus": {
+      "method": "Egg",
+      "preSeconds": 17998.5601,
+      "matureSeconds": 476190.476,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        80,
+        90
+      ],
+      "variants": []
+    },
+    "Giganotosaurus": {
+      "method": "Egg",
+      "preSeconds": 179985.601,
+      "matureSeconds": 878348.704,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        43,
+        44
+      ],
+      "variants": [
+        "Tek Giganotosaurus"
+      ]
+    },
+    "Gigantopithecus": {
+      "method": "Gestation",
+      "preSeconds": 23809.5238,
+      "matureSeconds": 277777.778,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": [
+        "Aberrant Gigantopithecus"
+      ]
+    },
+    "Gigantoraptor": {
+      "method": "Egg",
+      "preSeconds": 5999.52004,
+      "matureSeconds": 166666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        26,
+        32
+      ],
+      "variants": [
+        "Aberrant Gigantoraptor"
+      ]
+    },
+    "Gloon": {
+      "method": "Egg",
+      "preSeconds": 5142.44575,
+      "matureSeconds": 175438.596,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        4,
+        12
+      ],
+      "variants": []
+    },
+    "Glowtail": {
+      "method": "Egg",
+      "preSeconds": 8999.28006,
+      "matureSeconds": 175438.596,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        30,
+        34
+      ],
+      "variants": []
+    },
+    "Grand Tortugar": {
+      "method": "Egg",
+      "preSeconds": 12599.6221,
+      "matureSeconds": 279000.731,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        54,
+        60
+      ],
+      "variants": []
+    },
+    "Griffin": {
+      "method": "Egg",
+      "preSeconds": 10587.3883,
+      "matureSeconds": 333333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        12,
+        16
+      ],
+      "variants": []
+    },
+    "Helicoprion": {
+      "method": "Egg",
+      "preSeconds": 17998.5601,
+      "matureSeconds": 370370.37,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Hesperornis": {
+      "method": "Egg",
+      "preSeconds": 5454.10913,
+      "matureSeconds": 101010.101,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        22,
+        30
+      ],
+      "variants": []
+    },
+    "Hyaenodon": {
+      "method": "Gestation",
+      "preSeconds": 14285.7143,
+      "matureSeconds": 166666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Ichthyornis": {
+      "method": "Egg",
+      "preSeconds": 5999.52004,
+      "matureSeconds": 133333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        29,
+        32
+      ],
+      "variants": []
+    },
+    "Ichthyosaurus": {
+      "method": "Gestation",
+      "preSeconds": 28571.4286,
+      "matureSeconds": 208333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": [
+        "X-Ichthyosaurus"
+      ]
+    },
+    "Iguanodon": {
+      "method": "Egg",
+      "preSeconds": 5142.44575,
+      "matureSeconds": 166666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        24,
+        28
+      ],
+      "variants": [
+        "Aberrant Iguanodon"
+      ]
+    },
+    "Jerboa": {
+      "method": "Gestation",
+      "preSeconds": 9523.80952,
+      "matureSeconds": 75757.5758,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Kairuku": {
+      "method": "Egg",
+      "preSeconds": 5454.10913,
+      "matureSeconds": 101010.101,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        22,
+        30
+      ],
+      "variants": []
+    },
+    "Kaprosuchus": {
+      "method": "Egg",
+      "preSeconds": 7199.42405,
+      "matureSeconds": 133333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        29,
+        35
+      ],
+      "variants": []
+    },
+    "Karkinos": {
+      "method": "Gestation",
+      "preSeconds": 35714.2857,
+      "matureSeconds": 416666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Kentrosaurus": {
+      "method": "Egg",
+      "preSeconds": 9999.20006,
+      "matureSeconds": 185185.185,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        24,
+        30
+      ],
+      "variants": []
+    },
+    "Lumina": {
+      "method": "Egg",
+      "preSeconds": 17998.5601,
+      "matureSeconds": 333333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        -90,
+        -80
+      ],
+      "variants": []
+    },
+    "Lymantria": {
+      "method": "Egg",
+      "preSeconds": 5454.10913,
+      "matureSeconds": 111111.111,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        35,
+        38
+      ],
+      "variants": []
+    },
+    "Lystrosaurus": {
+      "method": "Egg",
+      "preSeconds": 2999.76002,
+      "matureSeconds": 55555.5556,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        24,
+        28
+      ],
+      "variants": [
+        "Aberrant Lystrosaurus"
+      ]
+    },
+    "Maeguana": {
+      "method": "Egg",
+      "preSeconds": 5142.44575,
+      "matureSeconds": 166666.667,
+      "cooldownMinSeconds": 129600,
+      "cooldownMaxSeconds": 345600,
+      "eggTempC": [
+        24,
+        28
+      ],
+      "variants": []
+    },
+    "Magmasaur": {
+      "method": "Egg",
+      "preSeconds": 17998.5601,
+      "matureSeconds": 666666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        90,
+        110
+      ],
+      "variants": []
+    },
+    "Mammoth": {
+      "method": "Gestation",
+      "preSeconds": 28571.4286,
+      "matureSeconds": 296296.296,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Managarmr": {
+      "method": "Gestation",
+      "preSeconds": 14285.7143,
+      "matureSeconds": 333333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Manta": {
+      "method": "Gestation",
+      "preSeconds": 28571.4286,
+      "matureSeconds": 133333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": [
+        "Aberrant Manta"
+      ]
+    },
+    "Mantis": {
+      "method": "Egg",
+      "preSeconds": 9999.20006,
+      "matureSeconds": 196078.431,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        35,
+        38
+      ],
+      "variants": []
+    },
+    "Megachelon": {
+      "method": "Egg",
+      "preSeconds": 17998.5601,
+      "matureSeconds": 333333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Megalania": {
+      "method": "Egg",
+      "preSeconds": 7199.42405,
+      "matureSeconds": 133333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        29,
+        35
+      ],
+      "variants": [
+        "Aberrant Megalania"
+      ]
+    },
+    "Megaloceros": {
+      "method": "Gestation",
+      "preSeconds": 21978.022,
+      "matureSeconds": 256410.256,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Megalodon": {
+      "method": "Gestation",
+      "preSeconds": 21978.022,
+      "matureSeconds": 256410.256,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": [
+        "X-Megalodon"
+      ]
+    },
+    "Megalosaurus": {
+      "method": "Egg",
+      "preSeconds": 5999.52004,
+      "matureSeconds": 333333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        26,
+        32
+      ],
+      "variants": [
+        "Aberrant Megalosaurus"
+      ]
+    },
+    "Megaraptor": {
+      "method": "Egg",
+      "preSeconds": 5999.52004,
+      "matureSeconds": 166666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        30,
+        34
+      ],
+      "variants": []
+    },
+    "Megatherium": {
+      "method": "Gestation",
+      "preSeconds": 28571.4286,
+      "matureSeconds": 333333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Mesopithecus": {
+      "method": "Gestation",
+      "preSeconds": 9523.80952,
+      "matureSeconds": 111111.111,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Microraptor": {
+      "method": "Egg",
+      "preSeconds": 5142.44575,
+      "matureSeconds": 196078.431,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        24,
+        28
+      ],
+      "variants": []
+    },
+    "Morellatops": {
+      "method": "Egg",
+      "preSeconds": 8999.28006,
+      "matureSeconds": 111111.111,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        22,
+        28
+      ],
+      "variants": []
+    },
+    "Mosasaurus": {
+      "method": "Gestation",
+      "preSeconds": 28571.4286,
+      "matureSeconds": 666666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": [
+        "X-Mosasaurus"
+      ]
+    },
+    "Moschops": {
+      "method": "Egg",
+      "preSeconds": 9472.92638,
+      "matureSeconds": 175438.596,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        16,
+        20
+      ],
+      "variants": [
+        "Aberrant Moschops"
+      ]
+    },
+    "Onyc": {
+      "method": "Gestation",
+      "preSeconds": 14285.7143,
+      "matureSeconds": 101010.101,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Ossidon": {
+      "method": "Gestation",
+      "preSeconds": 28571.4286,
+      "matureSeconds": 333333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Otter": {
+      "method": "Gestation",
+      "preSeconds": 28571.4286,
+      "matureSeconds": 75757.5758,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 142800,
+      "variants": [
+        "Aberrant Otter",
+        "X-Otter"
+      ]
+    },
+    "Oviraptor": {
+      "method": "Egg",
+      "preSeconds": 4090.58184,
+      "matureSeconds": 75757.5758,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        26,
+        30
+      ],
+      "variants": [
+        "Aberrant Oviraptor"
+      ]
+    },
+    "Ovis": {
+      "method": "Gestation",
+      "preSeconds": 15037.594,
+      "matureSeconds": 175438.596,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": [
+        "Aberrant Ovis"
+      ]
+    },
+    "Pachy": {
+      "method": "Egg",
+      "preSeconds": 5142.44575,
+      "matureSeconds": 95238.0952,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        24,
+        28
+      ],
+      "variants": []
+    },
+    "Pachyrhinosaurus": {
+      "method": "Egg",
+      "preSeconds": 8999.28006,
+      "matureSeconds": 166666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        22,
+        28
+      ],
+      "variants": []
+    },
+    "Palaeoctopus": {
+      "method": "Egg",
+      "preSeconds": 17998.5601,
+      "matureSeconds": 133333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Paraceratherium": {
+      "method": "Gestation",
+      "preSeconds": 28571.4286,
+      "matureSeconds": 333333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": [
+        "Aberrant Paraceratherium",
+        "X-Paraceratherium"
+      ]
+    },
+    "Parasaur": {
+      "method": "Egg",
+      "preSeconds": 5142.44575,
+      "matureSeconds": 95238.0952,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        24,
+        28
+      ],
+      "variants": [
+        "Aberrant Parasaur",
+        "Tek Parasaur",
+        "X-Parasaur"
+      ]
+    },
+    "Parrot": {
+      "method": "Egg",
+      "preSeconds": 10587.3883,
+      "matureSeconds": 90090.0901,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        24,
+        28
+      ],
+      "variants": []
+    },
+    "Pegomastax": {
+      "method": "Egg",
+      "preSeconds": 4090.58184,
+      "matureSeconds": 111111.111,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        28,
+        32
+      ],
+      "variants": []
+    },
+    "Pelagornis": {
+      "method": "Egg",
+      "preSeconds": 5999.52004,
+      "matureSeconds": 133333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        29,
+        32
+      ],
+      "variants": []
+    },
+    "Phiomia": {
+      "method": "Gestation",
+      "preSeconds": 35714.2857,
+      "matureSeconds": 175438.596,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Phoenix": {
+      "method": "Egg",
+      "preSeconds": 33.3333333,
+      "matureSeconds": 196078.431,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        80,
+        90
+      ],
+      "variants": []
+    },
+    "Plesiosaur": {
+      "method": "Gestation",
+      "preSeconds": 28571.4286,
+      "matureSeconds": 416666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Procoptodon": {
+      "method": "Gestation",
+      "preSeconds": 14285.7143,
+      "matureSeconds": 166666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Pteranodon": {
+      "method": "Egg",
+      "preSeconds": 5999.52004,
+      "matureSeconds": 133333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        29,
+        32
+      ],
+      "variants": []
+    },
+    "Pulmonoscorpius": {
+      "method": "Egg",
+      "preSeconds": 7199.42405,
+      "matureSeconds": 133333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        12,
+        16
+      ],
+      "variants": [
+        "Aberrant Pulmonoscorpius"
+      ]
+    },
+    "Purlovia": {
+      "method": "Gestation",
+      "preSeconds": 15037.594,
+      "matureSeconds": 175438.596,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": [
+        "Aberrant Purlovia"
+      ]
+    },
+    "Pyromane": {
+      "method": "Gestation",
+      "preSeconds": 8628.1277,
+      "matureSeconds": 175438.596,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Quetzal": {
+      "method": "Egg",
+      "preSeconds": 59995.2004,
+      "matureSeconds": 476190.476,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        5,
+        6
+      ],
+      "variants": [
+        "Tek Quetzal"
+      ]
+    },
+    "Raptor": {
+      "method": "Egg",
+      "preSeconds": 7199.42405,
+      "matureSeconds": 133333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        20,
+        28
+      ],
+      "variants": [
+        "Aberrant Raptor",
+        "Tek Raptor",
+        "X-Raptor"
+      ]
+    },
+    "Ravager": {
+      "method": "Gestation",
+      "preSeconds": 15037.594,
+      "matureSeconds": 175438.596,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Rex": {
+      "method": "Egg",
+      "preSeconds": 17998.5601,
+      "matureSeconds": 333333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        32,
+        34
+      ],
+      "variants": [
+        "Tek Rex",
+        "X-Rex"
+      ]
+    },
+    "Rock Drake": {
+      "method": "Egg",
+      "preSeconds": 22498.2001,
+      "matureSeconds": 333333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        -90,
+        -80
+      ],
+      "variants": []
+    },
+    "Roll Rat": {
+      "method": "Gestation",
+      "preSeconds": 17857.1429,
+      "matureSeconds": 208333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Sabertooth": {
+      "method": "Gestation",
+      "preSeconds": 15037.594,
+      "matureSeconds": 175438.596,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": [
+        "X-Sabertooth"
+      ]
+    },
+    "Sarco": {
+      "method": "Egg",
+      "preSeconds": 8999.28006,
+      "matureSeconds": 166666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        30,
+        34
+      ],
+      "variants": [
+        "Aberrant Sarco"
+      ]
+    },
+    "Shastasaurus": {
+      "method": "Gestation",
+      "preSeconds": 28571.4286,
+      "matureSeconds": 666666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Shinehorn": {
+      "method": "Gestation",
+      "preSeconds": 15037.594,
+      "matureSeconds": 175438.596,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Snow Owl": {
+      "method": "Egg",
+      "preSeconds": 10587.3883,
+      "matureSeconds": 196078.431,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        12,
+        13.5
+      ],
+      "variants": []
+    },
+    "Spinosaurus": {
+      "method": "Egg",
+      "preSeconds": 13845.0462,
+      "matureSeconds": 256410.256,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        30,
+        32
+      ],
+      "variants": [
+        "Aberrant Spino",
+        "X-Spino"
+      ]
+    },
+    "Stegosaurus": {
+      "method": "Egg",
+      "preSeconds": 9999.20006,
+      "matureSeconds": 185185.185,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        22,
+        28
+      ],
+      "variants": [
+        "Aberrant Stegosaurus",
+        "Tek Stegosaurus"
+      ]
+    },
+    "Tapejara": {
+      "method": "Egg",
+      "preSeconds": 5999.52004,
+      "matureSeconds": 196078.431,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        29,
+        32
+      ],
+      "variants": [
+        "X-Tapejara"
+      ]
+    },
+    "Terror Bird": {
+      "method": "Egg",
+      "preSeconds": 7199.42405,
+      "matureSeconds": 166666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        20,
+        28
+      ],
+      "variants": []
+    },
+    "Therizinosaurus": {
+      "method": "Egg",
+      "preSeconds": 5999.52004,
+      "matureSeconds": 416666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        26,
+        32
+      ],
+      "variants": []
+    },
+    "Thorny Dragon": {
+      "method": "Egg",
+      "preSeconds": 8999.28006,
+      "matureSeconds": 175438.596,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        22,
+        28
+      ],
+      "variants": []
+    },
+    "Thylacoleo": {
+      "method": "Gestation",
+      "preSeconds": 15037.594,
+      "matureSeconds": 175438.596,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Tidepup": {
+      "method": "Egg",
+      "preSeconds": 17998.5601,
+      "matureSeconds": 133333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Triceratops": {
+      "method": "Egg",
+      "preSeconds": 8999.28006,
+      "matureSeconds": 166666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        22,
+        28
+      ],
+      "variants": [
+        "Aberrant Triceratops",
+        "X-Triceratops"
+      ]
+    },
+    "Troodon": {
+      "method": "Egg",
+      "preSeconds": 4090.58184,
+      "matureSeconds": 75757.5758,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        28,
+        32
+      ],
+      "variants": []
+    },
+    "Tusoteuthis": {
+      "method": "Egg",
+      "preSeconds": 17998.5601,
+      "matureSeconds": 666666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Umbra": {
+      "method": "Egg",
+      "preSeconds": 17998.5601,
+      "matureSeconds": 333333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        80,
+        90
+      ],
+      "variants": []
+    },
+    "Unicorn": {
+      "method": "Gestation",
+      "preSeconds": 28571.4286,
+      "matureSeconds": 166666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Veilwyn": {
+      "method": "Gestation",
+      "preSeconds": 28571.4286,
+      "matureSeconds": 166666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Velonasaur": {
+      "method": "Egg",
+      "preSeconds": 4090.58184,
+      "matureSeconds": 166666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        28,
+        32
+      ],
+      "variants": []
+    },
+    "Vulture": {
+      "method": "Egg",
+      "preSeconds": 4864.47571,
+      "matureSeconds": 90090.0901,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        35,
+        38
+      ],
+      "variants": []
+    },
+    "Woolly Rhino": {
+      "method": "Gestation",
+      "preSeconds": 14285.7143,
+      "matureSeconds": 166666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": [
+        "X-Woolly Rhino"
+      ]
+    },
+    "Wyvern": {
+      "method": "Egg",
+      "preSeconds": 17998.5601,
+      "matureSeconds": 333333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        80,
+        90
+      ],
+      "variants": []
+    },
+    "Xiphactinus": {
+      "method": "Egg",
+      "preSeconds": 17998.5601,
+      "matureSeconds": 333333.333,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "variants": []
+    },
+    "Yi Ling": {
+      "method": "Egg",
+      "preSeconds": 3599.71202,
+      "matureSeconds": 166666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        38,
+        42
+      ],
+      "variants": []
+    },
+    "Yutyrannus": {
+      "method": "Egg",
+      "preSeconds": 17998.5601,
+      "matureSeconds": 666666.667,
+      "cooldownMinSeconds": 64800,
+      "cooldownMaxSeconds": 172800,
+      "eggTempC": [
+        32,
+        34
+      ],
+      "variants": [
+        "X-Yutyrannus"
+      ]
+    }
+  }
+}

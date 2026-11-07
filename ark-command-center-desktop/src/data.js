@@ -1,7 +1,9 @@
-// Vanilla 1x breeding baseline, sourced from https://ark.wiki.gg/wiki/Breeding
+// Precise ASA breeding baselines from DinoIndex's reviewed ARK Smart Breeding
+// snapshot. Previously supplied approximate wiki baselines remain as a backup.
 import {breedingRoster} from './breeding-roster.js';
 import {breedingVariants} from './breeding-variants.js';
 import {asaBaseCreatures,asaReferenceCounts} from './asa-official-catalog.js';
+import asaBreeding from './asa-breeding-source.json' with {type:'json'};
 const hr=(d,h,m)=>(d*24+h+m/60);
 const baseSpecies={
   Rex:{mature:hr(3,20,35),hatch:hr(0,4,59),category:'Carnivore'},
@@ -41,8 +43,24 @@ const baseSpecies={
 };
 const mainSpecies=Object.fromEntries(Object.entries(breedingRoster).map(([name,record])=>{
   const previous=baseSpecies[name]||{};
+  const aliases={Direbear:'Dire Bear',Sarcosuchus:'Sarco'};
+  const asa=asaBreeding.creatures[aliases[name]||name];
   const kind=record.method==='Egg'?'hatch':record.method==='Gestation'?'gestation':null;
-  return [name,{...record,category:previous.category||'Unknown',...(kind&&Number.isFinite(previous[kind])?{[kind]:previous[kind]}:{})}];
+  return [name,{
+    ...record,
+    category:previous.category||'Unknown',
+    ...(kind&&Number.isFinite(previous[kind])?{[kind]:previous[kind]}:{}),
+    ...(asa?{
+      method:asa.method,
+      mature:asa.matureSeconds/3600,
+      [asa.method==='Egg'?'hatch':'gestation']:asa.preSeconds/3600,
+      cooldownMin:asa.cooldownMinSeconds/3600,
+      cooldownMax:asa.cooldownMaxSeconds/3600,
+      ...(asa.eggTempC?{eggTempC:asa.eggTempC}:{}) ,
+      sourceReview:asaBreeding.reviewedAt,
+      sourceDatasetVersion:asaBreeding.asaVersion
+    }:{})
+  }];
 }));
 export const species={...mainSpecies,...Object.fromEntries(Object.entries(breedingVariants).filter(([,base])=>mainSpecies[base]).map(([name,base])=>[name,{...mainSpecies[base],variantOf:base}]))};
 export const maps=['The Island','Scorched Earth','The Center','Aberration','Extinction','Ragnarok','Valguero','Astraeos','Lost Colony'];
@@ -54,8 +72,15 @@ const baseTameCreatures = [
 // ASE/modded list above. Ferox is additionally in the ASA breeding roster.
 export const tameCreatures=[...new Set([...asaBaseCreatures,'Ferox',...Object.keys(breedingVariants)])].sort();
 export const asaCoverage={reference:asaReferenceCounts,baseInApp:asaBaseCreatures.length+1,variantsInApp:Object.keys(breedingVariants).length};
-export const defaults={taming:10,hatch:10,mature:10,cuddle:0.1,breeding:0.1,food:1};
+// Confirmed NomadARK rates: taming 10x, egg hatch 25x, maturation 8x,
+// mating interval 0.2x. Cuddle 0.1x and dino food drain 1x remain assumptions.
+export const defaults={taming:10,hatch:25,mature:8,cuddle:0.1,breeding:0.2,food:1};
 export const hoursText=(hours)=>{const minutes=Math.round(hours*60);const days=Math.floor(minutes/1440),h=Math.floor(minutes%1440/60),m=minutes%60;return [days?`${days}d`:null,h?`${h}h`:null,`${m}m`].filter(Boolean).join(' ')};
+export const durationText=(seconds)=>{
+ const total=Math.max(0,Math.round(Number(seconds)||0));
+ const days=Math.floor(total/86400),hours=Math.floor(total%86400/3600),minutes=Math.floor(total%3600/60),secs=total%60;
+ return [days?`${days}d`:null,hours?`${hours}h`:null,minutes?`${minutes}m`:null,`${secs}s`].filter(Boolean).join(' ');
+};
 export const wikiSpawn=(map)=>`https://ark.wiki.gg/wiki/Spawn_Map/${encodeURIComponent(map.replaceAll(' ','_'))}`;
 export const creatureSpawnUrl=(map,creature)=>`${wikiSpawn(map)}?creature=${encodeURIComponent(({Rex:'T-Rex',Triceratops:'Trike'}[creature]||creature))}`;
 export const resources=['Metal','Rich Metal','Crystal','Obsidian','Oil','Silica Pearls','Black Pearls','Rare Flowers','Rare Mushrooms','Sulfur','Salt','Cactus Sap','Red Gems','Blue Gems','Green Gems','Element'];
