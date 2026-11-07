@@ -1,6 +1,10 @@
 # ARK Command Center — Windows Tribe Live Edition
 
-An ARK: Survival Ascended companion app built for a small private tribe. The **Tauri 2** Windows installer is distributed from GitHub Releases; version 0.8 connects to a private PostgreSQL-backed Railway API.
+An ARK: Survival Ascended companion app built for a small private tribe. The **Tauri 2** Windows installer is distributed from GitHub Releases; version 0.8.1 connects to a private PostgreSQL-backed Railway API.
+
+## Fifteen full-window themes (v0.8.1)
+
+The Settings tab includes the original ten themes (Emerald, Black & Red, Deep Purple, Orange, Pink, Gold, Sapphire, Cyan, Lime and Silver), plus **Rainbow Spectrum, Black & White, Midnight Indigo, Sunset Coral and Mocha Cream**. All fifteen recolor the backdrop, sidebar, panels, headings, controls and form fields, not only accents. Rainbow adds a multicolored backdrop, sidebar and buttons; Black & White is strictly monochromatic with high-contrast light input fields. Your chosen theme remains a personal preference and does not change the rest of the tribe's interface.
 
 ## Tribe Live v0.8
 
