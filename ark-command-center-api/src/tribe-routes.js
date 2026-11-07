@@ -85,7 +85,7 @@ export async function handleTribe(req,res,options){
  if(path==='/api/v1/tribe/timers'){
   if(method==='GET'){
    const {rows}=await pool.query(`SELECT t.*,m.display_name FROM tribe_timers t LEFT JOIN members m ON m.id=t.created_by ORDER BY t.end_ms ASC LIMIT 1000`);
-   return json(res,200,{timers:listOf(rows,serializeTimer)})||true;
+   return json(res,200,{timers:listOf(rows,serializeTimer),serverTime:Date.now()})||true;
   }
   if(method==='POST'){
    const timer=validated(normalizeTimer,await bodyJson(req));const id=randomUUID();
