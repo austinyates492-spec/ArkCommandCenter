@@ -1,6 +1,6 @@
 import React,{useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {LayoutDashboard,Compass,Timer,Settings,Shield,Search,Plus,Trash2,ExternalLink,ChevronRight,Server,Activity,Egg,Calculator,CheckCircle2,Clock3,MapPin,Bell,Save,Layers} from 'lucide-react';
+import {LayoutDashboard,Compass,Timer,Settings,Shield,Search,Plus,Trash2,ExternalLink,ChevronRight,Server,Activity,Egg,Calculator,CheckCircle2,Clock3,MapPin,Bell,Save,Layers,Cloud} from 'lucide-react';
 import ResourcePage from './ResourcePage';
 import SpawnPage from './SpawnPage';
 import TamingLab from './TamingLab';
@@ -11,13 +11,15 @@ import CoveragePanel from './CoveragePanel';
 import CraftingPage from './CraftingPage';
 import ThemePicker from './ThemePicker';
 import ClusterSettings from './ClusterSettings';
+import CloudAccount from './CloudAccount';
+import {useCloudSync} from './cloud-sync';
 import {migrateOldRatePreset} from './nomadark-profile.js';
 import {species,maps,tameCreatures,defaults,hoursText,creatureSpawnUrl} from './data';
 import './style.css';
 import './maps.css';
 import './resources.css';
 
-const nav=[['overview','Overview',LayoutDashboard],['taming','Taming Lab',Calculator],['specialty','Specialty Taming Lab',Shield],['passive','Passive Taming Lab',Activity],['breeding','Breeding Lab',Egg],['crafting','Crafting Calculator',Layers],['servers','Server Intel',Server],['maps','Spawn Maps',Compass],['resources','Resource Atlas',Layers],['timers','Live Timers',Timer],['settings','Settings',Settings]];
+const nav=[['overview','Overview',LayoutDashboard],['taming','Taming Lab',Calculator],['specialty','Specialty Taming Lab',Shield],['passive','Passive Taming Lab',Activity],['breeding','Breeding Lab',Egg],['crafting','Crafting Calculator',Layers],['servers','Server Intel',Server],['maps','Spawn Maps',Compass],['resources','Resource Atlas',Layers],['timers','Live Timers',Timer],['cloud','Tribe Cloud',Cloud],['settings','Settings',Settings]];
 const statusColors={'Available':'green','Contested':'gold','Locked Down':'red','Unscouted':'muted'};
 function useStored(key,initial){const [value,setValue]=useState(()=>{try{return JSON.parse(localStorage.getItem(key))??initial}catch{return initial}});useEffect(()=>localStorage.setItem(key,JSON.stringify(value)),[key,value]);return [value,setValue]}
 function Badge({children,tone='green'}){return <span className={'badge '+tone}>{children}</span>}
@@ -25,6 +27,7 @@ function Panel({title,aside,children,className=''}){return <section className={'
 function Field({label,children}){return <label className="field"><span>{label}</span>{children}</label>}
 function App(){
  const [page,setPage]=useState('overview'),[savedRates,setRates]=useStored('ark.rates',defaults),[servers,setServers]=useStored('ark.servers',[]),[timers,setTimers]=useStored('ark.timers',[]),[theme,setTheme]=useStored('ark.theme','emerald'),[now,setNow]=useState(Date.now());
+ const cloud=useCloudSync({rates:savedRates,setRates,servers,setServers,timers,setTimers,theme,setTheme});
  const rates=savedRates;
  useEffect(()=>{
   try{
@@ -44,7 +47,7 @@ function App(){
  return <div className="shell" data-theme={theme}>
   <aside className="sidebar"><div className="brand"><div className="brandmark"><Shield size={24}/></div><div><strong>ARK <em>COMMAND</em></strong><small>CENTER // TRIBE EDITION</small></div></div>
   <div className="sidegroup">WORKSPACE</div><nav>{nav.map(([key,label,Icon])=><button key={key} className={'navitem '+(page===key?'selected':'')} onClick={()=>setPage(key)}><Icon size={18}/><span>{label}</span>{key==='timers'&&active.length>0?<b className="counter">{active.length}</b>:null}</button>)}</nav>
-  <div className="sidebottom"><div className="live-dot"/><span>LOCAL WORKSPACE<br/><small>Private tribe build</small></span></div></aside>
+  <div className="sidebottom"><div className="live-dot"/><span>{cloud.status==='connected'?'TRIBE CLOUD ONLINE':'LOCAL WORKSPACE'}<br/><small>{cloud.user?cloud.user.displayName:'Private tribe build'}</small></span></div></aside>
   <main className="main"><header className="topbar"><div className="breadcrumbs">ARK COMMAND CENTER <ChevronRight size={15}/> <strong>{pageName.toUpperCase()}</strong></div><div className="topright"><Badge tone="green">● NOMADARK · {rates.taming}× TAME</Badge><div className="avatar">AY</div></div></header>
   <div className="content">
   {page==='overview'&&<><div className="hero"><div className="heroeyebrow">WELCOME BACK, SURVIVOR</div><h1>Your tribe.<br/><span>Your command.</span></h1><p>Every tame, timer and server decision in one place. Built for your private ARK squad.</p><div className="heroactions"><button className="primary" onClick={()=>setPage('taming')}>Open Taming Lab <ChevronRight size={17}/></button><button className="ghost" onClick={()=>setPage('servers')}>View Servers</button></div><div className="heroart">◈</div></div>
@@ -61,6 +64,7 @@ function App(){
   {page==='settings'&&<ClusterSettings rates={rates} setRates={setRates}/>}
   {page==='settings'&&<CoveragePanel/>}
   {page==='settings'&&<ThemePicker value={theme} onChange={setTheme}/>}
+  {page==='cloud'&&<CloudAccount cloud={cloud}/>}
   {page==='crafting'&&<CraftingPage/>}
   </div></main></div>;
 }
