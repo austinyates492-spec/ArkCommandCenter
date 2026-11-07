@@ -5,6 +5,7 @@ import {API,request} from './cloud-sync';
 export function useTribeLive(token,setServers){
  const [timers,setTimers]=useState([]);
  const [crafting,setCrafting]=useState([]);
+ const [clockOffsetMs,setClockOffsetMs]=useState(0);
  const [status,setStatus]=useState('signed-out');
  const [error,setError]=useState('');
  const tokenRef=useRef(token);
@@ -15,7 +16,7 @@ export function useTribeLive(token,setServers){
   try{
    if(topic==='timers'||topic==='all'){
     const data=await request('/tribe/timers',token);
-    if(tokenRef.current===token)setTimers(data.timers||[]);
+    if(tokenRef.current===token){setTimers(data.timers||[]);if(Number.isFinite(data.serverTime))setClockOffsetMs(Date.now()-data.serverTime);}
    }
    if(topic==='crafting'||topic==='all'){
     const data=await request('/tribe/crafting',token);
@@ -70,7 +71,7 @@ export function useTribeLive(token,setServers){
   }catch(e){setError(e.message);throw e;}
  },[token,refresh]);
 
- return {timers,crafting,status,error,refresh,
+ return {timers,crafting,clockOffsetMs,status,error,refresh,
   addTimer:(name,minutes,type='Custom')=>perform('/tribe/timers','POST',{name,minutes,type},'timers'),
   removeTimer:id=>perform(`/tribe/timers/${encodeURIComponent(id)}`,'DELETE',undefined,'timers'),
   addCraft:(name,quantity)=>perform('/tribe/crafting','POST',{name,quantity},'crafting'),
