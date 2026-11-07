@@ -53,4 +53,31 @@
 .shell .navitem.selected{background:var(--ark-surface-2);color:var(--ark-bright);border-color:var(--ark-line)}
 .shell .badge.gold,.shell .badge.red,.shell .badge.muted{background:var(--ark-surface-2);border-color:var(--ark-line);color:var(--ark-bright)}
 .shell .featureart{background:radial-gradient(circle,var(--ark-deep),var(--ark-surface))}
+/* v0.4.1: Saturated, full-window backdrops and genuine themed form fields. */
+.shell{--ark-backdrop-top:#163a2d;--ark-backdrop-bottom:#0e2822;--ark-form-text:#e6fff2;--ark-form-placeholder:#789e8d;--ark-form-focus:#204a3b}
+.shell[data-theme=red]{--ark-bg:#16080d;--ark-backdrop-top:#491321;--ark-backdrop-bottom:#2d0c15;--ark-input:#2c0d17;--ark-form-text:#fff0f2;--ark-form-placeholder:#b97d8b;--ark-form-focus:#461524}
+.shell[data-theme=purple]{--ark-bg:#13091f;--ark-backdrop-top:#3a175e;--ark-backdrop-bottom:#260e40;--ark-input:#251038;--ark-form-text:#f7e9ff;--ark-form-placeholder:#a887bc;--ark-form-focus:#421d62}
+.shell[data-theme=orange]{--ark-bg:#211006;--ark-backdrop-top:#5b2a0b;--ark-backdrop-bottom:#351906;--ark-input:#351908;--ark-form-text:#fff1dd;--ark-form-placeholder:#b99a78;--ark-form-focus:#58300f}
+.shell[data-theme=pink]{--ark-bg:#1f0a19;--ark-backdrop-top:#651c4b;--ark-backdrop-bottom:#3a112e;--ark-input:#39132b;--ark-form-text:#ffeafa;--ark-form-placeholder:#d49abb;--ark-form-focus:#5a1f45}
+.shell[data-theme=gold]{--ark-bg:#211807;--ark-backdrop-top:#594015;--ark-backdrop-bottom:#392a0c;--ark-input:#38290d;--ark-form-text:#fff6db;--ark-form-placeholder:#b5a47d;--ark-form-focus:#624b1b}
+.shell{color-scheme:dark;min-height:100vh;background:
+  radial-gradient(ellipse 100% 80% at 82% -15%,var(--ark-backdrop-top),transparent 72%),
+  radial-gradient(ellipse 85% 80% at 14% 105%,var(--ark-backdrop-bottom),transparent 75%),
+  var(--ark-bg)}
+.shell .main{background:linear-gradient(155deg,transparent 0%,var(--ark-glow) 65%,transparent 100%)}
+.shell .content{background:transparent}
+.shell input:not([type=checkbox]):not([type=radio]),
+.shell select,.shell textarea{background-color:var(--ark-input);color:var(--ark-form-text);border:1px solid var(--ark-line);caret-color:var(--ark-accent);color-scheme:dark}
+.shell input::placeholder,.shell textarea::placeholder{color:var(--ark-form-placeholder);opacity:1}
+.shell select option{background:var(--ark-input);color:var(--ark-form-text)}
+.shell input[type=checkbox],.shell input[type=radio]{accent-color:var(--ark-accent)}
+.shell input:not([type=checkbox]):not([type=radio]):focus,
+.shell select:focus,.shell textarea:focus{outline:1px solid var(--ark-accent);background-color:var(--ark-form-focus);border-color:var(--ark-accent);box-shadow:0 0 0 3px var(--ark-glow)}
+.shell .searchbox{background:var(--ark-input);border-color:var(--ark-line)}
+.shell .searchbox input:not([type=checkbox]):not([type=radio]){border:0;background:transparent;box-shadow:none;outline:0}
+.shell .craft-cart-row input,.shell .filters select,.shell .map-tools select{background:var(--ark-input);border-color:var(--ark-line);color:var(--ark-form-text)}
+.shell .map-tools,.shell .map-instructions,.shell .mapviewerbar{background:var(--ark-surface-2);border-color:var(--ark-line)}
+.shell .craft-material-grid,.shell .craft-tree-root{color:var(--ark-heading)}
+.shell ::selection{background:var(--ark-accent);color:var(--ark-bg)}
+.theme-swatch .theme-preview-field{display:block;width:55px;height:28px;border:1px solid;border-radius:6px;box-shadow:inset 0 0 0 5px #ffffff08}
 @media(max-width:900px){.theme-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}

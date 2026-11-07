@@ -29,26 +29,29 @@ test('common ASA knockout creatures scale torpor with wild level',()=>{
   assert.ok(high.totalTorpor>low.totalTorpor,creature);
  }
 });
-test('unmodeled creatures use manual torpor without invented headshot bonus',()=>{
+test('egg-only creatures reject manual torpor overrides',()=>{
  const result=knockoutEstimate({creature:'Wyvern',level:150,targetTorpor:12000,weaponQuality:100});
- assert.equal(result.ok,true);
- assert.equal(result.manual,true);
- assert.equal(result.totalTorpor,12000);
- assert.equal(result.rows[0].head,null);
+ assert.equal(result.ok,false);
+ assert.match(result.reason,/Nest egg/);
 });
-test('100 available knockout profiles include conventional creatures and variants',()=>{
- assert.equal(Object.keys(knockoutSpecies).length,100);
+test('ASA-category knockout profiles include conventional creatures and variants',()=>{
+ assert.ok(Object.keys(knockoutSpecies).length>=130);
  for(const name of ['Baryonyx','Dodo','Yutyrannus','Tek Rex']){
   const result=knockoutEstimate({creature:name,level:150});
   assert.equal(result.ok,true,name);
   assert.ok(result.totalTorpor>0,name);
  }
 });
-test('unreviewed creatures with wiki torpor stats show reference-only estimates',()=>{
+test('category-supported variants inherit conservative torpor values',()=>{
  const r=knockoutEstimate({creature:'Aberrant Baryonyx',level:150});
  assert.equal(r.ok,true);
- assert.equal(r.referenceOnly,true);
+ assert.equal(r.verification,'variant-parent-stat-assumed');
  assert.equal(r.rows[0].head,null);
+});
+test('creatures outside the knockout category cannot silently receive tranq estimates',()=>{
+ for(const name of ['Carcharodontosaurus','Ceratosaurus','Deinosuchus','Dreadnoughtus','Karkinos','Rock Elemental']){
+  assert.equal(knockoutEstimate({creature:name,level:150}).ok,false,name);
+ }
 });
 test('passive and boss creatures do not automatically gain a knockout method',()=>{
  for(const creature of ['Ovis','Manta','Broodmother Lysrix','Wyvern']){

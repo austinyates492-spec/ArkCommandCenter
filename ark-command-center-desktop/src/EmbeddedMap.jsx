@@ -1,11 +1,12 @@
 import React,{useState} from 'react';
-import {ExternalLink,RefreshCw,Copy,MapPin,Info} from 'lucide-react';
+import {ExternalLink,RefreshCw,Copy,MapPin,Info,Maximize2,Minimize2} from 'lucide-react';
 import {invoke} from '@tauri-apps/api/core';
 
 export default function EmbeddedMap({url,alternativeUrl,title,selection,kind='resource'}){
  const [provider,setProvider]=useState('primary');
  const [refresh,setRefresh]=useState(0);
  const [warning,setWarning]=useState('');
+ const [expanded,setExpanded]=useState(false);
  const selectedUrl=provider==='primary'?url:alternativeUrl;
  const open=async()=>{
   try{
@@ -15,11 +16,12 @@ export default function EmbeddedMap({url,alternativeUrl,title,selection,kind='re
   }catch(e){setWarning(`Map could not open automatically. Copy this address instead: ${selectedUrl}`);}
  };
  const copy=async()=>{try{await navigator.clipboard.writeText(selectedUrl);setWarning('Map address copied.');}catch{setWarning(selectedUrl);}};
- return <div className="mapviewer embedded-atlas">
+ return <div className={`mapviewer embedded-atlas ${expanded?'map-expanded':''}`}>
   <div className="mapviewerbar"><strong><MapPin size={15}/> {title}</strong><span>{selection}</span></div>
   <div className="map-tools">
    <label className="field"><span>MAP SOURCE</span><select value={provider} onChange={e=>{setProvider(e.target.value);setRefresh(x=>x+1);setWarning('');}}><option value="primary">Interactive community map</option><option value="alternate">ARK Official Community Wiki</option></select></label>
    <button className="ghost" onClick={()=>setRefresh(n=>n+1)} title="Reload map"><RefreshCw size={15}/> Reload</button>
+   <button className="ghost" onClick={()=>setExpanded(x=>!x)}>{expanded?<Minimize2 size={15}/>:<Maximize2 size={15}/>} {expanded?'Exit Large View':'Larger Map'}</button>
    <button className="ghost" onClick={copy}><Copy size={15}/> Copy URL</button>
    <button className="primary" onClick={open}><ExternalLink size={15}/> Open Full Map</button>
   </div>
