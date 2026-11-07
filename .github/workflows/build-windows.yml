@@ -16,6 +16,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Install API dependencies
+        run: npm install --no-package-lock --no-audit --no-fund
       - name: Test tribe API and security logic
         run: npm test
   windows:
@@ -54,12 +56,14 @@ jobs:
         if: github.event_name == 'push' && startsWith(github.event.head_commit.message, 'release:')
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v0.8.2
-          name: ARK Command Center v0.8.2 - Remembered Tribe Login
+          tag_name: v0.8.3
+          name: ARK Command Center v0.8.3 - Live Timer Sounds
           body: |
-            Adds optional revocable 30-day remembered sign-in sessions with automatic refresh.
-            Passwords are never stored in the desktop app. Includes the fifteen full-screen
-            themes and all v0.8 Tribe Live timers, crafting, and server sync functionality.
+            Adds synchronized timer completion chimes for Tribe Live Timers, including Quick Tribe
+            Timers and taming/breeding timers. Each member can mute or enable each timer without
+            changing another member's preferences, which are saved to their account on Railway.
+            Includes a test-sound button, a sound-at-creation option, completion popups, and
+            the previous remembered sign-in, crafting, server sync, and fifteen themes.
 
             This is a private repository. Tribe members need GitHub access to download the installer.
           files: ark-command-center-desktop/src-tauri/target/release/bundle/nsis/*.exe

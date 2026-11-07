@@ -1,4 +1,4 @@
-import React,{useEffect,useState} from 'react';
+import React,{useEffect,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {LayoutDashboard,Compass,Timer,Settings,Shield,Search,Plus,Trash2,ExternalLink,ChevronRight,Server,Activity,Egg,Calculator,CheckCircle2,Clock3,MapPin,Bell,Save,Layers,Cloud} from 'lucide-react';
 import ResourcePage from './ResourcePage';
@@ -17,11 +17,14 @@ import {useTribeLive} from './tribe-live';
 import TribeCraftingPage from './TribeCraftingPage';
 import ServerIntelPage from './ServerIntelPage';
 import LiveTimersPage from './LiveTimersPage';
+import {createTimerAlarmTracker,collectDueTimerAlarms} from './timer-alarms.js';
+import {unlockTimerAudio,playTimerAlarm} from './timer-audio.js';
 import {migrateOldRatePreset} from './nomadark-profile.js';
 import {species,maps,tameCreatures,defaults,hoursText,creatureSpawnUrl} from './data';
 import './style.css';
 import './maps.css';
 import './resources.css';
+import './timer-sounds.css';
 
 const nav=[['overview','Overview',LayoutDashboard],['taming','Taming Lab',Calculator],['specialty','Specialty Taming Lab',Shield],['passive','Passive Taming Lab',Activity],['breeding','Breeding Lab',Egg],['crafting','Crafting Calculator',Layers],['tribe-crafting','Tribe Crafting',Layers],['servers','Server Intel',Server],['maps','Spawn Maps',Compass],['resources','Resource Atlas',Layers],['timers','Live Timers',Timer],['cloud','Tribe Cloud',Cloud],['settings','Settings',Settings]];
 const statusColors={'Available':'green','Contested':'gold','Locked Down':'red','Unscouted':'muted'};
@@ -33,6 +36,8 @@ function App(){
  const [page,setPage]=useState('overview'),[savedRates,setRates]=useStored('ark.rates',defaults),[servers,setServers]=useState([]),[theme,setTheme]=useStored('ark.theme','emerald'),[now,setNow]=useState(Date.now());
  const cloud=useCloudSync({rates:savedRates,setRates,theme,setTheme});
  const live=useTribeLive(cloud.token,setServers);
+ const [alarmAlerts,setAlarmAlerts]=useState([]);
+ const alarmTracker=useRef(createTimerAlarmTracker());
  const timers=live.timers;
  const rates=savedRates;
  useEffect(()=>{
@@ -43,8 +48,21 @@ function App(){
   }catch{/* Without local storage, keep current rate input and run locally. */}
  },[setRates]);
  useEffect(()=>{const id=setInterval(()=>setNow(Date.now()),1000);return()=>clearInterval(id)},[]);
+ // WebAudio requires a user gesture on some systems, so unlock on interaction anywhere in the app.
+ useEffect(()=>{
+  const unlock=()=>{void unlockTimerAudio().catch(()=>{});};
+  window.addEventListener('pointerdown',unlock);window.addEventListener('keydown',unlock);
+  return()=>{window.removeEventListener('pointerdown',unlock);window.removeEventListener('keydown',unlock);};
+ },[]);
+ useEffect(()=>setAlarmAlerts([]),[cloud.user?.id]);
+ useEffect(()=>{
+  const due=collectDueTimerAlarms(alarmTracker.current,{memberId:cloud.user?.id||null,timers,now:now-live.clockOffsetMs,sounds:live.timerSounds,ready:live.timerSoundsReady});
+  if(!due.length)return;
+  due.forEach((_,index)=>playTimerAlarm(index*0.65));
+  setAlarmAlerts(previous=>[...due.map(timer=>({id:timer.id,name:timer.name})),...previous].slice(0,4));
+ },[cloud.user?.id,timers,now,live.clockOffsetMs,live.timerSounds,live.timerSoundsReady]);
  const active=timers.filter(t=>t.end>now);
- const addTimer=(name,minutes,type='Custom')=>{const mins=Number(minutes);if(!Number.isFinite(mins)||mins<=0)return;if(!cloud.user){setPage('cloud');return;}void live.addTimer(name,mins,type).catch(()=>{});setPage('timers')};
+ const addTimer=(name,minutes,type='Custom',soundEnabledForCreator=true)=>{const mins=Number(minutes);if(!Number.isFinite(mins)||mins<=0)return;if(!cloud.user){setPage('cloud');return;}void live.addTimer(name,mins,type,soundEnabledForCreator).catch(()=>{});setPage('timers')};
  const pageName=nav.find(x=>x[0]===page)?.[1]||'Overview';
  return <div className="shell" data-theme={theme}>
   <aside className="sidebar"><div className="brand"><div className="brandmark"><Shield size={24}/></div><div><strong>ARK <em>COMMAND</em></strong><small>CENTER // TRIBE EDITION</small></div></div>
@@ -62,14 +80,16 @@ function App(){
   {page==='servers'&&<ServerIntelPage live={live} user={cloud.user} servers={servers} onOpenAccount={()=>setPage('cloud')}/>}
   {page==='maps'&&<SpawnPage/>}
   {page==='resources'&&<ResourcePage/>}
-  {page==='timers'&&<LiveTimersPage live={live} user={cloud.user} now={now-live.clockOffsetMs} onAdd={addTimer} onOpenAccount={()=>setPage('cloud')}/>}
+  {page==='timers'&&<LiveTimersPage live={live} user={cloud.user} now={now-live.clockOffsetMs} onAdd={addTimer} onOpenAccount={()=>setPage('cloud')} onTestSound={()=>void unlockTimerAudio().then(ok=>{if(ok)playTimerAlarm();}).catch(()=>{})}/>}
   {page==='settings'&&<ClusterSettings rates={rates} setRates={setRates}/>}
   {page==='settings'&&<CoveragePanel/>}
   {page==='settings'&&<ThemePicker value={theme} onChange={setTheme}/>}
   {page==='cloud'&&<CloudAccount cloud={cloud}/>}
   {page==='crafting'&&<CraftingPage/>}
   {page==='tribe-crafting'&&<TribeCraftingPage live={live} user={cloud.user} onOpenAccount={()=>setPage('cloud')}/>}
-  </div></main></div>;
+  </div></main>
+  {alarmAlerts.length>0&&<div className="timer-alerts" role="status" aria-live="polite">{alarmAlerts.map(item=><div key={item.id} className="timer-alert"><Bell size={20}/><div><strong>Tribe timer complete</strong><span>{item.name}</span></div><button type="button" className="iconbtn" title="Dismiss timer notification" onClick={()=>setAlarmAlerts(previous=>previous.filter(x=>x.id!==item.id))}><span aria-hidden="true">×</span></button></div>)}</div>}
+ </div>;
 }
 function clock(ms){const s=Math.max(0,Math.ceil(ms/1000));return `${Math.floor(s/86400)?Math.floor(s/86400)+'d ':''}${String(Math.floor(s%86400/3600)).padStart(2,'0')}:${String(Math.floor(s%3600/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`}
 function QuickTimer({onAdd}){const [name,setName]=useState('Tribe reminder'),[minutes,setMinutes]=useState(30);return <form onSubmit={e=>{e.preventDefault();onAdd(name,minutes,'Custom')}}><Field label="Timer name"><input value={name} onChange={e=>setName(e.target.value)} required/></Field><Field label="Duration (minutes)"><input type="number" min="1" value={minutes} onChange={e=>setMinutes(e.target.value)} required/></Field><button className="primary full" type="submit"><Plus size={17}/> Start Countdown</button></form>}

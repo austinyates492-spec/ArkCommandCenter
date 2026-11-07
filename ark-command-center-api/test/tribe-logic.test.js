@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {normalizeTimer,normalizeCrafting,normalizeServer,serializeTimer} from '../src/tribe-logic.js';
+import {normalizeTimer,normalizeTimerSound,normalizeCrafting,normalizeServer,serializeTimer} from '../src/tribe-logic.js';
 
 test('timer is calculated using server time, not device clock',()=>{
  const timer=normalizeTimer({name:'Rex hatch',type:'Egg',minutes:2.5},100000);
@@ -19,4 +19,9 @@ test('server records use a normalized duplicate key and validated status',()=>{
 });
 test('timestamps are emitted as numbers for synchronized countdowns',()=>{
  assert.equal(serializeTimer({id:'a',name:'Test',type:'Custom',created_ms:'1000',end_ms:'2000'}).end,2000);
+});
+test('timer alert preferences accept only explicit booleans',()=>{
+ assert.deepEqual(normalizeTimerSound({enabled:true}),{enabled:true});
+ assert.deepEqual(normalizeTimerSound({enabled:false}),{enabled:false});
+ for(const invalid of [undefined,null,0,1,'false',{},[]])assert.throws(()=>normalizeTimerSound({enabled:invalid}));
 });
