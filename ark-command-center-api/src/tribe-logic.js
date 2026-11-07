@@ -7,6 +7,11 @@ export function normalizeTimer(input,now=Date.now()){
  if(!Number.isFinite(minutes)||minutes<=0||minutes>525600)throw new Error('Timer must be between 1 second and one year.');
  return {name,type,created:now,end:now+Math.round(minutes*60000)};
 }
+/** A sound preference always belongs to the signed-in member, not the shared timer. */
+export function normalizeTimerSound(input){
+ if(typeof input?.enabled!=='boolean')throw new Error('Timer sound must be enabled or disabled.');
+ return {enabled:input.enabled};
+}
 export function normalizeCrafting(input){
  const name=String(input?.name||'').trim();
  const quantity=Number(input?.quantity);

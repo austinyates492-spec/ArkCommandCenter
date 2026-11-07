@@ -4,6 +4,8 @@ import {API,request} from './cloud-sync';
 /** Authenticated SSE events with an HTTP refresh fallback. All edits go directly to shared rows. */
 export function useTribeLive(token,setServers){
  const [timers,setTimers]=useState([]);
+ const [timerSounds,setTimerSounds]=useState({});
+ const [timerSoundsReady,setTimerSoundsReady]=useState(false);
  const [crafting,setCrafting]=useState([]);
  const [clockOffsetMs,setClockOffsetMs]=useState(0);
  const [status,setStatus]=useState('signed-out');
@@ -14,6 +16,10 @@ export function useTribeLive(token,setServers){
  const refresh=useCallback(async(topic='all')=>{
   if(!token)return;
   try{
+   if(topic==='timer-sounds'||topic==='all'){
+    const data=await request('/tribe/timers/sounds',token);
+    if(tokenRef.current===token){setTimerSounds(data.sounds||{});setTimerSoundsReady(true);}
+   }
    if(topic==='timers'||topic==='all'){
     const data=await request('/tribe/timers',token);
     if(tokenRef.current===token){setTimers(data.timers||[]);if(Number.isFinite(data.serverTime))setClockOffsetMs(Date.now()-data.serverTime);}
@@ -31,7 +37,7 @@ export function useTribeLive(token,setServers){
  },[token,setServers]);
 
  useEffect(()=>{
-  if(!token){setTimers([]);setCrafting([]);setServers([]);setStatus('signed-out');setError('');return;}
+  if(!token){setTimers([]);setTimerSounds({});setTimerSoundsReady(false);setCrafting([]);setServers([]);setStatus('signed-out');setError('');return;}
   let closed=false;const controller=new AbortController();
   setStatus('connecting');void refresh();
   const fallback=setInterval(()=>void refresh(),12000);
@@ -51,7 +57,7 @@ export function useTribeLive(token,setServers){
        if(event!=='tribe')continue;
        const raw=lines.find(x=>x.startsWith('data: '))?.slice(6);
        if(!raw)continue;
-       try{const topic=JSON.parse(raw).topic;if(['timers','crafting','servers'].includes(topic))void refresh(topic);}catch{/* Ignore invalid event. */}
+       try{const topic=JSON.parse(raw).topic;if(['timers','timer-sounds','crafting','servers'].includes(topic))void refresh(topic);}catch{/* Ignore invalid event. */}
       }
      }
     }catch(e){if(!controller.signal.aborted&&!closed){setStatus('polling');setError('Live connection interrupted; refreshing every 12 seconds.');}}
@@ -71,8 +77,9 @@ export function useTribeLive(token,setServers){
   }catch(e){setError(e.message);throw e;}
  },[token,refresh]);
 
- return {timers,crafting,clockOffsetMs,status,error,refresh,
-  addTimer:(name,minutes,type='Custom')=>perform('/tribe/timers','POST',{name,minutes,type},'timers'),
+ return {timers,timerSounds,timerSoundsReady,crafting,clockOffsetMs,status,error,refresh,
+  addTimer:(name,minutes,type='Custom',soundEnabledForCreator=true)=>perform('/tribe/timers','POST',{name,minutes,type,soundEnabledForCreator},'all'),
+  setTimerSound:(id,enabled)=>perform(`/tribe/timers/${encodeURIComponent(id)}/sound`,'PUT',{enabled},'timer-sounds'),
   removeTimer:id=>perform(`/tribe/timers/${encodeURIComponent(id)}`,'DELETE',undefined,'timers'),
   addCraft:(name,quantity)=>perform('/tribe/crafting','POST',{name,quantity},'crafting'),
   setCraft:(name,quantity,expectedQuantity)=>perform('/tribe/crafting','PUT',{name,quantity,expectedQuantity},'crafting'),

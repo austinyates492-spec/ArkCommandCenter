@@ -1,6 +1,6 @@
 import {randomUUID} from 'node:crypto';
 import {Client} from 'pg';
-import {normalizeTimer,normalizeCrafting,normalizeServer,serializeTimer,serializeServer,serializeCraft} from './tribe-logic.js';
+import {normalizeTimer,normalizeTimerSound,normalizeCrafting,normalizeServer,serializeTimer,serializeServer,serializeCraft} from './tribe-logic.js';
 
 const clients=new Set();
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -11,6 +11,12 @@ export async function initializeTribeTables(pool){
    id UUID PRIMARY KEY, name TEXT NOT NULL, type TEXT NOT NULL,
    created_ms BIGINT NOT NULL, end_ms BIGINT NOT NULL,
    created_by UUID REFERENCES members(id) ON DELETE SET NULL
+ )`);
+ await pool.query(`CREATE TABLE IF NOT EXISTS member_timer_sounds (
+   member_id UUID NOT NULL REFERENCES members(id) ON DELETE CASCADE,
+   timer_id UUID NOT NULL REFERENCES tribe_timers(id) ON DELETE CASCADE,
+   enabled BOOLEAN NOT NULL DEFAULT TRUE,
+   PRIMARY KEY(member_id,timer_id)
  )`);
  await pool.query(`CREATE TABLE IF NOT EXISTS tribe_crafting (
    name TEXT PRIMARY KEY, quantity INTEGER NOT NULL CHECK (quantity BETWEEN 1 AND 1000000),
@@ -88,11 +94,36 @@ export async function handleTribe(req,res,options){
    return json(res,200,{timers:listOf(rows,serializeTimer),serverTime:Date.now()})||true;
   }
   if(method==='POST'){
-   const timer=validated(normalizeTimer,await bodyJson(req));const id=randomUUID();
-   const {rows}=await pool.query(`INSERT INTO tribe_timers(id,name,type,created_ms,end_ms,created_by)
-     VALUES($1,$2,$3,$4,$5,$6) RETURNING *`,[id,timer.name,timer.type,timer.created,timer.end,user.id]);
-   await notify(pool,'timers');json(res,201,{timer:serializeTimer({...rows[0],display_name:user.display_name})});return true;
+   const input=await bodyJson(req),timer=validated(normalizeTimer,input),id=randomUUID();
+   const soundEnabled=input.soundEnabledForCreator===undefined?true:validated(normalizeTimerSound,{enabled:input.soundEnabledForCreator}).enabled;
+   const client=await pool.connect();let row;
+   try{
+    await client.query('BEGIN');
+    const {rows}=await client.query(`INSERT INTO tribe_timers(id,name,type,created_ms,end_ms,created_by)
+      VALUES($1,$2,$3,$4,$5,$6) RETURNING *`,[id,timer.name,timer.type,timer.created,timer.end,user.id]);
+    row=rows[0];
+    if(!soundEnabled)await client.query('INSERT INTO member_timer_sounds(member_id,timer_id,enabled) VALUES($1,$2,FALSE)',[user.id,id]);
+    await client.query('COMMIT');
+   }catch(e){await client.query('ROLLBACK');throw e;}finally{client.release();}
+   await notify(pool,'timers');
+   if(!soundEnabled)await notify(pool,'timer-sounds');
+   json(res,201,{timer:serializeTimer({...row,display_name:user.display_name})});return true;
   }
+ }
+ if(path==='/api/v1/tribe/timers/sounds'&&method==='GET'){
+  const {rows}=await pool.query('SELECT timer_id,enabled FROM member_timer_sounds WHERE member_id=$1',[user.id]);
+  json(res,200,{sounds:Object.fromEntries(rows.map(row=>[row.timer_id,row.enabled]))});return true;
+ }
+ const soundMatch=/^\/api\/v1\/tribe\/timers\/([a-f0-9-]{36})\/sound$/i.exec(path);
+ if(method==='PUT'&&soundMatch){
+  if(!UUID.test(soundMatch[1]))bad('Invalid timer ID.');
+  const {enabled}=validated(normalizeTimerSound,await bodyJson(req));
+  const {rows}=await pool.query(`INSERT INTO member_timer_sounds(member_id,timer_id,enabled)
+    SELECT $1,$2,$3 FROM tribe_timers WHERE id=$2
+    ON CONFLICT(member_id,timer_id) DO UPDATE SET enabled=EXCLUDED.enabled
+    RETURNING timer_id,enabled`,[user.id,soundMatch[1],enabled]);
+  if(!rows.length)throw Object.assign(new Error('This timer has been removed.'),{status:404});
+  await notify(pool,'timer-sounds');json(res,200,{timerId:rows[0].timer_id,enabled:rows[0].enabled});return true;
  }
  const timerMatch=/^\/api\/v1\/tribe\/timers\/([a-f0-9-]{36})$/i.exec(path);
  if(method==='DELETE'&&timerMatch){
