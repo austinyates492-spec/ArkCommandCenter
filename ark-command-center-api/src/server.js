@@ -1,6 +1,7 @@
 import http from 'node:http';
 import {Pool} from 'pg';
 import {hashPassword,verifyPassword,secureCompare,signAccessToken,verifyAccessToken} from './security.js';
+import {initializeTribeTables,startTribeBroadcast,handleTribe} from './tribe-routes.js';
 
 const PORT=Number(process.env.PORT||3000);
 const DATABASE_URL=process.env.DATABASE_URL;
@@ -55,7 +56,7 @@ async function handle(req,res){
  if(origin&&allowedOrigins.has(origin))res.setHeader('Access-Control-Allow-Origin',origin);
  res.setHeader('Vary','Origin');
  res.setHeader('Access-Control-Allow-Headers','Authorization, Content-Type');
- res.setHeader('Access-Control-Allow-Methods','GET, POST, PUT, OPTIONS');
+ res.setHeader('Access-Control-Allow-Methods','GET, POST, PUT, DELETE, OPTIONS');
  if(method==='OPTIONS'){
   if(origin&&!allowedOrigins.has(origin))return json(res,403,{error:'Origin not allowed.'});
   return json(res,200,{ok:true});
@@ -93,6 +94,7 @@ async function handle(req,res){
   const user=rows[0];return json(res,200,{user:identity(user),token:signAccessToken(user,JWT_SECRET)});
  }
  if(method==='GET'&&url.pathname==='/api/v1/auth/me')return json(res,200,{user:identity(await authorize(req))});
+ if(await handleTribe(req,res,{pool,authorize,bodyJson,json}))return;
  if(url.pathname==='/api/v1/state'){
   const user=await authorize(req);
   if(method==='GET'){
@@ -142,6 +144,7 @@ async function initialize(){
   name TEXT PRIMARY KEY,data JSONB NOT NULL,version INTEGER NOT NULL DEFAULT 0,
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
  )`);
+ await initializeTribeTables(pool);
 }
 
 const server=http.createServer((req,res)=>{handle(req,res).catch(error=>{
@@ -149,5 +152,8 @@ const server=http.createServer((req,res)=>{handle(req,res).catch(error=>{
  console.error('API request failed:',error.code||error.name||'unknown');
  if(!res.headersSent)json(res,500,{error:'Unexpected server error.'});else res.end();
 });});
-initialize().then(()=>server.listen(PORT,'0.0.0.0',()=>console.info(`ARK API listening on ${PORT}`))).catch(error=>{console.error('Database initialization failed:',error.code||error.message);process.exit(1);});
+initialize().then(async()=>{
+ await startTribeBroadcast(DATABASE_URL);
+ server.listen(PORT,'0.0.0.0',()=>console.info(`ARK API listening on ${PORT}`));
+}).catch(error=>{console.error('Database initialization failed:',error.code||error.message);process.exit(1);});
 process.on('SIGTERM',()=>server.close(()=>pool.end()));

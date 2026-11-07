@@ -1,6 +1,15 @@
-# ARK Command Center — Private Windows Desktop Preview
+# ARK Command Center — Windows Tribe Live Edition
 
-An ARK: Survival Ascended companion app built for a small private tribe. This is a source project for a Windows **Tauri 2** application, **not yet a compiled `.exe`**.
+An ARK: Survival Ascended companion app built for a small private tribe. The **Tauri 2** Windows installer is distributed from GitHub Releases; version 0.8 connects to a private PostgreSQL-backed Railway API.
+
+## Tribe Live v0.8
+
+- Up to six invite-only accounts with personal cloud saves for themes, rate settings, and individual crafting projects.
+- **Tribe Live Timers** are stored as shared database rows, with server-calculated end times. Any signed-in member can create and remove them; everyone sees changes through authenticated server-sent events (SSE) with a 12-second polling fallback.
+- **Tribe Crafting** is a separate tab from the personal calculator. Adding, setting, removing, or clearing an item changes a single shared queue for all six members. Additions are atomic to avoid lost increments. Dependency trees are at the top, resource totals follow, and tribe queue controls are below.
+- **Server Intel** uses shared, individually updatable database records with duplicate name protection. A one-time server migration imports the old cloud snapshot; users can optionally import additional unsynced local records.
+- Older, local-only timers can be imported once into the new shared timer board at the member's request. They are not exposed automatically or deleted from local backup.
+- Shared functionality requires sign-in and connectivity. If live SSE disconnects, the app refreshes every 12 seconds; while offline, shared writes are not queued or silently lost.
 
 ## What works now
 
