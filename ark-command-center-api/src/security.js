@@ -1,8 +1,15 @@
-import {randomBytes,scrypt as scryptCallback,createHmac,timingSafeEqual} from 'node:crypto';
+import {randomBytes,scrypt as scryptCallback,createHmac,createHash,timingSafeEqual} from 'node:crypto';
 import {promisify} from 'node:util';
 
 const scrypt=promisify(scryptCallback);
 export const ACCESS_TOKEN_SECONDS=12*60*60;
+export const REFRESH_TOKEN_DAYS=30;
+
+export function newRefreshToken(){return randomBytes(48).toString('base64url');}
+export function hashRefreshToken(value){
+ if(typeof value!=='string'||!/^[A-Za-z0-9_-]{64}$/.test(value))return null;
+ return createHash('sha256').update(value).digest('hex');
+}
 
 export async function hashPassword(password){
  const salt=randomBytes(16).toString('hex');
