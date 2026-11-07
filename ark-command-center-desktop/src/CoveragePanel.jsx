@@ -3,6 +3,7 @@ import {species,tameCreatures,asaCoverage} from './data';
 import {knockoutProfiles} from './taming-engine';
 import {passiveProfiles} from './passive-taming';
 import {creatureAudit,auditTotals} from './creature-audit';
+import {knockoutRoster,passiveRoster,specialtyRoster} from './special-taming-methods.js';
 
 export default function CoveragePanel(){
  const [search,setSearch]=useState('');
@@ -16,13 +17,16 @@ export default function CoveragePanel(){
   ['Additional ASA breeder listing',1,'Ferox, absent from the comparison roster'],
   ['Documented ASA variant forms',asaCoverage.variantsInApp,'Shared base maturation timing'],
   ['Total catalog selections',totals.catalog,'Also includes non-tameable creatures'],
+  ['Conventional Taming Lab species/forms',knockoutRoster.length,'Only tranq knockout methods'],
+  ['Specialty Taming Lab species/forms',specialtyRoster.length,'Heavy projectiles, eggs, offerings or unreviewed specials'],
+  ['Passive Taming Lab species/forms',passiveRoster.length,'Nonviolent species with wiki or reviewed feeding methods'],
   ['Knockout-category selections',rows.filter(r=>r.method.includes('Knockout')).length,'Base ASA classification inherited by variants'],
   ['Passive/special-category selections',rows.filter(r=>r.method.includes('Passive')).length,'Not necessarily ordinary passive feeding'],
   ['Untameable selections',rows.filter(r=>r.method==='Untameable').length,'Never shown as ordinary knockout tames'],
   ['Breeding profile selections',totals.breeding,'Base species and variants'],
   ['Knockout calculator profiles',totals.autoKnockout,'Includes wiki-derived and variant-assumed torpor values'],
   ['Special / unclassified method entries',totals.methodUnclassified,'Require individual page or game-specific mechanics review'],
-  ['Full taming food/time profiles',totals.foodCalculators,'Independently modeled food requirements and time'],
+  ['Taming food/time profiles',totals.foodCalculators,'14 previously reviewed; others imported from published wiki baseline'],
   ['Passive taming method guides',totals.passiveGuides,'Most still require manual feed timing'],
   ['Hatch / gestation profiles',totals.verifiedHatch,'Separate baseline available']
  ];

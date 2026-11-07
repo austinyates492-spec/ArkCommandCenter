@@ -1,9 +1,9 @@
 import React,{useEffect,useMemo,useState} from 'react';
 import {ExternalLink,Timer} from 'lucide-react';
-import {tameCreatures,maps} from './data';
+import {maps} from './data';
 import {availableFoods,calculateTame,knockoutProfiles} from './taming-engine';
 import {knockoutEstimate,knockoutSpecies} from './knockout-engine';
-import {getTamingMethod} from './special-taming-methods.js';
+import {getTamingMethod,knockoutRoster} from './special-taming-methods.js';
 
 const numberFormat=new Intl.NumberFormat('en-US');
 const duration=(seconds)=>{const h=Math.floor(seconds/3600),m=Math.floor(seconds%3600/60),s=seconds%60;return [h?`${h}h`:null,m?`${m}m`:null,`${s}s`].filter(Boolean).join(' ')};
@@ -20,7 +20,7 @@ export default function TamingLab({rates,onTimer}){
  const [targetTorpor,setTargetTorpor]=useState('');
  const foods=useMemo(()=>availableFoods(creature),[creature]);
  const special=getTamingMethod(creature);
- const matchingCreatures=useMemo(()=>tameCreatures.filter(name=>name.toLowerCase().includes(creatureQuery.toLowerCase())),[creatureQuery]);
+ const matchingCreatures=useMemo(()=>knockoutRoster.filter(name=>name.toLowerCase().includes(creatureQuery.toLowerCase())),[creatureQuery]);
  useEffect(()=>{if(foods.length&&!foods.includes(food))setFood(foods[0]);},[foods,food]);
  const selectedFood=foods.includes(food)?food:(foods[0]||'');
  const result=calculateTame({creature,level,food:selectedFood,tamingRate:rates.taming,foodDrainRate:rates.food});
@@ -31,7 +31,7 @@ export default function TamingLab({rates,onTimer}){
  const wikiUrl=`https://ark.wiki.gg/wiki/${encodeURIComponent(creature.replaceAll(' ','_'))}`;
  const dododexUrl=`https://www.dododex.com/taming/${encodeURIComponent(creature.toLowerCase().replaceAll(' ','-'))}`;
  return <>
-  <div className="pagetitle"><span className="eyebrow">FIELD OPERATIONS / 01</span><h1>Taming Lab</h1><p>Search {tameCreatures.length} species and forms. {Object.keys(knockoutSpecies).length} ASA-category knockout profiles estimate ammo use; passive, special and untameable creatures are kept separate. Verify wiki-derived damage assumptions before a real tame.</p></div>
+  <div className="pagetitle"><span className="eyebrow">FIELD OPERATIONS / 01</span><h1>Taming Lab</h1><p>{knockoutRoster.length} conventional knockout species and forms. Tranq arrows, darts and shocking darts only. Heavy-weapon, passive and egg/interaction tames now have their own tabs. Wiki-derived estimates should be checked against your server.</p></div>
   <div className="two wideleft">
    <section className="panel"><div className="panelhead"><h2>Plan a Tame</h2><span className="badge gold">{rates.taming}× PROFILE</span></div>
     <label className="field"><span>Search creatures and variants</span><input value={creatureQuery} onChange={e=>setCreatureQuery(e.target.value)} placeholder="Rex, Tek, Aberrant, Giga..."/></label>

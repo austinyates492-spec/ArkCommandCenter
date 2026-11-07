@@ -3,7 +3,11 @@
 // https://ark.wiki.gg/wiki/Module:TamingTable
 // This is the wiki's standard knockout-tame model; special taming mechanics
 // and creatures without audited values must not return fabricated estimates.
-export const knockoutProfiles = {
+import wikiTaming from './wiki-taming-data.json' with {type:'json'};
+import asaMethods from './asa-taming-methods.json' with {type:'json'};
+import {breedingVariants} from './breeding-variants.js';
+
+const coreProfiles = {
   Rex: { base:3450, perLevel:150, drainBase:0.002314, drainMult:180.063385, kibble:'Exceptional', foods:['Raw Mutton','Raw Prime Meat','Raw Meat'] },
   Argentavis: { base:2000, perLevel:100, drainBase:0.001852, drainMult:199.983994, kibble:'Superior', foods:['Raw Mutton','Raw Prime Meat','Raw Meat'] },
   Allosaurus: { base:2400, perLevel:100, drainBase:0.002052, drainMult:180.063385, kibble:'Superior', foods:['Raw Mutton','Raw Prime Meat','Raw Meat'] }
@@ -20,6 +24,12 @@ export const knockoutProfiles = {
   ,Quetzal:{base:6850,perLevel:300,drainBase:0.0035,drainMult:140,kibble:'Exceptional',foods:['Raw Mutton','Raw Prime Meat','Raw Meat']}
 };
 
+const aliases={Sarcosuchus:'Sarco',Therizinosaurus:'Therizinosaur',Spinosaurus:'Spino',Triceratops:'Triceratops'};
+export function wikiCreatureRecord(name){return wikiTaming.creatures[name]||wikiTaming.creatures[aliases[name]]||wikiTaming.creatures[breedingVariants[name]]||wikiTaming.creatures[aliases[breedingVariants[name]]]||null;}
+const officialKnockoutRecords=Object.fromEntries(Object.keys(asaMethods).filter(name=>asaMethods[name].methods.includes('knockout')&&!['Karkinos','Rock Elemental','Titanosaur'].includes(name)&&wikiCreatureRecord(name)).map(name=>[name,wikiCreatureRecord(name)]));
+const baseKnockoutProfiles={...Object.fromEntries(Object.entries(officialKnockoutRecords).map(([name,record])=>[name,{base:record.affinityNeeded0,perLevel:record.affinityIncrease,drainBase:record.foodConsumptionBase,drainMult:record.foodConsumptionMult,kibble:record.favoriteKibble,foods:record.eats,fromWiki:true}])),...coreProfiles};
+export const knockoutProfiles={...baseKnockoutProfiles,...Object.fromEntries(Object.entries(breedingVariants).filter(([,parent])=>baseKnockoutProfiles[parent]&&asaMethods[parent]?.methods.includes('knockout')).map(([variant,parent])=>[variant,{...baseKnockoutProfiles[parent],variantInherited:true}]))};
+
 const foodStats = {
   'Raw Mutton': {affinity:187.5,foodValue:50},
   'Raw Prime Meat': {affinity:150,foodValue:50},
@@ -30,15 +40,41 @@ const foodStats = {
 };
 export const kibbleOrder=['Basic','Simple','Regular','Superior','Exceptional','Extraordinary'];
 
+const foodAliases={Crops:'Vegetables',Mejoberry:'Mejoberries',Berries:'Other Berries',AnglerGel:'Angler Gel'};
+const inverseFoodAliases=Object.fromEntries(Object.entries(foodAliases).map(([key,val])=>[val,key]));
+export function wikiFoodOptions(creature){
+ const record=wikiCreatureRecord(creature);
+ if(!record?.eats?.length)return [];
+ return [...new Set(record.eats.filter(food=>!food.includes('Primitive Plus')&&food!=='Stimberry').flatMap(food=>food==='Kibble'?record.favoriteKibble?kibbleOrder.slice(kibbleOrder.indexOf(record.favoriteKibble)).map(name=>`${name} Kibble`):[]:[foodAliases[food]||food]))];
+}
+export function calculatedWikiFeed({creature,level,food,tamingRate=10,foodDrainRate=1}){
+ const record=wikiCreatureRecord(creature);
+ if(!record||!Number.isFinite(record.affinityNeeded0)||!Number.isFinite(record.affinityIncrease)||!Number.isFinite(record.foodConsumptionBase)||!Number.isFinite(record.foodConsumptionMult))return {ok:false,reason:'No published food calculation for this species.'};
+ const lvl=Number(level),rate=Number(tamingRate),drain=Number(foodDrainRate);
+ if(!Number.isInteger(lvl)||lvl<1||lvl>1000||!Number.isFinite(rate)||rate<=0||!Number.isFinite(drain)||drain<=0)return {ok:false,reason:'Enter a valid level and positive taming / food rates.'};
+ if(!wikiFoodOptions(creature).includes(food))return {ok:false,reason:'Choose a compatible food from the official wiki list.'};
+ const key=food.endsWith(' Kibble')?'Kibble':inverseFoodAliases[food]||food;
+ const custom=record.specialFoodValues?.[key];const general=wikiTaming.food[key];
+ const affinity=custom?.affinity??general?.affinity;
+ const value=custom?.value??general?.foodValue;
+ if(!Number.isFinite(affinity)||affinity<=0||!Number.isFinite(value)||value<=0)return {ok:false,reason:'The wiki does not include valid affinity and food-value numbers for this option.'};
+ const affinityNeeded=record.affinityNeeded0+record.affinityIncrease*lvl;
+ const foodPieces=Math.ceil(affinityNeeded/(affinity*4*rate));
+ const seconds=Math.ceil(foodPieces*value/(record.foodConsumptionBase*record.foodConsumptionMult*drain));
+ return {ok:true,foodPieces,seconds,minutes:seconds/60,creature,food,level:lvl,source:'https://ark.wiki.gg/wiki/Module:TamingTable/creatures',caveat:'Estimated from published wiki baseline food/affinity values. The tables may predate newer ASA changes; passive feed intervals, special mechanics and server overrides can alter the result.'};
+}
+
 export function availableFoods(creature){
   const profile=knockoutProfiles[creature];
   if(!profile)return [];
+  if(profile.fromWiki)return wikiFoodOptions(creature);
   return [...kibbleOrder.slice(kibbleOrder.indexOf(profile.kibble)).map(k=>`${k} Kibble`),...profile.foods];
 }
 
 export function calculateTame({creature,level,food,tamingRate=10,foodDrainRate=1}){
   const profile=knockoutProfiles[creature];
   if(!profile)return {ok:false,reason:'No verified knockout-taming profile for this creature yet.'};
+  if(profile.fromWiki)return calculatedWikiFeed({creature,level,food,tamingRate,foodDrainRate});
   if(!Number.isInteger(Number(level))||Number(level)<1||Number(level)>1000)return {ok:false,reason:'Enter a wild level from 1 to 1000.'};
   if(!Number.isFinite(Number(tamingRate))||Number(tamingRate)<=0||!Number.isFinite(Number(foodDrainRate))||Number(foodDrainRate)<=0)return {ok:false,reason:'Server multipliers must be greater than zero.'};
   if(!availableFoods(creature).includes(food))return {ok:false,reason:'That food is not supported for this creature. Choose one from the available list.'};
@@ -49,5 +85,5 @@ export function calculateTame({creature,level,food,tamingRate=10,foodDrainRate=1
   const foodPieces=Math.ceil(requiredAffinity/(stats.affinity*4*Number(tamingRate)));
   const seconds=Math.ceil(foodPieces*stats.foodValue/(profile.drainBase*profile.drainMult*Number(foodDrainRate)));
   return {ok:true,foodPieces,seconds,minutes:seconds/60,requiredAffinity,creature,food,level:Number(level),
-    caveat:'Wiki knockout-tame model; approximate total time. ASA patches, food-drain overrides, mods and initial hunger can change the result.'};
+    caveat:`Wiki knockout-tame model${profile.variantInherited?' (base-species values inherited for variant)':''}; approximate total time. ASA patches, food-drain overrides, mods and initial hunger can change the result.`};
 }

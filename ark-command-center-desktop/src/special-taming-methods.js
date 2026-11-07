@@ -1,6 +1,8 @@
 import asaMethods from './asa-taming-methods.json' with {type:'json'};
 import {breedingVariants} from './breeding-variants.js';
 import {passiveProfiles} from './passive-taming.js';
+import {wikiCreatureRecord} from './taming-engine.js';
+import {tameCreatures} from './data.js';
 
 // Only list items documented for these particular mechanics. Do not derive
 // ammo quantities from generic torpor math for special tames.
@@ -17,7 +19,25 @@ export const specialMethods={
  Rhyniognatha:{type:'Host impregnation',items:['Rhyniognatha Pheromone'],instructions:'Use pheromone on a suitable tamed host and follow the female Rhyniognatha impregnation process. Standard tranqs do not produce a tame.',source:'https://ark.wiki.gg/wiki/Rhyniognatha'},
  Reaper:{type:'Queen impregnation',items:['Reaper Queen impregnation encounter'],instructions:'Obtain a Reaper King through impregnation by a Reaper Queen. Ordinary knockout taming is not available.',source:'https://ark.wiki.gg/wiki/Reaper'},
  Gacha:{type:'Ground item feeding',items:['Dropped items / structures'],instructions:'Drop accepted items close to the Gacha so it collects and consumes them. Confirm the optimal item on your server.',source:'https://ark.wiki.gg/wiki/Gacha'}
+ ,Titanoboa:{type:'Egg offering',items:['Fertilized eggs'],instructions:'Offer dropped fertilized eggs. Do not tranquilize the Titanoboa.',source:'https://ark.wiki.gg/wiki/Titanoboa'}
+ ,Troodon:{type:'Sacrificial taming',items:['Tamed creature sacrifice'],instructions:'Allow the wild Troodon to kill qualifying tamed creatures at night for taming credit.',source:'https://ark.wiki.gg/wiki/Troodon'}
+ ,'Roll Rat':{type:'Special passive feeding',items:['Giant Bee Honey'],instructions:'Drop Giant Bee Honey into the burrow while the Roll Rat is underground.',source:'https://ark.wiki.gg/wiki/Roll_Rat'}
+ ,Fasolasuchus:{type:'Explosive knockout',items:['Grenade','C4 Charge'],instructions:'Wait for the Fasolasuchus to bury itself, then use an explosive on its mound and follow the special knockout encounter. Generic tranq counts do not apply.',source:'https://ark.wiki.gg/wiki/Fasolasuchus'}
 };
+
+export function tamingCategory(creature){
+ const parent=breedingVariants[creature]||creature;
+ if(specialMethods[creature]||specialMethods[parent])return 'specialty';
+ if(passiveProfiles[creature]||passiveProfiles[parent])return 'passive';
+ if(wikiCreatureRecord(creature)?.nonViolentTame)return 'passive';
+ const methods=asaMethods[creature]?.methods||asaMethods[parent]?.methods||[];
+ if(methods.includes('untameable'))return 'untameable';
+ if(methods.includes('knockout'))return 'knockout';
+ return 'specialty';
+}
+export const knockoutRoster=tameCreatures.filter(name=>tamingCategory(name)==='knockout');
+export const passiveRoster=tameCreatures.filter(name=>tamingCategory(name)==='passive');
+export const specialtyRoster=tameCreatures.filter(name=>tamingCategory(name)==='specialty');
 
 export function getTamingMethod(creature){
  const parent=breedingVariants[creature]||creature;
@@ -25,6 +45,7 @@ export function getTamingMethod(creature){
  if(specific)return {...specific,status:'documented'};
  const passive=passiveProfiles[creature]||passiveProfiles[parent];
  if(passive)return {type:passive.method==='single'?'Single-item passive tame':'Passive / interaction tame',items:passive.food,instructions:passive.notes,source:`https://ark.wiki.gg/wiki/${encodeURIComponent(parent.replaceAll(' ','_'))}`,status:'documented'};
+ if(wikiCreatureRecord(creature)?.nonViolentTame)return {type:'Passive feeding',items:[],instructions:'Feed or interact without a standard knockout. The creature-specific food options are sourced from the community wiki.',source:`https://ark.wiki.gg/wiki/${encodeURIComponent(parent.replaceAll(' ','_'))}`,status:'wiki-method'};
  const methods=asaMethods[creature]?.methods||asaMethods[parent]?.methods||[];
  if(methods.includes('untameable'))return {type:'Untameable',items:[],instructions:'This creature is classified as untameable. There is no ordinary knockout or feeding loadout.',status:'untameable'};
  if(methods.includes('passive-or-special')&&!methods.includes('knockout'))return {type:'Special / passive tame',items:[],instructions:'This species needs a creature-specific interaction or item that has not yet been individually reviewed. Check the species page before preparing supplies.',status:'needs-review'};

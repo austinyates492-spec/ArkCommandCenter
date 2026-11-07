@@ -7,7 +7,7 @@ test('full catalog has explicit per-creature validation states',()=>{
  assert.ok(totals.autoKnockout>=130);
  assert.equal(totals.torporReferences,0);
  assert.equal(totals.methodUnclassified,26);
- assert.equal(totals.foodCalculators,14);
+ assert.ok(totals.foodCalculators>=70);
  assert.ok(totals.breeding>=218);
  assert.equal(rows.find(x=>x.name==='Rex').knockout,true);
  assert.equal(rows.find(x=>x.name==='Wyvern').knockout,false);
