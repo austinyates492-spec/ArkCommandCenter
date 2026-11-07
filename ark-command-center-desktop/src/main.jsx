@@ -62,7 +62,7 @@ function App(){
   {page==='servers'&&<ServerIntelPage live={live} user={cloud.user} servers={servers} onOpenAccount={()=>setPage('cloud')}/>}
   {page==='maps'&&<SpawnPage/>}
   {page==='resources'&&<ResourcePage/>}
-  {page==='timers'&&<LiveTimersPage live={live} user={cloud.user} now={now} onAdd={addTimer} onOpenAccount={()=>setPage('cloud')}/>}
+  {page==='timers'&&<LiveTimersPage live={live} user={cloud.user} now={now-live.clockOffsetMs} onAdd={addTimer} onOpenAccount={()=>setPage('cloud')}/>}
   {page==='settings'&&<ClusterSettings rates={rates} setRates={setRates}/>}
   {page==='settings'&&<CoveragePanel/>}
   {page==='settings'&&<ThemePicker value={theme} onChange={setTheme}/>}
