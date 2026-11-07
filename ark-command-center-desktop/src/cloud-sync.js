@@ -1,4 +1,5 @@
 import {useCallback,useEffect,useRef,useState} from 'react';
+import {currentSession,rememberedToken,rememberToken,forgetRememberedToken,saveSession,forgetSession} from './saved-login.js';
 
 export const API=String(import.meta.env.VITE_API_URL||'').replace(/\/$/,'');
 export const PRIVATE_KEYS=['ark.rates','ark.timers','ark.theme','ark.crafting.recipes','ark.crafting.community','ark.crafting.cart'];
@@ -19,10 +20,6 @@ export async function request(path,token,method='GET',data){
  if(!res.ok)throw Object.assign(new Error(body.error||`Server returned ${res.status}`),{status:res.status});
  return body;
 }
-function currentSession(){
- try{const data=JSON.parse(sessionStorage.getItem('ark.cloudSession'));return data?.token&&data?.user?data:null;}
- catch{return null;}
-}
 
 /** Cloud is optional; local storage remains usable when signed out or offline. */
 export function useCloudSync({rates,setRates,theme,setTheme}){
@@ -35,8 +32,32 @@ export function useCloudSync({rates,setRates,theme,setTheme}){
  const baseline=useRef({personal:''});
  const ready=useRef(false);
  const busy=useRef(false);
+ const renewalRef=useRef(null);
  const personalRef=useRef({rates,theme});
  personalRef.current={rates,theme};
+
+ const renewSession=useCallback(()=>{
+  if(renewalRef.current)return renewalRef.current;
+  const renewal=(async()=>{
+  const refreshToken=rememberedToken();
+  if(!refreshToken)return false;
+  setStatus('connecting');
+  try{
+   const result=await request('/auth/refresh',null,'POST',{refreshToken});
+   rememberToken(result.refreshToken);
+   const next={token:result.token,user:result.user};
+   saveSession(next);
+   setSession(next);setError('');return true;
+  }catch(e){
+   if(e.status===401||e.status===403){forgetRememberedToken();forgetSession();setSession(null);setStatus('signed-out');setError('The remembered session expired or the account was reset. Create a new account or sign in.');}
+   else{setStatus('offline');setError(`Could not restore your session: ${e.message}. Your remembered login is still saved.`);}
+   return false;
+  }
+  })();
+  renewalRef.current=renewal;
+  void renewal.finally(()=>{if(renewalRef.current===renewal)renewalRef.current=null;});
+  return renewal;
+ },[]);
 
  const applyRemote=useCallback(personal=>{
   if(Object.hasOwn(personal,'ark.rates'))setRates(personal['ark.rates']);
@@ -61,17 +82,34 @@ export function useCloudSync({rates,setRates,theme,setTheme}){
    // An uninitialized account still needs its first durable snapshot.
    baseline.current={personal:personal.version>0?JSON.stringify(remote.personal):''};
    ready.current=true;setStatus('connected');
-  }catch(e){setStatus(e.status===401?'expired':'offline');setError(e.message);}
- },[applyRemote,collect]);
+  }catch(e){
+   if(e.status===401&&rememberedToken()){void renewSession();return;}
+   if(e.status===401){forgetSession();setSession(null);setStatus('signed-out');setError('That session is no longer valid. Sign in again or create a new tribe account.');return;}
+   setStatus(e.status===401?'expired':'offline');setError(e.message);
+  }
+ },[applyRemote,collect,renewSession]);
 
- useEffect(()=>{sessionRef.current=session;if(session?.token)void hydrate(session.token);else{ready.current=false;setStatus('signed-out');}},[session,hydrate]);
+ useEffect(()=>{
+  sessionRef.current=session;
+  if(session?.token){void hydrate(session.token);}
+  else{ready.current=false;if(rememberedToken())void renewSession();else setStatus('signed-out');}
+ },[session,hydrate,renewSession]);
+
+ // Reissue access credentials before the 12-hour token expires while the app stays open.
+ useEffect(()=>{
+  if(!session?.token||!rememberedToken())return;
+  const timer=setInterval(()=>void renewSession(),10*60*60*1000);
+  return()=>clearInterval(timer);
+ },[session,renewSession]);
 
  const authenticate=useCallback(async(method,input)=>{
   setError('');setStatus('connecting');
   try{
    const result=await request(`/auth/${method}`,null,'POST',input);
    const next={token:result.token,user:result.user};
-   sessionStorage.setItem('ark.cloudSession',JSON.stringify(next));
+   if(input.rememberMe===true&&result.refreshToken)rememberToken(result.refreshToken);
+   else forgetRememberedToken();
+   saveSession(next);
    setSession(next);return true;
   }catch(e){setError(e.message);setStatus('signed-out');return false;}
  },[]);
@@ -105,13 +143,22 @@ export function useCloudSync({rates,setRates,theme,setTheme}){
   }catch(e){
    ready.current=false;
    if(e.status===409){setError('Data changed on another device. Choose which version to keep.');void hydrate(token);}
+   else if(e.status===401){
+    if(rememberedToken())void renewSession();
+    else{forgetSession();setSession(null);setStatus('signed-out');setError('Your account session ended. Sign in again or create a new account.');}
+   }
    else{setError(`Cloud save failed: ${e.message}. Your changes are still on this PC.`);setStatus(e.status===401?'expired':'offline');}
   }finally{busy.current=false;}
  },[collect,hydrate]);
 
  useEffect(()=>{if(!session)return;const timer=setInterval(()=>void syncNow(),4000);return()=>clearInterval(timer);},[session,syncNow]);
 
- const logout=()=>{ready.current=false;sessionRef.current=null;sessionStorage.removeItem('ark.cloudSession');setSession(null);setPending(null);setStatus('signed-out');setError('');};
+ const logout=()=>{
+  const refreshToken=rememberedToken();
+  ready.current=false;sessionRef.current=null;forgetRememberedToken();forgetSession();
+  setSession(null);setPending(null);setStatus('signed-out');setError('');
+  if(refreshToken)void request('/auth/logout',null,'POST',{refreshToken}).catch(()=>{});
+ };
  return {configured:cloudConfigured,user:session?.user||null,token:session?.token||null,status,error,pending,
   register:data=>authenticate('register',data),login:data=>authenticate('login',data),
   logout,chooseCloud,chooseLocal,syncNow,retry:()=>sessionRef.current?.token&&hydrate(sessionRef.current.token)};

@@ -1,7 +1,8 @@
 import http from 'node:http';
 import {Pool} from 'pg';
-import {hashPassword,verifyPassword,secureCompare,signAccessToken,verifyAccessToken} from './security.js';
+import {hashPassword,verifyPassword,secureCompare,signAccessToken,verifyAccessToken,newRefreshToken,hashRefreshToken} from './security.js';
 import {initializeTribeTables,startTribeBroadcast,handleTribe} from './tribe-routes.js';
+import {resetAccountsOnce} from './account-reset.js';
 
 const PORT=Number(process.env.PORT||3000);
 const DATABASE_URL=process.env.DATABASE_URL;
@@ -19,11 +20,11 @@ const attempts=new Map();
 setInterval(()=>{const now=Date.now();for(const [key,entry] of attempts)if(entry.until<now)attempts.delete(key);},15*60_000).unref();
 
 function json(res,status,payload){const body=JSON.stringify(payload);res.writeHead(status,{'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff','content-length':Buffer.byteLength(body)});res.end(body);}
-function rateLimit(req,endpoint){
+function rateLimit(req,endpoint,max=20){
  const ip=req.socket.remoteAddress||'unknown';const key=`${ip}/${endpoint}`;
  const now=Date.now();const old=attempts.get(key);
  const entry=old&&old.until>now?old:{count:0,until:now+15*60_000};entry.count++;attempts.set(key,entry);
- return entry.count>20;
+ return entry.count>max;
 }
 async function bodyJson(req){
  let size=0;const parts=[];
@@ -49,6 +50,16 @@ function validateState(value,type){
  }else if(!Array.isArray(value.servers)||value.servers.length>1000)fail(400,'Invalid server list.');
 }
 function identity(user){return {id:user.id,email:user.email,displayName:user.display_name};}
+async function createAuthSession(user,rememberMe,db=pool){
+ const result={user:identity(user),token:signAccessToken(user,JWT_SECRET)};
+ if(rememberMe===true){
+  const refreshToken=newRefreshToken();
+  await db.query(`INSERT INTO member_sessions(member_id,token_hash,expires_at)
+    VALUES($1,$2,NOW()+INTERVAL '30 days')`,[user.id,hashRefreshToken(refreshToken)]);
+  result.refreshToken=refreshToken;
+ }
+ return result;
+}
 
 async function handle(req,res){
  const url=new URL(req.url,'http://localhost');const method=req.method;
@@ -79,8 +90,9 @@ async function handle(req,res){
    const {rows:[count]}=await client.query('SELECT COUNT(*)::int AS count FROM members');
    if(count.count>=MAX_MEMBERS)fail(403,'The tribe account limit has been reached.');
    const result=await client.query('INSERT INTO members(email,display_name,password_hash) VALUES($1,$2,$3) RETURNING id,email,display_name',[email,name,hashed]);
+   const response=await createAuthSession(result.rows[0],input.rememberMe,client);
    await client.query('COMMIT');
-   const user=result.rows[0];return json(res,201,{user:identity(user),token:signAccessToken(user,JWT_SECRET)});
+   return json(res,201,response);
   }catch(error){await client.query('ROLLBACK');if(error.code==='23505')fail(409,'An account already uses this email.');throw error;}
   finally{client.release();}
  }
@@ -91,7 +103,26 @@ async function handle(req,res){
   // Always do an expensive hash check to avoid distinguishable account timing.
   const candidate=rows[0]?.password_hash||'scrypt$00000000000000000000000000000000$'+'0'.repeat(128);
   if(typeof input.password!=='string'||!await verifyPassword(input.password,candidate)||!rows.length)fail(401,'Invalid email or password.');
-  const user=rows[0];return json(res,200,{user:identity(user),token:signAccessToken(user,JWT_SECRET)});
+  return json(res,200,await createAuthSession(rows[0],input.rememberMe));
+ }
+ if(method==='POST'&&url.pathname==='/api/v1/auth/refresh'){
+  if(rateLimit(req,'refresh',80))fail(429,'Too many refresh attempts. Try again later.');
+  const input=await bodyJson(req);const previousHash=hashRefreshToken(input.refreshToken);
+  if(!previousHash)fail(401,'Remembered session expired. Sign in again.');
+  const replacement=newRefreshToken();
+  const {rows}=await pool.query(`UPDATE member_sessions SET token_hash=$2,
+    expires_at=NOW()+INTERVAL '30 days'
+    WHERE token_hash=$1 AND expires_at>NOW() RETURNING member_id`,
+   [previousHash,hashRefreshToken(replacement)]);
+  if(!rows.length)fail(401,'Remembered session expired. Sign in again.');
+  const members=await pool.query('SELECT id,email,display_name FROM members WHERE id=$1',[rows[0].member_id]);
+  if(!members.rows.length)fail(401,'Account no longer exists. Create a new account.');
+  const user=members.rows[0];return json(res,200,{user:identity(user),token:signAccessToken(user,JWT_SECRET),refreshToken:replacement});
+ }
+ if(method==='POST'&&url.pathname==='/api/v1/auth/logout'){
+  const input=await bodyJson(req);const hash=hashRefreshToken(input.refreshToken);
+  if(hash)await pool.query('DELETE FROM member_sessions WHERE token_hash=$1',[hash]);
+  return json(res,200,{ok:true});
  }
  if(method==='GET'&&url.pathname==='/api/v1/auth/me')return json(res,200,{user:identity(await authorize(req))});
  if(await handleTribe(req,res,{pool,authorize,bodyJson,json}))return;
@@ -144,7 +175,14 @@ async function initialize(){
   name TEXT PRIMARY KEY,data JSONB NOT NULL,version INTEGER NOT NULL DEFAULT 0,
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
  )`);
+ await pool.query(`CREATE TABLE IF NOT EXISTS member_sessions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  member_id UUID NOT NULL REFERENCES members(id) ON DELETE CASCADE,
+  token_hash TEXT NOT NULL UNIQUE,expires_at TIMESTAMPTZ NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+ )`);
  await initializeTribeTables(pool);
+ await resetAccountsOnce(pool);
 }
 
 const server=http.createServer((req,res)=>{handle(req,res).catch(error=>{

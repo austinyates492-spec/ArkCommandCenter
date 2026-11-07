@@ -1,6 +1,12 @@
 # ARK Command Center — Windows Tribe Live Edition
 
-An ARK: Survival Ascended companion app built for a small private tribe. The **Tauri 2** Windows installer is distributed from GitHub Releases; version 0.8.1 connects to a private PostgreSQL-backed Railway API.
+An ARK: Survival Ascended companion app built for a small private tribe. The **Tauri 2** Windows installer is distributed from GitHub Releases; version 0.8.2 connects to a private PostgreSQL-backed Railway API.
+
+## Remembered tribe logins (v0.8.2)
+
+Sign in or register with **Remember this PC** enabled (the default) to save a revocable 30-day refresh session between app restarts. The server stores only a hash of each opaque refresh token, rotates tokens on use, and expires inactive refresh credentials after 30 days. The desktop app never stores your password. Signing out revokes the stored refresh session. Turning off Remember this PC keeps only the existing short-lived session; access tokens still expire after 12 hours.
+
+The server supports an explicitly triggered, one-time all-account reset that archives only former account names and personal data (not password hashes) before removing account and session records. Existing shared tribe timers, crafting projects and server intel remain intact. The reset is disabled by default and has an idempotent database marker to prevent repeated deletion during redeploys.
 
 ## Fifteen full-window themes (v0.8.1)
 
