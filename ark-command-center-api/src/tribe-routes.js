@@ -2,9 +2,17 @@ import {randomUUID} from 'node:crypto';
 import {Client} from 'pg';
 import {normalizeTimer,normalizeTimerSound,normalizeCrafting,normalizeServer,serializeTimer,serializeServer,serializeCraft} from './tribe-logic.js';
 
-const clients=new Set();
+// Every stream is bound to its authenticated tribe. Never broadcast other tribes' events.
+const clients=new Map();
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const send=(res,event,data)=>res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
+
+export function parseTribeEvent(raw){
+ let event;try{event=JSON.parse(raw);}catch{return null;}
+ if(!event||typeof event.tribeId!=='string'||typeof event.topic!=='string')return null;
+ if(!UUID.test(event.tribeId)||!['timers','timer-sounds','crafting','servers'].includes(event.topic))return null;
+ return {tribeId:event.tribeId,topic:event.topic};
+}
 
 export async function initializeTribeTables(pool){
  await pool.query(`CREATE TABLE IF NOT EXISTS tribe_timers (
@@ -30,6 +38,29 @@ export async function initializeTribeTables(pool){
    updated_by UUID REFERENCES members(id) ON DELETE SET NULL
  )`);
  await pool.query('CREATE TABLE IF NOT EXISTS schema_meta (key TEXT PRIMARY KEY, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW())');
+ await pool.query(`CREATE TABLE IF NOT EXISTS tribe_timers_v2 (
+   id UUID PRIMARY KEY, tribe_id UUID NOT NULL REFERENCES tribes(id),
+   name TEXT NOT NULL,type TEXT NOT NULL,created_ms BIGINT NOT NULL,end_ms BIGINT NOT NULL,
+   created_by UUID REFERENCES members(id) ON DELETE SET NULL
+ )`);
+ await pool.query('CREATE INDEX IF NOT EXISTS tribe_timers_v2_by_tribe ON tribe_timers_v2(tribe_id,end_ms)');
+ await pool.query(`CREATE TABLE IF NOT EXISTS member_timer_sounds_v2 (
+   member_id UUID NOT NULL REFERENCES members(id) ON DELETE CASCADE,
+   timer_id UUID NOT NULL REFERENCES tribe_timers_v2(id) ON DELETE CASCADE,
+   enabled BOOLEAN NOT NULL DEFAULT TRUE,PRIMARY KEY(member_id,timer_id)
+ )`);
+ await pool.query(`CREATE TABLE IF NOT EXISTS tribe_crafting_v2 (
+   tribe_id UUID NOT NULL REFERENCES tribes(id),name TEXT NOT NULL,
+   quantity INTEGER NOT NULL CHECK(quantity BETWEEN 1 AND 1000000),
+   updated_by UUID REFERENCES members(id) ON DELETE SET NULL,
+   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),PRIMARY KEY(tribe_id,name)
+ )`);
+ await pool.query(`CREATE TABLE IF NOT EXISTS tribe_servers_v2 (
+   id UUID PRIMARY KEY,tribe_id UUID NOT NULL REFERENCES tribes(id),
+   server_key TEXT NOT NULL,map TEXT NOT NULL,name TEXT NOT NULL,status TEXT NOT NULL,
+   notes TEXT NOT NULL,updated_ms BIGINT NOT NULL,
+   updated_by UUID REFERENCES members(id) ON DELETE SET NULL,UNIQUE(tribe_id,server_key)
+ )`);
 
  // Import the old shared server snapshot exactly once; repeated deploys never resurrect deleted entries.
  const client=await pool.connect();
@@ -48,7 +79,29 @@ export async function initializeTribeTables(pool){
    }
    await client.query("INSERT INTO schema_meta(key) VALUES('migrate-servers-live-v1')");
   }
-  await client.query('COMMIT');
+   const v2=await client.query("SELECT key FROM schema_meta WHERE key='migrate-tribes-v2'");
+   if(!v2.rows.length){
+    const {rows}=await client.query('SELECT id FROM tribes WHERE legacy=TRUE LIMIT 1');
+    if(!rows.length)throw new Error('Original tribe migration record missing.');
+    const tribeId=rows[0].id;
+    await client.query(`INSERT INTO tribe_timers_v2(id,tribe_id,name,type,created_ms,end_ms,created_by)
+       SELECT id,$1,name,type,created_ms,end_ms,created_by FROM tribe_timers WHERE TRUE ON CONFLICT(id) DO NOTHING`,[tribeId]);
+    await client.query(`INSERT INTO member_timer_sounds_v2(member_id,timer_id,enabled)
+       SELECT m.member_id,m.timer_id,m.enabled FROM member_timer_sounds m
+       WHERE EXISTS(SELECT 1 FROM tribe_timers_v2 t WHERE t.id=m.timer_id)
+       ON CONFLICT(member_id,timer_id) DO NOTHING`);
+    await client.query(`INSERT INTO tribe_crafting_v2(tribe_id,name,quantity,updated_by,updated_at)
+       SELECT $1,name,quantity,updated_by,updated_at FROM tribe_crafting WHERE TRUE
+       ON CONFLICT(tribe_id,name) DO NOTHING`,[tribeId]);
+    await client.query(`INSERT INTO tribe_servers_v2(id,tribe_id,server_key,map,name,status,notes,updated_ms,updated_by)
+       SELECT id,$1,server_key,map,name,status,notes,updated_ms,updated_by FROM tribe_servers WHERE TRUE
+       ON CONFLICT(id) DO NOTHING`,[tribeId]);
+    await client.query(`INSERT INTO tribe_server_snapshots(tribe_id,data,version,updated_at)
+       SELECT $1,data,version,updated_at FROM tribe_state WHERE name='servers'
+       ON CONFLICT(tribe_id) DO NOTHING`,[tribeId]);
+    await client.query("INSERT INTO schema_meta(key) VALUES('migrate-tribes-v2')");
+   }
+   await client.query('COMMIT');
  }catch(e){await client.query('ROLLBACK');throw e;}finally{client.release();}
 }
 
@@ -58,7 +111,12 @@ export async function startTribeBroadcast(databaseUrl){
   const listener=new Client({connectionString:databaseUrl});
   listener.on('notification',message=>{
    if(message.channel!=='tribe_updates')return;
-   for(const res of clients){try{send(res,'tribe',{topic:message.payload});}catch{clients.delete(res);}}
+   const event=parseTribeEvent(message.payload);
+   if(!event)return;
+   for(const [res,tribeId] of clients){
+    if(tribeId!==event.tribeId)continue;
+    try{send(res,'tribe',{topic:event.topic});}catch{clients.delete(res);}
+   }
   });
   listener.on('error',error=>console.error('Tribe live listener error:',error.code||error.message));
   listener.on('end',()=>{if(!reconnectTimer)reconnectTimer=setTimeout(()=>{reconnectTimer=null;void connect();},2500);});
@@ -68,7 +126,7 @@ export async function startTribeBroadcast(databaseUrl){
  await connect();
 }
 
-async function notify(pool,topic){await pool.query('SELECT pg_notify($1,$2)',['tribe_updates',topic]);}
+async function notify(pool,tribeId,topic){await pool.query('SELECT pg_notify($1,$2)',['tribe_updates',JSON.stringify({tribeId,topic})]);}
 function bad(message){throw Object.assign(new Error(message),{status:400});}
 function validated(fn,input){try{return fn(input);}catch(e){bad(e.message);}}
 function listOf(rows,serializer){return rows.map(serializer);}
@@ -78,9 +136,9 @@ export async function handleTribe(req,res,options){
  const path=new URL(req.url,'http://localhost').pathname;
  const method=req.method;
  if(path==='/api/v1/events'&&method==='GET'){
-  await authorize(req);
+  const user=await authorize(req);
   res.writeHead(200,{'Content-Type':'text/event-stream; charset=utf-8','Cache-Control':'no-cache, no-transform','Connection':'keep-alive','X-Accel-Buffering':'no'});
-  send(res,'connected',{ok:true});clients.add(res);
+  send(res,'connected',{ok:true});clients.set(res,user.tribe_id);
   const heartbeat=setInterval(()=>{if(!res.writableEnded)res.write(': heartbeat\n\n');},20000);
   res.on('close',()=>{clients.delete(res);clearInterval(heartbeat);});
   return true;
@@ -90,7 +148,8 @@ export async function handleTribe(req,res,options){
 
  if(path==='/api/v1/tribe/timers'){
   if(method==='GET'){
-   const {rows}=await pool.query(`SELECT t.*,m.display_name FROM tribe_timers t LEFT JOIN members m ON m.id=t.created_by ORDER BY t.end_ms ASC LIMIT 1000`);
+   const {rows}=await pool.query(`SELECT t.*,m.display_name FROM tribe_timers_v2 t LEFT JOIN members m ON m.id=t.created_by
+     WHERE t.tribe_id=$1 ORDER BY t.end_ms ASC LIMIT 1000`,[user.tribe_id]);
    return json(res,200,{timers:listOf(rows,serializeTimer),serverTime:Date.now()})||true;
   }
   if(method==='POST'){
@@ -99,95 +158,98 @@ export async function handleTribe(req,res,options){
    const client=await pool.connect();let row;
    try{
     await client.query('BEGIN');
-    const {rows}=await client.query(`INSERT INTO tribe_timers(id,name,type,created_ms,end_ms,created_by)
-      VALUES($1,$2,$3,$4,$5,$6) RETURNING *`,[id,timer.name,timer.type,timer.created,timer.end,user.id]);
+    const {rows}=await client.query(`INSERT INTO tribe_timers_v2(id,tribe_id,name,type,created_ms,end_ms,created_by)
+      VALUES($1,$2,$3,$4,$5,$6,$7) RETURNING *`,[id,user.tribe_id,timer.name,timer.type,timer.created,timer.end,user.id]);
     row=rows[0];
-    if(!soundEnabled)await client.query('INSERT INTO member_timer_sounds(member_id,timer_id,enabled) VALUES($1,$2,FALSE)',[user.id,id]);
+    if(!soundEnabled)await client.query('INSERT INTO member_timer_sounds_v2(member_id,timer_id,enabled) VALUES($1,$2,FALSE)',[user.id,id]);
     await client.query('COMMIT');
    }catch(e){await client.query('ROLLBACK');throw e;}finally{client.release();}
-   await notify(pool,'timers');
-   if(!soundEnabled)await notify(pool,'timer-sounds');
+   await notify(pool,user.tribe_id,'timers');
+   if(!soundEnabled)await notify(pool,user.tribe_id,'timer-sounds');
    json(res,201,{timer:serializeTimer({...row,display_name:user.display_name})});return true;
   }
  }
  if(path==='/api/v1/tribe/timers/sounds'&&method==='GET'){
-  const {rows}=await pool.query('SELECT timer_id,enabled FROM member_timer_sounds WHERE member_id=$1',[user.id]);
+  const {rows}=await pool.query(`SELECT s.timer_id,s.enabled FROM member_timer_sounds_v2 s
+    JOIN tribe_timers_v2 t ON t.id=s.timer_id WHERE s.member_id=$1 AND t.tribe_id=$2`,[user.id,user.tribe_id]);
   json(res,200,{sounds:Object.fromEntries(rows.map(row=>[row.timer_id,row.enabled]))});return true;
  }
  const soundMatch=/^\/api\/v1\/tribe\/timers\/([a-f0-9-]{36})\/sound$/i.exec(path);
  if(method==='PUT'&&soundMatch){
   if(!UUID.test(soundMatch[1]))bad('Invalid timer ID.');
   const {enabled}=validated(normalizeTimerSound,await bodyJson(req));
-  const {rows}=await pool.query(`INSERT INTO member_timer_sounds(member_id,timer_id,enabled)
-    SELECT $1,$2,$3 FROM tribe_timers WHERE id=$2
+  const {rows}=await pool.query(`INSERT INTO member_timer_sounds_v2(member_id,timer_id,enabled)
+    SELECT $1,$2,$3 FROM tribe_timers_v2 WHERE id=$2 AND tribe_id=$4
     ON CONFLICT(member_id,timer_id) DO UPDATE SET enabled=EXCLUDED.enabled
-    RETURNING timer_id,enabled`,[user.id,soundMatch[1],enabled]);
+    RETURNING timer_id,enabled`,[user.id,soundMatch[1],enabled,user.tribe_id]);
   if(!rows.length)throw Object.assign(new Error('This timer has been removed.'),{status:404});
-  await notify(pool,'timer-sounds');json(res,200,{timerId:rows[0].timer_id,enabled:rows[0].enabled});return true;
+  await notify(pool,user.tribe_id,'timer-sounds');json(res,200,{timerId:rows[0].timer_id,enabled:rows[0].enabled});return true;
  }
  const timerMatch=/^\/api\/v1\/tribe\/timers\/([a-f0-9-]{36})$/i.exec(path);
  if(method==='DELETE'&&timerMatch){
   if(!UUID.test(timerMatch[1]))bad('Invalid timer ID.');
-  await pool.query('DELETE FROM tribe_timers WHERE id=$1',[timerMatch[1]]);
-  await notify(pool,'timers');json(res,200,{ok:true});return true;
+  await pool.query('DELETE FROM tribe_timers_v2 WHERE id=$1 AND tribe_id=$2',[timerMatch[1],user.tribe_id]);
+  await notify(pool,user.tribe_id,'timers');json(res,200,{ok:true});return true;
  }
 
  if(path==='/api/v1/tribe/crafting'){
   if(method==='GET'){
-   const {rows}=await pool.query(`SELECT c.*,m.display_name FROM tribe_crafting c LEFT JOIN members m ON m.id=c.updated_by ORDER BY c.name`);
+   const {rows}=await pool.query(`SELECT c.*,m.display_name FROM tribe_crafting_v2 c LEFT JOIN members m ON m.id=c.updated_by
+     WHERE c.tribe_id=$1 ORDER BY c.name`,[user.tribe_id]);
    json(res,200,{items:listOf(rows,serializeCraft)});return true;
   }
   if(method==='POST'||method==='PUT'){
    const input=await bodyJson(req);
    const item=validated(normalizeCrafting,input);
    if(method==='POST'){
-    await pool.query(`INSERT INTO tribe_crafting(name,quantity,updated_by) VALUES($1,$2,$3)
-     ON CONFLICT(name) DO UPDATE SET quantity=tribe_crafting.quantity+EXCLUDED.quantity,
-     updated_by=$3,updated_at=NOW()`,[item.name,item.quantity,user.id]);
+    await pool.query(`INSERT INTO tribe_crafting_v2(tribe_id,name,quantity,updated_by) VALUES($1,$2,$3,$4)
+     ON CONFLICT(tribe_id,name) DO UPDATE SET quantity=tribe_crafting_v2.quantity+EXCLUDED.quantity,
+     updated_by=$4,updated_at=NOW()`,[user.tribe_id,item.name,item.quantity,user.id]);
    }else{
      const expected=Number(input.expectedQuantity);
      if(!Number.isSafeInteger(expected)||expected<0||expected>1000000)bad('Invalid previous quantity. Refresh and retry.');
      const result=expected===0
-       ?await pool.query(`INSERT INTO tribe_crafting(name,quantity,updated_by)
-         VALUES($1,$2,$3) ON CONFLICT(name) DO NOTHING RETURNING name`,
-         [item.name,item.quantity,user.id])
-       :await pool.query(`UPDATE tribe_crafting SET quantity=$2,updated_by=$3,updated_at=NOW()
-         WHERE name=$1 AND quantity=$4 RETURNING name`,
-         [item.name,item.quantity,user.id,expected]);
+       ?await pool.query(`INSERT INTO tribe_crafting_v2(tribe_id,name,quantity,updated_by)
+         VALUES($1,$2,$3,$4) ON CONFLICT(tribe_id,name) DO NOTHING RETURNING name`,
+         [user.tribe_id,item.name,item.quantity,user.id])
+       :await pool.query(`UPDATE tribe_crafting_v2 SET quantity=$3,updated_by=$4,updated_at=NOW()
+         WHERE tribe_id=$1 AND name=$2 AND quantity=$5 RETURNING name`,
+         [user.tribe_id,item.name,item.quantity,user.id,expected]);
      if(!result.rows.length)throw Object.assign(new Error('Another member changed this quantity. Refresh and retry.'),{status:409});
    }
-   await notify(pool,'crafting');json(res,200,{ok:true});return true;
+   await notify(pool,user.tribe_id,'crafting');json(res,200,{ok:true});return true;
   }
   if(method==='DELETE'){
-   await pool.query('DELETE FROM tribe_crafting');await notify(pool,'crafting');json(res,200,{ok:true});return true;
+   await pool.query('DELETE FROM tribe_crafting_v2 WHERE tribe_id=$1',[user.tribe_id]);await notify(pool,user.tribe_id,'crafting');json(res,200,{ok:true});return true;
   }
  }
  if(method==='DELETE'&&path.startsWith('/api/v1/tribe/crafting/')){
   let name;try{name=decodeURIComponent(path.slice('/api/v1/tribe/crafting/'.length));}catch{bad('Invalid recipe name.');}
   if(!name||name.length>160)bad('Invalid recipe name.');
-  await pool.query('DELETE FROM tribe_crafting WHERE name=$1',[name]);
-  await notify(pool,'crafting');json(res,200,{ok:true});return true;
+  await pool.query('DELETE FROM tribe_crafting_v2 WHERE tribe_id=$1 AND name=$2',[user.tribe_id,name]);
+  await notify(pool,user.tribe_id,'crafting');json(res,200,{ok:true});return true;
  }
 
  if(path==='/api/v1/tribe/servers/live'){
   if(method==='GET'){
-   const {rows}=await pool.query(`SELECT s.*,m.display_name FROM tribe_servers s LEFT JOIN members m ON m.id=s.updated_by ORDER BY s.updated_ms DESC`);
+   const {rows}=await pool.query(`SELECT s.*,m.display_name FROM tribe_servers_v2 s LEFT JOIN members m ON m.id=s.updated_by
+     WHERE s.tribe_id=$1 ORDER BY s.updated_ms DESC`,[user.tribe_id]);
    json(res,200,{servers:listOf(rows,serializeServer)});return true;
   }
   if(method==='POST'){
    const input=validated(normalizeServer,await bodyJson(req));const id=randomUUID();
-   await pool.query(`INSERT INTO tribe_servers(id,server_key,map,name,status,notes,updated_ms,updated_by)
-     VALUES($1,$2,$3,$4,$5,$6,$7,$8) ON CONFLICT(server_key) DO UPDATE SET
+   await pool.query(`INSERT INTO tribe_servers_v2(id,tribe_id,server_key,map,name,status,notes,updated_ms,updated_by)
+     VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9) ON CONFLICT(tribe_id,server_key) DO UPDATE SET
      status=EXCLUDED.status,notes=EXCLUDED.notes,updated_ms=EXCLUDED.updated_ms,updated_by=EXCLUDED.updated_by`,
-     [id,input.serverKey,input.map,input.name,input.status,input.notes,Date.now(),user.id]);
-   await notify(pool,'servers');json(res,200,{ok:true});return true;
+     [id,user.tribe_id,input.serverKey,input.map,input.name,input.status,input.notes,Date.now(),user.id]);
+   await notify(pool,user.tribe_id,'servers');json(res,200,{ok:true});return true;
   }
  }
  const serverMatch=/^\/api\/v1\/tribe\/servers\/live\/([a-f0-9-]{36})$/i.exec(path);
  if(method==='DELETE'&&serverMatch){
   if(!UUID.test(serverMatch[1]))bad('Invalid server ID.');
-  await pool.query('DELETE FROM tribe_servers WHERE id=$1',[serverMatch[1]]);
-  await notify(pool,'servers');json(res,200,{ok:true});return true;
+  await pool.query('DELETE FROM tribe_servers_v2 WHERE id=$1 AND tribe_id=$2',[serverMatch[1],user.tribe_id]);
+  await notify(pool,user.tribe_id,'servers');json(res,200,{ok:true});return true;
  }
  return false;
 }
