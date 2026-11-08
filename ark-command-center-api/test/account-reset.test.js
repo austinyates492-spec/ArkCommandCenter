@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {resetAccountsOnce} from '../src/account-reset.js';
+import {resetAccountsOnce,resetAllAccountDataOnce} from '../src/account-reset.js';
 
 function mockDatabase(alreadyApplied=false){
  const calls=[];let released=false;
@@ -40,4 +40,27 @@ test('account reset never repeats a deletion after its marker is applied',async(
  assert.deepEqual(await resetAccountsOnce(db.pool,'nov-2026-login-restart'),{reset:false,reason:'already-applied'});
  assert.equal(db.calls.some(x=>x.sql.startsWith('DELETE FROM')),false);
  assert.equal(db.calls.at(-1).sql,'COMMIT');assert.equal(db.released,true);
+});
+
+test('full reset clears account and tribe tables but leaves catalog, updater and schema markers',async()=>{
+ const db=mockDatabase();
+ await resetAllAccountDataOnce(db.pool,'arktribehq-fresh-public-launch');
+ const statements=db.calls.map(x=>x.sql);
+ const deletes=statements.filter(s=>s.startsWith('DELETE FROM '));
+ const expected=['member_timer_sounds_v2','member_timer_sounds','tribe_timers_v2','tribe_timers',
+  'tribe_crafting_v2','tribe_crafting','tribe_servers_v2','tribe_servers',
+  'tribe_server_snapshots','tribe_state','member_state','member_sessions','members'];
+ assert.deepEqual(deletes.slice(0,expected.length),expected.map(t=>`DELETE FROM ${t}`));
+ assert.ok(deletes.includes('DELETE FROM tribes WHERE legacy=FALSE'));
+ assert.ok(statements.some(s=>s.includes('DELETE FROM account_reset_archive')));
+ assert.ok(statements.some(s=>s.includes("member_limit=0 WHERE legacy=TRUE")));
+ assert.ok(!statements.some(s=>s.includes('DELETE FROM live_catalog')||s.includes('DELETE FROM app_updates')));
+ assert.equal(statements.at(-1),'COMMIT');
+ assert.equal(db.released,true);
+});
+
+test('full reset is one-time even after a second deployment',async()=>{
+ const db=mockDatabase(true);
+ assert.deepEqual(await resetAllAccountDataOnce(db.pool,'arktribehq-fresh-public-launch'),{reset:false,reason:'already-applied'});
+ assert.ok(!db.calls.some(x=>x.sql.startsWith('DELETE FROM')));
 });
