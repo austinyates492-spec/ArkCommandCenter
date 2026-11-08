@@ -20,7 +20,8 @@ import LiveTimersPage from './LiveTimersPage';
 import {createTimerAlarmTracker,collectDueTimerAlarms} from './timer-alarms.js';
 import {unlockTimerAudio,playTimerAlarm} from './timer-audio.js';
 import {migrateOldRatePreset} from './nomadark-profile.js';
-import {clusterPresets,ratesForPreset} from './cluster-presets.js';
+import {clusterPresets,ratesForPreset,DEFAULT_CLUSTER_ID} from './cluster-presets.js';
+import {resetLocalWorkspaceOnce} from './launch-reset.js';
 import {useLiveCatalog} from './live-catalog.js';
 import CatalogUpdatesPage from './CatalogUpdatesPage.jsx';
 import AppUpdater from './AppUpdater.jsx';
@@ -37,7 +38,8 @@ function Badge({children,tone='green'}){return <span className={'badge '+tone}>{
 function Panel({title,aside,children,className=''}){return <section className={'panel '+className}><div className="panelhead"><h2>{title}</h2>{aside}</div>{children}</section>}
 function Field({label,children}){return <label className="field"><span>{label}</span>{children}</label>}
 function App(){
- const [page,setPage]=useState('overview'),[savedRates,setRates]=useStored('ark.rates',defaults),[customRates,setCustomRates]=useStored('ark.customRates',defaults),[servers,setServers]=useState([]),[theme,setTheme]=useStored('ark.theme','emerald'),[clusterId,setClusterId]=useStored('ark.clusterId','nomadark'),[now,setNow]=useState(Date.now());
+ const startingRates=ratesForPreset(DEFAULT_CLUSTER_ID,defaults);
+ const [page,setPage]=useState('overview'),[savedRates,setRates]=useStored('ark.rates',startingRates),[customRates,setCustomRates]=useStored('ark.customRates',startingRates),[servers,setServers]=useState([]),[theme,setTheme]=useStored('ark.theme','emerald'),[clusterId,setClusterId]=useStored('ark.clusterId',DEFAULT_CLUSTER_ID),[now,setNow]=useState(Date.now());
  const cloud=useCloudSync({rates:savedRates,setRates,customRates,setCustomRates,theme,setTheme,clusterId,setClusterId});
  const catalog=useLiveCatalog();
  const live=useTribeLive(cloud.token,setServers);
@@ -111,4 +113,5 @@ function App(){
 }
 function clock(ms){const s=Math.max(0,Math.ceil(ms/1000));return `${Math.floor(s/86400)?Math.floor(s/86400)+'d ':''}${String(Math.floor(s%86400/3600)).padStart(2,'0')}:${String(Math.floor(s%3600/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`}
 function QuickTimer({onAdd}){const [name,setName]=useState('Tribe reminder'),[minutes,setMinutes]=useState(30);return <form onSubmit={e=>{e.preventDefault();onAdd(name,minutes,'Custom')}}><Field label="Timer name"><input value={name} onChange={e=>setName(e.target.value)} required/></Field><Field label="Duration (minutes)"><input type="number" min="1" value={minutes} onChange={e=>setMinutes(e.target.value)} required/></Field><button className="primary full" type="submit"><Plus size={17}/> Start Countdown</button></form>}
+resetLocalWorkspaceOnce();
 createRoot(document.getElementById('root')).render(<App/>);
