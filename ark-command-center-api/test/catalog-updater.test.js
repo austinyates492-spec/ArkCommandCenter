@@ -27,9 +27,10 @@ test('updater uses strict semantic version ordering',()=>{
 });
 test('only main-branch repository workflow can obtain release signing capability',()=>{
  const now=Math.floor(Date.now()/1000);
- const valid={iss:'https://token.actions.githubusercontent.com',aud:'ark-command-center-updates',repository:'austinyates492-spec/ArkCommandCenter',ref:'refs/heads/main',sub:'repo:austinyates492-spec/ArkCommandCenter:ref:refs/heads/main',workflow_ref:'austinyates492-spec/ArkCommandCenter/.github/workflows/build-windows.yml@refs/heads/main',iat:now-5,exp:now+120};
+ const valid={iss:'https://token.actions.githubusercontent.com',aud:'ark-command-center-updates',repository:'austinyates492-spec/ArkCommandCenter',ref:'refs/heads/main',sub:'repo:austinyates492-spec@353126816/ArkCommandCenter@1447716209:ref:refs/heads/main',workflow_ref:'austinyates492-spec/ArkCommandCenter/.github/workflows/build-windows.yml@refs/heads/main',iat:now-5,exp:now+120};
  assert.equal(trustedWorkflowClaims(valid,now),true);
  assert.equal(trustedWorkflowClaims({...valid,ref:'refs/heads/feature'},now),false);
+ assert.equal(trustedWorkflowClaims({...valid,sub:'repo:austinyates492-spec/ArkCommandCenter:ref:refs/heads/main'},now),false);
  assert.equal(trustedWorkflowClaims({...valid,aud:'other'},now),false);
  assert.equal(trustedWorkflowClaims({...valid,exp:now-1},now),false);
 });
