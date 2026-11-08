@@ -12,7 +12,7 @@ test('official small tribes and NomadARK rate profiles are accurate',()=>{
  assert.deepEqual(ratesForPreset('nomadark',{}),{taming:10,hatch:25,mature:8,breeding:0.2,cuddle:0.1,food:1});
  assert.equal(presetById('official-pve').rates.taming,1);
  assert.deepEqual(ratesForPreset('conquest',{}),{taming:5,hatch:5,mature:5,breeding:0.5,cuddle:0.2,food:1});
- assert.equal(presetById('conquest').verified,true);
+ assert.equal(presetById('conquest').verified,false);
  assert.equal(presetById('arkpocalypse').verified,false);
 });
 test('custom cluster keeps existing rates unchanged',()=>{
