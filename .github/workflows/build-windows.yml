@@ -52,11 +52,16 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           $base = 'https://ark-command-center-api-production.up.railway.app/api/v1/updates'
-          $oidc = Invoke-RestMethod -Method Get -Uri "$env:ACTIONS_ID_TOKEN_REQUEST_URL&audience=ark-command-center-updates" -Headers @{ Authorization = "Bearer $env:ACTIONS_ID_TOKEN_REQUEST_TOKEN" }
-          $auth = @{ Authorization = "Bearer $($oidc.value)" }
+          function Get-ReleaseAuth {
+            $identity = Invoke-RestMethod -Method Get -Uri "$env:ACTIONS_ID_TOKEN_REQUEST_URL&audience=ark-command-center-updates" -Headers @{ Authorization = "Bearer $env:ACTIONS_ID_TOKEN_REQUEST_TOKEN" }
+            return @{ Authorization = "Bearer $($identity.value)" }
+          }
           $signing = $null
           for ($attempt = 1; $attempt -le 40; $attempt++) {
-            try { $signing = Invoke-RestMethod -Method Post -Uri "$base/build-key" -Headers $auth; break }
+            try {
+              $signing = Invoke-RestMethod -Method Post -Uri "$base/build-key" -Headers (Get-ReleaseAuth)
+              break
+            }
             catch {
               if ($attempt -eq 40) { throw 'Could not obtain verified signing credentials after waiting for API deployment.' }
               Start-Sleep -Seconds 15
@@ -70,6 +75,9 @@ jobs:
           $bundle = Get-ChildItem 'src-tauri/target/release/bundle/nsis/*.exe' | Select-Object -First 1
           if (!$bundle) { throw 'Installer not found' }
           $signature = Get-Content -Raw "$($bundle.FullName).sig"
+          # GitHub OIDC tokens expire quickly; the Rust installer build may take
+          # longer than the original token lifetime. Request a fresh one here.
+          $auth = Get-ReleaseAuth
           $auth['x-tauri-signature'] = $signature.Trim()
           Invoke-RestMethod -Uri "$base/publish?version=$version" -Method Post -InFile $bundle.FullName -ContentType 'application/octet-stream' -Headers $auth
       - uses: actions/upload-artifact@v4
@@ -81,12 +89,12 @@ jobs:
         if: github.event_name == 'push' && startsWith(github.event.head_commit.message, 'release:')
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v0.8.5
-          name: ARK Command Center v0.8.5 - Live Data Resilience
+          tag_name: v0.8.6
+          name: ARK Command Center v0.8.6 - Live Content and Auto Updates
           body: |
-            Refines cluster preset labels and adds automatic discovery of newly
-            published crafting pages even when the wiki's ingredients feed is down.
-            Retains the full 25 themes, live creature feed, and signed updates.
+            Switch between NomadARK, Official, Small Tribes, Conquest and other
+            presets; customize 25 distinct themes, including Rainbow and B&W.
+            Discover new creatures and crafting pages via live server data.
 
             Future feature releases can be installed with one click inside the app.
             The update packages are securely signed and delivered from the tribe API;
