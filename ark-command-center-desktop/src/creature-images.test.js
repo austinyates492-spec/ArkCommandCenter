@@ -20,3 +20,10 @@ test('creature art source identifies public repository and license',()=>{
  assert.match(PORTRAIT_LICENSE,/\/LICENSE$/);
  assert.equal(portraitCandidates('').length,0);
 });
+test('alternative species forms use verified images before unverified URL guesses',()=>{
+ assert.match(portraitCandidates('Cat')[0],/Cat_ASA_p1\.png$/);
+ assert.match(portraitCandidates('Therizinosaurus')[0],/Therizinosaur_ASA\.png$/);
+ assert.match(portraitCandidates('Hydraskos')[0],/Hydraskos%20the%20Unbroken_ASA\.png$/);
+ assert.match(portraitCandidates('Tidepup')[0],/Tidepup%20\(Small\)_ASA\.png$/);
+ assert.match(portraitCandidates('Wyvern')[0],/Fire%20Wyvern_ASA\.png$/);
+});
