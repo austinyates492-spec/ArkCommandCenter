@@ -21,10 +21,12 @@ jobs:
       - name: Test tribe API and security logic
         run: npm test
   windows:
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.event.head_commit.message, 'release:')
     needs: api-tests
     runs-on: windows-latest
     permissions:
       contents: write
+      id-token: write
     defaults:
       run:
         working-directory: ark-command-center-desktop
@@ -43,10 +45,33 @@ jobs:
         run: npm ci
       - name: Test calculators and data
         run: npm test
-      - name: Build Windows installer with tribe cloud enabled
+      - name: Build signed Windows installer and publish secure in-app update
+        shell: pwsh
         env:
           VITE_API_URL: https://ark-command-center-api-production.up.railway.app
-        run: npm run installer
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $base = 'https://ark-command-center-api-production.up.railway.app/api/v1/updates'
+          $oidc = Invoke-RestMethod -Method Get -Uri "$env:ACTIONS_ID_TOKEN_REQUEST_URL&audience=ark-command-center-updates" -Headers @{ Authorization = "Bearer $env:ACTIONS_ID_TOKEN_REQUEST_TOKEN" }
+          $auth = @{ Authorization = "Bearer $($oidc.value)" }
+          $signing = $null
+          for ($attempt = 1; $attempt -le 40; $attempt++) {
+            try { $signing = Invoke-RestMethod -Method Post -Uri "$base/build-key" -Headers $auth; break }
+            catch {
+              if ($attempt -eq 40) { throw 'Could not obtain verified signing credentials after waiting for API deployment.' }
+              Start-Sleep -Seconds 15
+            }
+          }
+          $env:TAURI_SIGNING_PRIVATE_KEY = $signing.privateKey
+          npm run installer
+          if ($LASTEXITCODE -ne 0) { throw 'Tauri installer build failed' }
+          Remove-Item Env:TAURI_SIGNING_PRIVATE_KEY
+          $version = (Get-Content package.json -Raw | ConvertFrom-Json).version
+          $bundle = Get-ChildItem 'src-tauri/target/release/bundle/nsis/*.exe' | Select-Object -First 1
+          if (!$bundle) { throw 'Installer not found' }
+          $signature = Get-Content -Raw "$($bundle.FullName).sig"
+          $auth['x-tauri-signature'] = $signature.Trim()
+          Invoke-RestMethod -Uri "$base/publish?version=$version" -Method Post -InFile $bundle.FullName -ContentType 'application/octet-stream' -Headers $auth
       - uses: actions/upload-artifact@v4
         with:
           name: ARK-Command-Center-Windows-Installer
@@ -56,14 +81,16 @@ jobs:
         if: github.event_name == 'push' && startsWith(github.event.head_commit.message, 'release:')
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v0.8.3
-          name: ARK Command Center v0.8.3 - Live Timer Sounds
+          tag_name: v0.8.4
+          name: ARK Command Center v0.8.4 - Clusters, Live Data and Auto-Updates
           body: |
-            Adds synchronized timer completion chimes for Tribe Live Timers, including Quick Tribe
-            Timers and taming/breeding timers. Each member can mute or enable each timer without
-            changing another member's preferences, which are saved to their account on Railway.
-            Includes a test-sound button, a sound-at-creation option, completion popups, and
-            the previous remembered sign-in, crafting, server sync, and fifteen themes.
+            Adds official server-mode presets (PvP, PvE, Small Tribes, ARKpocalypse,
+            Conquest, Classic), custom profiles, 25 complete themes, and the live
+            Community Wiki discovery feed for creature pages and recipes.
+
+            Future feature releases can be installed with one click inside the app.
+            The update packages are securely signed and delivered from the tribe API;
+            existing v0.8.3 installations must install this v0.8.4 release once.
 
             This is a private repository. Tribe members need GitHub access to download the installer.
           files: ark-command-center-desktop/src-tauri/target/release/bundle/nsis/*.exe

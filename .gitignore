@@ -1,0 +1,9 @@
+# Signing keys must never be checked into GitHub. Keep the original backed up.
+ark-updater-signing.key
+ark-updater-signing.key.pub
+
+# Local development and build outputs.
+**/node_modules/
+**/dist/
+**/src-tauri/target/
+**/.env

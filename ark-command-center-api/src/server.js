@@ -3,6 +3,8 @@ import {Pool} from 'pg';
 import {hashPassword,verifyPassword,secureCompare,signAccessToken,verifyAccessToken,newRefreshToken,hashRefreshToken} from './security.js';
 import {initializeTribeTables,startTribeBroadcast,handleTribe} from './tribe-routes.js';
 import {resetAccountsOnce} from './account-reset.js';
+import {initializeLiveCatalog,latestLiveCatalog,startCatalogRefresh} from './live-catalog.js';
+import {initializeUpdater,handleUpdater} from './updater.js';
 
 const PORT=Number(process.env.PORT||3000);
 const DATABASE_URL=process.env.DATABASE_URL;
@@ -45,7 +47,7 @@ function checkedPassword(password){if(typeof password!=='string'||password.lengt
 function validateState(value,type){
  if(!value||typeof value!=='object'||Array.isArray(value))fail(400,'State must be an object.');
  if(type==='private'){
-  const keys=['ark.rates','ark.timers','ark.theme','ark.crafting.recipes','ark.crafting.community','ark.crafting.cart'];
+  const keys=['ark.rates','ark.customRates','ark.clusterId','ark.timers','ark.theme','ark.crafting.recipes','ark.crafting.community','ark.crafting.cart'];
   if(Object.keys(value).some(k=>!keys.includes(k)))fail(400,'Unexpected state key.');
  }else if(!Array.isArray(value.servers)||value.servers.length>1000)fail(400,'Invalid server list.');
 }
@@ -76,6 +78,11 @@ async function handle(req,res){
  if(method==='GET'&&url.pathname==='/api/v1/health'){
   await pool.query('SELECT 1');return json(res,200,{ok:true,service:'ark-command-center-api'});
  }
+ if(method==='GET'&&url.pathname==='/api/v1/catalog/live'){
+  const data=await latestLiveCatalog(pool);
+  return json(res,200,{catalog:data,ready:Boolean(data)});
+ }
+ if(await handleUpdater(req,res,{url,pool,json}))return;
  if(method==='POST'&&url.pathname==='/api/v1/auth/register'){
   if(rateLimit(req,'register'))fail(429,'Too many attempts. Try again later.');
   const input=await bodyJson(req);const email=checkedEmail(input.email);const password=checkedPassword(input.password);
@@ -182,6 +189,8 @@ async function initialize(){
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
  )`);
  await initializeTribeTables(pool);
+ await initializeLiveCatalog(pool);
+ await initializeUpdater(pool);
  await resetAccountsOnce(pool);
 }
 
@@ -192,6 +201,7 @@ const server=http.createServer((req,res)=>{handle(req,res).catch(error=>{
 });});
 initialize().then(async()=>{
  await startTribeBroadcast(DATABASE_URL);
+ startCatalogRefresh(pool);
  server.listen(PORT,'0.0.0.0',()=>console.info(`ARK API listening on ${PORT}`));
 }).catch(error=>{console.error('Database initialization failed:',error.code||error.message);process.exit(1);});
 process.on('SIGTERM',()=>server.close(()=>pool.end()));

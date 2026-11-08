@@ -12,7 +12,7 @@ function RecipeNode({node,depth=0}){
  if(node.raw)return <div className="craftleaf" style={{paddingLeft:`${Math.min(depth,7)*14}px`}}><span className="craftnode-dot"/> <strong>{fmt.format(node.quantity)}</strong> {node.name} <small>RAW</small></div>;
  return <details className="craftbranch" open={depth<2}><summary style={{paddingLeft:`${Math.min(depth,7)*14}px`}}><ChevronRight size={16}/><strong>{fmt.format(node.quantity)} × {node.name}</strong><span>{fmt.format(node.batches)} craft{node.batches===1?'':'s'}{node.output>1?` · produces ${fmt.format(node.produced)}`:''}</span></summary><div>{node.children.map((child,i)=><RecipeNode key={`${child.name}-${i}`} node={child} depth={depth+1}/>)}</div></details>;
 }
-export default function CraftingPage(){
+export default function CraftingPage({liveRecipes={}}){
  const [extra,setExtra]=useLocal('ark.crafting.recipes',{});
  const [includeCommunity,setIncludeCommunity]=useLocal('ark.crafting.community',false);
  const [cart,setCart]=useLocal('ark.crafting.cart',[]);
@@ -21,7 +21,7 @@ export default function CraftingPage(){
  const [quantity,setQuantity]=useState(1);
  const [error,setError]=useState('');
  const [form,setForm]=useState({name:'',output:1,category:'Custom',station:'Inventory',ingredients:'Wood: 60\nThatch: 15\nFiber: 10'});
- const recipes=useMemo(()=>({...(includeCommunity?communityRecipes:{}),...wikiRecipes,...starterRecipes,...extra}),[extra,includeCommunity]);
+ const recipes=useMemo(()=>({...(includeCommunity?communityRecipes:{}),...wikiRecipes,...liveRecipes,...starterRecipes,...extra}),[extra,includeCommunity,liveRecipes]);
  const matches=useMemo(()=>Object.keys(recipes).filter(name=>name.toLowerCase().includes(search.toLowerCase())||recipes[name].category?.toLowerCase().includes(search.toLowerCase())).sort(),[recipes,search]);
  let result=null,planError='';try{result=calculateCraftingCart(cart,recipes);}catch(e){planError=e.message}
  const add=()=>{const name=matches.includes(selected)?selected:matches[0];if(!name||!Number.isSafeInteger(Number(quantity))||Number(quantity)<1)return;setCart([...cart.filter(x=>x.name!==name),{name,quantity:Number(quantity)+(cart.find(x=>x.name===name)?.quantity||0)}]);setError('');};

@@ -4,13 +4,13 @@ import {readFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {dirname,join} from 'node:path';
 
-test('all 15 themes include complete backgrounds, panels, text and input palettes',()=>{
+test('all 25 themes include complete backgrounds, panels, text and input palettes',()=>{
  const folder=dirname(fileURLToPath(import.meta.url));
  const picker=readFileSync(join(folder,'ThemePicker.jsx'),'utf8');
  const css=readFileSync(join(folder,'themes.css'),'utf8');
  const ids=[...picker.matchAll(/\{id:'([a-z]+)',label:/g)].map(match=>match[1]);
- assert.equal(ids.length,15);
- assert.equal(new Set(ids).size,15);
+ assert.equal(ids.length,25);
+ assert.equal(new Set(ids).size,25);
  const required=['--ark-accent','--ark-bg','--ark-sidebar','--ark-surface','--ark-surface-2','--ark-input','--ark-muted','--ark-line','--ark-heading','--ark-backdrop-top','--ark-backdrop-bottom','--ark-form-text','--ark-form-placeholder','--ark-form-focus'];
  for(const id of ids){
   const selector=id==='emerald'?/\.shell\{([^}]*)\}/g:new RegExp(`\\.shell\\[data-theme=${id}\\]\\{([^}]*)\\}`,'g');

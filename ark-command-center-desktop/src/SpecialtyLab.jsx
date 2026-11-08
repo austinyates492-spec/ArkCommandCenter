@@ -64,7 +64,7 @@ export default function SpecialtyLab({rates,onTimer}){
     <div className="keyrow"><span>Heavy-weapon math</span><strong>{knockout.ok?'Available':'Not applicable / unverified'}</strong></div>
     <div className="keyrow"><span>Supply count model</span><strong>{feeding.model==='bloodstalker'?'Published blood-pack estimate':feeding.model==='octopus-biotoxin'?'Minimum Bio Toxin hits':feeding.ok?'Wiki food-affinity baseline':fixedSupply?'One item per new tame':'Interaction-specific / not quantified'}</strong></div>
     <div className="keyrow"><span>Taming rate</span><strong>{rates.taming}×</strong></div>
-    <div className="notice">Methods are reviewed against the official community wiki, not certified in-game for NomadARK. Its 10× taming rate does not automatically divide egg counts, minigame actions, torpor effects or sacrifices. Treat unspecified quantities as unknown, not zero.</div>
+    <div className="notice">Methods are reviewed against the official community wiki, not certified in-game for your selected cluster. Its {rates.taming}× taming rate does not automatically divide egg counts, minigame actions, torpor effects or sacrifices. Treat unspecified quantities as unknown, not zero.</div>
    </section>
   </div>
  </>;

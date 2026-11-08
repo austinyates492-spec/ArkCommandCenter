@@ -2,7 +2,7 @@ import {useCallback,useEffect,useRef,useState} from 'react';
 import {currentSession,rememberedToken,rememberToken,forgetRememberedToken,saveSession,forgetSession} from './saved-login.js';
 
 export const API=String(import.meta.env.VITE_API_URL||'').replace(/\/$/,'');
-export const PRIVATE_KEYS=['ark.rates','ark.timers','ark.theme','ark.crafting.recipes','ark.crafting.community','ark.crafting.cart'];
+export const PRIVATE_KEYS=['ark.rates','ark.customRates','ark.clusterId','ark.timers','ark.theme','ark.crafting.recipes','ark.crafting.community','ark.crafting.cart'];
 export const cloudConfigured=Boolean(API);
 
 function readLocal(){
@@ -22,7 +22,7 @@ export async function request(path,token,method='GET',data){
 }
 
 /** Cloud is optional; local storage remains usable when signed out or offline. */
-export function useCloudSync({rates,setRates,theme,setTheme}){
+export function useCloudSync({rates,setRates,customRates,setCustomRates,theme,setTheme,clusterId,setClusterId}){
  const [session,setSession]=useState(currentSession);
  const [status,setStatus]=useState('signed-out');
  const [error,setError]=useState('');
@@ -61,11 +61,13 @@ export function useCloudSync({rates,setRates,theme,setTheme}){
 
  const applyRemote=useCallback(personal=>{
   if(Object.hasOwn(personal,'ark.rates'))setRates(personal['ark.rates']);
+  if(Object.hasOwn(personal,'ark.customRates'))setCustomRates(personal['ark.customRates']);
+  if(Object.hasOwn(personal,'ark.clusterId'))setClusterId(personal['ark.clusterId']);
   if(Object.hasOwn(personal,'ark.theme'))setTheme(personal['ark.theme']);
   for(const key of PRIVATE_KEYS.filter(k=>k.startsWith('ark.crafting.')||k==='ark.timers')){
    if(Object.hasOwn(personal,key))localStorage.setItem(key,JSON.stringify(personal[key]));
   }
- },[setRates,setTheme]);
+ },[setRates,setCustomRates,setTheme,setClusterId]);
 
  const collect=useCallback(()=>({personal:readLocal()}),[]);
 
