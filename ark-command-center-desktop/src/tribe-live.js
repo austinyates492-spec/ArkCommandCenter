@@ -38,6 +38,7 @@ export function useTribeLive(token,setServers){
 
  useEffect(()=>{
   if(!token){setTimers([]);setTimerSounds({});setTimerSoundsReady(false);setCrafting([]);setServers([]);setStatus('signed-out');setError('');return;}
+  setTimers([]);setTimerSounds({});setTimerSoundsReady(false);setCrafting([]);setServers([]);
   let closed=false;const controller=new AbortController();
   setStatus('connecting');void refresh();
   const fallback=setInterval(()=>void refresh(),12000);

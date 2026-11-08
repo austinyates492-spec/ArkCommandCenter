@@ -74,6 +74,10 @@ export function useCloudSync({rates,setRates,customRates,setCustomRates,theme,se
  const hydrate=useCallback(async(token)=>{
   ready.current=false;setPending(null);setStatus('connecting');setError('');
   try{
+   if(!sessionRef.current?.user?.tribeId){
+    const profile=await request('/auth/me',token);
+    const next={token,user:profile.user};saveSession(next);setSession(next);
+   }
    const personal=await request('/state',token);
    const local=collect();
    const remote={personal:personal.state||{}};
@@ -162,6 +166,6 @@ export function useCloudSync({rates,setRates,customRates,setCustomRates,theme,se
   if(refreshToken)void request('/auth/logout',null,'POST',{refreshToken}).catch(()=>{});
  };
  return {configured:cloudConfigured,user:session?.user||null,token:session?.token||null,status,error,pending,
-  register:data=>authenticate('register',data),login:data=>authenticate('login',data),
+  register:data=>authenticate('register',data),createTribe:data=>authenticate('create-tribe',data),login:data=>authenticate('login',data),
   logout,chooseCloud,chooseLocal,syncNow,retry:()=>sessionRef.current?.token&&hydrate(sessionRef.current.token)};
 }

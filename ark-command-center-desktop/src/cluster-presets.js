@@ -3,6 +3,7 @@
 export const OFFICIAL_MODES_SOURCE='https://support.survivetheark.com/hc/en-us/articles/18374796351767-Different-types-of-game-modes';
 export const CONQUEST_SOURCE='https://survivetheark.com/index.php?/forums/topic/774323-community-crunch-531-unreal-engine-58-enigmasaur-and-giga-tlc-out-now/';
 const rates=(taming,hatch,mature,breeding,cuddle=1)=>({taming,hatch,mature,breeding,cuddle,food:1});
+export const DEFAULT_CLUSTER_ID='official-pvp';
 export const clusterPresets=[
  {id:'nomadark',label:'NOMADARK 10×',description:'User-supplied NomadARK rules; imprint and creature hunger are estimates.',rates:rates(10,25,8,0.2,0.1),harvest:10,xp:10,verified:true},
  {id:'official-pve',label:'OFFICIAL PvE',description:'Standard official baseline; temporary Evolution Events are not included.',rates:rates(1,1,1,1),harvest:1,xp:1,verified:true},
@@ -14,5 +15,5 @@ export const clusterPresets=[
  {id:'official-evo',label:'OFFICIAL Event (2×)',description:'Example event preset, not a current live event reading. Confirm the current event.',rates:rates(2,2,2,1),harvest:2,xp:2,verified:false},
  {id:'custom',label:'CUSTOM / Other Cluster',description:'Enter server-specific multipliers on the Settings page.',rates:null,verified:false}
 ];
-export const presetById=id=>clusterPresets.find(p=>p.id===id)||clusterPresets[0];
+export const presetById=id=>clusterPresets.find(p=>p.id===id)||clusterPresets.find(p=>p.id===DEFAULT_CLUSTER_ID);
 export function ratesForPreset(id,current){return id==='custom'?{...current}:{...presetById(id).rates};}
