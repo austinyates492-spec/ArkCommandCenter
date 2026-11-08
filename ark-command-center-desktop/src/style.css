@@ -6,6 +6,14 @@
 .tame-results strong{font-size:27px;color:#e3fff0}
 .tame-results strong small{font-size:13px;color:#add0bf}
 button:disabled{cursor:not-allowed;opacity:.45}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.header-cluster{display:flex;align-items:center;gap:8px;padding:4px 10px;border:1px solid var(--ark-border,#35745f);border-radius:8px;background:var(--ark-deep,#143a32)}
+.header-cluster select{max-width:225px;min-width:165px;background:var(--ark-input,#0b1c17);color:var(--ark-bright,#85eac0);border:0;padding:6px 8px;font-size:11px;font-weight:750;letter-spacing:.35px;cursor:pointer}
+.header-cluster small{color:var(--ark-bright,#85eac0);font-size:10px;white-space:nowrap;font-weight:750}
+.updater-control{display:flex;align-items:center;gap:7px;max-width:225px}
+.updater-check,.updater-available{display:flex;align-items:center;gap:6px;padding:8px 9px;font-size:10px;font-weight:800;letter-spacing:.3px;border:1px solid var(--ark-border,#35745f);border-radius:8px;background:var(--ark-deep,#143a32);color:var(--ark-bright,#85eac0);cursor:pointer;white-space:nowrap}
+.updater-available{background:var(--ark-accent,#55d9a8);color:#10201a}
+.updater-message{font-size:10px;max-width:175px;color:var(--ark-bright,#85eac0);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .knockout-panel{margin-top:20px}
 .knockout-panel .tablewrap{margin-top:20px}
 .coverage-scroll{max-height:460px;overflow:auto}

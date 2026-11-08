@@ -1,55 +1,38 @@
 import React from 'react';
 import {Activity,ExternalLink,Save,Shield} from 'lucide-react';
-import {defaults} from './data.js';
-import {NOMADARK_SOURCE,NOMADARK_DISCORD,NOMADARK_PROFILE,NOMADARK_RATE_FIELDS,applyNomadarkConfirmedRates,rateDescription} from './nomadark-profile.js';
+import {NOMADARK_SOURCE} from './nomadark-profile.js';
+import {clusterPresets,presetById,OFFICIAL_MODES_SOURCE} from './cluster-presets.js';
 import './nomadark.css';
 
-const fields=['taming','hatch','mature','cuddle','breeding','food'];
-
-export default function ClusterSettings({rates,setRates}){
+const labels={taming:'Taming speed',hatch:'Egg hatch / gestation speed',mature:'Baby maturation',cuddle:'Imprint cuddle interval',breeding:'Mating interval',food:'Dinosaur food drain'};
+export default function ClusterSettings({rates,setRates,clusterId,onClusterChange}){
+ const preset=presetById(clusterId);
  return <>
-  <div className="pagetitle"><span className="eyebrow">CONFIGURATION / NOMADARK.NET</span><h1>Cluster Settings</h1><p>Your newly supplied NomadARK rules now drive taming and breeding. Unpublished imprint and dinosaur-hunger settings remain editable estimates.</p></div>
+  <div className="pagetitle"><span className="eyebrow">CONFIGURATION / SERVER PROFILES</span><h1>Cluster Settings</h1><p>Switch between official game modes and your private cluster in the top-right menu. Multipliers immediately update the taming and breeding calculators.</p></div>
   <div className="two wideleft">
-   <section className="panel">
-    <div className="panelhead"><h2>NomadARK Multipliers</h2><span className="badge green">NEW CONFIRMED RATES</span></div>
-    <div className="notice"><strong>Sources:</strong> <a href={NOMADARK_SOURCE} target="_blank" rel="noreferrer">NomadARK.net <ExternalLink size={13}/></a> plus the server settings you supplied · Updated {NOMADARK_PROFILE.checked}. <strong>10× taming · 8× maturation · 25× egg hatching · 0.2× mating interval · 10× harvesting · 10× XP · 5× crops.</strong></div>
-    <div className="formgrid">{fields.map(key=>{
-     const info=NOMADARK_RATE_FIELDS[key];
-     const isPublished=info.status==='confirmed'&&Number(rates[key])===info.value;
-     return <label className="field server-rate-field" key={key}>
-      <span>{info.label} <span className={`badge ${isPublished?'green':'gold'}`}>{isPublished?'CONFIRMED':'UNVERIFIED / CUSTOM'}</span></span>
-      <input type="number" min="0.001" step="0.1" value={rates[key]} onChange={event=>setRates(previous=>({...previous,[key]:Number(event.target.value)}))}/>
-      <small className="rate-source-note">{rateDescription(key,rates[key])}</small>
-     </label>;
-    })}</div>
-    <div className="actionrow"><button className="primary" onClick={()=>setRates(previous=>applyNomadarkConfirmedRates(previous))}>Apply Confirmed NomadARK Rates</button><button className="ghost" onClick={()=>setRates(defaults)}>Restore NomadARK Preset</button></div>
-    <div className="notice"><strong>Important:</strong> Player food drain is <strong>0.50×</strong>, but that is NOT dinosaur food drain. Your {rates.food}× dinosaur food-drain and {rates.cuddle}× imprint-interval values remain estimates until administrators confirm them in <a href={NOMADARK_DISCORD} target="_blank" rel="noreferrer">NomadARK Discord <ExternalLink size={13}/></a>.</div>
+   <section className="panel"><div className="panelhead"><h2>{preset.label} · Rates</h2><span className={`badge ${preset.verified?'green':'gold'}`}>{preset.verified?'BASELINE SOURCE':'VERIFY WITH SERVER'}</span></div>
+    <label className="field"><span>Active cluster</span><select value={clusterId} onChange={event=>onClusterChange(event.target.value)}>{clusterPresets.map(item=><option key={item.id} value={item.id}>{item.label}</option>)}</select></label>
+    <div className="notice">{preset.description} Official server rates may temporarily change for events. Source: <a href={preset.source||OFFICIAL_MODES_SOURCE} target="_blank" rel="noreferrer">Wildcard's published server rules <ExternalLink size={13}/></a>.</div>
+    <div className="formgrid">{Object.entries(labels).map(([key,label])=><label className="field server-rate-field" key={key}><span>{label}</span><input type="number" min="0.001" step="0.1" value={rates[key]} onChange={event=>setRates(previous=>({...previous,[key]:Number(event.target.value)}))}/><small className="rate-source-note">{preset.rates&&Number(rates[key])===Number(preset.rates[key])?'Preset baseline':'Manual override'}{key==='food'||key==='cuddle'?' · confirm server-specific mechanics':''}</small></label>)}</div>
+    <div className="actionrow"><button className="primary" onClick={()=>onClusterChange(clusterId)}>Restore {preset.label} Rates</button><button className="ghost" onClick={()=>onClusterChange('custom')}>Use Current Rates as Custom</button></div>
+    <div className="notice">Your per-account active profile syncs with Tribe Cloud. Tribe timers and crafting queues remain shared between members; changing rates does not rewrite timers already running.</div>
    </section>
-   <section className="panel"><div className="panelhead"><h2>Private Tribe Mode</h2></div>
-    <div className="milestone"><Shield/><div><strong>Local-first privacy</strong><small>Your server records and timers stay on this PC.</small></div></div>
-    <div className="milestone"><Save/><div><strong>Automatic local saves</strong><small>Inputs, records, and rate overrides are saved locally.</small></div></div>
-    <div className="milestone"><Activity/><div><strong>Shared sync — planned</strong><small>Railway API and user accounts will connect tribe PCs after validation.</small></div></div>
-    <div className="notice">NomadARK advertises custom server plugins and mods. Those can affect real behavior independently of the public rate multipliers. The app does not connect to NomadARK administration or read its private Game.ini.</div>
+   <section className="panel"><div className="panelhead"><h2>Tribe Cloud</h2></div>
+    <div className="milestone"><Shield/><div><strong>Your account stays private</strong><small>Login and theme are personal; you decide which cluster profile to use.</small></div></div>
+    <div className="milestone"><Save/><div><strong>Saved across sessions</strong><small>Your rates and profile are stored locally and in your signed-in profile.</small></div></div>
+    <div className="milestone"><Activity/><div><strong>Live shared workspace</strong><small>Tribe timers, scouting records and shared crafting synchronize from Railway.</small></div></div>
+    <div className="notice">Cluster profiles change calculations only. They do not connect to game server administration or read private Game.ini settings.</div>
    </section>
   </div>
-  <section className="panel nomad-rules"><div className="panelhead"><h2>NomadARK Gameplay & Weapon Rules</h2><span className="badge gold">SERVER REFERENCE</span></div>
-   <div className="nomad-rules-grid">
-    <div className="keyrow"><span>Tribe limit</span><strong>6 players · no alliances</strong></div>
-    <div className="keyrow"><span>Tame / turret limit</span><strong>500 tames · 100 turrets</strong></div>
-    <div className="keyrow"><span>Weapon cap</span><strong>354%</strong></div>
-    <div className="keyrow"><span>Longneck Rifle buff</span><strong>300% (interpretation requires confirmation)</strong></div>
-    <div className="keyrow"><span>Flamethrower nerf</span><strong>20%</strong></div>
-    <div className="keyrow"><span>Saddles / armor cap</span><strong>Official</strong></div>
-    <div className="keyrow"><span>Max stack size</span><strong>2,000</strong></div>
-    <div className="keyrow"><span>Item weight reduction</span><strong>50%</strong></div>
-    <div className="keyrow"><span>Structure limits</span><strong>8,000 snap · 70,000 global</strong></div>
-    <div className="keyrow"><span>Pickup / Mindwipe</span><strong>Unlimited</strong></div>
-    <div className="keyrow"><span>Upload retention</span><strong>72 hours</strong></div>
-    <div className="keyrow"><span>Element / tribute transfer</span><strong>Enabled</strong></div>
-    <div className="keyrow"><span>Player weight / fortitude</span><strong>5× / 2×</strong></div>
-    <div className="keyrow"><span>Player food / water drain</span><strong>0.5× / 0.5×</strong></div>
-   </div>
-   <div className="notice">Longneck 300% is a server weapon-balance modifier, not a guaranteed blueprint weapon-damage percentage. The knockout calculator lets you set it separately and explains the 3× interpretation; avoid double counting if the in-game tooltip already reflects this buff. Nomad Jungle has separately advertised rates, outside our official-map preset.</div>
-  </section>
+  {clusterId==='nomadark'&&<section className="panel nomad-rules"><div className="panelhead"><h2>NomadARK Gameplay Rules</h2><span className="badge gold">REFERENCE</span></div><div className="nomad-rules-grid">
+   <div className="keyrow"><span>Tribe / alliances</span><strong>6 · No alliances</strong></div>
+   <div className="keyrow"><span>Tame / turret cap</span><strong>500 / 100</strong></div>
+   <div className="keyrow"><span>Weapon / armor</span><strong>354% weapon cap · official armor</strong></div>
+   <div className="keyrow"><span>Longneck / flamethrower</span><strong>300% buff / 20% nerf</strong></div>
+   <div className="keyrow"><span>Harvest / XP / crops</span><strong>10× / 10× / 5×</strong></div>
+   <div className="keyrow"><span>Stack / weight</span><strong>2,000 / 50% reduction</strong></div>
+   <div className="keyrow"><span>Structure limits</span><strong>8,000 snap / 70,000 global</strong></div>
+   <div className="keyrow"><span>Transfer retention</span><strong>72h</strong></div>
+  </div><div className="notice">Server rules supplied by your tribe, with <a href={NOMADARK_SOURCE} target="_blank" rel="noreferrer">NomadARK.net <ExternalLink size={13}/></a>. The published 0.5× food drain is PLAYER food drain, not dinosaur food drain. Weapon buffs can differ from tooltip damage.</div></section>}
  </>;
 }

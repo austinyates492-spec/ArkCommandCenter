@@ -6,8 +6,6 @@ import {calculateCraftingCart} from './crafting-engine';
 import './crafting.css';
 import './tribe-crafting.css';
 
-const catalog={...wikiRecipes,...starterRecipes};
-const names=Object.keys(catalog).sort();
 const fmt=new Intl.NumberFormat('en-US');
 function Node({item,depth=0}){
  if(item.raw)return <div className="craftleaf" style={{paddingLeft:`${depth*14}px`}}><span className="craftnode-dot"/> <strong>{fmt.format(item.quantity)}</strong> {item.name} <small>RAW</small></div>;
@@ -18,9 +16,11 @@ function Quantity({item,onSave}){
  return <div className="tribe-quantity"><input aria-label={`${item.name} quantity`} type="number" min="1" max="1000000" value={value} onChange={e=>setValue(e.target.value)} onBlur={()=>{const n=Number(value);if(Number.isSafeInteger(n)&&n>0&&n<=1000000&&n!==item.quantity)onSave(n);else setValue(String(item.quantity));}} onKeyDown={e=>{if(e.key==='Enter')e.currentTarget.blur();}}/></div>;
 }
 
-export default function TribeCraftingPage({live,user,onOpenAccount}){
+export default function TribeCraftingPage({live,user,onOpenAccount,liveRecipes={}}){
+ const catalog=useMemo(()=>({...wikiRecipes,...liveRecipes,...starterRecipes}),[liveRecipes]);
+ const names=useMemo(()=>Object.keys(catalog).sort(),[catalog]);
  const [query,setQuery]=useState('');const [selected,setSelected]=useState('Sloped Wooden Roof');const [quantity,setQuantity]=useState(1);
- const matches=useMemo(()=>names.filter(name=>name.toLowerCase().includes(query.toLowerCase())).slice(0,400),[query]);
+ const matches=useMemo(()=>names.filter(name=>name.toLowerCase().includes(query.toLowerCase())).slice(0,400),[query,names]);
  let plan=null,planError='';try{plan=calculateCraftingCart(live.crafting,catalog);}catch(e){planError=e.message;}
  const act=promise=>void promise.catch(()=>{});
  if(!user)return <div className="craft-workspace"><div className="pagetitle"><span className="eyebrow">LOGISTICS / TRIBE</span><h1>Tribe Crafting</h1></div><section className="panel"><h2>Sign in to share projects</h2><p>Tribe crafting is stored in the shared database so every member sees the same queue and resource totals.</p><button className="primary" onClick={onOpenAccount}><Cloud size={16}/> Open Tribe Cloud</button></section></div>;

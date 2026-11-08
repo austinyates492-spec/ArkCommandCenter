@@ -1,9 +1,10 @@
 {
   "$schema":"https://schema.tauri.app/config/2",
   "productName":"ARK Command Center",
-  "version":"0.8.3",
+  "version":"0.8.4",
   "identifier":"com.arkcommandcenter.tribe",
   "build":{"beforeDevCommand":"npm run dev","devUrl":"http://127.0.0.1:1420","beforeBuildCommand":"npm run build","frontendDist":"../dist"},
   "app":{"windows":[{"title":"ARK Command Center","width":1440,"height":900,"minWidth":940,"minHeight":660}],"security":{"csp":null}},
-  "bundle":{"active":true,"targets":["nsis"],"icon":["icons/icon.png","icons/icon.ico"]}
+  "bundle":{"active":true,"targets":["nsis"],"icon":["icons/icon.png","icons/icon.ico"],"createUpdaterArtifacts":true},
+  "plugins":{"updater":{"pubkey":"dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDZDRkQ5NkI2REU0QjY5NzAKUldSd2FVdmV0cGI5YkNJNWZnVWh2MHdXREVlME5xdFhKNllXa1ltSnhjZEI2QUV6a2hyREtxdGwK","endpoints":["https://ark-command-center-api-production.up.railway.app/api/v1/updates/check/{{target}}/{{arch}}/{{current_version}}"]}}
 }
