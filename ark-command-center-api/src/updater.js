@@ -32,7 +32,16 @@ export async function verifyGithubOidc(token){
  const parts=token.split('.');if(parts.length!==3)throw Error('Invalid build credential');
  let header,claims;
  try{header=JSON.parse(decode(parts[0]));claims=JSON.parse(decode(parts[1]));}catch{throw Error('Invalid build credential');}
- if(header.alg!=='RS256'||typeof header.kid!=='string'||!trustedWorkflowClaims(claims))throw Error('Build identity rejected');
+ if(header.alg!=='RS256'||typeof header.kid!=='string'||!trustedWorkflowClaims(claims)){
+  // Public workflow identifiers only. Never record the token, its signature,
+  // or a credential; these fields help diagnose GitHub claim format changes.
+  console.warn('Release OIDC claims rejected',JSON.stringify({alg:header.alg,
+   iss:String(claims.iss||'').slice(0,100),aud:String(claims.aud||'').slice(0,100),
+   repository:String(claims.repository||'').slice(0,120),ref:String(claims.ref||'').slice(0,120),
+   sub:String(claims.sub||'').slice(0,180),workflow_ref:String(claims.workflow_ref||'').slice(0,200),
+   iat:claims.iat,exp:claims.exp}));
+  throw Error('Build identity rejected');
+ }
  const keys=await getJwks();const jwk=keys.find(key=>key.kid===header.kid&&key.kty==='RSA');
  if(!jwk)throw Error('Build signing key unavailable');
  const key=createPublicKey({key:jwk,format:'jwk'});
