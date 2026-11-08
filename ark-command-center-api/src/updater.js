@@ -4,6 +4,10 @@ const OWNER_REPO='austinyates492-spec/ArkCommandCenter';
 const AUDIENCE='ark-command-center-updates';
 const OIDC_ISSUER='https://token.actions.githubusercontent.com';
 const JWKS='https://token.actions.githubusercontent.com/.well-known/jwks';
+// This GitHub organization uses an ID-qualified custom OIDC subject format.
+// Pin the owner and repository IDs so a renamed/transferred repository cannot
+// inherit permission to obtain the updater signing key.
+const RELEASE_SUBJECT='repo:austinyates492-spec@353126816/ArkCommandCenter@1447716209:ref:refs/heads/main';
 const MAX_UPDATE_BYTES=80*1024*1024;
 let jwksCache={keys:null,expiresAt:0};
 const decode=value=>Buffer.from(value,'base64url');
@@ -23,7 +27,7 @@ async function getJwks(){
 export function trustedWorkflowClaims(claims,now=Math.floor(Date.now()/1000)){
  return Boolean(claims&&claims.iss===OIDC_ISSUER&&claims.aud===AUDIENCE&&
   claims.repository===OWNER_REPO&&claims.ref==='refs/heads/main'&&
-  claims.sub===`repo:${OWNER_REPO}:ref:refs/heads/main`&&
+  claims.sub===RELEASE_SUBJECT&&
   claims.workflow_ref===`${OWNER_REPO}/.github/workflows/build-windows.yml@refs/heads/main`&&
   Number.isFinite(claims.iat)&&Number.isFinite(claims.exp)&&claims.iat<=now+60&&claims.exp>now);
 }
