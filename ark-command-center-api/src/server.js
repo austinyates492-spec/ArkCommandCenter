@@ -196,7 +196,8 @@ async function initialize(){
 
 const server=http.createServer((req,res)=>{handle(req,res).catch(error=>{
  if(error.status)return json(res,error.status,{error:error.message});
- console.error('API request failed:',error.code||error.name||'unknown');
+ if(req.url?.startsWith('/api/v1/updates/'))console.error('Signed update request failed:',String(error.message||error.code||'unknown').slice(0,180));
+ else console.error('API request failed:',error.code||error.name||'unknown');
  if(!res.headersSent)json(res,500,{error:'Unexpected server error.'});else res.end();
 });});
 initialize().then(async()=>{
