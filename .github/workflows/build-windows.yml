@@ -89,8 +89,8 @@ jobs:
         if: github.event_name == 'push' && startsWith(github.event.head_commit.message, 'release:')
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v0.8.10
-          name: ArkTribeHQ v0.8.10 - ASA v97 Creature Portraits
+          tag_name: v0.8.11
+          name: ArkTribeHQ v0.8.11 - Classic Creature Placeholders
           body: |
             Adds the Enigmasaur live taming challenge and map coverage, updates
             Giganotosaurus to its v97 Apex Challenge, and removes stale tranq math.
