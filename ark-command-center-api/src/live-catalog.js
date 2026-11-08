@@ -4,6 +4,7 @@ const WIKI='https://ark.wiki.gg/api.php';
 const EDITION_BLOCK=/\b(?:Primitive Plus|ARK Mobile|Mobile:|Survival Evolved Mobile|PixARK|Mod:|Modded)/i;
 const MAX_RECIPES=4000;
 const MAX_CREATURES=1600;
+const MAX_RECIPE_PAGES=2200;
 const FETCH_TIMEOUT=25_000;
 const API_ORIGIN='https://ark.wiki.gg';
 
@@ -39,6 +40,11 @@ export function normalizeCreatures(pages){
  }
  return [...names].sort().slice(0,MAX_CREATURES);
 }
+export function normalizeRecipeCandidates(pages){
+ const names=new Set();
+ for(const entry of pages){const name=String(entry?.title||'').trim();if(safeName(name))names.add(name);}
+ return [...names].sort().slice(0,MAX_RECIPE_PAGES);
+}
 // Release-year categories keep discovery focused on recently introduced
 // creatures. Using the calendar year avoids requiring a new desktop build in
 // January when the Wiki creates next year's category.
@@ -56,8 +62,8 @@ async function wiki(params){
 }
 const craftFields=['Page','craftedIn',...Array.from({length:15},(_,i)=>[`ingredient${i+1}`,`quantity${i+1}`]).flat()].join(',');
 export async function fetchWikiCatalog(previous=null){
- let recipes=previous?.recipes||{},creatures=previous?.creatures||[];
- const sourceStatus={recipes:'cached',creatures:'cached'};
+ let recipes=previous?.recipes||{},creatures=previous?.creatures||[],recipeCandidates=previous?.recipeCandidates||[];
+ const sourceStatus={recipes:'cached',creatures:'cached',recipeNames:'cached'};
  const sourceErrors=[];
  try{
   // Try smaller Cargo batches if the Wiki extension rejects a large query.
@@ -78,6 +84,19 @@ export async function fetchWikiCatalog(previous=null){
   recipes=normalizeRecipeRows(recipeRows);sourceStatus.recipes='updated';
  }catch(error){sourceErrors.push(`Recipes: ${error.message}`);}
  try{
+  // Cargo occasionally fails at the Wiki level. Category:Crafting still
+  // exposes newly added craftable page names; never invent their ingredients.
+  const pages=[];let cmcontinue;
+  do{
+   const result=await wiki({action:'query',list:'categorymembers',cmtitle:'Category:Crafting',cmlimit:'500',cmtype:'page',...(cmcontinue?{cmcontinue}:{})});
+   if(!Array.isArray(result?.query?.categorymembers))throw Error('Wiki crafting category changed');
+   pages.push(...result.query.categorymembers);cmcontinue=result?.continue?.cmcontinue;
+  }while(cmcontinue&&pages.length<MAX_RECIPE_PAGES);
+  const candidates=normalizeRecipeCandidates(pages);
+  if(candidates.length<100)throw Error('Wiki crafting category returned too few pages');
+  recipeCandidates=candidates;sourceStatus.recipeNames='updated';
+ }catch(error){sourceErrors.push(`Crafting names: ${error.message}`);}
+ try{
   const pages=[];
   for(const category of creatureYearCategories()){
    let cmcontinue;
@@ -93,7 +112,7 @@ export async function fetchWikiCatalog(previous=null){
   creatures=found;sourceStatus.creatures='updated';
  }catch(error){sourceErrors.push(`Creatures: ${error.message}`);}
  if(!Object.values(sourceStatus).includes('updated')&&!previous)throw Error(sourceErrors.join('; '));
- return {source:'ARK Official Community Wiki',sourceUrl:WIKI,checkedAt:new Date().toISOString(),recipes,creatures,sourceStatus,sourceErrors};
+ return {source:'ARK Official Community Wiki',sourceUrl:WIKI,checkedAt:new Date().toISOString(),recipes,recipeCandidates,creatures,sourceStatus,sourceErrors};
 }
 
 export async function initializeLiveCatalog(pool){
@@ -111,7 +130,7 @@ export function startCatalogRefresh(pool,{fetchSource=fetchWikiCatalog,intervalM
   if(busy)return;busy=true;
   try{const catalog=await fetchSource(await latestLiveCatalog(pool));
    await pool.query("INSERT INTO live_catalog(key,data,updated_at) VALUES('wiki',$1::jsonb,NOW()) ON CONFLICT(key) DO UPDATE SET data=EXCLUDED.data,updated_at=NOW()",[JSON.stringify(catalog)]);
-   console.info(`Live wiki catalog checked: ${Object.keys(catalog.recipes).length} recipes, ${catalog.creatures.length} candidate pages; sources ${JSON.stringify(catalog.sourceStatus)}`);
+   console.info(`Live wiki catalog checked: ${Object.keys(catalog.recipes).length} recipes, ${catalog.recipeCandidates?.length||0} crafting pages, ${catalog.creatures.length} creature pages; sources ${JSON.stringify(catalog.sourceStatus)}`);
    if(catalog.sourceErrors?.length)console.warn('Wiki source partially unavailable:',catalog.sourceErrors.join('; '));
   }catch(error){console.warn('Live wiki refresh unsuccessful; retaining prior snapshot:',error.message);}
   finally{busy=false;}

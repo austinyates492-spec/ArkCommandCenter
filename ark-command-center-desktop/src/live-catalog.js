@@ -10,6 +10,7 @@ function stored(){try{const value=JSON.parse(localStorage.getItem(CACHE));return
 export function valid(value){
  return Boolean(value&&typeof value==='object'&&!Array.isArray(value)&&typeof value.checkedAt==='string'&&
   Array.isArray(value.creatures)&&value.creatures.length<=1000&&
+  (value.recipeCandidates===undefined||(Array.isArray(value.recipeCandidates)&&value.recipeCandidates.length<=2500))&&
   value.recipes&&typeof value.recipes==='object'&&!Array.isArray(value.recipes)&&Object.keys(value.recipes).length<=5000);
 }
 export function newWikiRecipes(catalog){
@@ -28,6 +29,11 @@ export function newWikiCreatures(catalog){
  if(!valid(catalog))return [];
  const builtIn=new Set(asaBaseCreatures.map(name=>name.toLowerCase()));
  return [...new Set(catalog.creatures.filter(name=>typeof name==='string'&&name.length<100&&!builtIn.has(name.toLowerCase())))].sort();
+}
+export function newWikiRecipeCandidates(catalog){
+ if(!valid(catalog)||!Array.isArray(catalog.recipeCandidates))return [];
+ return [...new Set(catalog.recipeCandidates.filter(name=>typeof name==='string'&&name.length>0&&name.length<100&&
+  !Object.hasOwn(wikiRecipes,name)&&!Object.hasOwn(starterRecipes,name)&&!Object.hasOwn(catalog.recipes,name)))].sort();
 }
 export function useLiveCatalog(){
  const [catalog,setCatalog]=useState(stored),[status,setStatus]=useState('loading'),[error,setError]=useState('');
@@ -49,5 +55,6 @@ export function useLiveCatalog(){
  },[]);
  const recipes=useMemo(()=>newWikiRecipes(catalog),[catalog]);
  const creatures=useMemo(()=>newWikiCreatures(catalog),[catalog]);
- return {catalog,recipes,creatures,status,error,isCached:catalog&&Date.now()-new Date(catalog.checkedAt).getTime()>MAX_AGE};
+ const recipeCandidates=useMemo(()=>newWikiRecipeCandidates(catalog),[catalog]);
+ return {catalog,recipes,recipeCandidates,creatures,status,error,isCached:catalog&&Date.now()-new Date(catalog.checkedAt).getTime()>MAX_AGE};
 }

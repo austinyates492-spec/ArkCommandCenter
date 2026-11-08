@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {normalizeRecipeRows,normalizeCreatures,creatureYearCategories} from '../src/live-catalog.js';
+import {normalizeRecipeRows,normalizeCreatures,normalizeRecipeCandidates,creatureYearCategories} from '../src/live-catalog.js';
 import {versionCompare,trustedWorkflowClaims} from '../src/updater.js';
 
 test('new wiki craftables become unverified calculations and reject invalid data',()=>{
@@ -13,6 +13,9 @@ test('new creature discovery never interprets pages as verified mechanics',()=>{
  assert.deepEqual(normalizeCreatures([{title:'Bloodstalker'},{title:'New Creature'},{title:'Mod: Fake'},{title:'New Creature'}]),['Bloodstalker','New Creature']);
  assert.deepEqual(creatureYearCategories(2026),['Category:Creatures released in 2025','Category:Creatures released in 2026','Category:Creatures released in 2027']);
  assert.equal(creatureYearCategories(2029).at(-1),'Category:Creatures released in 2030');
+});
+test('wiki crafting page discoveries stay names only when ingredient data is unavailable',()=>{
+ assert.deepEqual(normalizeRecipeCandidates([{title:'New Tek Device'},{title:'Mod: Fake Recipe'},{title:'New Tek Device'}]),['New Tek Device']);
 });
 test('updater uses strict semantic version ordering',()=>{
  assert.equal(versionCompare('0.8.5','0.8.4'),1);

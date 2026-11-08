@@ -58,7 +58,7 @@ export async function handleUpdater(req,res,{url,pool,json}){
  if(method==='GET'&&path.startsWith('/api/v1/updates/check/')){
   const match=/^\/api\/v1\/updates\/check\/windows\/x86_64\/(\d+\.\d+\.\d+)$/.exec(path);
   if(!match){res.writeHead(204);res.end();return true;}
-  const {rows}=await pool.query("SELECT version,signature,published_at FROM app_updates WHERE platform='windows-x86_64' ORDER BY published_at DESC LIMIT 1");
+  const {rows}=await pool.query("SELECT version,signature,published_at FROM app_updates WHERE platform='windows-x86_64' ORDER BY split_part(version,'.',1)::int DESC,split_part(version,'.',2)::int DESC,split_part(version,'.',3)::int DESC LIMIT 1");
   const latest=rows[0];if(!latest||versionCompare(latest.version,match[1])!==1){res.writeHead(204);res.end();return true;}
   const urlBase=process.env.UPDATE_PUBLIC_ORIGIN||'https://ark-command-center-api-production.up.railway.app';
   json(res,200,{version:latest.version,notes:'ARK Command Center improvements and new features',pub_date:new Date(latest.published_at).toISOString(),url:`${urlBase}/api/v1/updates/download/windows-x86_64/${latest.version}`,signature:latest.signature});return true;
@@ -90,7 +90,7 @@ export async function handleUpdater(req,res,{url,pool,json}){
    [version,signature,bytes,bytes.length]);
   // Keep a small signed-update history, not an unbounded collection of EXEs.
   await pool.query(`DELETE FROM app_updates WHERE platform='windows-x86_64' AND version NOT IN
-   (SELECT version FROM app_updates WHERE platform='windows-x86_64' ORDER BY published_at DESC LIMIT 3)`);
+   (SELECT version FROM app_updates WHERE platform='windows-x86_64' ORDER BY split_part(version,'.',1)::int DESC,split_part(version,'.',2)::int DESC,split_part(version,'.',3)::int DESC LIMIT 3)`);
   json(res,200,{ok:true,version,bytes:bytes.length});return true;
  }
  return false;

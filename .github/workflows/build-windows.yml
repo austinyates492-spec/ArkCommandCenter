@@ -81,16 +81,16 @@ jobs:
         if: github.event_name == 'push' && startsWith(github.event.head_commit.message, 'release:')
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v0.8.4
-          name: ARK Command Center v0.8.4 - Clusters, Live Data and Auto-Updates
+          tag_name: v0.8.5
+          name: ARK Command Center v0.8.5 - Live Data Resilience
           body: |
-            Adds official server-mode presets (PvP, PvE, Small Tribes, ARKpocalypse,
-            Conquest, Classic), custom profiles, 25 complete themes, and the live
-            Community Wiki discovery feed for creature pages and recipes.
+            Refines cluster preset labels and adds automatic discovery of newly
+            published crafting pages even when the wiki's ingredients feed is down.
+            Retains the full 25 themes, live creature feed, and signed updates.
 
             Future feature releases can be installed with one click inside the app.
             The update packages are securely signed and delivered from the tribe API;
-            existing v0.8.3 installations must install this v0.8.4 release once.
+            existing v0.8.3 installations must install v0.8.4 or later once.
 
             This is a private repository. Tribe members need GitHub access to download the installer.
           files: ark-command-center-desktop/src-tauri/target/release/bundle/nsis/*.exe
