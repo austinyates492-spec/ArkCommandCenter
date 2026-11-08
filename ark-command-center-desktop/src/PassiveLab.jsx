@@ -4,6 +4,7 @@ import {maps} from './data.js';
 import {passiveProfiles,passiveFoodPlan} from './passive-taming.js';
 import {passiveRoster,getTamingMethod} from './special-taming-methods.js';
 import {wikiFoodOptions} from './taming-engine.js';
+import CreaturePortrait from './CreaturePortrait.jsx';
 
 const fmt=new Intl.NumberFormat('en-US');
 const timeText=s=>s>=3600?`${Math.floor(s/3600)}h ${Math.round(s%3600/60)}m`:`${Math.max(1,Math.round(s/60))}m`;
@@ -43,7 +44,7 @@ export default function PassiveLab({rates,onTimer}){
     {(!plan.ok||plan.seconds===0)&&<label className="field"><span>Verified duration or next feeding reminder (minutes)</span><input type="number" min="0.1" step="0.1" placeholder="Manual timer" value={minutes} onChange={e=>setMinutes(e.target.value)}/></label>}
     <div className="actionrow"><button className="primary" disabled={!canTimer} onClick={()=>onTimer(`${creature} passive Lv ${level} · ${map}`,duration,'Passive Taming')}>Start Passive Timer <Timer size={16}/></button><a className="ghost linkbtn" target="_blank" rel="noreferrer" href={method?.source||`https://ark.wiki.gg/wiki/${encodeURIComponent(creature.replaceAll(' ','_'))}`}>Species guide <ExternalLink size={15}/></a></div>
    </section>
-   <section className="panel"><div className="panelhead"><h2>Passive Loadout</h2><span className="badge">NO TRANQS</span></div><div className="featureart">🦕</div>
+   <section className="panel"><div className="panelhead"><h2>Passive Loadout</h2><span className="badge">NO TRANQS</span></div><CreaturePortrait creature={creature}/>
     <div className="keyrow"><span>Species</span><strong>{creature}</strong></div>
     <div className="keyrow"><span>Method</span><strong>{method?.type||'Passive feeding'}</strong></div>
     <div className="keyrow"><span>Selected food</span><strong>{selectedFood||'Needs individual review'}</strong></div>

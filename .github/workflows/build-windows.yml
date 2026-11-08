@@ -89,8 +89,8 @@ jobs:
         if: github.event_name == 'push' && startsWith(github.event.head_commit.message, 'release:')
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v0.8.8
-          name: ArkTribeHQ v0.8.8 - Public Launch
+          tag_name: v0.8.9
+          name: ArkTribeHQ v0.8.9 - ASA v97 Creature Portraits
           body: |
             Fresh start: old account sessions and local workspace data are cleared once.
             Official PvP is the default cluster, with every other preset still available.

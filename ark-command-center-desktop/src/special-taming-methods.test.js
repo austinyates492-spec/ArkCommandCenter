@@ -24,6 +24,6 @@ test('announced special methods never invent a specific item',()=>{
  const method=getTamingMethod('Xeranox');
  assert.equal(method.status,'unreleased');
  assert.deepEqual(method.items,[]);
- assert.equal(getTamingMethod('Enigmasaur').status,'unreleased');
+ assert.equal(getTamingMethod('Enigmasaur').status,'documented');
  assert.equal(getTamingMethod('DodoRex').status,'unavailable');
 });

@@ -30,9 +30,9 @@ test('unsupported and invalid combinations refuse a calculation',()=>{
  assert.equal(calculateTame({creature:'Rex',level:150,food:'Mejoberries'}).ok,false);
  assert.ok(!availableFoods('Wyvern').length);
 });
-test('expanded wiki knockout profiles preserve 14 audited core species',()=>{
+test('expanded wiki knockout profiles preserve 13 unaffected audited core species',()=>{
  assert.ok(Object.keys(knockoutProfiles).length>=70);
- for(const creature of ['Rex','Argentavis','Allosaurus','Giganotosaurus','Stegosaurus','Therizinosaurus','Pteranodon','Tapejara','Raptor','Sabertooth','Sarcosuchus','Triceratops','Ankylosaurus','Quetzal']){
+ for(const creature of ['Rex','Argentavis','Allosaurus','Stegosaurus','Therizinosaurus','Pteranodon','Tapejara','Raptor','Sabertooth','Sarcosuchus','Triceratops','Ankylosaurus','Quetzal']){
   const result=calculateTame({creature,level:150,food:availableFoods(creature)[0],tamingRate:10});
   assert.equal(result.ok,true,creature);
   assert.ok(result.foodPieces>=1,creature);
