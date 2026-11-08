@@ -55,28 +55,45 @@ async function wiki(params){
  const data=await res.json();if(data?.error)throw Error(`Wiki API error: ${data.error.code||'unknown'}`);return data;
 }
 const craftFields=['Page','craftedIn',...Array.from({length:15},(_,i)=>[`ingredient${i+1}`,`quantity${i+1}`]).flat()].join(',');
-export async function fetchWikiCatalog(){
- const recipeRows=[];
- for(let offset=0;offset<MAX_RECIPES;offset+=500){
-  const page=await wiki({action:'cargoquery',tables:'Craftables',fields:craftFields,limit:'500',offset:String(offset)});
-  if(!Array.isArray(page?.cargoquery))throw Error('Wiki Craftables response format changed');
-  recipeRows.push(...page.cargoquery);if(page.cargoquery.length<500)break;
- }
- if(recipeRows.length<100)throw Error('Wiki source returned fewer than 100 crafting rows; retaining prior snapshot.');
- const recipes=normalizeRecipeRows(recipeRows);
- const pages=[];
- for(const category of creatureYearCategories()){
-  let cmcontinue;
-  do{
-   const result=await wiki({action:'query',list:'categorymembers',cmtitle:category,cmlimit:'500',cmtype:'page',...(cmcontinue?{cmcontinue}:{})});
-   if(!Array.isArray(result?.query?.categorymembers))throw Error('Wiki creature release category changed');
-   pages.push(...result.query.categorymembers);cmcontinue=result?.continue?.cmcontinue;
-  }while(cmcontinue&&pages.length<MAX_CREATURES);
-  if(pages.length>=MAX_CREATURES)break;
- }
- const creatures=normalizeCreatures(pages);
- if(creatures.length<10)throw Error('Wiki release categories returned too few creature pages; retaining prior snapshot.');
- return {source:'ARK Official Community Wiki',sourceUrl:WIKI,checkedAt:new Date().toISOString(),recipes,creatures};
+export async function fetchWikiCatalog(previous=null){
+ let recipes=previous?.recipes||{},creatures=previous?.creatures||[];
+ const sourceStatus={recipes:'cached',creatures:'cached'};
+ const sourceErrors=[];
+ try{
+  // Try smaller Cargo batches if the Wiki extension rejects a large query.
+  let recipeRows=[];let lastError;
+  for(const batchSize of [500,100]){
+   try{
+    const rows=[];
+    for(let offset=0;offset<MAX_RECIPES;offset+=batchSize){
+     const page=await wiki({action:'cargoquery',tables:'Craftables',fields:craftFields,limit:String(batchSize),offset:String(offset)});
+     if(!Array.isArray(page?.cargoquery))throw Error('Wiki Craftables response format changed');
+     rows.push(...page.cargoquery);if(page.cargoquery.length<batchSize)break;
+    }
+    recipeRows=rows;lastError=null;break;
+   }catch(error){lastError=error;}
+  }
+  if(lastError)throw lastError;
+  if(recipeRows.length<100)throw Error('Wiki Craftables returned too few rows');
+  recipes=normalizeRecipeRows(recipeRows);sourceStatus.recipes='updated';
+ }catch(error){sourceErrors.push(`Recipes: ${error.message}`);}
+ try{
+  const pages=[];
+  for(const category of creatureYearCategories()){
+   let cmcontinue;
+   do{
+    const result=await wiki({action:'query',list:'categorymembers',cmtitle:category,cmlimit:'500',cmtype:'page',...(cmcontinue?{cmcontinue}:{})});
+    if(!Array.isArray(result?.query?.categorymembers))throw Error('Wiki creature release category changed');
+    pages.push(...result.query.categorymembers);cmcontinue=result?.continue?.cmcontinue;
+   }while(cmcontinue&&pages.length<MAX_CREATURES);
+   if(pages.length>=MAX_CREATURES)break;
+  }
+  const found=normalizeCreatures(pages);
+  if(found.length<10)throw Error('Wiki release categories returned too few creature pages');
+  creatures=found;sourceStatus.creatures='updated';
+ }catch(error){sourceErrors.push(`Creatures: ${error.message}`);}
+ if(!Object.values(sourceStatus).includes('updated')&&!previous)throw Error(sourceErrors.join('; '));
+ return {source:'ARK Official Community Wiki',sourceUrl:WIKI,checkedAt:new Date().toISOString(),recipes,creatures,sourceStatus,sourceErrors};
 }
 
 export async function initializeLiveCatalog(pool){
@@ -92,9 +109,10 @@ export function startCatalogRefresh(pool,{fetchSource=fetchWikiCatalog,intervalM
  let busy=false;
  const refresh=async()=>{
   if(busy)return;busy=true;
-  try{const catalog=await fetchSource();
+  try{const catalog=await fetchSource(await latestLiveCatalog(pool));
    await pool.query("INSERT INTO live_catalog(key,data,updated_at) VALUES('wiki',$1::jsonb,NOW()) ON CONFLICT(key) DO UPDATE SET data=EXCLUDED.data,updated_at=NOW()",[JSON.stringify(catalog)]);
-   console.info(`Live wiki catalog checked: ${Object.keys(catalog.recipes).length} recipes, ${catalog.creatures.length} candidate pages`);
+   console.info(`Live wiki catalog checked: ${Object.keys(catalog.recipes).length} recipes, ${catalog.creatures.length} candidate pages; sources ${JSON.stringify(catalog.sourceStatus)}`);
+   if(catalog.sourceErrors?.length)console.warn('Wiki source partially unavailable:',catalog.sourceErrors.join('; '));
   }catch(error){console.warn('Live wiki refresh unsuccessful; retaining prior snapshot:',error.message);}
   finally{busy=false;}
  };
