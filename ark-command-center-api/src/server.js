@@ -3,7 +3,7 @@ import {randomBytes} from 'node:crypto';
 import {Pool} from 'pg';
 import {hashPassword,verifyPassword,signAccessToken,verifyAccessToken,newRefreshToken,hashRefreshToken} from './security.js';
 import {initializeTribeTables,startTribeBroadcast,handleTribe} from './tribe-routes.js';
-import {resetAccountsOnce} from './account-reset.js';
+import {resetAccountsOnce,resetAllAccountDataOnce} from './account-reset.js';
 import {initializeLiveCatalog,latestLiveCatalog,startCatalogRefresh} from './live-catalog.js';
 import {initializeUpdater,handleUpdater} from './updater.js';
 
@@ -249,6 +249,7 @@ async function initialize(){
  await initializeLiveCatalog(pool);
  await initializeUpdater(pool);
  await resetAccountsOnce(pool);
+ await resetAllAccountDataOnce(pool);
 }
 
 const server=http.createServer((req,res)=>{handle(req,res).catch(error=>{
