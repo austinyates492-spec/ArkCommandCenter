@@ -26,6 +26,7 @@ export function estimateSpecialtyKnockout({creature,level,ammo}){
 }
 
 export function specialtyFeeding({creature,level,food,tamingRate=10,foodDrainRate=1}){
+ if(creature==='Giganotosaurus'||creature==='Tek Giganotosaurus')return {ok:false,reason:'The post-v97 Apex Challenge taming supply and duration have not been verified; use an observed manual timer.'};
  const lvl=Number(level),rate=Number(tamingRate);
  if(!Number.isInteger(lvl)||lvl<1||lvl>1000||!Number.isFinite(rate)||rate<=0)return {ok:false,reason:'Enter a level from 1 to 1000 and a positive taming multiplier.'};
  if(creature==='Bloodstalker'&&food==='Blood Pack'){

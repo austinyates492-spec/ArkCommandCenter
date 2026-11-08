@@ -3,6 +3,7 @@ import {ExternalLink,Timer} from 'lucide-react';
 import {maps} from './data.js';
 import {specialtyRoster,getTamingMethod} from './special-taming-methods.js';
 import {specialtyAmmoOptions,estimateSpecialtyKnockout,specialtyFeeding,specialtyFoodOptions,specialtyFixedSupply} from './specialty-engine.js';
+import CreaturePortrait from './CreaturePortrait.jsx';
 
 const fmt=new Intl.NumberFormat('en-US');
 function period(seconds){const m=Math.round(seconds/60);return m>=60?`${Math.floor(m/60)}h ${m%60}m`:`${m}m`;}
@@ -55,7 +56,7 @@ export default function SpecialtyLab({rates,onTimer}){
     <div className="actionrow"><a className="ghost linkbtn" target="_blank" rel="noreferrer" href={wiki}>Read species method <ExternalLink size={15}/></a><button className="primary" disabled={!canTimer} onClick={()=>onTimer(`${creature} Lv ${level} · ${map}`,estimatedMinutes,'Specialty Tame')}>Start Timer <Timer size={16}/></button></div>
    </section>
    <section className="panel"><div className="panelhead"><h2>Specialty Loadout</h2><span className={`badge ${method?.status==='documented'?'green':'gold'}`}>{method?.type||'Review needed'}</span></div>
-    <div className="featureart">🦀</div>
+    <CreaturePortrait creature={creature}/>
     <div className="keyrow"><span>Creature</span><strong>{creature}</strong></div>
     <div className="keyrow"><span>Level</span><strong>{level}</strong></div>
     {method?.items?.map(item=><div className="keyrow" key={item}><span>Allowed item / method</span><strong>{item}</strong></div>)}

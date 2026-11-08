@@ -6,12 +6,12 @@
 import wikiTaming from './wiki-taming-data.json' with {type:'json'};
 import asaMethods from './asa-taming-methods.json' with {type:'json'};
 import {breedingVariants} from './breeding-variants.js';
+import {ASA_V97_NONSTANDARD_KNOCKOUTS} from './asa-release-v97.js';
 
 const coreProfiles = {
   Rex: { base:3450, perLevel:150, drainBase:0.002314, drainMult:180.063385, kibble:'Exceptional', foods:['Raw Mutton','Raw Prime Meat','Raw Meat'] },
   Argentavis: { base:2000, perLevel:100, drainBase:0.001852, drainMult:199.983994, kibble:'Superior', foods:['Raw Mutton','Raw Prime Meat','Raw Meat'] },
   Allosaurus: { base:2400, perLevel:100, drainBase:0.002052, drainMult:180.063385, kibble:'Superior', foods:['Raw Mutton','Raw Prime Meat','Raw Meat'] }
-  ,Giganotosaurus: {base:5000,perLevel:160,drainBase:0.002314,drainMult:160.056335,kibble:'Exceptional',foods:['Raw Mutton','Raw Prime Meat','Raw Meat']}
   ,Stegosaurus: {base:6000,perLevel:300,drainBase:0.005341,drainMult:208.034286,kibble:'Regular',foods:['Vegetables','Mejoberries']}
   ,Therizinosaurus: {base:6800,perLevel:160,drainBase:0.002314,drainMult:180.063385,kibble:'Exceptional',foods:['Vegetables','Mejoberries'],kibbleFoodValue:119.969994}
   ,Pteranodon:{base:1200,perLevel:60,drainBase:0.001543,drainMult:216.029373,kibble:'Regular',foods:['Raw Mutton','Raw Prime Meat','Raw Meat']}
@@ -26,9 +26,9 @@ const coreProfiles = {
 
 const aliases={Sarcosuchus:'Sarco',Therizinosaurus:'Therizinosaur',Spinosaurus:'Spino',Triceratops:'Triceratops'};
 export function wikiCreatureRecord(name){return wikiTaming.creatures[name]||wikiTaming.creatures[aliases[name]]||wikiTaming.creatures[breedingVariants[name]]||wikiTaming.creatures[aliases[breedingVariants[name]]]||null;}
-const officialKnockoutRecords=Object.fromEntries(Object.keys(asaMethods).filter(name=>asaMethods[name].methods.includes('knockout')&&!['Karkinos','Rock Elemental','Titanosaur'].includes(name)&&wikiCreatureRecord(name)).map(name=>[name,wikiCreatureRecord(name)]));
+const officialKnockoutRecords=Object.fromEntries(Object.keys(asaMethods).filter(name=>asaMethods[name].methods.includes('knockout')&&!['Karkinos','Rock Elemental','Titanosaur'].includes(name)&&!ASA_V97_NONSTANDARD_KNOCKOUTS.has(breedingVariants[name]||name)&&wikiCreatureRecord(name)).map(name=>[name,wikiCreatureRecord(name)]));
 const baseKnockoutProfiles={...Object.fromEntries(Object.entries(officialKnockoutRecords).map(([name,record])=>[name,{base:record.affinityNeeded0,perLevel:record.affinityIncrease,drainBase:record.foodConsumptionBase,drainMult:record.foodConsumptionMult,kibble:record.favoriteKibble,foods:record.eats,fromWiki:true}])),...coreProfiles};
-export const knockoutProfiles={...baseKnockoutProfiles,...Object.fromEntries(Object.entries(breedingVariants).filter(([,parent])=>baseKnockoutProfiles[parent]&&asaMethods[parent]?.methods.includes('knockout')).map(([variant,parent])=>[variant,{...baseKnockoutProfiles[parent],variantInherited:true}]))};
+export const knockoutProfiles={...baseKnockoutProfiles,...Object.fromEntries(Object.entries(breedingVariants).filter(([,parent])=>baseKnockoutProfiles[parent]&&asaMethods[parent]?.methods.includes('knockout')&&!ASA_V97_NONSTANDARD_KNOCKOUTS.has(parent)).map(([variant,parent])=>[variant,{...baseKnockoutProfiles[parent],variantInherited:true}]))};
 
 const foodStats = {
   'Raw Mutton': {affinity:187.5,foodValue:50},
@@ -48,6 +48,7 @@ export function wikiFoodOptions(creature){
  return [...new Set(record.eats.filter(food=>!food.includes('Primitive Plus')&&food!=='Stimberry').flatMap(food=>food==='Kibble'?record.favoriteKibble?kibbleOrder.slice(kibbleOrder.indexOf(record.favoriteKibble)).map(name=>`${name} Kibble`):[]:[foodAliases[food]||food]))];
 }
 export function calculatedWikiFeed({creature,level,food,tamingRate=10,foodDrainRate=1}){
+ if(ASA_V97_NONSTANDARD_KNOCKOUTS.has(breedingVariants[creature]||creature))return {ok:false,reason:'ASA v97 replaced this creature’s ordinary knockout with the Apex Challenge. Use Specialty Taming Lab.'};
  const record=wikiCreatureRecord(creature);
  if(!record||!Number.isFinite(record.affinityNeeded0)||!Number.isFinite(record.affinityIncrease)||!Number.isFinite(record.foodConsumptionBase)||!Number.isFinite(record.foodConsumptionMult))return {ok:false,reason:'No published food calculation for this species.'};
  const lvl=Number(level),rate=Number(tamingRate),drain=Number(foodDrainRate);
@@ -73,6 +74,7 @@ export function availableFoods(creature){
 }
 
 export function calculateTame({creature,level,food,tamingRate=10,foodDrainRate=1}){
+ if(ASA_V97_NONSTANDARD_KNOCKOUTS.has(breedingVariants[creature]||creature))return {ok:false,reason:'ASA v97 replaced this creature’s ordinary knockout with the Apex Challenge. Use Specialty Taming Lab.'};
   const profile=knockoutProfiles[creature];
   if(!profile)return {ok:false,reason:'No verified knockout-taming profile for this creature yet.'};
   if(profile.fromWiki)return calculatedWikiFeed({creature,level,food,tamingRate,foodDrainRate});

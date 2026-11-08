@@ -38,9 +38,10 @@ export function newWikiRecipeCandidates(catalog){
 export function useLiveCatalog(){
  const [catalog,setCatalog]=useState(stored),[status,setStatus]=useState('loading'),[error,setError]=useState('');
  useEffect(()=>{
-  let cancelled=false;
+  let cancelled=false,lastCheck=0;
   const load=async()=>{
    if(!API){setStatus('not-configured');return;}
+   lastCheck=Date.now();
    try{
     const response=await fetch(`${API}/api/v1/catalog/live`,{signal:AbortSignal.timeout(18000)});
     if(!response.ok)throw Error(`Catalog API HTTP ${response.status}`);
@@ -50,8 +51,12 @@ export function useLiveCatalog(){
     else setStatus('waiting');
    }catch(e){if(!cancelled){setStatus('offline');setError(e.message);}}
   };
+  const resume=()=>{if(Date.now()-lastCheck>15*60*1000)void load();};
+  const visible=()=>{if(document.visibilityState==='visible')resume();};
   void load();const interval=setInterval(()=>void load(),60*60*1000);
-  return()=>{cancelled=true;clearInterval(interval);};
+  window.addEventListener('online',resume);
+  document.addEventListener('visibilitychange',visible);
+  return()=>{cancelled=true;clearInterval(interval);window.removeEventListener('online',resume);document.removeEventListener('visibilitychange',visible);};
  },[]);
  const recipes=useMemo(()=>newWikiRecipes(catalog),[catalog]);
  const creatures=useMemo(()=>newWikiCreatures(catalog),[catalog]);

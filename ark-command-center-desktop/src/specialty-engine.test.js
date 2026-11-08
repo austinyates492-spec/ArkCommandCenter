@@ -52,12 +52,12 @@ test('published food values cover additional conventional and passive tames',()=
  assert.equal(a.ok,true);
  assert.equal(a.approximate,true);
 });
-test('all 72 specialty roster forms have species-specific sourced methods or explicit unavailable status',()=>{
- assert.equal(specialtyRoster.length,72);
+test('all specialty roster forms have species-specific sourced methods or explicit unavailable status',()=>{
+ assert.ok(specialtyRoster.length>=73);
  for(const creature of specialtyRoster){
   const method=getTamingMethod(creature);
   assert.ok(method,creature);
-  assert.ok(/^https:\/\/ark\.wiki\.gg\/wiki\//.test(method.source),`${creature}: missing wiki source`);
+  assert.ok(/^https:\/\/(?:ark\.wiki\.gg\/wiki\/|survivetheark\.com\/index\.php\?\/forums\/)/.test(method.source),`${creature}: missing wiki or official source`);
   assert.ok(method.instructions.length>35,`${creature}: missing procedure`);
   assert.ok(['documented','unreleased','unavailable'].includes(method.status),`${creature}: ${method.status}`);
  }

@@ -8,11 +8,11 @@ import {passiveProfiles} from './passive-taming.js';
 import {breedingVariants} from './breeding-variants.js';
 import asaTamingMethods from './asa-taming-methods.json' with {type:'json'};
 import {getTamingMethod} from './special-taming-methods.js';
+import {ASA_V97_NONSTANDARD_KNOCKOUTS} from './asa-release-v97.js';
 const manuallyReviewedSpecies={
   Rex:{torpor:1550,perLevel:93,head:1.5,projectile:1},
   Argentavis:{torpor:600,perLevel:36,head:1,projectile:1.5},
   Allosaurus:{torpor:1000,perLevel:60,head:1.5,projectile:1},
-  Giganotosaurus:{torpor:10000,perLevel:600,head:1,projectile:1},
   Stegosaurus:{torpor:500,perLevel:30,head:1,projectile:1},
   Therizinosaurus:{torpor:925,perLevel:55.5,head:1,projectile:1},
   Pteranodon:{torpor:120,perLevel:7.2,head:1,projectile:1.5},
@@ -30,13 +30,13 @@ const manuallyReviewedSpecies={
 const heavyKnockouts=new Set(['Karkinos','Rock Elemental','Titanosaur']);
 const categoryKnockouts={};
 for(const [name,method] of Object.entries(asaTamingMethods)){
- if(!method.methods.includes('knockout')||heavyKnockouts.has(name))continue;
+ if(!method.methods.includes('knockout')||heavyKnockouts.has(name)||ASA_V97_NONSTANDARD_KNOCKOUTS.has(breedingVariants[name]||name))continue;
  const reference=wikiKnockoutProfiles[name]||torporReferences[name];
  if(!reference)continue;
  categoryKnockouts[name]={...reference,verification:reference.verification||'wiki-base-6pct',source:reference.source||'https://ark.wiki.gg/wiki/Special:CargoTables/CreatureStats'};
 }
 for(const [variant,parent] of Object.entries(breedingVariants)){
- if(!asaTamingMethods[parent]?.methods.includes('knockout')||heavyKnockouts.has(parent))continue;
+ if(!asaTamingMethods[parent]?.methods.includes('knockout')||heavyKnockouts.has(parent)||ASA_V97_NONSTANDARD_KNOCKOUTS.has(parent))continue;
  const base=categoryKnockouts[parent]||manuallyReviewedSpecies[parent];
  if(!base)continue;
  categoryKnockouts[variant]={torpor:base.torpor,perLevel:base.perLevel,head:1,projectile:1,verification:'variant-parent-stat-assumed',source:base.source||'https://ark.wiki.gg/wiki/Special:CargoTables/CreatureStats'};

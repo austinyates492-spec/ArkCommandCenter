@@ -33,7 +33,7 @@ test('invalid creature or rate refuses estimates',()=>{
  assert.equal(knockoutEstimate({creature:'Rex',level:150,weaponQuality:0}).ok,false);
 });
 test('common ASA knockout creatures scale torpor with wild level',()=>{
- for(const creature of ['Giganotosaurus','Stegosaurus','Therizinosaurus','Pteranodon','Quetzal','Raptor','Triceratops']){
+ for(const creature of ['Stegosaurus','Therizinosaurus','Pteranodon','Quetzal','Raptor','Triceratops']){
   const low=knockoutEstimate({creature,level:1});
   const high=knockoutEstimate({creature,level:150});
   assert.equal(low.ok,true,creature);
