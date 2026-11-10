@@ -6,7 +6,7 @@ import {join,resolve,sep,extname} from 'node:path';
 const root=resolve('dist');
 const port=Number(process.env.PORT||3000);
 const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8',
- '.css':'text/css; charset=utf-8','.json':'application/json; charset=utf-8',
+ '.css':'text/css; charset=utf-8','.json':'application/json; charset=utf-8','.webmanifest':'application/manifest+json',
  '.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.jpeg':'image/jpeg',
  '.ico':'image/x-icon','.webp':'image/webp','.woff2':'font/woff2','.map':'application/json'};
 
@@ -30,7 +30,7 @@ const server=http.createServer(async(req,res)=>{
  const type=mime[extname(file)]||'application/octet-stream';
  res.writeHead(200,{
   'Content-Type':type,'Content-Length':info.size,
-  'Cache-Control':file.endsWith('index.html')?'no-cache':'public, max-age=31536000, immutable',
+  'Cache-Control':file.endsWith('index.html')||file.endsWith('sw.js')||file.endsWith('manifest.webmanifest')||file.endsWith('robots.txt')||file.endsWith('sitemap.xml')?'no-cache':'public, max-age=31536000, immutable',
   'X-Content-Type-Options':'nosniff',
   'Referrer-Policy':'strict-origin-when-cross-origin',
   'X-Frame-Options':'DENY',
