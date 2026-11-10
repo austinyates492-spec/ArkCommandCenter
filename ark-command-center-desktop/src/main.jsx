@@ -1,6 +1,6 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {LayoutDashboard,Compass,Timer,Settings,Shield,Search,Plus,Trash2,ExternalLink,ChevronRight,Server,Activity,Egg,Calculator,CheckCircle2,Clock3,MapPin,Bell,Save,Layers,Cloud} from 'lucide-react';
+import {LayoutDashboard,Compass,Timer,Settings,Shield,Search,Plus,Trash2,ExternalLink,ChevronRight,Server,Activity,Egg,Calculator,CheckCircle2,Clock3,MapPin,Bell,Save,Layers,Cloud,Menu,X} from 'lucide-react';
 import ResourcePage from './ResourcePage';
 import SpawnPage from './SpawnPage';
 import TamingLab from './TamingLab';
@@ -25,11 +25,14 @@ import {resetLocalWorkspaceOnce} from './launch-reset.js';
 import {useLiveCatalog} from './live-catalog.js';
 import CatalogUpdatesPage from './CatalogUpdatesPage.jsx';
 import AppUpdater from './AppUpdater.jsx';
+import MobileInstall from './MobileInstall.jsx';
+import AdPlacement from './AdPlacement.jsx';
 import {species,maps,tameCreatures,defaults,hoursText,creatureSpawnUrl} from './data';
 import './style.css';
 import './maps.css';
 import './resources.css';
 import './timer-sounds.css';
+import './mobile.css';
 
 const nav=[['overview','Overview',LayoutDashboard],['taming','Taming Lab',Calculator],['specialty','Specialty Taming Lab',Shield],['passive','Passive Taming Lab',Activity],['breeding','Breeding Lab',Egg],['crafting','Crafting Calculator',Layers],['tribe-crafting','Tribe Crafting',Layers],['servers','Server Intel',Server],['maps','Spawn Maps',Compass],['resources','Resource Atlas',Layers],['timers','Live Timers',Timer],['cloud','Tribe Cloud',Cloud],['settings','Settings',Settings]];
 const statusColors={'Available':'green','Contested':'gold','Locked Down':'red','Unscouted':'muted'};
@@ -38,6 +41,8 @@ function Badge({children,tone='green'}){return <span className={'badge '+tone}>{
 function Panel({title,aside,children,className=''}){return <section className={'panel '+className}><div className="panelhead"><h2>{title}</h2>{aside}</div>{children}</section>}
 function Field({label,children}){return <label className="field"><span>{label}</span>{children}</label>}
 function App(){
+ const isDesktopApp=typeof window!=='undefined'&&('__TAURI_INTERNALS__' in window);
+ const [mobileNavOpen,setMobileNavOpen]=useState(false);
  const startingRates=ratesForPreset(DEFAULT_CLUSTER_ID,defaults);
  const [page,setPage]=useState('overview'),[savedRates,setRates]=useStored('ark.rates',startingRates),[customRates,setCustomRates]=useStored('ark.customRates',startingRates),[servers,setServers]=useState([]),[theme,setTheme]=useStored('ark.theme','emerald'),[clusterId,setClusterId]=useStored('ark.clusterId',DEFAULT_CLUSTER_ID),[now,setNow]=useState(Date.now());
  const cloud=useCloudSync({rates:savedRates,setRates,customRates,setCustomRates,theme,setTheme,clusterId,setClusterId});
@@ -74,6 +79,12 @@ function App(){
  },[]);
  useEffect(()=>setAlarmAlerts([]),[cloud.user?.id]);
  useEffect(()=>{
+  if(!mobileNavOpen)return;
+  const onKeyDown=event=>{if(event.key==='Escape')setMobileNavOpen(false)};
+  window.addEventListener('keydown',onKeyDown);
+  return()=>window.removeEventListener('keydown',onKeyDown);
+ },[mobileNavOpen]);
+ useEffect(()=>{
   const due=collectDueTimerAlarms(alarmTracker.current,{memberId:cloud.user?.id||null,timers,now:now-live.clockOffsetMs,sounds:live.timerSounds,ready:live.timerSoundsReady});
   if(!due.length)return;
   due.forEach((_,index)=>playTimerAlarm(index*0.65));
@@ -82,16 +93,19 @@ function App(){
  const active=timers.filter(t=>t.end>now);
  const addTimer=(name,minutes,type='Custom',soundEnabledForCreator=true)=>{const mins=Number(minutes);if(!Number.isFinite(mins)||mins<=0)return;if(!cloud.user){setPage('cloud');return;}void live.addTimer(name,mins,type,soundEnabledForCreator).catch(()=>{});setPage('timers')};
  const pageName=nav.find(x=>x[0]===page)?.[1]||'Overview';
- return <div className="shell" data-theme={theme}>
-  <aside className="sidebar"><div className="brand"><div className="brandmark"><Shield size={24}/></div><div><strong>ARK TRIBE<em>HQ</em></strong><small>LIVE TRIBE COMMAND</small></div></div>
+ return <div className={'shell'+(isDesktopApp?' tauri-desktop':'')} data-theme={theme}>
+  {mobileNavOpen&&!isDesktopApp&&<button type="button" className="mobile-nav-backdrop" aria-label="Close navigation" onClick={()=>setMobileNavOpen(false)}/>}
+  <aside className={'sidebar'+(mobileNavOpen?' mobile-open':'')} id="ark-primary-nav" aria-label="Main navigation"><div className="brand"><div className="brandmark"><Shield size={24}/></div><div><strong>ARK TRIBE<em>HQ</em></strong><small>LIVE TRIBE COMMAND</small></div><button type="button" className="mobile-nav-close" aria-label="Close menu" onClick={()=>setMobileNavOpen(false)}><X size={21}/></button></div>
   <div className="sidegroup" title={cloud.user?.tribeName||'Choose a tribe'}>TRIBE: {cloud.user?.tribeName||'NOT CONNECTED'}</div>
-  <div className="sidegroup">WORKSPACE</div><nav>{nav.map(([key,label,Icon])=><button key={key} className={'navitem '+(page===key?'selected':'')} onClick={()=>setPage(key)}><Icon size={18}/><span>{label}</span>{key==='timers'&&active.length>0?<b className="counter">{active.length}</b>:null}</button>)}</nav>
+  <div className="sidegroup">WORKSPACE</div><nav>{nav.map(([key,label,Icon])=><button key={key} className={'navitem '+(page===key?'selected':'')} aria-current={page===key?'page':undefined} onClick={()=>{setPage(key);setMobileNavOpen(false)}}><Icon size={18}/><span>{label}</span>{key==='timers'&&active.length>0?<b className="counter">{active.length}</b>:null}</button>)}</nav>
   <div className="sidebottom"><div className="live-dot"/><span>{live.status==='live'?'TRIBE FEED LIVE':cloud.status==='connected'?'CLOUD CONNECTED':'LOCAL WORKSPACE'}<br/><small>{cloud.user?cloud.user.displayName:'Sign in to share'}</small></span></div></aside>
-  <main className="main"><header className="topbar"><div className="breadcrumbs">ARKTRIBEHQ <ChevronRight size={15}/> <strong>{pageName.toUpperCase()}</strong></div><div className="topright"><AppUpdater/><label className="header-cluster"><span className="sr-only">Active cluster profile</span><select aria-label="Active cluster profile" value={clusterId} onChange={event=>onClusterChange(event.target.value)}>{clusterPresets.map(item=><option key={item.id} value={item.id}>{item.label}</option>)}</select><small>{rates.taming}× TAME</small></label><div className="avatar">{cloud.user?.displayName?.slice(0,2).toUpperCase()||'HQ'}</div></div></header>
+  <main className="main"><header className="topbar"><button type="button" className="mobile-nav-toggle" aria-label="Open navigation menu" aria-expanded={mobileNavOpen} aria-controls="ark-primary-nav" onClick={()=>setMobileNavOpen(true)}><Menu size={23}/></button><div className="breadcrumbs">ARKTRIBEHQ <ChevronRight size={15}/> <strong>{pageName.toUpperCase()}</strong></div><div className="topright"><AppUpdater/><label className="header-cluster"><span className="sr-only">Active cluster profile</span><select aria-label="Active cluster profile" value={clusterId} onChange={event=>onClusterChange(event.target.value)}>{clusterPresets.map(item=><option key={item.id} value={item.id}>{item.label}</option>)}</select><small>{rates.taming}× TAME</small></label><div className="avatar">{cloud.user?.displayName?.slice(0,2).toUpperCase()||'HQ'}</div></div></header>
   <div className="content">
+  {!isDesktopApp&&<MobileInstall/>}
   {page==='overview'&&<><div className="hero"><div className="heroeyebrow">{cloud.user?.tribeName?`${cloud.user.tribeName.toUpperCase()} / TRIBE HQ`:'WELCOME BACK, SURVIVOR'}</div><h1>Your tribe.<br/><span>Your command.</span></h1><p>Every tame, timer and server decision in one place. {cloud.user?.tribeName?`Connected to ${cloud.user.tribeName}.`:'Create or join a tribe to share live operations.'}</p><div className="heroactions"><button className="primary" onClick={()=>setPage('taming')}>Open Taming Lab <ChevronRight size={17}/></button><button className="ghost" onClick={()=>setPage(cloud.user?'servers':'cloud')}>{cloud.user?'View Servers':'Create or join a tribe'}</button></div><div className="heroart">◈</div></div>
    <div className="metrics"><div className="metric"><span><Server size={18}/> Tracked Servers</span><strong>{servers.length}</strong><small>Scouted locations</small></div><div className="metric"><span><Clock3 size={18}/> Active Timers</span><strong>{active.length}</strong><small>Counting down</small></div><div className="metric"><span><Egg size={18}/> Supported Species</span><strong>{Object.keys(species).length}</strong><small>Validated breeding baselines</small></div><div className="metric"><span><Activity size={18}/> Taming Rate</span><strong>{rates.taming}×</strong><small>Default cluster multiplier</small></div></div>
-   <div className="two"><Panel title="Active Operations" aside={<button className="subtlebtn" onClick={()=>setPage('timers')}>View all →</button>}>{active.length?active.slice(0,4).map(t=><div className="listrow" key={t.id}><div className="roundicon"><Timer size={19}/></div><div><strong>{t.name}</strong><small>{t.type}</small></div><div className="push countdown">{clock(t.end-now)}</div></div>):<div className="empty">No active operations. Start a tame or raising timer to see it here.</div>}</Panel><Panel title="Server Intelligence" aside={<button className="subtlebtn" onClick={()=>setPage('servers')}>Manage →</button>}>{servers.length?servers.slice(0,4).map(s=><div className="listrow" key={s.id}><div className="roundicon"><Server size={17}/></div><div><strong>{s.name}</strong><small>{s.map}</small></div><div className="push"><Badge tone={statusColors[s.status]}>{s.status}</Badge></div></div>):<div className="empty">No servers tracked yet. Add your first server to start scouting.</div>}</Panel></div></>}
+   <div className="two"><Panel title="Active Operations" aside={<button className="subtlebtn" onClick={()=>setPage('timers')}>View all →</button>}>{active.length?active.slice(0,4).map(t=><div className="listrow" key={t.id}><div className="roundicon"><Timer size={19}/></div><div><strong>{t.name}</strong><small>{t.type}</small></div><div className="push countdown">{clock(t.end-now)}</div></div>):<div className="empty">No active operations. Start a tame or raising timer to see it here.</div>}</Panel><Panel title="Server Intelligence" aside={<button className="subtlebtn" onClick={()=>setPage('servers')}>Manage →</button>}>{servers.length?servers.slice(0,4).map(s=><div className="listrow" key={s.id}><div className="roundicon"><Server size={17}/></div><div><strong>{s.name}</strong><small>{s.map}</small></div><div className="push"><Badge tone={statusColors[s.status]}>{s.status}</Badge></div></div>):<div className="empty">No servers tracked yet. Add your first server to start scouting.</div>}</Panel></div>
+   {!isDesktopApp&&<AdPlacement placement="overview"/>}</>}
   {page==='taming'&&<TamingLab rates={rates} onTimer={addTimer} discoveredCreatures={catalog.creatures} clusterId={clusterId}/>}
   {page==='specialty'&&<SpecialtyLab rates={rates} onTimer={addTimer} clusterId={clusterId}/>}
   {page==='passive'&&<PassiveLab rates={rates} onTimer={addTimer} clusterId={clusterId}/>}
@@ -115,3 +129,8 @@ function clock(ms){const s=Math.max(0,Math.ceil(ms/1000));return `${Math.floor(s
 function QuickTimer({onAdd}){const [name,setName]=useState('Tribe reminder'),[minutes,setMinutes]=useState(30);return <form onSubmit={e=>{e.preventDefault();onAdd(name,minutes,'Custom')}}><Field label="Timer name"><input value={name} onChange={e=>setName(e.target.value)} required/></Field><Field label="Duration (minutes)"><input type="number" min="1" value={minutes} onChange={e=>setMinutes(e.target.value)} required/></Field><button className="primary full" type="submit"><Plus size={17}/> Start Countdown</button></form>}
 resetLocalWorkspaceOnce();
 createRoot(document.getElementById('root')).render(<App/>);
+if(!('__TAURI_INTERNALS__' in window)&&'serviceWorker' in navigator){
+ window.addEventListener('load',()=>{
+  navigator.serviceWorker.register('/sw.js').catch(()=>{/* Normal web experience works without offline support. */});
+ });
+}

@@ -1,0 +1,51 @@
+.mobile-nav-toggle,.mobile-nav-close,.mobile-nav-backdrop,.mobile-install{display:none}
+.ad-placement{margin:24px auto;max-width:100%;min-height:100px;text-align:center;overflow:hidden}
+.ad-label{font-size:10px;letter-spacing:1px;color:#87a69c;text-transform:uppercase}
+@media(max-width:800px){
+ .shell:not(.tauri-desktop){display:block;min-width:0}
+ .shell:not(.tauri-desktop) .sidebar{position:fixed;z-index:1003;inset:0 auto 0 0;width:min(82vw,312px);height:100dvh;min-height:0;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;align-items:stretch;padding:18px 14px max(16px,env(safe-area-inset-bottom));transform:translateX(-105%);transition:transform .22s ease;box-shadow:8px 0 32px rgba(0,0,0,.45)}
+ .shell:not(.tauri-desktop) .sidebar.mobile-open{transform:translateX(0)}
+ .shell:not(.tauri-desktop) .sidebar .brand{display:flex;align-items:center;padding:6px 8px 18px;margin-bottom:12px}
+ .shell:not(.tauri-desktop) .sidebar .brand small,.shell:not(.tauri-desktop) .sidebar .sidegroup,.shell:not(.tauri-desktop) .sidebar .sidebottom{display:flex}
+ .shell:not(.tauri-desktop) .sidebar .sidegroup{margin-top:12px;white-space:normal;overflow-wrap:anywhere}
+ .shell:not(.tauri-desktop) .sidebar nav{display:flex;flex-direction:column;align-items:stretch;width:100%}
+ .shell:not(.tauri-desktop) .sidebar .navitem{width:100%;min-height:44px;white-space:normal}
+ .shell:not(.tauri-desktop) .sidebar .navitem span{display:inline}
+ .shell:not(.tauri-desktop) .sidebar .sidebottom{margin-top:auto}
+ .shell:not(.tauri-desktop) .mobile-nav-toggle,.shell:not(.tauri-desktop) .mobile-nav-close{display:grid;place-items:center;flex:none;width:42px;height:42px;border:1px solid #31514d;border-radius:9px;background:#142824;color:#b6f5d6}
+ .shell:not(.tauri-desktop) .mobile-nav-close{margin-left:auto;width:36px;height:36px}
+ .shell:not(.tauri-desktop) .mobile-nav-backdrop{display:block;position:fixed;inset:0;z-index:1002;border:0;background:rgba(0,0,0,.68)}
+ .shell:not(.tauri-desktop) .topbar{height:auto;min-height:64px;gap:8px;flex-wrap:wrap;padding:12px 14px;position:relative}
+ .shell:not(.tauri-desktop) .breadcrumbs{min-width:0;flex:1;font-size:11px;gap:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ .shell:not(.tauri-desktop) .breadcrumbs strong{overflow:hidden;text-overflow:ellipsis}
+ .shell:not(.tauri-desktop) .topright{min-width:0;max-width:100%;margin-left:auto}
+ .shell:not(.tauri-desktop) .header-cluster{padding:3px;min-width:0}
+ .shell:not(.tauri-desktop) .header-cluster select{max-width:min(45vw,190px);min-width:0;font-size:11px}
+ .shell:not(.tauri-desktop) .header-cluster small,.shell:not(.tauri-desktop) .updater-control,.shell:not(.tauri-desktop) .avatar{display:none}
+ .shell:not(.tauri-desktop) .content{padding:16px 12px 40px;max-width:100%;overflow-x:hidden}
+ .shell:not(.tauri-desktop) .hero{padding:24px 18px}
+ .shell:not(.tauri-desktop) .hero h1{font-size:clamp(34px,10vw,48px)}
+ .shell:not(.tauri-desktop) .metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .shell:not(.tauri-desktop) .metric{min-width:0;padding:13px}
+ .shell:not(.tauri-desktop) .mapgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .shell:not(.tauri-desktop) .panel,.shell:not(.tauri-desktop) .two>*,.shell:not(.tauri-desktop) .wideleft>*{min-width:0}
+ .shell:not(.tauri-desktop) .filters{flex-wrap:wrap}
+ .shell:not(.tauri-desktop) .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+ .shell:not(.tauri-desktop) input,.shell:not(.tauri-desktop) select,.shell:not(.tauri-desktop) textarea{max-width:100%;min-width:0}
+ .shell:not(.tauri-desktop) .mobile-install{display:flex;align-items:center;gap:9px;min-width:0;padding:12px;margin-bottom:16px;background:#17332d;border:1px solid #386455;border-radius:11px;color:#c4f4d9}
+ .mobile-install>div{flex:1;min-width:0}
+ .mobile-install strong,.mobile-install span,.mobile-install small{display:block}
+ .mobile-install strong{font-size:12px}
+ .mobile-install span,.mobile-install small{font-size:11px;line-height:1.4;color:#9dbdb0;margin-top:4px}
+ .mobile-install-action{display:flex;align-items:center;gap:5px;border:0;padding:9px;border-radius:8px;background:#62dca6;color:#073127;font-size:11px;font-weight:800}
+ .mobile-install-dismiss{background:none;border:0;color:#9dbdb0;padding:5px}
+}
+@media(max-width:400px){
+ .shell:not(.tauri-desktop) .topbar{row-gap:6px}
+ .shell:not(.tauri-desktop) .breadcrumbs{font-size:10px}
+ .shell:not(.tauri-desktop) .header-cluster select{max-width:130px}
+ .shell:not(.tauri-desktop) .metrics{grid-template-columns:1fr}
+ .shell:not(.tauri-desktop) .mapgrid{grid-template-columns:1fr}
+ .shell:not(.tauri-desktop) .heroactions{flex-wrap:wrap}
+}
+@media(prefers-reduced-motion:reduce){.shell:not(.tauri-desktop) .sidebar{transition:none}}
