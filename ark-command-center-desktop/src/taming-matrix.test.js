@@ -52,12 +52,13 @@ test('passive waking-tame affinity, consumption and last instantaneous feed matc
  const stats=w.specialFoodValues?.[food]||source.food[food];
  const affinity=stats.affinity*(w.wakeAffinityMult??1)*4*rate;
  const pieces=Math.ceil((w.affinityNeeded0+w.affinityIncrease*level)/affinity);
- const expectedSeconds=Math.ceil(Math.max(0,pieces-1)*stats.foodValue*(w.wakeFoodDeplMult??1)/(w.foodConsumptionBase*w.foodConsumptionMult));
+ const expectedSeconds=Math.ceil(pieces*stats.foodValue*(w.wakeFoodDeplMult??1)/(w.foodConsumptionBase*w.foodConsumptionMult));
  const calculated=calculatedWikiFeed({creature:name,level,food,tamingRate:rate});
  assert.equal(calculated.ok,true);
  assert.equal(calculated.foodPieces,pieces);
  assert.equal(calculated.seconds,expectedSeconds);
  assert.equal(calculated.passive,true);
+ assert.equal(calculated.feedingIntervalSeconds,calculated.seconds/(calculated.foodPieces-1));
  assert.equal(passiveFoodPlan({creature:name,level,food,tamingRate:rate}).pieces,pieces);
  assert.deepEqual(passiveFoodPlan({creature:'Ovis',level:150,food:'Sweet Vegetable Cake'}).pieces,1);
 });
