@@ -1,0 +1,31 @@
+name: Validate ArkTribeHQ Calculator & Responsive Changes
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'ark-command-center-desktop/**'
+      - 'ark-command-center-api/**'
+      - '.github/workflows/validate-app.yml'
+  workflow_dispatch:
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: ark-command-center-desktop/package-lock.json
+      - name: Install desktop / web dependencies
+        working-directory: ark-command-center-desktop
+        run: npm ci
+      - name: Test every available creature model
+        working-directory: ark-command-center-desktop
+        run: npm test
+      - name: Build production web interface
+        working-directory: ark-command-center-desktop
+        run: npm run build
+      - name: Test API and tribe isolation
+        working-directory: ark-command-center-api
+        run: npm install --no-package-lock --no-audit --no-fund && npm test
