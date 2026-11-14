@@ -73,15 +73,17 @@ export function calculatedWikiFeed({creature,level,food,tamingRate=10,foodDrainR
  const affinityNeeded=record.affinityNeeded0+record.affinityIncrease*lvl;
  const effectiveAffinity=affinity*(customAffinity?1:4*wakeAffinity)*rate;
  const foodPieces=Math.ceil(affinityNeeded/effectiveAffinity);
- const intervals=passive?Math.max(0,foodPieces-1):foodPieces;
  const foodPerInterval=value*wakeConsumption;
  const constantInterval=record.constantFeedingInterval;
+ // Match the official wiki module's total-time model; the last feed is
+ // instant only for the displayed *average between-feed interval*, not for
+ // subtraction from the total hunger-duration equation.
  let seconds=Number.isFinite(constantInterval)&&constantInterval>0
-  ?Math.ceil(intervals*constantInterval/drain)
-  :Math.ceil(intervals*foodPerInterval/(record.foodConsumptionBase*record.foodConsumptionMult*drain));
+  ?Math.ceil(foodPieces*constantInterval/drain)
+  :Math.ceil(foodPieces*foodPerInterval/(record.foodConsumptionBase*record.foodConsumptionMult*drain));
  if(Number.isFinite(record.resultCorrection)&&record.resultCorrection>0)seconds=Math.ceil(seconds*record.resultCorrection);
  if(!Number.isFinite(seconds)||!Number.isFinite(foodPieces)||foodPieces<1||seconds<0)return {ok:false,reason:'Published coefficients produced an invalid result; use manual verification.'};
- return {ok:true,foodPieces,seconds,minutes:seconds/60,creature,food,level:lvl,passive,customAffinity,
+ return {ok:true,foodPieces,seconds,minutes:seconds/60,feedingIntervalSeconds:passive&&foodPieces>1?seconds/(foodPieces-1):null,creature,food,level:lvl,passive,customAffinity,
   source:'https://ark.wiki.gg/wiki/Module:TamingTable/creatures',
   caveat:passive?'Theoretical waking-tame food and hunger model with species-specific multipliers. The initial feeding and real feeding prompts can change the elapsed time; not a guaranteed timer.':'Wiki-derived knockout food/affinity model. Published coefficients may lag current ASA patches and server-specific overrides; this is an estimate, not an in-game certified value.'};
 }
