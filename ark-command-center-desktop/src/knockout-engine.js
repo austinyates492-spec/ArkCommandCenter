@@ -60,13 +60,17 @@ export function knockoutEstimate({creature,level,weaponQuality=100,longneckBuffP
  const methods=(asaTamingMethods[creature]||asaTamingMethods[parent])?.methods||[];
  const conventional=methods.includes('knockout')&&!heavyKnockouts.has(creature)&&!heavyKnockouts.has(parent);
  const reference=(conventional&&!nonKnockout.has(creature)&&!nonKnockout.has(parent))?(torporReferences[creature]||(parent&&torporReferences[parent])):null;
- const entry=verified||(hasOverride?{torpor:entered,perLevel:0,head:1,projectile:1}:null)||reference;
+ // Never generate a theoretical tranquilizer table for a non-knockout tame,
+ // even if the user typed a torpor override.
+ const entry=conventional?(verified||reference||(hasOverride?{torpor:entered,perLevel:0,head:1,projectile:1,verification:'manual-target'}:null)):null;
  if(!entry)return {ok:false,reason:methods.includes('untameable')?'This creature is listed as untameable; ordinary knockout taming is not available.':methods.includes('passive-or-special')&&!methods.includes('knockout')?'This creature uses passive or special taming. Ordinary tranq counts are not supported.':heavyKnockouts.has(creature)||heavyKnockouts.has(parent)?'This is a special knockout tame using heavy projectiles, not standard tranq arrows or darts.':'No verified standard knockout model exists. Enter the target torpor from the game for theoretical body-shot math only.'};
  const lvl=Number(level),quality=Number(weaponQuality),longneck=Number(longneckBuffPercent);
  if(!Number.isInteger(lvl)||lvl<1||lvl>1000)return {ok:false,reason:'Enter a wild level from 1 to 1000.'};
  if(!Number.isFinite(quality)||quality<1||quality>1000)return {ok:false,reason:'Enter weapon damage between 1% and 1000%.'};
  if(!Number.isFinite(longneck)||longneck<1||longneck>1000)return {ok:false,reason:'Enter a valid Longneck damage multiplier from 1% to 1000%.'};
- const totalTorpor=verified?entry.torpor+(lvl-1)*entry.perLevel:entered;
+ // An observed in-game torpor override takes priority over wiki baselines.
+ const totalTorpor=hasOverride?entered:entry.torpor+(lvl-1)*entry.perLevel;
+ if(!Number.isFinite(totalTorpor)||totalTorpor<=0)return {ok:false,reason:'Missing or invalid target torpor for this creature.'};
  const rows=tranqs.map(item=>{
   const longneckFactor=(item.id==='dart'||item.id==='shocking')?longneck/100:1;
   const bodyPerShot=item.torpor*quality/100*entry.projectile*longneckFactor;
@@ -74,5 +78,5 @@ export function knockoutEstimate({creature,level,weaponQuality=100,longneckBuffP
   const head=entry.head>1?Math.ceil(totalTorpor/(bodyPerShot*entry.head)):null;
   return {...item,body,head};
  });
- return {ok:true,totalTorpor,headMultiplier:entry.head,projectileMultiplier:entry.projectile,longneckBuffPercent:longneck,rows,manual:!verified&&hasOverride,referenceOnly:!verified&&!!reference&&!hasOverride,verification:entry.verification||'reviewed'};
+ return {ok:true,totalTorpor,headMultiplier:entry.head,projectileMultiplier:entry.projectile,longneckBuffPercent:longneck,rows,manual:hasOverride,referenceOnly:!verified&&!!reference&&!hasOverride,verification:entry.verification||'reviewed'};
 }
