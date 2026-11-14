@@ -89,13 +89,15 @@ jobs:
         if: github.event_name == 'push' && startsWith(github.event.head_commit.message, 'release:')
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v0.8.11
-          name: ArkTribeHQ v0.8.11 - Classic Creature Placeholders
+          tag_name: v0.8.12
+          name: ArkTribeHQ v0.8.12 - Premium Responsive UI + Taming Audit
           body: |
-            Adds the Enigmasaur live taming challenge and map coverage, updates
-            Giganotosaurus to its v97 Apex Challenge, and removes stale tranq math.
-            Loadout panels display matching species portraits licensed by ARK Utils.
-            Live Data is hidden from the sidebar while catalog checks keep running.
-            Signed Windows auto-updates continue from the existing install.
+            Premium fluid layout for portrait, mobile, desktop and ultrawide screens.
+            Improved theme-aware cards, typography, navigation and input readability.
+            Source-first taming wiki coefficients, waking-tame calculations and
+            strengthened restrictions for nonstandard knockout creatures.
+            Full 279-entry creature roster regression matrix and 89 frontend tests.
+            Existing 25 themes, tribe accounts, calculators and emoji placeholders remain.
+            Signed Windows auto-updates continue from the existing installation.
           files: ark-command-center-desktop/src-tauri/target/release/bundle/nsis/*.exe
           fail_on_unmatched_files: true
