@@ -22,7 +22,7 @@ export const passiveProfiles={
   ,Deinosuchus:{method:'feeding',food:['Superior Kibble'],notes:'Feed when it is basking with its mouth open. Do not treat this as a knockout tame; exact intervals and counts need newer ASA source values.'}
 };
 export function passiveFoodPlan({creature,level,food,tamingRate=10,foodDrainRate=1}){
- if(!Number.isInteger(Number(level))||Number(level)<1||!Number.isFinite(Number(tamingRate))||Number(tamingRate)<=0)return {ok:false,reason:'Enter a valid level and taming multiplier.'};
+ if(!Number.isInteger(Number(level))||Number(level)<1||Number(level)>1000||!Number.isFinite(Number(tamingRate))||Number(tamingRate)<=0||!Number.isFinite(Number(foodDrainRate))||Number(foodDrainRate)<=0)return {ok:false,reason:'Enter a level from 1 to 1000 and positive taming / dinosaur-food rates.'};
  const entry=passiveProfiles[creature]||passiveProfiles[breedingVariants[creature]];
  if(entry?.method==='single')return {ok:true,food:entry.food[0],pieces:1,seconds:0,notes:entry.notes};
  if(entry?.method==='request'||entry?.method==='pet'||entry?.method==='ride')return {ok:false,reason:'This tame depends on interaction prompts and changing feeding intervals; an exact count or completion time cannot be inferred from food values.',notes:entry?.notes};

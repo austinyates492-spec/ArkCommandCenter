@@ -27,7 +27,9 @@ const coreProfiles = {
 const aliases={Sarcosuchus:'Sarco',Therizinosaurus:'Therizinosaur',Spinosaurus:'Spino',Triceratops:'Triceratops'};
 export function wikiCreatureRecord(name){return wikiTaming.creatures[name]||wikiTaming.creatures[aliases[name]]||wikiTaming.creatures[breedingVariants[name]]||wikiTaming.creatures[aliases[breedingVariants[name]]]||null;}
 const officialKnockoutRecords=Object.fromEntries(Object.keys(asaMethods).filter(name=>asaMethods[name].methods.includes('knockout')&&!['Karkinos','Rock Elemental','Titanosaur'].includes(name)&&!ASA_V97_NONSTANDARD_KNOCKOUTS.has(breedingVariants[name]||name)&&wikiCreatureRecord(name)).map(name=>[name,wikiCreatureRecord(name)]));
-const baseKnockoutProfiles={...Object.fromEntries(Object.entries(officialKnockoutRecords).map(([name,record])=>[name,{base:record.affinityNeeded0,perLevel:record.affinityIncrease,drainBase:record.foodConsumptionBase,drainMult:record.foodConsumptionMult,kibble:record.favoriteKibble,foods:record.eats,fromWiki:true}])),...coreProfiles};
+// The wiki's per-species food tables win over simplified legacy examples.
+// Legacy examples are only fallbacks for names missing a wiki record.
+const baseKnockoutProfiles={...coreProfiles,...Object.fromEntries(Object.entries(officialKnockoutRecords).map(([name,record])=>[name,{base:record.affinityNeeded0,perLevel:record.affinityIncrease,drainBase:record.foodConsumptionBase,drainMult:record.foodConsumptionMult,kibble:record.favoriteKibble,foods:record.eats,fromWiki:true}]))};
 export const knockoutProfiles={...baseKnockoutProfiles,...Object.fromEntries(Object.entries(breedingVariants).filter(([,parent])=>baseKnockoutProfiles[parent]&&asaMethods[parent]?.methods.includes('knockout')&&!ASA_V97_NONSTANDARD_KNOCKOUTS.has(parent)).map(([variant,parent])=>[variant,{...baseKnockoutProfiles[parent],variantInherited:true}]))};
 
 const foodStats = {
@@ -60,10 +62,28 @@ export function calculatedWikiFeed({creature,level,food,tamingRate=10,foodDrainR
  const affinity=custom?.affinity??general?.affinity;
  const value=custom?.value??general?.foodValue;
  if(!Number.isFinite(affinity)||affinity<=0||!Number.isFinite(value)||value<=0)return {ok:false,reason:'The wiki does not include valid affinity and food-value numbers for this option.'};
+ // Follow Module:TamingTable: waking/passive tames use separate food
+ // affinity and consumption multipliers; their last feeding is instantaneous.
+ // Creatures with custom affinity logic (Basilisk) do not use the universal 4×
+ // affinity factor. These are wiki *theoretical* results, not server telemetry.
+ const passive=record.nonViolentTame===1;
+ const customAffinity=record.usesCustomAffinityLogic===true;
+ const wakeAffinity=passive?(record.wakeAffinityMult??1):1;
+ const wakeConsumption=passive?(record.wakeFoodDeplMult??1):1;
  const affinityNeeded=record.affinityNeeded0+record.affinityIncrease*lvl;
- const foodPieces=Math.ceil(affinityNeeded/(affinity*4*rate));
- const seconds=Math.ceil(foodPieces*value/(record.foodConsumptionBase*record.foodConsumptionMult*drain));
- return {ok:true,foodPieces,seconds,minutes:seconds/60,creature,food,level:lvl,source:'https://ark.wiki.gg/wiki/Module:TamingTable/creatures',caveat:'Estimated from published wiki baseline food/affinity values. The tables may predate newer ASA changes; passive feed intervals, special mechanics and server overrides can alter the result.'};
+ const effectiveAffinity=affinity*(customAffinity?1:4*wakeAffinity)*rate;
+ const foodPieces=Math.ceil(affinityNeeded/effectiveAffinity);
+ const intervals=passive?Math.max(0,foodPieces-1):foodPieces;
+ const foodPerInterval=value*wakeConsumption;
+ const constantInterval=record.constantFeedingInterval;
+ let seconds=Number.isFinite(constantInterval)&&constantInterval>0
+  ?Math.ceil(intervals*constantInterval/drain)
+  :Math.ceil(intervals*foodPerInterval/(record.foodConsumptionBase*record.foodConsumptionMult*drain));
+ if(Number.isFinite(record.resultCorrection)&&record.resultCorrection>0)seconds=Math.ceil(seconds*record.resultCorrection);
+ if(!Number.isFinite(seconds)||!Number.isFinite(foodPieces)||foodPieces<1||seconds<0)return {ok:false,reason:'Published coefficients produced an invalid result; use manual verification.'};
+ return {ok:true,foodPieces,seconds,minutes:seconds/60,creature,food,level:lvl,passive,customAffinity,
+  source:'https://ark.wiki.gg/wiki/Module:TamingTable/creatures',
+  caveat:passive?'Theoretical waking-tame food and hunger model with species-specific multipliers. The initial feeding and real feeding prompts can change the elapsed time; not a guaranteed timer.':'Wiki-derived knockout food/affinity model. Published coefficients may lag current ASA patches and server-specific overrides; this is an estimate, not an in-game certified value.'};
 }
 
 export function availableFoods(creature){
