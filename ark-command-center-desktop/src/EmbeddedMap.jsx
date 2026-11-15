@@ -26,7 +26,7 @@ export default function EmbeddedMap({url,alternativeUrl,title,selection,kind='re
    <button className="primary" onClick={open}><ExternalLink size={15}/> Open Full Map</button>
   </div>
   <iframe key={`${selectedUrl}:${refresh}`} title={title} src={selectedUrl} loading="lazy" referrerPolicy="no-referrer" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"/>
-  <div className="map-instructions"><Info size={17}/><span>{kind==='resource'?'Use the map’s own Resources layer to select nodes. Your resource choice above is a quick reference; third-party maps do not expose a dependable direct filter.':'Use the map’s own creature selector to highlight its wild spawn regions. The chosen species above is a quick reference until the provider supports a documented creature filter.'} If the provider blocks embedding, use <strong>Open Full Map</strong>.</span></div>
+  <div className="map-instructions"><Info size={17}/><span>{kind==='resource'?'Use the map’s own Resources layer to select nodes. Your resource choice above is a quick reference; third-party maps do not expose a dependable direct filter.':'The selected creature is sent to the Wiki map using its documented URL fragment. If the overlay does not load, use the map’s own species selector.'} If the provider blocks embedding, use <strong>Open Full Map</strong>.</span></div>
   {warning&&<div className="notice">{warning}</div>}
  </div>;
 }
