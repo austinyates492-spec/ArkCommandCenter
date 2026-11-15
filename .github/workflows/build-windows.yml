@@ -89,8 +89,8 @@ jobs:
         if: github.event_name == 'push' && startsWith(github.event.head_commit.message, 'release:')
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v0.8.14
-          name: ArkTribeHQ v0.8.14 - Startup Intro Replay Fix
+          tag_name: v0.8.15
+          name: ArkTribeHQ v0.8.15 - Boot-Time Cinematic Intro Fix
           body: |
             Premium fluid layout for portrait, mobile, desktop and ultrawide screens.
             Improved theme-aware cards, typography, navigation and input readability.
