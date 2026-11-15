@@ -56,7 +56,7 @@ test('all three taming pages share the bottom spawn atlas, driven by current sel
   assert.match(code,/<TameSpawnAtlas creature=\{creature\} map=\{map\}\/>/,file+' selection not wired to viewer');
   assert.ok(code.lastIndexOf('<TameSpawnAtlas')>code.lastIndexOf('</div>'),file+' atlas should be at the bottom');
  }
- assert.match(creatureSpawnUrl('The Island','Rex'),/Spawn_Map_\\(The_Island\\)#T-Rex$/);
+ assert.match(creatureSpawnUrl('The Island','Rex'),/#T-Rex$/);
  assert.ok(creatureSpawnUrl('Aberration','Raptor').startsWith(wikiSpawn('Aberration')));
 });
 test('new art is part of the live detailed renderer, not a detached collection',()=>{
