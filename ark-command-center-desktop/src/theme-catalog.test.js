@@ -63,7 +63,7 @@ test('boot intro matches the saved user theme and cloud-hydrated theme changes',
  const html=readFileSync(join(folder,'../index.html'),'utf8');
  const intro=readFileSync(join(folder,'../public/boot-intro-v817.js'),'utf8');
  const app=read('main.jsx');
- for(const id of ids)assert.match(intro,new RegExp('\\\\b'+id+':\\\\{accent:'));
+ for(const id of ids)assert.ok(intro.includes(id+':{accent:'),id+' opening palette missing');
  assert.match(intro,/localStorage\.getItem\('ark\.theme'\)/);
  assert.match(intro,/ark:theme-changed/);
  assert.match(intro,/--boot-accent/);
