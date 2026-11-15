@@ -117,8 +117,11 @@ test('rollout checklist covers all 214 base entries and 64 variants without clai
 
 test('restored Taming Lab keeps visible search and original calculator for Rex and all knockouts',()=>{
  const lab=source('TamingLab.jsx');
- assert.match(lab,/Search creatures and variants/);
+ assert.match(lab,/Search all creatures and variants/);
  assert.match(lab,/matchingCreatures\.map/);
+ assert.match(lab,/tameCreatures,\.\.\.discoveredCreatures/);
+ assert.match(lab,/category==='knockout'/);
+ assert.match(lab,/onNavigate/);
  assert.match(lab,/onChange=\{e=>setCreature\(e\.target\.value\)\}/);
  assert.match(lab,/calculateTame\(/);
  assert.match(lab,/knockoutEstimate\(/);
