@@ -26,6 +26,14 @@ Nine newly illustrated species have their own original SVG traces: Giganotosauru
 Backup: `backup/v0.8.27-before-predator-art`.
 
 
+## Knockout artwork quality gate
+
+**[Full species-by-species outline requirements](./KNOCKOUT_UNIQUE_SILHOUETTE_SPECS.md)** cover all 84 historical Phase 1 entries. Every creature has required outer proportions, defining anatomical strokes and a specific anti-template-clone check.
+
+**Status distinction:** The first ten Rex-era drawings received positive feedback; seven further historical Phase 1 species received unique vector illustrations in v0.8.28 and still need visual acceptance. The other 67 require new individual artwork. In the master checklist, a checked box denotes **integrated artwork, not necessarily user-verified or anatomically approved**. The dedicated QA specification retains every not-yet-approved entry as unchecked.
+
+**Taming method caution:** Historical artwork groupings are not authority for game mechanics. Continue to use runtime taming classification for all calculations.
+
 ## Phase 1 - Knockout species
 
 ### 1A - Core carnivores (10)
