@@ -1,5 +1,6 @@
 import React from 'react';
 import {creatureArtProfile} from './creature-art-profile.js';
+import IndividualCreatureLineArt,{hasDetailedOutline} from './IndividualCreatureLineArt.jsx';
 
 // These are original SVG technical studies, not game models. Families have
 // distinct silhouette/limbs, then each named species receives distinct feature
@@ -90,7 +91,7 @@ const templates={
  }
 };
 
-export default function CreatureLineArt({creature,className='',compact=false}){
+function FamilyCreatureLineArt({creature,className='',compact=false}){
  const spec=creatureArtProfile(creature);
  const t=templates[spec.group]||templates.alien;
  const shift=spec.variation-3;
@@ -136,4 +137,11 @@ export default function CreatureLineArt({creature,className='',compact=false}){
    {spec.form&&!tech&&<path d={`M${325+shift*4} 218 L${362+shift*2} 239 L${408+shift*3} 226`} strokeWidth="3" strokeDasharray="3 11" opacity=".6"/>}
   </g>
  </svg>;
+}
+
+// Only published, individually drawn species replace the shared body-plan art.
+// Retain the original art on first load and on decompression failure.
+export default function CreatureLineArt(props){
+ if(hasDetailedOutline(props.creature))return <IndividualCreatureLineArt creature={props.creature} fallback={<FamilyCreatureLineArt {...props}/>}/>;
+ return <FamilyCreatureLineArt {...props}/>;
 }
