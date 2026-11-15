@@ -1,14 +1,18 @@
-import React,{useMemo,useState} from 'react';
+import React,{useEffect,useMemo,useState} from 'react';
 import {ExternalLink,Timer} from 'lucide-react';
 import {maps} from './data.js';
+import CreatureLineArt from './CreatureLineArt.jsx';
+import {hasDetailedOutline} from './IndividualCreatureLineArt.jsx';
+import './taming-lab-art.css';
 import {specialtyRoster,getTamingMethod} from './special-taming-methods.js';
 import {specialtyAmmoOptions,estimateSpecialtyKnockout,specialtyFeeding,specialtyFoodOptions,specialtyFixedSupply} from './specialty-engine.js';
 
 const fmt=new Intl.NumberFormat('en-US');
 function period(seconds){const m=Math.round(seconds/60);return m>=60?`${Math.floor(m/60)}h ${m%60}m`:`${m}m`;}
 
-export default function SpecialtyLab({rates,onTimer,onOpenDossier}){
- const [creature,setCreature]=useState(specialtyRoster.includes('Karkinos')?'Karkinos':specialtyRoster[0]);
+export default function SpecialtyLab({rates,onTimer,selectedCreature}){
+ const [creature,setCreature]=useState(()=>specialtyRoster.includes(selectedCreature)?selectedCreature:specialtyRoster.includes('Karkinos')?'Karkinos':specialtyRoster[0]);
+ useEffect(()=>{if(specialtyRoster.includes(selectedCreature))setCreature(selectedCreature)},[selectedCreature]);
  const [query,setQuery]=useState('');
  const [level,setLevel]=useState(150);
  const [map,setMap]=useState('Aberration');
@@ -29,7 +33,6 @@ export default function SpecialtyLab({rates,onTimer,onOpenDossier}){
  const canTimer=Number.isFinite(estimatedMinutes)&&estimatedMinutes>0;
  const wiki=method?.source||`https://ark.wiki.gg/wiki/${encodeURIComponent(creature.replaceAll(' ','_'))}`;
  return <>
-  {onOpenDossier&&<div className="actionrow" style={{marginBottom:16}}><button className="ghost" type="button" onClick={()=>onOpenDossier(creature)}>View {creature} in Creature Dossiers</button></div>}
   <div className="pagetitle"><span className="eyebrow">FIELD OPERATIONS / SPECIAL</span><h1>Specialty Taming Lab</h1><p>{specialtyRoster.length} specialty species and forms. Heavy weapons, egg theft, trust mechanics, pheromones and unusual food interactions—separate from tranquilizers and ordinary passive feeds.</p></div>
   <div className="two wideleft">
    <section className="panel"><div className="panelhead"><h2>Specialty Tame Planner</h2><span className="badge gold">{rates.taming}× TAMING</span></div>
@@ -56,7 +59,11 @@ export default function SpecialtyLab({rates,onTimer,onOpenDossier}){
     <div className="actionrow"><a className="ghost linkbtn" target="_blank" rel="noreferrer" href={wiki}>Read species method <ExternalLink size={15}/></a><button className="primary" disabled={!canTimer} onClick={()=>onTimer(`${creature} Lv ${level} · ${map}`,estimatedMinutes,'Specialty Tame')}>Start Timer <Timer size={16}/></button></div>
    </section>
    <section className="panel"><div className="panelhead"><h2>Specialty Loadout</h2><span className={`badge ${method?.status==='documented'?'green':'gold'}`}>{method?.type||'Review needed'}</span></div>
-    <div className="featureart" role="img" aria-label="Crab illustration placeholder">🦀</div>
+    <div className="taming-art-stage" aria-label={creature+' detailed anatomical field sketch'}>
+    <span className="taming-art-caption">CREATURE FIELD SKETCH <strong>{creature.toUpperCase()}</strong></span>
+    <CreatureLineArt creature={creature}/>
+    <span className="taming-art-status">{hasDetailedOutline(creature)?'TRACED SPECIES ART':'STYLIZED ANATOMICAL STUDY'}</span>
+   </div>
     <div className="keyrow"><span>Creature</span><strong>{creature}</strong></div>
     <div className="keyrow"><span>Level</span><strong>{level}</strong></div>
     {method?.items?.map(item=><div className="keyrow" key={item}><span>Allowed item / method</span><strong>{item}</strong></div>)}
