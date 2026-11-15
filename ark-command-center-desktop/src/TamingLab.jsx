@@ -9,7 +9,7 @@ import RexDossier from './RexDossier.jsx';
 const numberFormat=new Intl.NumberFormat('en-US');
 const duration=(seconds)=>{const h=Math.floor(seconds/3600),m=Math.floor(seconds%3600/60),s=seconds%60;return [h?`${h}h`:null,m?`${m}m`:null,`${s}s`].filter(Boolean).join(' ')};
 
-export default function TamingLab({rates,onTimer,clusterId='nomadark',discoveredCreatures=[]}){
+export default function TamingLab({rates,onTimer,clusterId='nomadark',discoveredCreatures=[],onOpenDossier}){
  const [creature,setCreature]=useState('Rex');
  const [showRexDossier,setShowRexDossier]=useState(true);
  const [creatureQuery,setCreatureQuery]=useState('');
@@ -43,9 +43,10 @@ export default function TamingLab({rates,onTimer,clusterId='nomadark',discovered
   clusterId={clusterId}
   onStart={()=>onTimer(`Rex Lv ${level} · ${map}`,result.minutes,'Taming')}
   onClassic={()=>setShowRexDossier(false)}
+  onBrowse={()=>onOpenDossier?.('Rex')}
  />;
  return <>
-  {creature==='Rex'&&<div className="actionrow" style={{marginBottom:16}}><button className="primary" type="button" onClick={()=>setShowRexDossier(true)}>Open premium Rex dossier</button></div>}
+  <div className="actionrow" style={{marginBottom:16}}>{creature==='Rex'&&<button className="primary" type="button" onClick={()=>setShowRexDossier(true)}>Open Rex dossier</button>}{onOpenDossier&&<button className="ghost" type="button" onClick={()=>onOpenDossier(creature)}>View {creature} in Creature Dossiers</button>}</div>
   <div className="pagetitle"><span className="eyebrow">FIELD OPERATIONS / 01</span><h1>Taming Lab</h1><p>{knockoutRoster.length} conventional knockout species and forms. Tranq arrows, darts and shocking darts only. Heavy-weapon, passive and egg/interaction tames now have their own tabs. Wiki-derived estimates should be checked against your server.</p></div>
   <div className="two wideleft">
    <section className="panel"><div className="panelhead"><h2>Plan a Tame</h2><span className="badge gold">{rates.taming}× PROFILE</span></div>
