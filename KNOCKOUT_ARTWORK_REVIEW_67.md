@@ -1,6 +1,6 @@
 # ARK Tribe HQ — 67 Pending Knockout Artwork Verification
 
-**Version:** v0.8.32. **Status:** 18 newly integrated original creature drawings, 49 still awaiting distinct artwork. This is NOT a claim of full 67/67 delivery.
+**Version:** v0.8.33. **Status:** 18 existing illustrations repaired for bleed; 40 additional species now have isolated artwork assets; 9 historical entries remain. All art requires in-app visual approval.
 
 The historical artwork backlog includes some methods handled as passive/specialty in the actual app. Do not change the runtime taming classifier to match this artwork grouping.
 
@@ -29,57 +29,70 @@ Open [ARK Tribe HQ](https://www.arktribehq.com/), go to **Taming Lab**, search t
 - [ ] **Argentavis** — integrated individual SVG in v0.8.32; **not yet visually approved**
 - [ ] **Pteranodon** — integrated individual SVG in v0.8.32; **not yet visually approved**
 
-## B. Still requiring dedicated original artwork — 49
+## B. Newly integrated artwork — 40, awaiting visual acceptance
 
-- [ ] **Tapejara** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Quetzal** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Snow Owl** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Dimorphodon** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Pelagornis** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Lymantria** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Megalodon** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Dunkleosteus** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Mosasaurus** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Plesiosaur** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Anglerfish** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Sarcosuchus** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Kaprosuchus** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Xiphactinus** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Achatina** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Archaeopteryx** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Beelzebufo** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Bison** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Boaratos** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Castoroides** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Daeodon** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Dimetrodon** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Diplocaulus** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Direbear** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Dodo** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Fasolasuchus** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Gasbags** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Grand Tortugar** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Griffin** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Ichthyornis** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Jerboa** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Kairuku** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Kentrosaurus** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Maeguana** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Managarmr** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Megalania** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Megaloceros** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Megatherium** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Microraptor** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Oviraptor** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Pachy** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Phiomia** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Procoptodon** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Pulmonoscorpius** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Purlovia** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Ravager** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Shastasaurus** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Thorny Dragon** — original species illustration pending; existing anatomical study is NOT complete artwork
-- [ ] **Velonasaur** — original species illustration pending; existing anatomical study is NOT complete artwork
+All 40 have individual SVG source assets, separated and surrounded with clear margins to prevent neighboring-sheet contamination. The first **26** are isolated detailed source-illustration traces. The next **14** are original species-specific vector studies; those hand-built drawings are **simpler than Rex-quality art** and should be treated as visual drafts pending refinement, not anatomically verified finished illustrations.
+
+- [ ] **Tapejara** — individually isolated ink-study drawing integrated; **pending visual acceptance**
+- [ ] **Quetzal** — individually isolated ink-study drawing integrated; **pending visual acceptance**
+- [ ] **Snow Owl** — individually isolated ink-study drawing integrated; **pending visual acceptance**
+- [ ] **Dimorphodon** — individually isolated ink-study drawing integrated; **pending visual acceptance**
+- [ ] **Pelagornis** — individually isolated ink-study drawing integrated; **pending visual acceptance**
+- [ ] **Lymantria** — individually isolated ink-study drawing integrated; **pending visual acceptance**
+- [ ] **Megalodon** — individually isolated ink-study drawing integrated; **pending visual acceptance**
+- [ ] **Dunkleosteus** — individually isolated ink-study drawing integrated; **pending visual acceptance**
+- [ ] **Mosasaurus** — individually isolated ink-study drawing integrated; **pending visual acceptance**
+- [ ] **Plesiosaur** — individually isolated ink-study drawing integrated; **pending visual acceptance**
+- [ ] **Anglerfish** — individually isolated ink-study drawing integrated; **pending visual acceptance**
+- [ ] **Sarcosuchus** — individually isolated ink-study drawing integrated; **pending visual acceptance**
+- [ ] **Kaprosuchus** — individually isolated ink-study drawing integrated; **pending visual acceptance**
+- [ ] **Xiphactinus** — individually isolated ink-study drawing integrated; **pending visual acceptance**
+- [ ] **Achatina** — individually isolated ink-study drawing integrated; **pending visual acceptance**
+- [ ] **Archaeopteryx** — individually isolated ink-study drawing integrated; **pending visual acceptance**
+- [ ] **Beelzebufo** — individually isolated ink-study drawing integrated; **pending visual acceptance**
+- [ ] **Bison** — individually isolated ink-study drawing integrated; **pending visual acceptance**
+- [ ] **Boaratos** — individually isolated ink-study drawing integrated; **pending visual acceptance**
+- [ ] **Castoroides** — individually isolated ink-study drawing integrated; **pending visual acceptance**
+- [ ] **Daeodon** — individually isolated ink-study drawing integrated; **pending visual acceptance**
+- [ ] **Dimetrodon** — individually isolated ink-study drawing integrated; **pending visual acceptance**
+- [ ] **Diplocaulus** — individually isolated ink-study drawing integrated; **pending visual acceptance**
+- [ ] **Direbear** — individually isolated ink-study drawing integrated; **pending visual acceptance**
+- [ ] **Dodo** — individually isolated ink-study drawing integrated; **pending visual acceptance**
+- [ ] **Fasolasuchus** — individually isolated ink-study drawing integrated; **pending visual acceptance**
+- [ ] **Gasbags** — original hand-authored vector outline integrated; **pending visual acceptance**
+- [ ] **Grand Tortugar** — original hand-authored vector outline integrated; **pending visual acceptance**
+- [ ] **Griffin** — original hand-authored vector outline integrated; **pending visual acceptance**
+- [ ] **Ichthyornis** — original hand-authored vector outline integrated; **pending visual acceptance**
+- [ ] **Jerboa** — original hand-authored vector outline integrated; **pending visual acceptance**
+- [ ] **Kairuku** — original hand-authored vector outline integrated; **pending visual acceptance**
+- [ ] **Kentrosaurus** — original hand-authored vector outline integrated; **pending visual acceptance**
+- [ ] **Maeguana** — original hand-authored vector outline integrated; **pending visual acceptance**
+- [ ] **Managarmr** — original hand-authored vector outline integrated; **pending visual acceptance**
+- [ ] **Megalania** — original hand-authored vector outline integrated; **pending visual acceptance**
+- [ ] **Megaloceros** — original hand-authored vector outline integrated; **pending visual acceptance**
+- [ ] **Megatherium** — original hand-authored vector outline integrated; **pending visual acceptance**
+- [ ] **Microraptor** — original hand-authored vector outline integrated; **pending visual acceptance**
+- [ ] **Oviraptor** — original hand-authored vector outline integrated; **pending visual acceptance**
+
+## C. Remaining historical artwork backlog — 9
+
+- [ ] **Pachy** — dedicated detailed original artwork still pending; existing body-plan study is not a completed custom illustration
+- [ ] **Phiomia** — dedicated detailed original artwork still pending; existing body-plan study is not a completed custom illustration
+- [ ] **Procoptodon** — dedicated detailed original artwork still pending; existing body-plan study is not a completed custom illustration
+- [ ] **Pulmonoscorpius** — dedicated detailed original artwork still pending; existing body-plan study is not a completed custom illustration
+- [ ] **Purlovia** — dedicated detailed original artwork still pending; existing body-plan study is not a completed custom illustration
+- [ ] **Ravager** — dedicated detailed original artwork still pending; existing body-plan study is not a completed custom illustration
+- [ ] **Shastasaurus** — dedicated detailed original artwork still pending; existing body-plan study is not a completed custom illustration
+- [ ] **Thorny Dragon** — dedicated detailed original artwork still pending; existing body-plan study is not a completed custom illustration
+- [ ] **Velonasaur** — dedicated detailed original artwork still pending; existing body-plan study is not a completed custom illustration
+
+## Spawn map integration — v0.8.33
+
+Every Taming Lab, Passive Taming Lab and Specialty Taming Lab now contains the **Creature Spawn Locations** atlas after the planner. Its creature and map are synchronized to the user's selection and the embedded Wiki page reloads when either changes. An external wiki map may require a second selection in its proprietary filter if it does not honor the supplied query parameter: no unverified spawn markers are drawn in this app.
+
+## Adjacent-art bleed repair
+
+The earlier 18 creature studies from two 3×3 sheets have been re-extracted by finding the actual connected individual silhouette across the source sheet, rather than clipping each rectangular cell. Every repaired illustration now uses a self-contained SVG with extra whitespace and excludes strokes belonging to a neighboring creature. **Visual acceptance on desktop/mobile is still required.**
 
 ## Technical safeguards
 
