@@ -88,7 +88,7 @@ All 40 have individual SVG source assets, separated and surrounded with clear ma
 
 ## Spawn map integration — v0.8.33
 
-Every Taming Lab, Passive Taming Lab and Specialty Taming Lab now contains the **Creature Spawn Locations** atlas after the planner. Its creature and map are synchronized to the user's selection and the embedded Wiki page reloads when either changes. An external wiki map may require a second selection in its proprietary filter if it does not honor the supplied query parameter: no unverified spawn markers are drawn in this app.
+Every Taming Lab, Passive Taming Lab and Specialty Taming Lab now contains the **Creature Spawn Locations** atlas after the planner. Its creature and map are synchronized to the user's selection and the embedded Wiki page reloads when either changes. The community Wiki documents automatic creature selection with a URL fragment (hash) on page load; the app sends that fragment and reloads the viewer. If embedding is blocked, use Open Full Map. No unverified spawn markers are fabricated inside this app.
 
 ## Adjacent-art bleed repair
 
