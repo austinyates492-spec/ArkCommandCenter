@@ -1,11 +1,13 @@
 import React,{useEffect,useState} from 'react';
 import {individualOutlines} from './individual-outline-data.js';
+import {predatorOutlines} from './predator-outline-data.js';
 
 // This is a curated set of species-specific silhouettes, not a generic body
 // family with per-name noise. Raster art was individually vector traced into
 // local, gzipped SVGs and is tinted solely by the currently selected theme.
-export const detailedOutlineNames=Object.freeze(Object.keys(individualOutlines));
-export function hasDetailedOutline(name){return Object.hasOwn(individualOutlines,name);}
+const tracedOutlines=Object.freeze({...individualOutlines,...predatorOutlines});
+export const detailedOutlineNames=Object.freeze(Object.keys(tracedOutlines));
+export function hasDetailedOutline(name){return Object.hasOwn(tracedOutlines,name);}
 
 export default function IndividualCreatureLineArt({creature,fallback=null}){
  const [art,setArt]=useState(null);
@@ -14,7 +16,7 @@ export default function IndividualCreatureLineArt({creature,fallback=null}){
   setArt(null);
   async function decode(){
    try{
-    const payload=individualOutlines[creature];
+    const payload=tracedOutlines[creature];
     if(!payload||typeof DecompressionStream!=='function')return;
     const bytes=Uint8Array.from(atob(payload),c=>c.charCodeAt(0));
     const readable=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
