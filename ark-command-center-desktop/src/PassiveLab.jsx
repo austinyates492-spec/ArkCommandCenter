@@ -1,14 +1,18 @@
-import React,{useMemo,useState} from 'react';
+import React,{useEffect,useMemo,useState} from 'react';
 import {ExternalLink,Timer} from 'lucide-react';
 import {maps} from './data.js';
+import CreatureLineArt from './CreatureLineArt.jsx';
+import {hasDetailedOutline} from './IndividualCreatureLineArt.jsx';
+import './taming-lab-art.css';
 import {passiveProfiles,passiveFoodPlan} from './passive-taming.js';
 import {passiveRoster,getTamingMethod} from './special-taming-methods.js';
 import {wikiFoodOptions} from './taming-engine.js';
 
 const fmt=new Intl.NumberFormat('en-US');
 const timeText=s=>s>=3600?`${Math.floor(s/3600)}h ${Math.round(s%3600/60)}m`:`${Math.max(1,Math.round(s/60))}m`;
-export default function PassiveLab({rates,onTimer,onOpenDossier}){
- const [creature,setCreature]=useState(passiveRoster.includes('Ovis')?'Ovis':passiveRoster[0]);
+export default function PassiveLab({rates,onTimer,selectedCreature}){
+ const [creature,setCreature]=useState(()=>passiveRoster.includes(selectedCreature)?selectedCreature:passiveRoster.includes('Ovis')?'Ovis':passiveRoster[0]);
+ useEffect(()=>{if(passiveRoster.includes(selectedCreature))setCreature(selectedCreature)},[selectedCreature]);
  const [search,setSearch]=useState('');
  const [level,setLevel]=useState(150);
  const [map,setMap]=useState('The Island');
@@ -25,7 +29,6 @@ export default function PassiveLab({rates,onTimer,onOpenDossier}){
  const canTimer=Number.isFinite(duration)&&duration>0;
  const method=getTamingMethod(creature);
  return <>
-  {onOpenDossier&&<div className="actionrow" style={{marginBottom:16}}><button className="ghost" type="button" onClick={()=>onOpenDossier(creature)}>View {creature} in Creature Dossiers</button></div>}
   <div className="pagetitle"><span className="eyebrow">FIELD OPERATIONS / PASSIVE</span><h1>Passive Taming Lab</h1><p>{passiveRoster.length} passive tames and forms only. Pick an eligible food, see published food estimates when available, and track feeding reminders without any tranq tables.</p></div>
   <div className="two wideleft">
    <section className="panel"><div className="panelhead"><h2>Passive Feeding Planner</h2><span className="badge gold">{rates.taming}× PROFILE</span></div>
@@ -44,7 +47,11 @@ export default function PassiveLab({rates,onTimer,onOpenDossier}){
     {(!plan.ok||plan.seconds===0)&&<label className="field"><span>Verified duration or next feeding reminder (minutes)</span><input type="number" min="0.1" step="0.1" placeholder="Manual timer" value={minutes} onChange={e=>setMinutes(e.target.value)}/></label>}
     <div className="actionrow"><button className="primary" disabled={!canTimer} onClick={()=>onTimer(`${creature} passive Lv ${level} · ${map}`,duration,'Passive Taming')}>Start Passive Timer <Timer size={16}/></button><a className="ghost linkbtn" target="_blank" rel="noreferrer" href={method?.source||`https://ark.wiki.gg/wiki/${encodeURIComponent(creature.replaceAll(' ','_'))}`}>Species guide <ExternalLink size={15}/></a></div>
    </section>
-   <section className="panel"><div className="panelhead"><h2>Passive Loadout</h2><span className="badge">NO TRANQS</span></div><div className="featureart" role="img" aria-label="Sauropod illustration placeholder">🦕</div>
+   <section className="panel"><div className="panelhead"><h2>Passive Loadout</h2><span className="badge">NO TRANQS</span></div><div className="taming-art-stage" aria-label={creature+' detailed anatomical field sketch'}>
+    <span className="taming-art-caption">CREATURE FIELD SKETCH <strong>{creature.toUpperCase()}</strong></span>
+    <CreatureLineArt creature={creature}/>
+    <span className="taming-art-status">{hasDetailedOutline(creature)?'TRACED SPECIES ART':'STYLIZED ANATOMICAL STUDY'}</span>
+   </div>
     <div className="keyrow"><span>Species</span><strong>{creature}</strong></div>
     <div className="keyrow"><span>Method</span><strong>{method?.type||'Passive feeding'}</strong></div>
     <div className="keyrow"><span>Selected food</span><strong>{selectedFood||'Needs individual review'}</strong></div>
