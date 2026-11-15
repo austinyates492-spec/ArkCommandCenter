@@ -44,10 +44,10 @@ test('prismatic uses full spectrum while monolith remains grayscale',()=>{
 });
 test('startup splash is available in first HTML paint, before React bundle',()=>{
  const html=readFileSync(join(folder,'../index.html'),'utf8');
- const boot=readFileSync(join(folder,'../public/boot-intro-v817.js'),'utf8');
+ const boot=readFileSync(join(folder,'../public/boot-intro-v818.js'),'utf8');
  const app=read('main.jsx');
  assert.ok(html.indexOf('id="ark-boot-intro"')<html.indexOf('id="root"'));
- assert.ok(html.indexOf('/boot-intro-v817.js')<html.indexOf('/src/main.jsx'));
+ assert.ok(html.indexOf('/boot-intro-v818.js')<html.indexOf('/src/main.jsx'));
  assert.match(html,/arkBootEmblem/);
  assert.match(boot,/DOMContentLoaded/);
  assert.match(boot,/ark:replay-intro/);
@@ -61,7 +61,7 @@ test('startup splash is available in first HTML paint, before React bundle',()=>
 
 test('boot intro matches the saved user theme and cloud-hydrated theme changes',()=>{
  const html=readFileSync(join(folder,'../index.html'),'utf8');
- const intro=readFileSync(join(folder,'../public/boot-intro-v817.js'),'utf8');
+ const intro=readFileSync(join(folder,'../public/boot-intro-v818.js'),'utf8');
  const app=read('main.jsx');
  for(const id of ids)assert.ok(intro.includes(id+':{accent:'),id+' opening palette missing');
  assert.match(intro,/localStorage\.getItem\('ark\.theme'\)/);
@@ -71,4 +71,21 @@ test('boot intro matches the saved user theme and cloud-hydrated theme changes',
  assert.match(html,/var\(--boot-accent/);
  assert.match(html,/var\(--boot-line/);
  assert.match(app,/new CustomEvent\('ark:theme-changed'/);
+});
+
+test('themed intro welcomes authenticated survivor and tribe, with guest fallback',()=>{
+ const html=readFileSync(join(folder,'../index.html'),'utf8');
+ const boot=readFileSync(join(folder,'../public/boot-intro-v818.js'),'utf8');
+ const main=read('main.jsx');
+ const saved=read('saved-login.js');
+ assert.match(html,/data-boot-welcome/);
+ assert.match(html,/data-boot-tribe/);
+ assert.match(boot,/WELCOME BACK, /);
+ assert.match(boot,/WELCOME, SURVIVOR/);
+ assert.match(boot,/sessionStorage\.getItem\('ark\.cloudSession'\)/);
+ assert.match(boot,/localStorage\.getItem\('ark\.cloudRememberToken'\)/);
+ assert.match(boot,/ark:identity-changed/);
+ assert.match(main,/new CustomEvent\('ark:identity-changed'/);
+ assert.match(main,/ark\.bootIdentity/);
+ assert.match(saved,/storage\.removeItem\('ark\.bootIdentity'\)/);
 });

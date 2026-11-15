@@ -15,7 +15,7 @@ export function rememberToken(token,storage=localStorage){
  storage.setItem(REMEMBER_KEY,token);
 }
 export function forgetRememberedToken(storage=localStorage){
- try{storage.removeItem(REMEMBER_KEY);}catch{/* Storage unavailable. */}
+ try{storage.removeItem(REMEMBER_KEY);storage.removeItem('ark.bootIdentity');}catch{/* Storage unavailable. */}
 }
 export function saveSession(next,storage=sessionStorage){
  storage.setItem(SESSION_KEY,JSON.stringify({token:next.token,user:next.user}));
