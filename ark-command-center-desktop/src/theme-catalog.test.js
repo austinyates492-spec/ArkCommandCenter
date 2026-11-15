@@ -42,13 +42,16 @@ test('prismatic uses full spectrum while monolith remains grayscale',()=>{
  assert.ok(colors.length>10);
  for(const hex of colors){assert.equal(hex.slice(0,2),hex.slice(2,4));assert.equal(hex.slice(2,4),hex.slice(4,6));}
 });
-test('startup intro replays when website opens and obeys reduced motion',()=>{
- const intro=read('StartupSequence.jsx'),css=read('startup.css'),app=read('main.jsx');
- assert.match(app,/<StartupSequence enabled=\{showStartup\}\/>/);
- assert.match(app,/ark\.showStartup/);
- assert.doesNotMatch(intro,/sessionStorage\.getItem\('ark\.startupSeen'\)/);
- assert.match(intro,/enabled=true/);
- assert.match(intro,/prefers-reduced-motion: reduce/);
- assert.match(intro,/Skip intro/);
- assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);
+test('startup splash is available in first HTML paint, before React bundle',()=>{
+ const html=readFileSync(join(folder,'../index.html'),'utf8');
+ const boot=readFileSync(join(folder,'../public/boot-intro-v815.js'),'utf8');
+ const app=read('main.jsx');
+ assert.ok(html.indexOf('id="ark-boot-intro"')<html.indexOf('id="root"'));
+ assert.ok(html.indexOf('/boot-intro-v815.js')<html.indexOf('/src/main.jsx'));
+ assert.match(html,/arkBootEmblem/);
+ assert.match(boot,/DOMContentLoaded/);
+ assert.match(boot,/ark:replay-intro/);
+ assert.match(boot,/ark.showStartup/);
+ assert.match(app,/Replay opening animation/);
+ assert.doesNotMatch(app,/<StartupSequence/);
 });
