@@ -36,7 +36,7 @@ function RexArtwork(){
   <span className="rex-outline-rule rex-outline-rule-bottom" aria-hidden="true"/>
  </div>;
 }
-export default function RexDossier({level,setLevel,food,setFood,foods,map,setMap,maps,rates,result,knockout,weaponQuality,setWeaponQuality,longneckBuffPercent,setLongneckBuffPercent,clusterId,onStart,onClassic}){
+export default function RexDossier({level,setLevel,food,setFood,foods,map,setMap,maps,rates,result,knockout,weaponQuality,setWeaponQuality,longneckBuffPercent,setLongneckBuffPercent,clusterId,onStart,onClassic,onBrowse}){
  const canStart=result.ok&&Number.isFinite(result.minutes)&&result.minutes>0;
  const ammo=knockout.ok?knockout.rows:[];
  const row=(id)=>ammo.find(item=>item.id===id);
@@ -104,6 +104,7 @@ export default function RexDossier({level,setLevel,food,setFood,foods,map,setMap
      <button type="button" className="rex-start" disabled={!canStart} onClick={onStart}><Timer size={17}/> Add tame timer</button>
      <a href="https://www.dododex.com/taming/rex" target="_blank" rel="noreferrer" className="rex-link">Verify in Dododex <ExternalLink size={16}/></a>
      <button type="button" className="rex-classic" onClick={onClassic}>Classic planner <ArrowRight size={14}/></button>
+     {onBrowse&&<button type="button" className="rex-classic" onClick={onBrowse}>Browse dossiers <BookOpen size={14}/></button>}
     </div>
    </div>
   </div>

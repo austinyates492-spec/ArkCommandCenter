@@ -7,7 +7,7 @@ import {specialtyAmmoOptions,estimateSpecialtyKnockout,specialtyFeeding,specialt
 const fmt=new Intl.NumberFormat('en-US');
 function period(seconds){const m=Math.round(seconds/60);return m>=60?`${Math.floor(m/60)}h ${m%60}m`:`${m}m`;}
 
-export default function SpecialtyLab({rates,onTimer}){
+export default function SpecialtyLab({rates,onTimer,onOpenDossier}){
  const [creature,setCreature]=useState(specialtyRoster.includes('Karkinos')?'Karkinos':specialtyRoster[0]);
  const [query,setQuery]=useState('');
  const [level,setLevel]=useState(150);
@@ -29,6 +29,7 @@ export default function SpecialtyLab({rates,onTimer}){
  const canTimer=Number.isFinite(estimatedMinutes)&&estimatedMinutes>0;
  const wiki=method?.source||`https://ark.wiki.gg/wiki/${encodeURIComponent(creature.replaceAll(' ','_'))}`;
  return <>
+  {onOpenDossier&&<div className="actionrow" style={{marginBottom:16}}><button className="ghost" type="button" onClick={()=>onOpenDossier(creature)}>View {creature} in Creature Dossiers</button></div>}
   <div className="pagetitle"><span className="eyebrow">FIELD OPERATIONS / SPECIAL</span><h1>Specialty Taming Lab</h1><p>{specialtyRoster.length} specialty species and forms. Heavy weapons, egg theft, trust mechanics, pheromones and unusual food interactions—separate from tranquilizers and ordinary passive feeds.</p></div>
   <div className="two wideleft">
    <section className="panel"><div className="panelhead"><h2>Specialty Tame Planner</h2><span className="badge gold">{rates.taming}× TAMING</span></div>
