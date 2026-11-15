@@ -9,6 +9,17 @@
 **Interim knockout linework:** v0.8.26 adds individually keyed anatomical accents to all remaining knockout body-plan studies. These are provisional—not counted as completed high-detail drawings. The Rex and initial nine remain separately traced.
 **Backup:** `backup/v0.8.23-before-creature-wave1`.
 
+## All-creature linework coverage — v0.8.27
+
+**Functional art coverage: 278/278 catalog entries.** All listed base creatures and variants have locally rendered, theme-colored anatomical field sketches in the existing searchable Taming Lab or the linked passive/specialty planners. Each study combines an appropriate body plan, anatomy landmarks, and a deterministic named-creature contour trace. No remote photos or image CDN is required.
+
+**Bespoke, individually traced illustrations: 10/278** (Rex plus the first nine knockout species). The remaining 268 are enhanced **stylized anatomy studies** sharing 27 body-plan families; they are **not** claimed to be individually commissioned, hand-traced, or reviewed to Rex-level detail. The unchecked boxes below track that higher-quality art review.
+
+**Taming Lab UX:** The separate Dossiers page remains removed. Taming Lab search now finds every species. Only knockout creatures receive ordinary tranquilizer math; passive and specialty selections can open their correct search-based planners, and untameables cannot start a tame timer.
+
+**Source preservation:** `backup/v0.8.26-before-full-creature-rollout`.
+
+
 ## Phase 1 - Knockout species
 
 ### 1A - Core carnivores (10)
