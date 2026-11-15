@@ -26,21 +26,24 @@
 #ark-boot-intro .boot-emblem svg{width:64px;height:64px;transform:rotate(-45deg);stroke:var(--boot-accent,#f34b63);fill:none;stroke-width:2}
 #ark-boot-intro .boot-title{font-size:clamp(30px,5vw,54px);font-weight:850;letter-spacing:.075em;line-height:1.1}
 #ark-boot-intro .boot-title b{color:var(--boot-accent,#f34b63)}
+#ark-boot-intro .boot-welcome{font-size:clamp(12px,2.4vw,18px);font-weight:700;letter-spacing:.09em;color:var(--boot-accent,#f34b63);text-transform:uppercase;max-width:min(680px,92vw);overflow-wrap:anywhere}
+#ark-boot-intro .boot-tribe{font-size:clamp(20px,4vw,38px);font-weight:800;letter-spacing:.045em;color:#fff;max-width:min(680px,92vw);overflow-wrap:anywhere;text-shadow:0 0 24px var(--boot-glow,#f34b6355)}
+#ark-boot-intro .boot-tribe[hidden]{display:none}
 #ark-boot-intro .boot-tag{color:#bac1cb;font-size:clamp(10px,1.4vw,13px);letter-spacing:.24em}
 #ark-boot-intro .boot-track{width:min(290px,75vw);height:3px;background:#ffffff24;border-radius:6px;overflow:hidden;margin:17px 0 3px}
 #ark-boot-intro .boot-fill{height:100%;width:100%;background:var(--boot-line,#f34b63);transform:scaleX(0);transform-origin:left}
 #ark-boot-intro .boot-skip{border:1px solid #ffffff42;background:#15151f;color:#d8dae2;border-radius:24px;padding:10px 20px;font-size:12px;cursor:pointer}
 #ark-boot-intro.boot-intro-playing .boot-emblem{animation:arkBootEmblem 1s cubic-bezier(.2,1,.2,1) both}
-#ark-boot-intro.boot-intro-playing .boot-title,#ark-boot-intro.boot-intro-playing .boot-tag{animation:arkBootTitle .7s ease .45s both}
+#ark-boot-intro.boot-intro-playing .boot-title,#ark-boot-intro.boot-intro-playing .boot-welcome,#ark-boot-intro.boot-intro-playing .boot-tribe,#ark-boot-intro.boot-intro-playing .boot-tag{animation:arkBootTitle .7s ease .45s both}
 #ark-boot-intro.boot-intro-playing .boot-fill{animation:arkBootFill 3s ease-out forwards}
 @keyframes arkBootEmblem{from{opacity:0;scale:.4;filter:blur(12px)}to{opacity:1;scale:1;filter:blur(0)}}
 @keyframes arkBootTitle{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes arkBootFill{to{transform:scaleX(1)}}
 #ark-boot-intro[data-boot-theme="rainbow"] .boot-title b{background:var(--boot-line);background-clip:text;-webkit-background-clip:text;color:transparent}
 @media(prefers-reduced-motion:reduce){#ark-boot-intro.boot-intro-playing *{animation:none!important;transition:none!important}#ark-boot-intro .boot-fill{transform:scaleX(1)}}
-</style><script src="/boot-intro-v817.js"></script></head><body><div id="ark-boot-intro" role="dialog" aria-label="ARK Tribe HQ opening animation">
+</style><script src="/boot-intro-v818.js"></script></head><body><div id="ark-boot-intro" role="dialog" aria-label="ARK Tribe HQ opening animation">
 <div class="boot-grid" aria-hidden="true"></div><div class="boot-content">
 <div class="boot-emblem" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M32 4 54 13V29C54 44 45 54 32 60 19 54 10 44 10 29V13Z"/><path d="M22 28 30 36 44 20"/></svg></div>
-<div class="boot-title">ARK TRIBE <b>HQ</b></div><div class="boot-tag">YOUR TRIBE. YOUR COMMAND.</div>
+<div class="boot-title">ARK TRIBE <b>HQ</b></div><div class="boot-welcome" data-boot-welcome>WELCOME, SURVIVOR</div><div class="boot-tribe" data-boot-tribe hidden></div><div class="boot-tag">YOUR TRIBE. YOUR COMMAND.</div>
 <div class="boot-track" aria-hidden="true"><div class="boot-fill"></div></div>
 <button type="button" class="boot-skip" data-intro-skip>Skip intro</button></div></div><div id="root"></div><script type="module" src="/src/main.jsx"></script></body></html>
