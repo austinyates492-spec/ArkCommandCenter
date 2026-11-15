@@ -41,7 +41,16 @@ export default function TamingLab({rates,onTimer,onNavigate,clusterId='nomadark'
  const dododexUrl=`https://www.dododex.com/taming/${encodeURIComponent(creature.toLowerCase().replaceAll(' ','-'))}`;
  return <>
   <div className="pagetitle"><span className="eyebrow">FIELD OPERATIONS / 01</span><h1>Taming Lab</h1><p>Search all {tameCreatures.length} creatures and forms here. Conventional knockout taming uses the original calculator; passive and specialty creatures link to their dedicated planners. Artwork is a stylized anatomical study, not an in-game model.</p></div>
-  <div className="two wideleft">
+  <div className="taming-hero-layout">
+   <section className="panel"><div className="panelhead"><h2>Loadout & Sources</h2><span className={`badge ${!special&&result.ok?'green':'gold'}`}>{special?special.type:result.ok?'WIKI MODEL':'NEEDS DATA'}</span></div><div className={'taming-art-stage'+(creature==='Rex'?' taming-art-rex':'')} aria-label={creature+' creature field sketch'}>
+     <span className="taming-art-caption">CREATURE FIELD SKETCH <strong>{creature.toUpperCase()}</strong></span>
+     {creature==='Rex'?<RexArtwork/>:<CreatureLineArt creature={creature}/>}
+     <span className="taming-art-status">{creature==='Rex'||hasDetailedOutline(creature)?'DETAILED SPECIES ART':'STYLIZED BODY-PLAN ART'}</span>
+    </div>
+    <div className="keyrow"><span>Creature</span><strong>{creature}</strong></div><div className="keyrow"><span>Level</span><strong>{level}</strong></div>{special?<><div className="keyrow"><span>Required method</span><strong>{special.type}</strong></div>{special.items.map(item=><div className="keyrow" key={item}><span>Allowed item</span><strong>{item}</strong></div>)}{!special.items.length&&<div className="keyrow"><span>Item</span><strong>{special.status==='untameable'?'None':'Not yet confirmed'}</strong></div>}</>:<><div className="keyrow"><span>Food</span><strong>{result.ok?selectedFood:'Verify externally'}</strong></div><div className="keyrow"><span>Food pieces</span><strong>{result.ok?result.foodPieces:(manualFood||'—')}</strong></div></>}<div className="keyrow"><span>Taming multiplier</span><strong>{rates.taming}×</strong></div><div className="keyrow"><span>Food drain multiplier</span><strong>{rates.food}×</strong></div><div className="keyrow"><span>Verified built-in profiles</span><strong>{Object.keys(knockoutProfiles).length}</strong></div>
+    <div className="actionrow"><a className="ghost linkbtn" target="_blank" rel="noreferrer" href={special?.source||wikiUrl}>Species wiki <ExternalLink size={15}/></a></div>
+    <div className="notice">Sources: ARK Official Community Wiki taming modules. Special/passive tames are excluded from the automatic knockout model.</div>
+   </section>
    <section className="panel"><div className="panelhead"><h2>Plan a Tame</h2><span className="badge gold">{rates.taming}× PROFILE</span></div>
     <label className="field"><span>Search all creatures and variants</span><input value={creatureQuery} onChange={e=>setCreatureQuery(e.target.value)} placeholder="Rex, Tek, Aberrant, Giga..."/></label>
     <div className="formgrid">
@@ -54,15 +63,6 @@ export default function TamingLab({rates,onTimer,onNavigate,clusterId='nomadark'
     {isDiscovered&&<div className="notice">This creature was found in the live wiki feed. Its knockout method, food and torpor are not yet verified; use a manually confirmed timer until data is reviewed.</div>}
     {!special&&result.ok&&<div className="notice">{result.caveat} Current cluster: {rates.taming}× taming; the {rates.food}× dinosaur food-drain multiplier can change the duration. Player hunger is a separate setting.</div>}
     <div className="actionrow"><a className="ghost linkbtn" target="_blank" rel="noreferrer" href={dododexUrl}>Cross-check Dododex <ExternalLink size={15}/></a>{isKnockout?<button className="primary" disabled={!canStart||special?.status==='untameable'} onClick={()=>onTimer(`${creature} Lv ${level} · ${map}${isManual?' · manual':''}`,finalMinutes,'Taming')}>Start Timer <Timer size={16}/></button>:category!=='untameable'&&<button className="primary" type="button" onClick={()=>onNavigate?.(category==='passive'?'passive':'specialty',creature)}>Open {category==='passive'?'Passive':'Specialty'} Planner</button>}</div>
-   </section>
-   <section className="panel"><div className="panelhead"><h2>Loadout & Sources</h2><span className={`badge ${!special&&result.ok?'green':'gold'}`}>{special?special.type:result.ok?'WIKI MODEL':'NEEDS DATA'}</span></div><div className={'taming-art-stage'+(creature==='Rex'?' taming-art-rex':'')} aria-label={creature+' creature field sketch'}>
-     <span className="taming-art-caption">CREATURE FIELD SKETCH <strong>{creature.toUpperCase()}</strong></span>
-     {creature==='Rex'?<RexArtwork/>:<CreatureLineArt creature={creature}/>}
-     <span className="taming-art-status">{creature==='Rex'||hasDetailedOutline(creature)?'DETAILED SPECIES ART':'STYLIZED BODY-PLAN ART'}</span>
-    </div>
-    <div className="keyrow"><span>Creature</span><strong>{creature}</strong></div><div className="keyrow"><span>Level</span><strong>{level}</strong></div>{special?<><div className="keyrow"><span>Required method</span><strong>{special.type}</strong></div>{special.items.map(item=><div className="keyrow" key={item}><span>Allowed item</span><strong>{item}</strong></div>)}{!special.items.length&&<div className="keyrow"><span>Item</span><strong>{special.status==='untameable'?'None':'Not yet confirmed'}</strong></div>}</>:<><div className="keyrow"><span>Food</span><strong>{result.ok?selectedFood:'Verify externally'}</strong></div><div className="keyrow"><span>Food pieces</span><strong>{result.ok?result.foodPieces:(manualFood||'—')}</strong></div></>}<div className="keyrow"><span>Taming multiplier</span><strong>{rates.taming}×</strong></div><div className="keyrow"><span>Food drain multiplier</span><strong>{rates.food}×</strong></div><div className="keyrow"><span>Verified built-in profiles</span><strong>{Object.keys(knockoutProfiles).length}</strong></div>
-    <div className="actionrow"><a className="ghost linkbtn" target="_blank" rel="noreferrer" href={special?.source||wikiUrl}>Species wiki <ExternalLink size={15}/></a></div>
-    <div className="notice">Sources: ARK Official Community Wiki taming modules. Special/passive tames are excluded from the automatic knockout model.</div>
    </section>
   </div>
   {isKnockout&&!special&&<section className="panel knockout-panel"><div className="panelhead"><h2>Tranquilizer & Knockout Planner</h2><span className="badge gold">ESTIMATED AMMO</span></div>
