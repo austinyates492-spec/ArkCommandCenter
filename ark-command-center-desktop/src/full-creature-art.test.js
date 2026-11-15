@@ -41,7 +41,7 @@ test('all-creature search retains category-safe calculators and opens correct se
  assert.match(lab,/tameCreatures,\.\.\.discoveredCreatures/);
  assert.match(lab,/isKnockout\?calculateTame/);
  assert.match(lab,/isKnockout\?knockoutEstimate/);
- assert.match(lab,/isKnockout&&!special&&<section className="panel knockout-panel"/);
+ assert.match(lab,/isKnockout&&!special&&<section className="panel knockout-panel taming-knockout-card"/);
  assert.match(lab,/onNavigate\?\.\(category==='passive'\?'passive':'specialty',creature\)/);
  assert.match(app,/openCreaturePlanner/);
  assert.match(app,/selectedCreature=\{crossLabCreature\}/);
