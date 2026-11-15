@@ -1,5 +1,6 @@
 import React from 'react';
 import {creatureArtProfile} from './creature-art-profile.js';
+import {knockoutDetailSketch} from './knockout-sketch-details.js';
 import IndividualCreatureLineArt,{hasDetailedOutline} from './IndividualCreatureLineArt.jsx';
 
 // These are original SVG technical studies, not game models. Families have
@@ -117,6 +118,7 @@ function FamilyCreatureLineArt({creature,className='',compact=false}){
   rex:'M580 173 L607 108 M689 178 L745 187'
  };
  const extra=accentPaths[spec.speciality]||'';
+ const distinctive=knockoutDetailSketch(creature);
  const tech=spec.form&&spec.original.toLowerCase().includes('tek');
  return <svg className={'cad-illustration '+className} viewBox="0 0 850 470" role="img" aria-label={`Stylized ${creature} technical outline; species-family illustration rather than an in-game model`} xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
   <title>{creature} field sketch</title>
@@ -124,6 +126,7 @@ function FamilyCreatureLineArt({creature,className='',compact=false}){
    <path d={t.outer} strokeWidth={compact?5:5.5} className="cad-outer"/>
    <g strokeWidth={compact?2.5:2.9} opacity=".8">{t.lines.map((d,i)=><path key={i} d={d}/>)}</g>
    {extra&&<path d={extra} strokeWidth="3.8" className="cad-unique"/>}
+   {!!distinctive.length&&<g strokeWidth="2.6" className="cad-species-study" opacity=".82">{distinctive.map((d,i)=><path d={d} key={i}/>)}</g>}
    <ellipse cx={t.eye[0]} cy={t.eye[1]} rx="7" ry="5" strokeWidth="2.4"/>
    <circle cx={t.eye[0]+1} cy={t.eye[1]} r="2.1" fill="currentColor" stroke="none"/>
    <g strokeWidth="2.1" opacity=".46">
