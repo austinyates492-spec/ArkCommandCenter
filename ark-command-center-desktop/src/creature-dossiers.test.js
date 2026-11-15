@@ -135,3 +135,14 @@ test('restored Taming Lab keeps visible search and original calculator for Rex a
  assert.match(css,/\.cad-detailed-outline/);
  assert.match(css,/@media\(max-width:480px\)/);
 });
+
+test('Taming Lab shows the larger creature artwork on the left and keeps the search on the right',()=>{
+ const lab=source('TamingLab.jsx'),css=source('taming-lab-art.css');
+ assert.match(lab,/className="taming-hero-layout"/);
+ assert.ok(lab.indexOf('Loadout & Sources')<lab.indexOf('Plan a Tame'),'Art column must precede controls in reading order');
+ assert.match(css,/\.taming-hero-layout\{display:grid;grid-template-columns:minmax\(0,1\.2fr\) minmax\(0,\.8fr\)/);
+ assert.match(css,/height:clamp\(430px,44vw,630px\)/);
+ assert.match(css,/@media\(max-width:1100px\)/);
+ assert.match(lab,/Search all creatures and variants/);
+ assert.match(lab,/knockoutEstimate\(/);
+});
