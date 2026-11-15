@@ -13,11 +13,17 @@
 
 **Functional art coverage: 278/278 catalog entries.** All listed base creatures and variants have locally rendered, theme-colored anatomical field sketches in the existing searchable Taming Lab or the linked passive/specialty planners. Each study combines an appropriate body plan, anatomy landmarks, and a deterministic named-creature contour trace. No remote photos or image CDN is required.
 
-**Bespoke, individually traced illustrations: 10/278** (Rex plus the first nine knockout species). The remaining 268 are enhanced **stylized anatomy studies** sharing 27 body-plan families; they are **not** claimed to be individually commissioned, hand-traced, or reviewed to Rex-level detail. The unchecked boxes below track that higher-quality art review.
+**Individually illustrated vector entries: 19/278** (Rex, the first nine approved line drawings, and nine new large predators). The remaining 259 are **stylized anatomy studies** sharing 27 body-plan families; they are **not** claimed to be individually commissioned, hand-traced, or reviewed to Rex-level detail. The unchecked boxes below track that higher-quality art review.
 
 **Taming Lab UX:** The separate Dossiers page remains removed. Taming Lab search now finds every species. Only knockout creatures receive ordinary tranquilizer math; passive and specialty selections can open their correct search-based planners, and untameables cannot start a tame timer.
 
 **Source preservation:** `backup/v0.8.26-before-full-creature-rollout`.
+
+## Large predators artwork upgrade — v0.8.28
+
+Nine newly illustrated species have their own original SVG traces: Giganotosaurus, Carcharodontosaurus, Spinosaurus, Yutyrannus, Megalosaurus, Therizinosaurus, Acrocanthosaurus, Cryolophosaurus and Megaraptor. These illustrations replace family templates on the existing Taming Lab / Specialty Lab. They are stylized reconstructions, subject to visual and anatomical review, not direct copies of ARK game models. **Thylacoleo remains pending** a properly distinguished quadrupedal marsupial-lion illustration; generic feline artwork is not marked complete.
+
+Backup: `backup/v0.8.27-before-predator-art`.
 
 
 ## Phase 1 - Knockout species
@@ -37,14 +43,14 @@
 
 ### 1B - Large predators (8)
 
-- [ ] Spinosaurus
-- [ ] Yutyrannus
-- [ ] Megalosaurus
-- [ ] Therizinosaurus
+- [x] Spinosaurus — individual vector artwork integrated; visual review pending
+- [x] Yutyrannus — individual vector artwork integrated; visual review pending
+- [x] Megalosaurus — individual vector artwork integrated; visual review pending
+- [x] Therizinosaurus — individual vector artwork integrated; visual review pending
 - [ ] Thylacoleo
-- [ ] Acrocanthosaurus
-- [ ] Cryolophosaurus
-- [ ] Megaraptor
+- [x] Acrocanthosaurus — individual vector artwork integrated; visual review pending
+- [x] Cryolophosaurus — individual vector artwork integrated; visual review pending
+- [x] Megaraptor — individual vector artwork integrated; visual review pending
 
 ### 1C - Herbivores / workhorses (15)
 
@@ -165,7 +171,7 @@
 - [ ] Basilisk
 - [ ] Bloodstalker
 - [ ] Burrowbuck
-- [ ] Carcharodontosaurus
+- [x] Carcharodontosaurus — individual vector artwork integrated; visual review pending
 - [ ] Cat
 - [ ] Ceratosaurus
 - [ ] Cerberax
@@ -188,7 +194,7 @@
 - [ ] Gacha
 - [ ] Gargantar
 - [ ] Gigadesmodus
-- [ ] Giganotosaurus
+- [x] Giganotosaurus — individual vector artwork integrated; visual review pending
 - [ ] Gigantoraptor
 - [ ] Gloon
 - [ ] Helicoprion
