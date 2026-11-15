@@ -1,6 +1,6 @@
 import React from 'react';
 import {MapPin,ExternalLink,Info} from 'lucide-react';
-import {creatureSpawnUrl,resourceMapUrl} from './data.js';
+import {creatureSpawnUrl,wikiSpawn} from './data.js';
 import EmbeddedMap from './EmbeddedMap.jsx';
 import './tame-spawn-atlas.css';
 
@@ -21,7 +21,7 @@ export default function TameSpawnAtlas({creature,map}){
   </div>
   <p className="tame-spawn-hint"><Info size={15}/> Changing the creature or map above updates this viewer automatically. The Wiki map may require selecting the creature in its own filter if its URL-based preselection is unavailable. Map regions are possible habitats, not guaranteed sightings.</p>
   <EmbeddedMap key={selectedMap+':'+selectedCreature} title={selectedMap+' — '+selectedCreature+' Spawn Map'}
-   url={source} alternativeUrl={resourceMapUrl(selectedMap)}
+   url={source} alternativeUrl={wikiSpawn(selectedMap)}
    selection={selectedCreature} kind="spawn"/>
  </section>;
 }
