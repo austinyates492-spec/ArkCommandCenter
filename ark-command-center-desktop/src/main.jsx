@@ -10,7 +10,6 @@ import PassiveLab from './PassiveLab';
 import CoveragePanel from './CoveragePanel';
 import CraftingPage from './CraftingPage';
 import ThemePicker,{themeIds} from './ThemePicker';
-import StartupSequence from './StartupSequence';
 import ClusterSettings from './ClusterSettings';
 import CloudAccount from './CloudAccount';
 import {useCloudSync} from './cloud-sync';
@@ -99,7 +98,6 @@ function App(){
  const addTimer=(name,minutes,type='Custom',soundEnabledForCreator=true)=>{const mins=Number(minutes);if(!Number.isFinite(mins)||mins<=0)return;if(!cloud.user){setPage('cloud');return;}void live.addTimer(name,mins,type,soundEnabledForCreator).catch(()=>{});setPage('timers')};
  const pageName=nav.find(x=>x[0]===page)?.[1]||'Overview';
  return <div className={'shell'+(isDesktopApp?' tauri-desktop':'')} data-theme={theme}>
-  <StartupSequence enabled={showStartup}/>
   {mobileNavOpen&&<button type="button" className="mobile-nav-backdrop" aria-label="Close navigation" onClick={()=>setMobileNavOpen(false)}/>}
   <aside className={'sidebar'+(mobileNavOpen?' mobile-open':'')} id="ark-primary-nav" aria-label="Main navigation"><div className="brand"><div className="brandmark"><Shield size={24}/></div><div><strong>ARK TRIBE<em>HQ</em></strong><small>LIVE TRIBE COMMAND</small></div><button type="button" className="mobile-nav-close" aria-label="Close menu" onClick={()=>setMobileNavOpen(false)}><X size={21}/></button></div>
   <div className="sidegroup" title={cloud.user?.tribeName||'Choose a tribe'}>TRIBE: {cloud.user?.tribeName||'NOT CONNECTED'}</div>
@@ -123,7 +121,7 @@ function App(){
   {page==='settings'&&<ClusterSettings rates={rates} setRates={updateRates} clusterId={clusterId} onClusterChange={onClusterChange}/>}
   {page==='settings'&&<CoveragePanel/>}
   {page==='settings'&&<ThemePicker value={theme} onChange={setTheme}/>}
-  {page==='settings'&&<section className="panel"><div className="panelhead"><h2>Opening Animation</h2></div><label className="startup-preference"><input type="checkbox" checked={showStartup} onChange={event=>setShowStartup(event.target.checked)}/><span>Play the cinematic intro when I open the website or launch the app</span></label><p className="notice">The intro is always skippable and does not play when navigating between pages. Reduced Motion disables it automatically.</p></section>}
+  {page==='settings'&&<section className="panel"><div className="panelhead"><h2>Opening Animation</h2></div><label className="startup-preference"><input type="checkbox" checked={showStartup} onChange={event=>setShowStartup(event.target.checked)}/><span>Play the cinematic intro when I open the website or launch the app</span></label><button className="ghost" type="button" onClick={()=>window.dispatchEvent(new Event('ark:replay-intro'))}>Replay opening animation</button><p className="notice">The intro is always skippable and does not play when navigating between pages. Reduced Motion disables it automatically.</p></section>}
   {page==='cloud'&&<CloudAccount cloud={cloud}/>}
   {page==='crafting'&&<CraftingPage liveRecipes={catalog.recipes}/>}
   {page==='tribe-crafting'&&<TribeCraftingPage live={live} user={cloud.user} liveRecipes={catalog.recipes} onOpenAccount={()=>setPage('cloud')}/>}
