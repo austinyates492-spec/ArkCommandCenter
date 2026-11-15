@@ -2,7 +2,7 @@
 
 **Status:** Build-ready requirements, **not a claim that illustrations have been redrawn or deployed.**  
 **Source:** `CREATURE_DOSSIER_ROLLOUT.md`, the actual 84-name historical Phase 1 list; runtime `knockoutRoster` must be used before treating any entry as a standard knockout tame.  
-**Current artwork:** Rex + the first nine have separate traced art; 74 additional names below still require bespoke outer silhouette replacements.  
+**Current artwork:** Rex + the first nine have user-liked traced art. Seven more historically listed knockout species have newly integrated custom vector silhouettes in v0.8.28, **pending visual approval**. Another 67 listed creatures still need dedicated drawings. All 74 remaining entries are pending sign-off.  
 **Responsibility:** The searchable **Taming Lab stays the only knockout UI**. No new Creature Dossiers page; preserve food, torpor, weapon quality, ammo and timer calculations.
 
 ## Deliverable acceptance rules
@@ -15,6 +15,8 @@
 6. **No mathematical changes.** Art cannot alter `calculateTame`, `knockoutEstimate` or live timer persistence. Missing taming profiles stay unknown; do not fabricate values.
 7. **Unambiguous status.** A checked box means a unique source illustration is integrated **and visually approved**; all otherwise-pending rows remain unchecked. Existing first ten are listed separately as **reference art**, not new work.
 8. **Variants.** Tek, Aberrant and X-/R-forms inherit the approved base anatomy *only after* base review; add any real geometry changes distinctly. Recoloring or identical base art alone does not count as a new variant illustration.
+
+**Release synchronization:** v0.8.28 separately published vector traces for Spinosaurus, Yutyrannus, Megalosaurus, Therizinosaurus, Acrocanthosaurus, Cryolophosaurus and Megaraptor. Giganotosaurus and Carcharodontosaurus also received newly illustrated art in the *specialty* category. Thylacoleo has not received an accepted custom silhouette. This document is the **QA acceptance specification**, so those seven newly drawn Phase 1 entries are still unchecked until inspected.
 
 ## Known source-category discrepancies
 
@@ -46,21 +48,21 @@ This historical knockout artwork inventory contains some species handled as **sp
 
 ### 1B — large predators (8)
 
-- [ ] **Spinosaurus** — **OUTER:** Long crocodilian head held low, strongly tapering lower jaw, prominent tall dorsal sail beginning behind neck and ending over hip, long muscular tail. **LINES:** Sail rib struts following curved top, tooth spacing, strong forearm claws and tail muscle bands. **NOT A CLONE:** Must not look like Rex with triangular spikes glued along back. *Bespoke redraw and visual acceptance pending.*
+- [ ] **Spinosaurus** — **OUTER:** Long crocodilian head held low, strongly tapering lower jaw, prominent tall dorsal sail beginning behind neck and ending over hip, long muscular tail. **LINES:** Sail rib struts following curved top, tooth spacing, strong forearm claws and tail muscle bands. **NOT A CLONE:** Must not look like Rex with triangular spikes glued along back. *Separate vector artwork integrated in v0.8.28; **anatomical and mobile visual sign-off still pending**.*
 
-- [ ] **Yutyrannus** — **OUTER:** High deep feathered neck and shoulder ruff framing long tyrannosaur skull, sizeable three-clawed arms and heavy hind limbs. **LINES:** Distinct individual feather rows on mantle and forearms, sharp teeth, mane boundary and large toes. **NOT A CLONE:** Unlike the smooth Rex, the feather mass changes the outer neck and back silhouette. *Bespoke redraw and visual acceptance pending.*
+- [ ] **Yutyrannus** — **OUTER:** High deep feathered neck and shoulder ruff framing long tyrannosaur skull, sizeable three-clawed arms and heavy hind limbs. **LINES:** Distinct individual feather rows on mantle and forearms, sharp teeth, mane boundary and large toes. **NOT A CLONE:** Unlike the smooth Rex, the feather mass changes the outer neck and back silhouette. *Separate vector artwork integrated in v0.8.28; **anatomical and mobile visual sign-off still pending**.*
 
-- [ ] **Megalosaurus** — **OUTER:** Long lower skull and heavy brow, rounded back/shoulder, robust arms, tucked stalking posture and broad upper tail. **LINES:** Subtle scale/skin folds, three-fingered hands, jaw teeth and neck-to-shoulder pivot. **NOT A CLONE:** Must not share Rex skull width or Allosaurus brow/leg ratio. *Bespoke redraw and visual acceptance pending.*
+- [ ] **Megalosaurus** — **OUTER:** Long lower skull and heavy brow, rounded back/shoulder, robust arms, tucked stalking posture and broad upper tail. **LINES:** Subtle scale/skin folds, three-fingered hands, jaw teeth and neck-to-shoulder pivot. **NOT A CLONE:** Must not share Rex skull width or Allosaurus brow/leg ratio. *Separate vector artwork integrated in v0.8.28; **anatomical and mobile visual sign-off still pending**.*
 
-- [ ] **Therizinosaurus** — **OUTER:** Small beaked head atop a very tall S-shaped neck, deep shaggy potbelly and extremely long extended forearms terminating in three scythe claws. **LINES:** Individual giant claw curvature, feather/fur mantle, slender legs and distinctive beak/eye. **NOT A CLONE:** Those arms and claws must dominate the silhouette, not merely be drawn inside a theropod body. *Bespoke redraw and visual acceptance pending.*
+- [ ] **Therizinosaurus** — **OUTER:** Small beaked head atop a very tall S-shaped neck, deep shaggy potbelly and extremely long extended forearms terminating in three scythe claws. **LINES:** Individual giant claw curvature, feather/fur mantle, slender legs and distinctive beak/eye. **NOT A CLONE:** Those arms and claws must dominate the silhouette, not merely be drawn inside a theropod body. *Separate vector artwork integrated in v0.8.28; **anatomical and mobile visual sign-off still pending**.*
 
 - [ ] **Thylacoleo** — **OUTER:** Long low marsupial cat body, heavy forward-facing shoulders, short muzzle, strong grasping forepaws and thick tail. **LINES:** Marsupial jaw, catlike ear, large paw pads, pronounced climbing forearm muscles. **NOT A CLONE:** Not Sabertooth's long exposed fangs or Direwolf's narrow head. *Bespoke redraw and visual acceptance pending.*
 
-- [ ] **Acrocanthosaurus** — **OUTER:** Deep-bodied large theropod with a continuous low ridge of raised spinal processes across the back, long angular skull and thick thighs. **LINES:** Individual raised neck/back spines, brow/cheek lines and three-fingered grasping hands. **NOT A CLONE:** Distinguish from Spino: back ridge is comparatively low, not a broad sail. *Bespoke redraw and visual acceptance pending.*
+- [ ] **Acrocanthosaurus** — **OUTER:** Deep-bodied large theropod with a continuous low ridge of raised spinal processes across the back, long angular skull and thick thighs. **LINES:** Individual raised neck/back spines, brow/cheek lines and three-fingered grasping hands. **NOT A CLONE:** Distinguish from Spino: back ridge is comparatively low, not a broad sail. *Separate vector artwork integrated in v0.8.28; **anatomical and mobile visual sign-off still pending**.*
 
-- [ ] **Cryolophosaurus** — **OUTER:** Medium slender theropod with a distinctive sideways comb-like crest spanning the brow/crown, long neck and balanced upright posture. **LINES:** Crest cross-ridges, narrow snout, finger and toe claws, lighter limb proportions. **NOT A CLONE:** Not a Dilophosaur with two parallel crests; show the singular transverse head comb. *Bespoke redraw and visual acceptance pending.*
+- [ ] **Cryolophosaurus** — **OUTER:** Medium slender theropod with a distinctive sideways comb-like crest spanning the brow/crown, long neck and balanced upright posture. **LINES:** Crest cross-ridges, narrow snout, finger and toe claws, lighter limb proportions. **NOT A CLONE:** Not a Dilophosaur with two parallel crests; show the singular transverse head comb. *Separate vector artwork integrated in v0.8.28; **anatomical and mobile visual sign-off still pending**.*
 
-- [ ] **Megaraptor** — **OUTER:** Graceful narrow-chested theropod, proportionately long forelimbs with huge curved hand claws, narrow low head and high stride. **LINES:** Hand anatomy and hooked thumb claws must read separately from hind toes, tendons and mouth. **NOT A CLONE:** No Therizinosaurus potbelly or generic tiny theropod arms. *Bespoke redraw and visual acceptance pending.*
+- [ ] **Megaraptor** — **OUTER:** Graceful narrow-chested theropod, proportionately long forelimbs with huge curved hand claws, narrow low head and high stride. **LINES:** Hand anatomy and hooked thumb claws must read separately from hind toes, tendons and mouth. **NOT A CLONE:** No Therizinosaurus potbelly or generic tiny theropod arms. *Separate vector artwork integrated in v0.8.28; **anatomical and mobile visual sign-off still pending**.*
 
 ### 1C — herbivores and workhorses (15)
 
@@ -206,4 +208,4 @@ This historical knockout artwork inventory contains some species handled as **sp
 
 Do not mark a pending row complete unless a dedicated local illustration exists, its outer contour is a distinguishable species-specific shape, every required feature survives an outline-only review, the correct creature is displayed in Taming Lab, all theme palettes remain readable, and automated art/calculator regression checks plus human visual QA pass.
 
-**Artwork status at specification freeze:** 10 reference illustrations / 74 pending bespoke silhouette replacements / 84 historically listed knockout-art entries. Runtime classification is authoritative for which taming calculator shows.
+**Artwork status at specification freeze:** 10 reference illustrations with user-positive feedback / 7 further newly integrated silhouettes requiring visual QA / 67 requiring bespoke source silhouettes / 84 historically listed knockout-art entries. Runtime classification is authoritative for which taming calculator shows.
