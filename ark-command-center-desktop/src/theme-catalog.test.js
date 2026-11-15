@@ -44,14 +44,17 @@ test('prismatic uses full spectrum while monolith remains grayscale',()=>{
 });
 test('startup splash is available in first HTML paint, before React bundle',()=>{
  const html=readFileSync(join(folder,'../index.html'),'utf8');
- const boot=readFileSync(join(folder,'../public/boot-intro-v815.js'),'utf8');
+ const boot=readFileSync(join(folder,'../public/boot-intro-v816.js'),'utf8');
  const app=read('main.jsx');
  assert.ok(html.indexOf('id="ark-boot-intro"')<html.indexOf('id="root"'));
- assert.ok(html.indexOf('/boot-intro-v815.js')<html.indexOf('/src/main.jsx'));
+ assert.ok(html.indexOf('/boot-intro-v816.js')<html.indexOf('/src/main.jsx'));
  assert.match(html,/arkBootEmblem/);
  assert.match(boot,/DOMContentLoaded/);
  assert.match(boot,/ark:replay-intro/);
  assert.match(boot,/ark.showStartup/);
+ assert.match(boot,/arkTribeHQReplayIntro/);
+ assert.match(boot,/play\(true\)/);
+ assert.doesNotMatch(html,/#ark-boot-intro\{display:none!important\}/);
  assert.match(app,/Replay opening animation/);
  assert.doesNotMatch(app,/<StartupSequence/);
 });
