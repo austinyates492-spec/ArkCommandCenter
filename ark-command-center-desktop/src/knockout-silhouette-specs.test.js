@@ -40,7 +40,7 @@ test('do not mark adaptive procedural studies as bespoke completed artwork',()=>
  const checked=rows.filter(x=>x.checked).map(x=>x.name).sort();
  assert.deepEqual(checked,[...integrated].sort(),'Only separately traced species may be marked done');
  assert.equal(rows.filter(x=>!x.checked).length,74);
- assert.match(spec,/do not count as a new variant illustration/);
+ assert.match(spec,/does not count as a new variant illustration/);
  assert.match(spec,/silhouette path/);
 });
 
