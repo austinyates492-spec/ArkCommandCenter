@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import {gunzipSync} from 'node:zlib';
+import {rexOutlineGzip} from './rex-outline-data.js';
 import {fileURLToPath} from 'node:url';
 import {dirname,join} from 'node:path';
 const folder=dirname(fileURLToPath(import.meta.url));
@@ -116,13 +118,19 @@ test('premium Rex dossier is a live calculator, keeps theme responsiveness and c
  assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);
 });
 
-test('Rex preview uses attributed 3D art instead of the old silhouette',()=>{
+test('Rex has self-contained detailed technical outline with no remote art dependency',()=>{
  const jsx=read('RexDossier.jsx'),css=read('rex-dossier.css');
- assert.match(jsx,/Tyrannosaurus_rex_3D_render\.png/);
- assert.match(jsx,/DERPYDUCKANIMATION/);
- assert.match(jsx,/creativecommons\.org\/licenses\/by\/4\.0/);
- assert.doesNotMatch(jsx,/function RexArtwork\(\)\{\s*return <svg/);
- assert.match(jsx,/onError=\{\(\)=>setFailed\(true\)\}/);
- assert.match(css,/\.rex-art-photo/);
+ const svg=gunzipSync(Buffer.from(rexOutlineGzip,'base64')).toString('utf8');
+ assert.match(svg,/<svg xmlns="http:\/\/www.w3.org\/2000\/svg"/);
+ assert.match(svg,/fill-rule="evenodd"/);
+ assert.ok(svg.length>8000,'Anatomical Rex linework should be detailed, not a generic icon');
+ assert.match(jsx,/DecompressionStream\('gzip'\)/);
+ assert.match(jsx,/data:image\/svg\+xml;base64/);
+ assert.match(jsx,/maskImage/);
+ assert.match(jsx,/WebkitMaskImage/);
+ assert.match(css,/\.rex-outline-art/);
+ assert.match(css,/background:var\(--rd-accent\)/);
+ assert.doesNotMatch(jsx,/Tyrannosaurus_rex_3D_render/);
+ assert.doesNotMatch(jsx,/thumb\.wikimedia\.org/);
  assert.match(css,/@media\(max-width:420px\)/);
 });

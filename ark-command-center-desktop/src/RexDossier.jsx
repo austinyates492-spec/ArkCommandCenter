@@ -1,6 +1,7 @@
 import React from 'react';
 import {Activity,AlertTriangle,ArrowRight,BookOpen,Clock3,Crosshair,ExternalLink,Heart,MapPin,Shield,Timer,Utensils,Target, Zap} from 'lucide-react';
 import './rex-dossier.css';
+import {rexOutlineGzip} from './rex-outline-data.js';
 
 const fmt=new Intl.NumberFormat('en-US');
 const time=seconds=>{
@@ -9,14 +10,30 @@ const time=seconds=>{
 };
 const wiki='https://ark.wiki.gg/wiki/Rex';
 function Panel({heading,aside,children,className=''}){return <section className={'rex-panel '+className}><div className="rex-panel-heading"><h2>{heading}</h2>{aside}</div>{children}</section>}
-// Licensed, real 3D creature rendering rather than the earlier vector approximation.
-// Wikimedia Commons: DerpyDuckAnimation, CC BY 4.0. Deliberately keep the
-// image isolated from live calculator rendering to avoid layout shifts.
-const rexArtUrl='https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5d/Tyrannosaurus_rex_3D_render.png/1280px-Tyrannosaurus_rex_3D_render.png';
+// The line drawing is an original, local SVG mask generated from clean black ink art.
+// Native decompression keeps the source compact and avoids external image loading.
 function RexArtwork(){
- const [failed,setFailed]=React.useState(false);
- return <div className="rex-art-frame">
-  {!failed?<img className="rex-art-photo" src={rexArtUrl} alt="Detailed 3D reconstruction of a Tyrannosaurus rex" loading="eager" decoding="async" onError={()=>setFailed(true)}/>:<div className="rex-art-fallback" aria-label="Rex illustration unavailable"><span>REX</span><small>CREATURE DOSSIER</small></div>}
+ const [mask,setMask]=React.useState('');
+ React.useEffect(()=>{
+  let active=true;
+  async function load(){
+   try{
+    const bytes=Uint8Array.from(atob(rexOutlineGzip),ch=>ch.charCodeAt(0));
+    const unzipped=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+    const svg=await new Response(unzipped).text();
+    if(!svg.startsWith('<svg')||!svg.includes('viewBox'))throw new Error('Invalid Rex artwork');
+    if(active)setMask('data:image/svg+xml;base64,'+btoa(svg));
+   }catch{
+    if(active)setMask('');
+   }
+  }
+  void load();
+  return ()=>{active=false;};
+ },[]);
+ return <div className="rex-outline-frame" role="img" aria-label="Original precision outline of a roaring Tyrannosaurus rex, including jaw, teeth, claws and anatomical contours">
+  {mask?<div className="rex-outline-art" style={{maskImage:`url("${mask}")`,WebkitMaskImage:`url("${mask}")`}}/>:<div className="rex-outline-loading">REX <small>FIELD SKETCH 001</small></div>}
+  <span className="rex-outline-rule rex-outline-rule-top" aria-hidden="true"/>
+  <span className="rex-outline-rule rex-outline-rule-bottom" aria-hidden="true"/>
  </div>;
 }
 export default function RexDossier({level,setLevel,food,setFood,foods,map,setMap,maps,rates,result,knockout,weaponQuality,setWeaponQuality,longneckBuffPercent,setLongneckBuffPercent,clusterId,onStart,onClassic}){
@@ -33,7 +50,7 @@ export default function RexDossier({level,setLevel,food,setFood,foods,map,setMap
       <div className="rex-tags"><span><Utensils size={13}/> Carnivore</span><span><MapPin size={13}/> Land</span><span className="rex-alert"><AlertTriangle size={13}/> Aggressive</span></div>
      </div>
      <RexArtwork/>
-     <div className="rex-art-credit">3D REX RENDER BY <a href="https://commons.wikimedia.org/wiki/File:Tyrannosaurus_rex_3D_render.png" target="_blank" rel="noreferrer">DERPYDUCKANIMATION</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">CC BY 4.0</a> · VISUAL RECONSTRUCTION</div>
+     <div className="rex-art-credit">FIELD SKETCH / ORIGINAL LINEWORK · ACCENT COLOR FOLLOWS YOUR THEME</div>
     </section>
     <div className="rex-left-bottom">
      <Panel heading="FIELD INTELLIGENCE" aside={<span className="rex-section-tag">SPECIES PROFILE</span>}>
