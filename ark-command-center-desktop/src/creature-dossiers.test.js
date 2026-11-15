@@ -103,7 +103,7 @@ test('nine wave-one knockout species have distinct, detailed, decodable individu
 });
 
 test('rollout checklist covers all 214 base entries and 64 variants without claiming fake custom art',()=>{
- const roadmap=readFileSync(join(folder,'../../CREATURE_DOSSIER_ROLLOUT.md'),'utf8');
+ const roadmap=readFileSync(join(folder,'../../CREATURE_DOSSIER_ROLLOUT.md'),'utf8').replace(/\r\n/g,'\n');
  for(const species of asaBaseCreatures)assert.ok(roadmap.includes('] '+species+'\n')||roadmap.includes('] '+species+' —'),species+' missing from checklist');
  for(const name of Object.keys(breedingVariants))assert.ok(roadmap.includes('] '+name+' (base: '),name+' variant missing from checklist');
  assert.match(roadmap,/Phase 1 - Knockout/);
