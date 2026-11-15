@@ -62,7 +62,8 @@ function App(){
     if(localStorage.getItem('ark.cloudRememberToken'))localStorage.setItem('ark.bootIdentity',JSON.stringify(identity));
     else localStorage.removeItem('ark.bootIdentity');
     window.dispatchEvent(new CustomEvent('ark:identity-changed',{detail:identity}));
-   }else{
+   }else if(!localStorage.getItem('ark.cloudRememberToken')){
+    // Avoid replacing the remembered welcome with "guest" during async login restore.
     window.dispatchEvent(new CustomEvent('ark:identity-changed',{detail:null}));
    }
   }catch{}
