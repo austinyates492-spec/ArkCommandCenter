@@ -89,3 +89,9 @@ test('themed intro welcomes authenticated survivor and tribe, with guest fallbac
  assert.match(main,/ark\.bootIdentity/);
  assert.match(saved,/storage\.removeItem\('ark\.bootIdentity'\)/);
 });
+
+test('remembered users retain their personalized intro while session restores',()=>{
+ const app=read('main.jsx');
+ assert.match(app,/else if\(!localStorage\.getItem\('ark\.cloudRememberToken'\)\)/);
+ assert.match(app,/Avoid replacing the remembered welcome/);
+});
