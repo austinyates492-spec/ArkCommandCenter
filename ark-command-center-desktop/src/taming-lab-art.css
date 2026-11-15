@@ -122,3 +122,76 @@
 @media(max-width:600px){.taming-compact-title{margin-bottom:13px}.taming-workspace{gap:12px}.taming-picker-bar{grid-template-columns:1fr}.taming-plan-layout{grid-template-columns:1fr}.taming-workspace .taming-art-stage{height:clamp(250px,67vw,365px)}.taming-creature-meta{margin-bottom:6px}.taming-small-title{margin-top:5px}.taming-knockout-card .panelhead{align-items:flex-start}.taming-ko-headline>div{min-height:81px;padding:10px}.taming-ko-headline strong{font-size:32px}}
 @media(max-width:390px){.taming-ammo-row{grid-template-columns:23px minmax(0,1fr) 40px 40px;gap:5px;padding:9px 7px}.taming-ammo-icon{width:23px;height:23px}.taming-ammo-description strong{font-size:10px}.taming-shot-count strong{font-size:18px}.taming-ko-headline strong{font-size:27px}.taming-estimate-cards strong{font-size:24px}}
 @media(prefers-reduced-motion:reduce){.taming-methodology summary svg{transition:none}}
+
+/* v0.8.31: larger creature sketch inside the SAME Loadout & Sources card.
+   The plan moves to the right; the picker is narrower without changing panel width. */
+.taming-workspace .taming-combined-panel .taming-picker-bar{
+ grid-template-columns:minmax(0,1.65fr) minmax(0,.85fr);
+ gap:12px
+}
+.taming-workspace .taming-combined-panel .taming-plan-layout{
+ grid-template-columns:minmax(0,1.7fr) minmax(0,.9fr);
+ gap:12px;
+ align-items:start
+}
+.taming-workspace .taming-combined-panel .taming-visual-column,
+.taming-workspace .taming-combined-panel .taming-plan-content{min-width:0}
+.taming-workspace .taming-combined-panel .taming-art-stage{
+ width:100%;
+ height:auto;
+ aspect-ratio:1.82 / 1;
+ min-height:230px;
+ max-height:455px;
+ margin:0
+}
+.taming-workspace .taming-combined-panel .taming-art-stage .cad-illustration{
+ width:100%;
+ height:100%;
+ max-width:100%;
+ filter:drop-shadow(0 0 7px color-mix(in srgb,var(--ark-accent,#5de2ac) 28%,transparent))
+}
+.taming-workspace .taming-combined-panel .taming-art-stage .rex-outline-frame{
+ inset:0;
+ width:100%;
+ height:100%;
+ align-items:center
+}
+.taming-workspace .taming-combined-panel .taming-art-stage .rex-outline-art{
+ width:100%;
+ height:100%;
+ mask-position:center;
+ -webkit-mask-position:center
+}
+.taming-workspace .taming-combined-panel .taming-plan-content{padding-left:3px}
+.taming-workspace .taming-combined-panel .taming-creature-meta{margin-top:9px}
+/* The global .knockout-panel has a 20px top margin for its older standalone layout.
+   Inside the paired workspace it must share the Loadout panel's exact top baseline. */
+.taming-workspace>.knockout-panel{
+ margin-top:0;
+ align-self:stretch
+}
+/* Keep the side-by-side console available on ordinary desktop widths. */
+@media (min-width:1191px) and (max-width:1320px){
+ .taming-workspace{grid-template-columns:minmax(0,1.13fr) minmax(0,.87fr)}
+ .taming-workspace>.panel{height:100%}
+}
+@media (max-width:1190px){
+ .taming-workspace{grid-template-columns:1fr}
+ .taming-workspace>.panel{height:auto}
+ .taming-workspace .taming-combined-panel .taming-plan-layout{grid-template-columns:minmax(0,1.7fr) minmax(0,1fr)}
+ .taming-workspace .taming-combined-panel .taming-art-stage{max-height:460px}
+}
+@media (max-width:780px){
+ .taming-workspace .taming-combined-panel .taming-plan-layout{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr)}
+}
+@media (max-width:600px){
+ .taming-workspace .taming-combined-panel .taming-picker-bar,
+ .taming-workspace .taming-combined-panel .taming-plan-layout{grid-template-columns:1fr}
+ .taming-workspace .taming-combined-panel .taming-art-stage{
+  height:auto;
+  aspect-ratio:1.82 / 1;
+  min-height:220px;
+  max-height:355px
+ }
+ .taming-workspace .taming-combined-panel .taming-plan-content{padding-left:0}
+}
