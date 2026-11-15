@@ -89,8 +89,8 @@ jobs:
         if: github.event_name == 'push' && startsWith(github.event.head_commit.message, 'release:')
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v0.8.23
-          name: ArkTribeHQ v0.8.23 - Complete Creature Dossier Library
+          tag_name: v0.8.24
+          name: ArkTribeHQ v0.8.24 - Complete Creature Dossier Library
           body: |
             Premium fluid layout for portrait, mobile, desktop and ultrawide screens.
             Improved theme-aware cards, typography, navigation and input readability.

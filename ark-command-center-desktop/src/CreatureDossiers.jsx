@@ -8,6 +8,7 @@ import {passiveFoodPlan,passiveProfiles} from './passive-taming.js';
 import {specialtyAmmoOptions,estimateSpecialtyKnockout,specialtyFeeding,specialtyFoodOptions,specialtyFixedSupply} from './specialty-engine.js';
 import {creatureArtProfile} from './creature-art-profile.js';
 import CreatureLineArt from './CreatureLineArt.jsx';
+import {hasDetailedOutline,detailedOutlineNames} from './IndividualCreatureLineArt.jsx';
 import RexDossier from './RexDossier.jsx';
 import './creature-dossiers.css';
 
@@ -74,8 +75,8 @@ export default function CreatureDossiers({rates,onTimer,clusterId='nomadark',onO
  const timer=()=>onTimer(`${creature} Lv ${level} · ${map}${!computedSeconds?' · manually verified':''}`,suggestedMinutes,'Taming');
  const methodCounts=useMemo(()=>tameCreatures.reduce((acc,name)=>{acc[tamingCategory(name)]=(acc[tamingCategory(name)]||0)+1;return acc},{knockout:0,passive:0,specialty:0,untameable:0}),[]);
  return <div className="cad-library">
-  <div className="pagetitle cad-heading"><span className="eyebrow">FIELD OPERATIONS / CREATURE ARCHIVE</span><h1>Creature Dossiers</h1><p>Every catalogued ASA creature and form has an individual field-sketch entry. Outlines are stylized anatomy studies, not extracted game models. Taming figures are shown only where a supported calculation exists.</p></div>
-  <div className="cad-summary"><span><strong>{tameCreatures.length}</strong> creature entries</span>{Object.entries(methodCounts).map(([kind,count])=><span key={kind}><b>{count}</b> {methodNames[kind]}</span>)}</div>
+  <div className="pagetitle cad-heading"><span className="eyebrow">FIELD OPERATIONS / CREATURE ARCHIVE</span><h1>Creature Dossiers</h1><p>Every catalogued ASA creature and form has a dossier. Ten creatures now have dedicated detailed line art; the remaining entries keep their existing body-plan studies until their artwork is reviewed. Taming figures appear only where supported models exist.</p></div>
+  <div className="cad-summary"><span><strong>{tameCreatures.length}</strong> creature entries</span><span className="cad-progress"><strong>{detailedOutlineNames.length+1}</strong> individually illustrated</span>{Object.entries(methodCounts).map(([kind,count])=><span key={kind}><b>{count}</b> {methodNames[kind]}</span>)}</div>
   <section className="cad-search-panel" aria-label="Browse creature dossiers">
    <label className="cad-search"><Search size={19}/><input type="search" placeholder="Search creatures, variants, and forms…" aria-label="Search creature dossiers" value={query} onChange={event=>setQuery(event.target.value)}/></label>
    <div className="cad-filters" aria-label="Filter by taming type">{categoryValues.map(value=><button type="button" className={filter===value?'active':''} key={value} aria-pressed={filter===value} onClick={()=>setFilter(value)}>{value==='all'?'All':value==='favorites'?'★ Favorites':methodNames[value]}</button>)}</div>
@@ -83,6 +84,7 @@ export default function CreatureDossiers({rates,onTimer,clusterId='nomadark',onO
     {visible.slice(0,limit).map(name=><button type="button" key={name} className={'cad-creature-tile'+(name===creature?' selected':'')} aria-pressed={name===creature} onClick={()=>selectCreature(name)}>
      <span className="cad-creature-glyph">{creatureArtProfile(name).group.slice(0,2).toUpperCase()}</span>
      <span className="cad-creature-copy"><strong>{name}</strong><small>{methodNames[tamingCategory(name)]} {favorites.includes(name)?' · ★':''}</small></span>
+     {(name==='Rex'||hasDetailedOutline(name))&&<span className="cad-art-dot" title="Dedicated species illustration" aria-label="Dedicated species illustration"/>}
      {name===creature&&<Check size={14}/>}
     </button>)}
     {visible.length===0&&<p className="cad-empty">No creatures match that search or filter.</p>}
@@ -99,8 +101,9 @@ export default function CreatureDossiers({rates,onTimer,clusterId='nomadark',onO
      <section className="cad-art-stage" aria-label={`${creature} anatomical illustration`}>
       <div className="cad-stage-grid" aria-hidden="true"/>
       <span className="cad-stage-label">FIELD SKETCH / {art.group.toUpperCase()}</span>
+      <span className={'cad-art-status'+(hasDetailedOutline(creature)?'':' cad-art-status-pending')}>{hasDetailedOutline(creature)?'DETAILED SPECIES ART':'BODY-PLAN STUDY'}</span>
       <CreatureLineArt creature={creature}/>
-      <div className="cad-stage-footer"><span>INDIVIDUAL TRACE {String(art.seed).slice(-6)}</span><span>LINEWORK MATCHES ACTIVE THEME</span></div>
+      <div className="cad-stage-footer"><span>{hasDetailedOutline(creature)?'CURATED ANATOMICAL CONTOUR':'BODY-PLAN REFERENCE'}</span><span>LINEWORK MATCHES ACTIVE THEME</span></div>
      </section>
      <Section title="SPECIES INTELLIGENCE" subtitle="METHOD-AWARE">
       <Info label="Creature" value={creature}/>
@@ -108,7 +111,7 @@ export default function CreatureDossiers({rates,onTimer,clusterId='nomadark',onO
       <Info label="Art body plan" value={art.group.replaceAll('-',' ')}/>
       <Info label="Official source" value={<a href={wikiUrl} target="_blank" rel="noreferrer">Creature wiki <ExternalLink size={13}/></a>}/>
       {method?.type&&<Info label="Encounter method" value={method.type}/>}
-      <p className="cad-fineprint">This illustration is an original stylized field sketch. It is not a precise model of every ASA creature, and variants inherit some shared anatomy.</p>
+      <p className="cad-fineprint">{hasDetailedOutline(creature)?'This is a curated, individually drawn species illustration; not an in-game model.':'This is a shared body-plan study with species-specific variations. A dedicated detailed illustration is still pending review.'}</p>
      </Section>
     </div>
     <div className="cad-detail-right">

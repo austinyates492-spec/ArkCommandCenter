@@ -1,6 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import {gunzipSync} from 'node:zlib';
+import {createHash} from 'node:crypto';
+import {individualOutlines} from './individual-outline-data.js';
 import {dirname,join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {tameCreatures} from './data.js';
@@ -54,7 +57,9 @@ test('every taming category has the right mechanical data flow in the dossier',(
  assert.match(src,/category==='specialty'&&heavyOptions.length/);
  assert.match(src,/category==='untameable'\?/);
  assert.match(src,/category!=='untameable'/);
- assert.match(src,/not a precise model of every ASA creature/);
+ assert.match(src,/dedicated detailed illustration is still pending review/);
+ assert.match(src,/hasDetailedOutline/);
+ assert.match(src,/detailedOutlineNames.length\+1/);
  assert.match(src,/tameCreatures\.filter/);
  assert.match(src,/cad-favorite-btn/);
  assert.match(src,/RexDossier/);
@@ -74,4 +79,37 @@ test('creature dossier visuals are theme-aware and responsive on mobile',()=>{
  assert.match(art,/viewBox="0 0 850 470"/);
  assert.match(art,/cad-outer/);
  assert.match(art,/role="img"/);
+});
+
+test('nine wave-one knockout species have distinct, detailed, decodable individual SVG artwork',()=>{
+ const completed=['Raptor','Carnotaurus','Allosaurus','Baryonyx','Sabertooth','Direwolf','Terror Bird','Dilophosaur','Compy'];
+ assert.deepEqual(Object.keys(individualOutlines).sort(),completed.slice().sort());
+ const hashes=new Set();
+ for(const species of completed){
+  assert.equal(tamingCategory(species),'knockout',species+' should belong to phase one');
+  const svg=gunzipSync(Buffer.from(individualOutlines[species],'base64')).toString('utf8');
+  assert.match(svg,/^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg"/);
+  assert.match(svg,/fill-rule="evenodd"/);
+  assert.ok(svg.length>4500,species+' individual art is unusually sparse');
+  const hash=createHash('sha256').update(svg).digest('hex');
+  assert.ok(!hashes.has(hash),species+' shares the same artwork');
+  hashes.add(hash);
+ }
+ const ui=source('IndividualCreatureLineArt.jsx'),art=source('CreatureLineArt.jsx');
+ assert.match(ui,/DecompressionStream\('gzip'\)/);
+ assert.match(ui,/WebkitMaskImage/);
+ assert.match(art,/hasDetailedOutline\(props\.creature\)/);
+ assert.match(source('creature-dossiers.css'),/\.cad-detailed-outline/);
+});
+
+test('rollout checklist covers all 214 base entries and 64 variants without claiming fake custom art',()=>{
+ const roadmap=readFileSync(join(folder,'../../CREATURE_DOSSIER_ROLLOUT.md'),'utf8');
+ for(const species of asaBaseCreatures)assert.ok(roadmap.includes('] '+species+'\n')||roadmap.includes('] '+species+' —'),species+' missing from checklist');
+ for(const name of Object.keys(breedingVariants))assert.ok(roadmap.includes('] '+name+' (base: '),name+' variant missing from checklist');
+ assert.match(roadmap,/Phase 1 - Knockout/);
+ assert.match(roadmap,/Phase 2 - Passive/);
+ assert.match(roadmap,/Phase 3 - Specialty/);
+ assert.match(roadmap,/Phase 4A - Variants/);
+ assert.match(roadmap,/Phase 4B - Untameable/);
+ assert.match(roadmap,/unique artwork integrated; visual approval pending/);
 });
