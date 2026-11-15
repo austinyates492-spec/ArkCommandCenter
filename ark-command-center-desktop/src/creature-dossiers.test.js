@@ -136,13 +136,33 @@ test('restored Taming Lab keeps visible search and original calculator for Rex a
  assert.match(css,/@media\(max-width:480px\)/);
 });
 
-test('Taming Lab shows the larger creature artwork on the left and keeps the search on the right',()=>{
+test('Taming Lab combines a smaller creature image, dropdown and plan on the left, knockout alongside',()=>{
  const lab=source('TamingLab.jsx'),css=source('taming-lab-art.css');
- assert.match(lab,/className="taming-hero-layout"/);
- assert.ok(lab.indexOf('Loadout & Sources')<lab.indexOf('Plan a Tame'),'Art column must precede controls in reading order');
- assert.match(css,/\.taming-hero-layout\{display:grid;grid-template-columns:minmax\(0,1\.2fr\) minmax\(0,\.8fr\)/);
- assert.match(css,/height:clamp\(430px,44vw,630px\)/);
- assert.match(css,/@media\(max-width:1100px\)/);
+ assert.match(lab,/className="taming-workspace"/);
+ assert.match(lab,/className="panel taming-combined-panel"/);
+ assert.match(lab,/className="taming-picker-bar"/);
+ assert.ok(lab.indexOf('Loadout & Sources')<lab.indexOf('Search all creatures and variants'),'Creature selection stays in Loadout & Sources');
+ assert.ok(lab.indexOf('Search all creatures and variants')<lab.indexOf('Plan a Tame'),'Search precedes the plan');
+ assert.ok(lab.indexOf('Plan a Tame')<lab.indexOf('Knockout Planner'),'The knockout panel appears alongside the combined loadout');
+ assert.match(css,/\.taming-workspace\{display:grid;grid-template-columns/);
+ assert.match(css,/\.taming-workspace \.taming-art-stage\{height:258px/);
+ assert.match(css,/@media\(max-width:600px\)/);
  assert.match(lab,/Search all creatures and variants/);
  assert.match(lab,/knockoutEstimate\(/);
+ assert.match(lab,/taming-ammo-row/);
+ assert.match(lab,/Plan Notes/);
+ assert.match(lab,/Calculation assumptions/);
+ assert.match(lab,/matchin[gG]Creatures\.map/);
+});
+test('knockout estimates retain exact model fields without inventing ammo counts',()=>{
+ const lab=source('TamingLab.jsx');
+ assert.match(lab,/knockout\.rows\.map/);
+ assert.match(lab,/item\.body/);
+ assert.match(lab,/item\.head===null/);
+ assert.match(lab,/knockout\.totalTorpor/);
+ assert.match(lab,/weaponQuality/);
+ assert.match(lab,/longneckBuffPercent/);
+ assert.match(lab,/targetTorpor/);
+ assert.match(lab,/isKnockout&&!special&&<section className="panel knockout-panel/);
+ assert.doesNotMatch(lab,/page==='dossiers'/);
 });
