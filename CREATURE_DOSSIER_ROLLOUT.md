@@ -20,6 +20,14 @@
 **Source preservation:** `backup/v0.8.26-before-full-creature-rollout`.
 
 
+## Phase 1 unique-silhouette rebuild contract (Option B)
+
+See **[KNOCKOUT_UNIQUE_SILHOUETTE_SPECS.md](./KNOCKOUT_UNIQUE_SILHOUETTE_SPECS.md)** for 84 exact outer silhouettes, required anatomy lines and anti-clone acceptance checks.
+
+**Do not interpret adaptive detail strokes as a completed creature.** At this checkpoint only Rex and the original nine individually traced illustrations are considered reference art; 74 historical knockout-art entries need new standalone, species-recognizable outlines. The requirements document is a build contract, *not* a drawing deployment.
+
+**Method audit:** Fasolasuchus and Shastasaurus occur in the historical knockout-art batch despite unusual taming methods. Refer to live `tamingCategory` before placing them in the knockout calculator; this art tracker does not override game mechanics.
+
 ## Phase 1 - Knockout species
 
 ### 1A - Core carnivores (10)
