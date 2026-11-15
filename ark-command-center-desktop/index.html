@@ -17,4 +17,29 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="ArkTribeHQ"/>
 <title>ArkTribeHQ — ARK Survival Ascended Tribe Tools</title>
-</head><body><div id="root"></div><script type="module" src="/src/main.jsx"></script></body></html>
+<style id="ark-boot-intro-styles">
+#ark-boot-intro{position:fixed;inset:0;z-index:2147483640;display:grid;place-items:center;isolation:isolate;background:radial-gradient(ellipse at 50% 60%,#2e1321 0%,#0b0d14 65%);color:#f8f5f9;text-align:center;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;cursor:pointer;overflow:hidden}
+#ark-boot-intro[hidden],html[data-boot-intro="off"] #ark-boot-intro,.boot-intro-finished{display:none!important}
+#ark-boot-intro .boot-grid{position:absolute;inset:-50%;background-image:linear-gradient(#ea6d8722 1px,transparent 1px),linear-gradient(90deg,#ea6d8722 1px,transparent 1px);background-size:52px 52px;transform:perspective(650px) rotateX(28deg);opacity:.25;pointer-events:none}
+#ark-boot-intro .boot-content{position:relative;display:grid;justify-items:center;gap:14px;padding:24px;max-width:100%}
+#ark-boot-intro .boot-emblem{display:grid;place-items:center;width:120px;height:120px;border:2px solid #f1516e;border-radius:24px;box-shadow:0 0 30px #ef4e6a55,inset 0 0 30px #ef4e6a25;transform:rotate(45deg)}
+#ark-boot-intro .boot-emblem svg{width:64px;height:64px;transform:rotate(-45deg);stroke:#ff778d;fill:none;stroke-width:2}
+#ark-boot-intro .boot-title{font-size:clamp(30px,5vw,54px);font-weight:850;letter-spacing:.075em;line-height:1.1}
+#ark-boot-intro .boot-title b{color:#ff718b}
+#ark-boot-intro .boot-tag{color:#bac1cb;font-size:clamp(10px,1.4vw,13px);letter-spacing:.24em}
+#ark-boot-intro .boot-track{width:min(290px,75vw);height:3px;background:#ffffff24;border-radius:6px;overflow:hidden;margin:17px 0 3px}
+#ark-boot-intro .boot-fill{height:100%;width:100%;background:linear-gradient(90deg,#f04e6d,#ff9c93);transform:scaleX(0);transform-origin:left}
+#ark-boot-intro .boot-skip{border:1px solid #ffffff42;background:#15151f;color:#d8dae2;border-radius:24px;padding:10px 20px;font-size:12px;cursor:pointer}
+#ark-boot-intro.boot-intro-playing .boot-emblem{animation:arkBootEmblem 1s cubic-bezier(.2,1,.2,1) both}
+#ark-boot-intro.boot-intro-playing .boot-title,#ark-boot-intro.boot-intro-playing .boot-tag{animation:arkBootTitle .7s ease .45s both}
+#ark-boot-intro.boot-intro-playing .boot-fill{animation:arkBootFill 3s ease-out forwards}
+@keyframes arkBootEmblem{from{opacity:0;scale:.4;filter:blur(12px)}to{opacity:1;scale:1;filter:blur(0)}}
+@keyframes arkBootTitle{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes arkBootFill{to{transform:scaleX(1)}}
+@media(prefers-reduced-motion:reduce){#ark-boot-intro{display:none!important}}
+</style><script src="/boot-intro-v815.js"></script></head><body><div id="ark-boot-intro" role="dialog" aria-label="ARK Tribe HQ opening animation">
+<div class="boot-grid" aria-hidden="true"></div><div class="boot-content">
+<div class="boot-emblem" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M32 4 54 13V29C54 44 45 54 32 60 19 54 10 44 10 29V13Z"/><path d="M22 28 30 36 44 20"/></svg></div>
+<div class="boot-title">ARK TRIBE <b>HQ</b></div><div class="boot-tag">YOUR TRIBE. YOUR COMMAND.</div>
+<div class="boot-track" aria-hidden="true"><div class="boot-fill"></div></div>
+<button type="button" class="boot-skip" data-intro-skip>Skip intro</button></div></div><div id="root"></div><script type="module" src="/src/main.jsx"></script></body></html>
