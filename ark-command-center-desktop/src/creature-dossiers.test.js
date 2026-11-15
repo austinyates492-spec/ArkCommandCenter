@@ -166,3 +166,28 @@ test('knockout estimates retain exact model fields without inventing ammo counts
  assert.match(lab,/isKnockout&&!special&&<section className="panel knockout-panel/);
  assert.doesNotMatch(lab,/page==='dossiers'/);
 });
+
+test('v0.8.31 gives the artwork the wider internal column and shrinks the creature picker',()=>{
+ const css=source('taming-lab-art.css');
+ assert.match(css,/\.taming-workspace \.taming-combined-panel \.taming-plan-layout\{\s*grid-template-columns:minmax\(0,1\.7fr\) minmax\(0,\.9fr\)/);
+ assert.match(css,/\.taming-workspace \.taming-combined-panel \.taming-picker-bar\{\s*grid-template-columns:minmax\(0,1\.65fr\) minmax\(0,\.85fr\)/);
+ assert.match(css,/\.taming-workspace \.taming-combined-panel \.taming-art-stage\{\s*width:100%;\s*height:auto;\s*aspect-ratio:1\.82 \/ 1/);
+ assert.match(css,/\.taming-workspace \.taming-combined-panel \.taming-art-stage \.cad-illustration\{\s*width:100%;\s*height:100%/);
+ assert.match(css,/\.taming-workspace \.taming-combined-panel \.taming-art-stage \.rex-outline-frame\{\s*inset:0;\s*width:100%;\s*height:100%/);
+ assert.match(css,/@media \(max-width:600px\)/);
+ const lab=source('TamingLab.jsx');
+ assert.match(lab,/className="taming-picker-bar"/);
+ assert.match(lab,/Creature \(\{matchingCreatures\.length\} matches\)/);
+ assert.match(lab,/taming-plan-content/);
+});
+test('v0.8.31 knockout console shares the Loadout top edge instead of inheriting the old offset',()=>{
+ const css=source('taming-lab-art.css');
+ const global=source('style.css');
+ assert.match(global,/\.knockout-panel\{margin-top:20px\}/);
+ assert.match(css,/\.taming-workspace>\.knockout-panel\{\s*margin-top:0;\s*align-self:stretch/);
+ assert.match(css,/@media \(min-width:1191px\) and \(max-width:1320px\)/);
+ assert.match(css,/@media \(max-width:1190px\)/);
+ const lab=source('TamingLab.jsx');
+ assert.match(lab,/className="panel taming-combined-panel"/);
+ assert.match(lab,/className="panel knockout-panel taming-knockout-card"/);
+});
