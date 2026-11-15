@@ -98,14 +98,15 @@ test('remembered users retain their personalized intro while session restores',(
  assert.match(app,/Avoid replacing the remembered welcome/);
 });
 
-test('premium Rex dossier is a live calculator, keeps theme responsiveness and classic fallback',()=>{
+test('original Rex art and verified model are available alongside searchable Taming Lab',()=>{
  const dossier=read('RexDossier.jsx');
  const css=read('rex-dossier.css');
  const lab=read('TamingLab.jsx');
- assert.match(lab,/import RexDossier from '.\/RexDossier.jsx'/);
- assert.match(lab,/creature==='Rex'&&showRexDossier/);
- assert.match(lab,/onStart=\{\(\)=>onTimer/);
- assert.match(lab,/setShowRexDossier\(false\)/);
+ assert.match(lab,/import \{RexArtwork\} from '.\/RexDossier.jsx'/);
+ assert.match(lab,/Search creatures and variants/);
+ assert.match(lab,/RexArtwork/);
+ assert.match(lab,/calculateTame\(/);
+ assert.match(lab,/knockoutEstimate\(/);
  assert.match(dossier,/result\.foodPieces/);
  assert.match(dossier,/result\.seconds/);
  assert.match(dossier,/knockout\.totalTorpor/);

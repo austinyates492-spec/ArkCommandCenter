@@ -1,0 +1,13 @@
+/* Searchable Taming Lab artwork. This does not introduce a new page or calculator. */
+.taming-art-stage{position:relative;isolation:isolate;overflow:hidden;height:305px;margin-bottom:18px;border:1px solid color-mix(in srgb,var(--ark-accent,#70e3ac) 46%,transparent);border-radius:12px;background:radial-gradient(ellipse at 50% 52%,color-mix(in srgb,var(--ark-accent,#70e3ac) 12%,transparent),transparent 68%),linear-gradient(152deg,var(--ark-deep,#0d1b20),#090f18 85%);color:var(--ark-accent,#70e3ac);display:grid;place-items:center}
+.taming-art-stage:before{content:"";position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(color-mix(in srgb,var(--ark-accent,#70e3ac) 12%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--ark-accent,#70e3ac) 12%,transparent) 1px,transparent 1px);background-size:48px 48px;opacity:.28}
+.taming-art-stage .cad-illustration{display:block;position:relative;width:96%;height:85%;z-index:1;color:var(--ark-accent,#70e3ac);filter:drop-shadow(0 0 6px color-mix(in srgb,var(--ark-accent,#70e3ac) 22%,transparent))}
+.taming-art-stage .cad-detailed-outline{display:block;background:currentColor;mask-repeat:no-repeat;mask-position:center;mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;-webkit-mask-size:contain}
+.taming-art-caption{display:flex;gap:8px;align-items:center;justify-content:space-between;position:absolute;top:13px;left:15px;right:15px;z-index:3;min-width:0;font-size:9px;font-weight:850;letter-spacing:.09em;color:var(--ark-text,#bac7c0);text-shadow:0 1px 5px #000}
+.taming-art-caption strong{max-width:58%;text-align:right;overflow-wrap:anywhere;font-size:11px;color:var(--ark-accent,#70e3ac)}
+.taming-art-status{position:absolute;bottom:12px;right:15px;z-index:3;color:var(--ark-accent,#70e3ac);font-size:9px;font-weight:850;letter-spacing:.07em;background:var(--ark-deep,#101a23);border-radius:5px;padding:4px 7px}
+.taming-art-stage .rex-outline-frame{inset:auto 9px 19px;height:83%}
+.taming-art-stage.taming-art-rex .rex-outline-rule{opacity:.25}
+.taming-art-stage .rex-outline-loading{font-size:45px}
+@media(max-width:800px){.taming-art-stage{height:290px}}
+@media(max-width:480px){.taming-art-stage{height:240px}.taming-art-stage .rex-outline-frame{height:79%;inset:auto 3px 15px}.taming-art-caption{left:10px;right:10px;font-size:8px}.taming-art-status{right:8px;bottom:7px;font-size:8px}}

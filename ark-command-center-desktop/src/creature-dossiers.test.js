@@ -23,8 +23,9 @@ test('every official ASA baseline creature and variant is present in the dossier
   assert.ok(breedingVariants[name],name+' missing base species');
  }
  const app=source('main.jsx');
- assert.match(app,/\['dossiers','Creature Dossiers',BookOpen\]/);
- assert.match(app,/page==='dossiers'&&<CreatureDossiers/);
+ assert.match(app,/\['taming','Taming Lab',Calculator\]/);
+ assert.doesNotMatch(app,/\['dossiers','Creature Dossiers',BookOpen\]/);
+ assert.doesNotMatch(app,/page==='dossiers'&&<CreatureDossiers/);
 });
 
 test('every base species receives a recognized anatomy family, not an unclassified placeholder',()=>{
@@ -112,4 +113,22 @@ test('rollout checklist covers all 214 base entries and 64 variants without clai
  assert.match(roadmap,/Phase 4A - Variants/);
  assert.match(roadmap,/Phase 4B - Untameable/);
  assert.match(roadmap,/unique artwork integrated; visual approval pending/);
+});
+
+test('restored Taming Lab keeps visible search and original calculator for Rex and all knockouts',()=>{
+ const lab=source('TamingLab.jsx');
+ assert.match(lab,/Search creatures and variants/);
+ assert.match(lab,/matchingCreatures\.map/);
+ assert.match(lab,/onChange=\{e=>setCreature\(e\.target\.value\)\}/);
+ assert.match(lab,/calculateTame\(/);
+ assert.match(lab,/knockoutEstimate\(/);
+ assert.match(lab,/Start Timer/);
+ assert.match(lab,/CreatureLineArt creature=\{creature\}/);
+ assert.match(lab,/RexArtwork/);
+ assert.doesNotMatch(lab,/if\(creature==='Rex'&&showRexDossier\)return/);
+ assert.doesNotMatch(lab,/onOpenDossier/);
+ const css=source('taming-lab-art.css');
+ assert.match(css,/\.taming-art-stage/);
+ assert.match(css,/\.cad-detailed-outline/);
+ assert.match(css,/@media\(max-width:480px\)/);
 });
