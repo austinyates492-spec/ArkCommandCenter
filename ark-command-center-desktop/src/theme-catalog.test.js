@@ -95,3 +95,23 @@ test('remembered users retain their personalized intro while session restores',(
  assert.match(app,/else if\(!localStorage\.getItem\('ark\.cloudRememberToken'\)\)/);
  assert.match(app,/Avoid replacing the remembered welcome/);
 });
+
+test('premium Rex dossier is a live calculator, keeps theme responsiveness and classic fallback',()=>{
+ const dossier=read('RexDossier.jsx');
+ const css=read('rex-dossier.css');
+ const lab=read('TamingLab.jsx');
+ assert.match(lab,/import RexDossier from '.\/RexDossier.jsx'/);
+ assert.match(lab,/creature==='Rex'&&showRexDossier/);
+ assert.match(lab,/onStart=\{\(\)=>onTimer/);
+ assert.match(lab,/setShowRexDossier\(false\)/);
+ assert.match(dossier,/result\.foodPieces/);
+ assert.match(dossier,/result\.seconds/);
+ assert.match(dossier,/knockout\.totalTorpor/);
+ assert.match(dossier,/knockout\.rows/);
+ assert.match(dossier,/setWeaponQuality/);
+ assert.match(dossier,/setLongneckBuffPercent/);
+ assert.match(dossier,/result\.caveat/);
+ assert.match(css,/--rd-accent:var\(--ark-accent/);
+ assert.match(css,/@media\(max-width:420px\)/);
+ assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);
+});
