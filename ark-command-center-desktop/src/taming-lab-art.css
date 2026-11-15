@@ -11,3 +11,16 @@
 .taming-art-stage .rex-outline-loading{font-size:45px}
 @media(max-width:800px){.taming-art-stage{height:290px}}
 @media(max-width:480px){.taming-art-stage{height:240px}.taming-art-stage .rex-outline-frame{height:79%;inset:auto 3px 15px}.taming-art-caption{left:10px;right:10px;font-size:8px}.taming-art-status{right:8px;bottom:7px;font-size:8px}}
+
+/* v0.8.29 — restore the artwork-first Taming Lab layout, not a dossier page. */
+.taming-hero-layout{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:18px;align-items:start;min-width:0}
+.taming-hero-layout>.panel{min-width:0}
+.taming-hero-layout>.panel:first-child{position:relative}
+.taming-hero-layout .taming-art-stage{height:clamp(430px,44vw,630px);min-height:430px;margin-bottom:20px}
+.taming-hero-layout .taming-art-stage .cad-illustration{width:99%;height:89%;max-width:100%}
+.taming-hero-layout .taming-art-stage .rex-outline-frame{height:89%;inset:auto 3px 24px}
+.taming-hero-layout .taming-art-stage .rex-outline-art{opacity:.96}
+.taming-hero-layout .taming-art-caption{top:17px;left:18px;right:18px}
+@media(max-width:1100px){.taming-hero-layout{grid-template-columns:1fr}.taming-hero-layout .taming-art-stage{height:clamp(310px,51vw,510px);min-height:0}}
+@media(max-width:600px){.taming-hero-layout{gap:13px}.taming-hero-layout .taming-art-stage{height:clamp(260px,76vw,365px)}.taming-hero-layout .taming-art-stage .rex-outline-frame{height:81%;inset:auto 4px 20px}}
+@media(max-width:390px){.taming-hero-layout .taming-art-stage{height:260px}}
