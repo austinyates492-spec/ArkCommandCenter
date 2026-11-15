@@ -47,7 +47,7 @@ Backup: `backup/v0.8.27-before-predator-art`.
 - **40 newly integrated individual species artwork assets** within the historical 67-entry backlog (26 detailed source-illustration silhouette traces + 14 simpler, individually authored anatomy studies). They all require visual verification; the 14 simpler drawings should not be called Rex-level finished illustration.
 - **18 existing illustrations rebuilt** from their own connected source silhouettes rather than naive sheet rectangles; adjacent-creature lines no longer bleed into those assets. Clear surrounding margins were added.
 - **Total historical 67-artwork backlog: 58 now have individual source art (18 prior + 40 new), 9 remain pending.** Of the new 40, 14 are preliminary line studies awaiting further polishing to reach the original detailed-art standard.
-- **Linked spawn map** now appears at the bottom of knockout, passive and specialty taming pages. Its map and creature selection comes from the active planner. The Wiki's embedded filters are externally controlled; the app cannot guarantee automated region highlighting if the provider ignores URL parameters.
+- **Linked spawn map** now appears at the bottom of knockout, passive and specialty taming pages. Its map and creature selection comes from the active planner. The Wiki documents automatic creature preselection using URL hashes; if embedding or map scripts are blocked, use Open Full Map. No guessed spawn pins are generated.
 - **Review all updates:** [40 newly illustrated, 18 repaired and 9 pending](./KNOCKOUT_ARTWORK_REVIEW_67.md).
 - **Backup:** `backup/v0.8.32-before-spawn-and-artwork`.
 
