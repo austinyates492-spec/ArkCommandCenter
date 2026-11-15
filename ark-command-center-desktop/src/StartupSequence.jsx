@@ -1,25 +1,23 @@
 import React,{useEffect,useState} from 'react';
 import {Shield,ArrowRight} from 'lucide-react';
 import './startup.css';
-export default function StartupSequence(){
+
+// Runs once on every fresh web page load, refresh, installed PWA launch,
+// or desktop app startup. SPA navigation never remounts the component.
+export default function StartupSequence({enabled=true}){
  const [visible,setVisible]=useState(()=>{
-  try{
-   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return false;
-   // Show once per tab/app session, avoiding repeat delays for navigation or reloads.
-   if(sessionStorage.getItem('ark.startupSeen'))return false;
-   sessionStorage.setItem('ark.startupSeen','1');
-   return true;
-  }catch{return false}
+  try{return enabled&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches}
+  catch{return enabled}
  });
  useEffect(()=>{
   if(!visible)return;
   const done=()=>setVisible(false);
   const timer=setTimeout(done,2800);
-  window.addEventListener('keydown',done,{once:true});
+  window.addEventListener('keydown',done);
   return()=>{clearTimeout(timer);window.removeEventListener('keydown',done)};
  },[visible]);
  if(!visible)return null;
- return <div className="hq-startup" role="dialog" aria-label="ARK Tribe HQ starting" onClick={()=>setVisible(false)}>
+ return <div className="hq-startup" role="dialog" aria-label="ARK Tribe HQ opening animation" onClick={()=>setVisible(false)}>
   <div className="hq-startup-grid" aria-hidden="true"/>
   <div className="hq-startup-content">
    <div className="hq-startup-emblem"><span className="hq-startup-ring"/><Shield size={62} strokeWidth={1.3}/></div>
