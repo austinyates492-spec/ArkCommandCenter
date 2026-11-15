@@ -4,12 +4,14 @@ import {maps} from './data';
 import {availableFoods,calculateTame,knockoutProfiles} from './taming-engine';
 import {knockoutEstimate,knockoutSpecies} from './knockout-engine';
 import {getTamingMethod,knockoutRoster} from './special-taming-methods.js';
+import RexDossier from './RexDossier.jsx';
 
 const numberFormat=new Intl.NumberFormat('en-US');
 const duration=(seconds)=>{const h=Math.floor(seconds/3600),m=Math.floor(seconds%3600/60),s=seconds%60;return [h?`${h}h`:null,m?`${m}m`:null,`${s}s`].filter(Boolean).join(' ')};
 
 export default function TamingLab({rates,onTimer,clusterId='nomadark',discoveredCreatures=[]}){
  const [creature,setCreature]=useState('Rex');
+ const [showRexDossier,setShowRexDossier]=useState(true);
  const [creatureQuery,setCreatureQuery]=useState('');
  const [level,setLevel]=useState(150);
  const [food,setFood]=useState('Exceptional Kibble');
@@ -33,7 +35,17 @@ export default function TamingLab({rates,onTimer,clusterId='nomadark',discovered
  const knockout=knockoutEstimate({creature,level,weaponQuality,longneckBuffPercent,targetTorpor});
  const wikiUrl=`https://ark.wiki.gg/wiki/${encodeURIComponent(creature.replaceAll(' ','_'))}`;
  const dododexUrl=`https://www.dododex.com/taming/${encodeURIComponent(creature.toLowerCase().replaceAll(' ','-'))}`;
+ if(creature==='Rex'&&showRexDossier)return <RexDossier
+  level={level} setLevel={setLevel} food={selectedFood} setFood={setFood} foods={foods}
+  map={map} setMap={setMap} maps={maps} rates={rates} result={result}
+  knockout={knockout} weaponQuality={weaponQuality} setWeaponQuality={setWeaponQuality}
+  longneckBuffPercent={longneckBuffPercent} setLongneckBuffPercent={setLongneckBuffPercent}
+  clusterId={clusterId}
+  onStart={()=>onTimer(`Rex Lv ${level} · ${map}`,result.minutes,'Taming')}
+  onClassic={()=>setShowRexDossier(false)}
+ />;
  return <>
+  {creature==='Rex'&&<div className="actionrow" style={{marginBottom:16}}><button className="primary" type="button" onClick={()=>setShowRexDossier(true)}>Open premium Rex dossier</button></div>}
   <div className="pagetitle"><span className="eyebrow">FIELD OPERATIONS / 01</span><h1>Taming Lab</h1><p>{knockoutRoster.length} conventional knockout species and forms. Tranq arrows, darts and shocking darts only. Heavy-weapon, passive and egg/interaction tames now have their own tabs. Wiki-derived estimates should be checked against your server.</p></div>
   <div className="two wideleft">
    <section className="panel"><div className="panelhead"><h2>Plan a Tame</h2><span className="badge gold">{rates.taming}× PROFILE</span></div>
