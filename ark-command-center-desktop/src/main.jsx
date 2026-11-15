@@ -9,7 +9,8 @@ import BreedingLab from './BreedingLab';
 import PassiveLab from './PassiveLab';
 import CoveragePanel from './CoveragePanel';
 import CraftingPage from './CraftingPage';
-import ThemePicker from './ThemePicker';
+import ThemePicker,{themeIds} from './ThemePicker';
+import StartupSequence from './StartupSequence';
 import ClusterSettings from './ClusterSettings';
 import CloudAccount from './CloudAccount';
 import {useCloudSync} from './cloud-sync';
@@ -34,6 +35,7 @@ import './resources.css';
 import './timer-sounds.css';
 import './mobile.css';
 import './premium.css';
+import './personality.css';
 
 const nav=[['overview','Overview',LayoutDashboard],['taming','Taming Lab',Calculator],['specialty','Specialty Taming Lab',Shield],['passive','Passive Taming Lab',Activity],['breeding','Breeding Lab',Egg],['crafting','Crafting Calculator',Layers],['tribe-crafting','Tribe Crafting',Layers],['servers','Server Intel',Server],['maps','Spawn Maps',Compass],['resources','Resource Atlas',Layers],['timers','Live Timers',Timer],['cloud','Tribe Cloud',Cloud],['settings','Settings',Settings]];
 const statusColors={'Available':'green','Contested':'gold','Locked Down':'red','Unscouted':'muted'};
@@ -45,7 +47,8 @@ function App(){
  const isDesktopApp=typeof window!=='undefined'&&('__TAURI_INTERNALS__' in window);
  const [mobileNavOpen,setMobileNavOpen]=useState(false);
  const startingRates=ratesForPreset(DEFAULT_CLUSTER_ID,defaults);
- const [page,setPage]=useState('overview'),[savedRates,setRates]=useStored('ark.rates',startingRates),[customRates,setCustomRates]=useStored('ark.customRates',startingRates),[servers,setServers]=useState([]),[theme,setTheme]=useStored('ark.theme','emerald'),[clusterId,setClusterId]=useStored('ark.clusterId',DEFAULT_CLUSTER_ID),[now,setNow]=useState(Date.now());
+ const [page,setPage]=useState('overview'),[savedRates,setRates]=useStored('ark.rates',startingRates),[customRates,setCustomRates]=useStored('ark.customRates',startingRates),[servers,setServers]=useState([]),[theme,setTheme]=useStored('ark.theme','red'),[clusterId,setClusterId]=useStored('ark.clusterId',DEFAULT_CLUSTER_ID),[now,setNow]=useState(Date.now());
+ useEffect(()=>{if(!themeIds.includes(theme))setTheme('red')},[theme,setTheme]);
  const cloud=useCloudSync({rates:savedRates,setRates,customRates,setCustomRates,theme,setTheme,clusterId,setClusterId});
  const catalog=useLiveCatalog();
  const live=useTribeLive(cloud.token,setServers);
@@ -95,6 +98,7 @@ function App(){
  const addTimer=(name,minutes,type='Custom',soundEnabledForCreator=true)=>{const mins=Number(minutes);if(!Number.isFinite(mins)||mins<=0)return;if(!cloud.user){setPage('cloud');return;}void live.addTimer(name,mins,type,soundEnabledForCreator).catch(()=>{});setPage('timers')};
  const pageName=nav.find(x=>x[0]===page)?.[1]||'Overview';
  return <div className={'shell'+(isDesktopApp?' tauri-desktop':'')} data-theme={theme}>
+  <StartupSequence/>
   {mobileNavOpen&&<button type="button" className="mobile-nav-backdrop" aria-label="Close navigation" onClick={()=>setMobileNavOpen(false)}/>}
   <aside className={'sidebar'+(mobileNavOpen?' mobile-open':'')} id="ark-primary-nav" aria-label="Main navigation"><div className="brand"><div className="brandmark"><Shield size={24}/></div><div><strong>ARK TRIBE<em>HQ</em></strong><small>LIVE TRIBE COMMAND</small></div><button type="button" className="mobile-nav-close" aria-label="Close menu" onClick={()=>setMobileNavOpen(false)}><X size={21}/></button></div>
   <div className="sidegroup" title={cloud.user?.tribeName||'Choose a tribe'}>TRIBE: {cloud.user?.tribeName||'NOT CONNECTED'}</div>
