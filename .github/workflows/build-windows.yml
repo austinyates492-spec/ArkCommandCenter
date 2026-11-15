@@ -89,15 +89,14 @@ jobs:
         if: github.event_name == 'push' && startsWith(github.event.head_commit.message, 'release:')
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v0.8.29
-          name: ArkTribeHQ v0.8.29 - Complete Creature Dossier Library
+          tag_name: v0.8.30
+          name: ArkTribeHQ v0.8.30 - Compact Taming Lab UI
           body: |
-            Premium fluid layout for portrait, mobile, desktop and ultrawide screens.
-            Improved theme-aware cards, typography, navigation and input readability.
-            Source-first taming wiki coefficients, waking-tame calculations and
-            strengthened restrictions for nonstandard knockout creatures.
-            Full 279-entry creature roster regression matrix and 89 frontend tests.
-            Ten curated personalities, theme-aware startup, responsive web and mobile PWA, tribe accounts and calculators remain.
-            Signed Windows auto-updates continue from the existing installation.
+            Redesigned Taming Lab with searchable creature picker in Loadout & Sources,
+            slightly smaller left-side artwork and integrated Plan a Tame.
+            New side-by-side knockout console: target torpor, theoretical ammo counts,
+            body/head shot comparison, inline weapon modifiers and readable plan notes.
+            Existing taming models, art, 15 themes, mobile PWA, tribe accounts,
+            syncing, timers, calculator functions and Windows auto-updates remain.
           files: ark-command-center-desktop/src-tauri/target/release/bundle/nsis/*.exe
           fail_on_unmatched_files: true
