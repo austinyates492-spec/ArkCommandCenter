@@ -1,3 +1,4 @@
+import TameSpawnAtlas from './TameSpawnAtlas.jsx';
 import React,{useEffect,useMemo,useState} from 'react';
 import {ExternalLink,Timer} from 'lucide-react';
 import {maps} from './data.js';
@@ -75,5 +76,6 @@ export default function SpecialtyLab({rates,onTimer,selectedCreature}){
     <div className="notice">Methods are reviewed against the official community wiki, not certified in-game for your selected cluster. Its {rates.taming}× taming rate does not automatically divide egg counts, minigame actions, torpor effects or sacrifices. Treat unspecified quantities as unknown, not zero.</div>
    </section>
   </div>
+  <TameSpawnAtlas creature={creature} map={map}/>
  </>;
 }

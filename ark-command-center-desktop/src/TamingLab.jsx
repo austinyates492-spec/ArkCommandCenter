@@ -1,3 +1,4 @@
+import TameSpawnAtlas from './TameSpawnAtlas.jsx';
 import React,{useEffect,useMemo,useState} from 'react';
 import {ExternalLink,Timer,Crosshair,ShieldCheck,Info,ChevronDown} from 'lucide-react';
 import {maps,tameCreatures} from './data';
@@ -128,5 +129,6 @@ export default function TamingLab({rates,onTimer,onNavigate,clusterId='nomadark'
     <a className="taming-ko-source" href={special?.source||wikiUrl} target="_blank" rel="noreferrer">Read species method <ExternalLink size={14}/></a>
    </section>}
   </div>
+  <TameSpawnAtlas creature={creature} map={map}/>
  </>;
 }

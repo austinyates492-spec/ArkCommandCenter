@@ -81,8 +81,10 @@ export const durationText=(seconds)=>{
  const days=Math.floor(total/86400),hours=Math.floor(total%86400/3600),minutes=Math.floor(total%3600/60),secs=total%60;
  return [days?`${days}d`:null,hours?`${hours}h`:null,minutes?`${minutes}m`:null,`${secs}s`].filter(Boolean).join(' ');
 };
-export const wikiSpawn=(map)=>`https://ark.wiki.gg/wiki/Spawn_Map/${encodeURIComponent(map.replaceAll(' ','_'))}`;
-export const creatureSpawnUrl=(map,creature)=>`${wikiSpawn(map)}?creature=${encodeURIComponent(({Rex:'T-Rex',Triceratops:'Trike'}[creature]||creature))}`;
+// The Wiki spawn selector supports location-hash creature preselection on page load.
+// See https://ark.wiki.gg/wiki/Talk:Spawn_Map_instruction_manual (2020 map maintainer reply).
+export const wikiSpawn=(map)=>`https://ark.wiki.gg/wiki/Spawn_Map_(${encodeURIComponent(map.replaceAll(' ','_'))})`;
+export const creatureSpawnUrl=(map,creature)=>`${wikiSpawn(map)}#${encodeURIComponent(({Rex:'T-Rex',Triceratops:'Trike'}[creature]||creature))}`;
 export const resources=['Metal','Rich Metal','Crystal','Obsidian','Oil','Silica Pearls','Black Pearls','Rare Flowers','Rare Mushrooms','Sulfur','Salt','Cactus Sap','Red Gems','Blue Gems','Green Gems','Element'];
 const mapSlugs={'The Island':'the-island','Scorched Earth':'scorched-earth','The Center':'the-center','Aberration':'aberration','Extinction':'extinction','Ragnarok':'ragnarok','Valguero':'valguero','Astraeos':'astraeos','Lost Colony':'lost-colony'};
 // The map provider does not document a stable resource query-string filter.

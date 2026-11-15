@@ -3,11 +3,14 @@ import {individualOutlines} from './individual-outline-data.js';
 import {predatorOutlines} from './predator-outline-data.js';
 import {herbOutlines} from './herb-outline-data.js';
 import {herbOutlinesB} from './herb-outline-data-b.js';
+import {knockoutLineArt1} from './knockout-art-1.js';
+import {knockoutLineArt2} from './knockout-art-2.js';
+import {knockoutCustom14} from './knockout-custom-14.js';
 
 // This is a curated set of species-specific silhouettes, not a generic body
 // family with per-name noise. Reviewed source illustration sheets were vectorized into
 // local, gzipped SVGs and is tinted solely by the currently selected theme.
-const tracedOutlines=Object.freeze({...individualOutlines,...predatorOutlines,...herbOutlines,...herbOutlinesB});
+const tracedOutlines=Object.freeze({...individualOutlines,...predatorOutlines,...herbOutlines,...herbOutlinesB,...knockoutLineArt1,...knockoutLineArt2,...knockoutCustom14});
 export const detailedOutlineNames=Object.freeze(Object.keys(tracedOutlines));
 export function hasDetailedOutline(name){return Object.hasOwn(tracedOutlines,name);}
 

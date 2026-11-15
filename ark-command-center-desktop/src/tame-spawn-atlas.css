@@ -1,0 +1,15 @@
+/* Linked spawn atlas at the bottom of each taming workflow. */
+.tame-spawn-atlas{margin-top:18px;min-width:0;overflow:hidden}
+.tame-spawn-atlas .panelhead{margin-bottom:14px}
+.tame-spawn-atlas .panelhead h2{display:flex;align-items:center;gap:9px}
+.tame-spawn-summary{display:flex;align-items:center;gap:12px;flex-wrap:wrap;border:1px solid color-mix(in srgb,var(--ark-accent,#5ce3ae) 28%,#22373b);background:color-mix(in srgb,var(--ark-accent,#5ce3ae) 6%,#111b20);border-radius:10px;padding:11px 14px}
+.tame-spawn-summary>div{display:flex;flex-direction:column;gap:4px;min-width:140px;max-width:100%}
+.tame-spawn-summary small{font-size:9px;color:var(--ark-muted,#91aaa1);font-weight:850;letter-spacing:.06em}
+.tame-spawn-summary strong{font-size:14px;overflow-wrap:anywhere;color:var(--ark-text,#e0f0eb)}
+.tame-spawn-summary>a{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:var(--ark-accent,#5ce3ae)}
+.tame-spawn-hint{display:flex;gap:8px;align-items:flex-start;font-size:11px;line-height:1.5;margin:11px 0 0;color:var(--ark-muted,#9fbbb2)}
+.tame-spawn-hint svg{flex-shrink:0;margin-top:2px;color:var(--ark-accent,#5ce3ae)}
+.tame-spawn-atlas .mapviewer{margin-top:11px}
+.tame-spawn-atlas .mapviewer iframe{height:clamp(380px,58vh,650px)}
+@media(max-width:700px){.tame-spawn-summary{display:grid;grid-template-columns:1fr 1fr}.tame-spawn-summary>a{margin:0;grid-column:1/-1}.tame-spawn-atlas .mapviewer iframe{height:350px}.tame-spawn-atlas{padding:13px}}
+@media(max-width:400px){.tame-spawn-summary{grid-template-columns:1fr}}

@@ -1,3 +1,4 @@
+import TameSpawnAtlas from './TameSpawnAtlas.jsx';
 import React,{useEffect,useMemo,useState} from 'react';
 import {ExternalLink,Timer} from 'lucide-react';
 import {maps} from './data.js';
@@ -61,5 +62,6 @@ export default function PassiveLab({rates,onTimer,selectedCreature}){
     <div className="notice">Passive taming includes moving, waiting for prompts, and sometimes multiple feeding choices. Numeric estimates do not guarantee the next feeding interval or total duration.</div>
    </section>
   </div>
+  <TameSpawnAtlas creature={creature} map={map}/>
  </>;
 }
