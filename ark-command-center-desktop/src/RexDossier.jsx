@@ -12,7 +12,7 @@ const wiki='https://ark.wiki.gg/wiki/Rex';
 function Panel({heading,aside,children,className=''}){return <section className={'rex-panel '+className}><div className="rex-panel-heading"><h2>{heading}</h2>{aside}</div>{children}</section>}
 // The line drawing is an original, local SVG mask generated from clean black ink art.
 // Native decompression keeps the source compact and avoids external image loading.
-function RexArtwork(){
+export function RexArtwork(){
  const [mask,setMask]=React.useState('');
  React.useEffect(()=>{
   let active=true;
