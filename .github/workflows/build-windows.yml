@@ -89,12 +89,12 @@ jobs:
         if: github.event_name == 'push' && startsWith(github.event.head_commit.message, 'release:')
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v0.8.31
-          name: ArkTribeHQ v0.8.31 - Larger Artwork and Aligned Knockout Panel
+          tag_name: v0.8.32
+          name: ArkTribeHQ v0.8.32 - Detailed Creature Linework Batch
           body: |
             Redesigned Taming Lab with searchable creature picker in Loadout & Sources,
-            expanded creature art with a narrower selector and right-shifted tame plan.
-            Flush-aligned knockout console: target torpor, theoretical ammo counts,
+            18 new individual, detailed creature illustrations in the Taming Lab.
+            The improved Knockout Planner retains target torpor and live ammo counts,
             body/head shot comparison, inline weapon modifiers and readable plan notes.
             Existing taming models, art, 15 themes, mobile PWA, tribe accounts,
             syncing, timers, calculator functions and Windows auto-updates remain.

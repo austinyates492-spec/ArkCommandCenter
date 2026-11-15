@@ -2,7 +2,7 @@
 
 **Status:** Build-ready requirements, **not a claim that illustrations have been redrawn or deployed.**  
 **Source:** `CREATURE_DOSSIER_ROLLOUT.md`, the actual 84-name historical Phase 1 list; runtime `knockoutRoster` must be used before treating any entry as a standard knockout tame.  
-**Current artwork:** Rex + the first nine have user-liked traced art. Seven more historically listed knockout species have newly integrated custom vector silhouettes in v0.8.28, **pending visual approval**. Another 67 listed creatures still need dedicated drawings. All 74 remaining entries are pending sign-off.  
+**Current artwork:** Rex + the first nine have user-liked traced art. Seven more historically listed knockout species have newly integrated custom vector silhouettes in v0.8.28, **pending visual approval**. As of v0.8.32, another 18 listed creatures now have individually traced original artwork integrated, awaiting user approval; **49 still need dedicated drawings**. All not-yet-human-approved entries remain unchecked.  
 **Responsibility:** The searchable **Taming Lab stays the only knockout UI**. No new Creature Dossiers page; preserve food, torpor, weapon quality, ammo and timer calculations.
 
 ## Deliverable acceptance rules

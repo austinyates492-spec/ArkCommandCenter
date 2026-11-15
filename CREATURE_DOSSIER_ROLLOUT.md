@@ -34,6 +34,14 @@ Backup: `backup/v0.8.27-before-predator-art`.
 
 **Taming method caution:** Historical artwork groupings are not authority for game mechanics. Continue to use runtime taming classification for all calculations.
 
+## Individual artwork rollout — v0.8.32
+
+**18 of the 67 historically pending knockout-art entries are newly illustrated and integrated.** Two nine-creature batches use original detailed ink drawings, vectorized into local, theme-color SVG masks. Distinct source artwork was verified by automated tests; **human inspection of likeness, crop, mobile clarity, and anatomy remains pending**. The remaining **49 entries are NOT finished**; they remain on their previous provisional body-plan studies rather than shipping clipped or incomplete tracings.
+
+**Review list:** [67-creature visual QA checklist](./KNOCKOUT_ARTWORK_REVIEW_67.md). No separate Dossiers route was added. Existing Taming Lab art-left compact layout, calculators, classification, themes and timers remain unchanged.
+
+**Backup:** `backup/v0.8.31-before-67-unique-linework`.
+
 ## Phase 1 - Knockout species
 
 ### 1A - Core carnivores (10)
@@ -55,33 +63,33 @@ Backup: `backup/v0.8.27-before-predator-art`.
 - [x] Yutyrannus — individual vector artwork integrated; visual review pending
 - [x] Megalosaurus — individual vector artwork integrated; visual review pending
 - [x] Therizinosaurus — individual vector artwork integrated; visual review pending
-- [ ] Thylacoleo
+- [x] Thylacoleo — individual line-art illustration integrated in v0.8.32; awaiting user visual QA
 - [x] Acrocanthosaurus — individual vector artwork integrated; visual review pending
 - [x] Cryolophosaurus — individual vector artwork integrated; visual review pending
 - [x] Megaraptor — individual vector artwork integrated; visual review pending
 
 ### 1C - Herbivores / workhorses (15)
 
-- [ ] Ankylosaurus
-- [ ] Doedicurus
-- [ ] Mammoth
-- [ ] Triceratops
-- [ ] Stegosaurus
-- [ ] Pachyrhinosaurus
-- [ ] Iguanodon
-- [ ] Parasaur
-- [ ] Brontosaurus
-- [ ] Diplodocus
-- [ ] Carbonemys
-- [ ] Paraceratherium
-- [ ] Gallimimus
-- [ ] Morellatops
-- [ ] Woolly Rhino
+- [x] Ankylosaurus — individual line-art illustration integrated in v0.8.32; awaiting user visual QA
+- [x] Doedicurus — individual line-art illustration integrated in v0.8.32; awaiting user visual QA
+- [x] Mammoth — individual line-art illustration integrated in v0.8.32; awaiting user visual QA
+- [x] Triceratops — individual line-art illustration integrated in v0.8.32; awaiting user visual QA
+- [x] Stegosaurus — individual line-art illustration integrated in v0.8.32; awaiting user visual QA
+- [x] Pachyrhinosaurus — individual line-art illustration integrated in v0.8.32; awaiting user visual QA
+- [x] Iguanodon — individual line-art illustration integrated in v0.8.32; awaiting user visual QA
+- [x] Parasaur — individual line-art illustration integrated in v0.8.32; awaiting user visual QA
+- [x] Brontosaurus — individual line-art illustration integrated in v0.8.32; awaiting user visual QA
+- [x] Diplodocus — individual line-art illustration integrated in v0.8.32; awaiting user visual QA
+- [x] Carbonemys — individual line-art illustration integrated in v0.8.32; awaiting user visual QA
+- [x] Paraceratherium — individual line-art illustration integrated in v0.8.32; awaiting user visual QA
+- [x] Gallimimus — individual line-art illustration integrated in v0.8.32; awaiting user visual QA
+- [x] Morellatops — individual line-art illustration integrated in v0.8.32; awaiting user visual QA
+- [x] Woolly Rhino — individual line-art illustration integrated in v0.8.32; awaiting user visual QA
 
 ### 1D - Flyers (8)
 
-- [ ] Argentavis
-- [ ] Pteranodon
+- [x] Argentavis — individual line-art illustration integrated in v0.8.32; awaiting user visual QA
+- [x] Pteranodon — individual line-art illustration integrated in v0.8.32; awaiting user visual QA
 - [ ] Tapejara
 - [ ] Quetzal
 - [ ] Snow Owl
