@@ -19,7 +19,7 @@ export default function TameSpawnAtlas({creature,map}){
    <div><small>SELECTED MAP</small><strong>{selectedMap}</strong></div>
    <a href={source} target="_blank" rel="noreferrer">Open spawn map <ExternalLink size={15}/></a>
   </div>
-  <p className="tame-spawn-hint"><Info size={15}/> Changing the creature or map above updates this viewer automatically. The Wiki map may require selecting the creature in its own filter if its URL-based preselection is unavailable. Map regions are possible habitats, not guaranteed sightings.</p>
+  <p className="tame-spawn-hint"><Info size={15}/> Changing the creature or map above updates this viewer automatically. The ARK Wiki map supports creature selection via URL fragment. If the provider blocks embedding or does not load the filter, open the full map. Map regions are possible habitats, not guaranteed sightings.</p>
   <EmbeddedMap key={selectedMap+':'+selectedCreature} title={selectedMap+' — '+selectedCreature+' Spawn Map'}
    url={source} alternativeUrl={wikiSpawn(selectedMap)}
    selection={selectedCreature} kind="spawn"/>
