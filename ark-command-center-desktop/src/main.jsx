@@ -52,6 +52,22 @@ function App(){
  // Keep the first-paint animation in sync with cloud-hydrated and manually selected themes.
  useEffect(()=>{if(themeIds.includes(theme))window.dispatchEvent(new CustomEvent('ark:theme-changed',{detail:theme}))},[theme]);
  const cloud=useCloudSync({rates:savedRates,setRates,customRates,setCustomRates,theme,setTheme,clusterId,setClusterId});
+ // A display-only remembered identity is used by the early HTML boot splash.
+ // Do not store an identity when the login is not remembered across browser restarts.
+ useEffect(()=>{
+  const user=cloud.user;
+  try{
+   if(user&&typeof user.displayName==='string'){
+    const identity={displayName:user.displayName,tribeName:user.tribeName||''};
+    if(localStorage.getItem('ark.cloudRememberToken'))localStorage.setItem('ark.bootIdentity',JSON.stringify(identity));
+    else localStorage.removeItem('ark.bootIdentity');
+    window.dispatchEvent(new CustomEvent('ark:identity-changed',{detail:identity}));
+   }else{
+    window.dispatchEvent(new CustomEvent('ark:identity-changed',{detail:null}));
+   }
+  }catch{}
+ },[cloud.user]);
+
  const catalog=useLiveCatalog();
  const live=useTribeLive(cloud.token,setServers);
  const [alarmAlerts,setAlarmAlerts]=useState([]);
