@@ -11,7 +11,7 @@ export const anatomyGroups={
  sauropod: 'Brontosaurus|Diplodocus|Dreadnoughtus|Titanosaur|Paraceratherium|Oasisaur|Dreadnoughtus|Gargantar',
  armored: 'Ankylosaurus|Doedicurus|Kentrosaurus|Stegosaurus|Carbonemys|Dunkleosteus',
  hadrosaur: 'Iguanodon|Parasaur|Lystrosaurus|Moschops|Pachy|Morellatops|Pachyrhinosaurus',
- pterosaur: 'Pteranodon|Quetzal|Tapejara|Sinomacrops',
+ pterosaur: 'Pteranodon|Quetzal|Tapejara|Sinomacrops|Dimorphodon',
  bird: 'Argentavis|Dodo|Featherlight|Hesperornis|Ichthyornis|Kairuku|Parrot|Pelagornis|Phoenix|Snow Owl|Vulture|Terror Bird|Murder Turkey|Microraptor|Archaeopteryx|Yi Ling|Lymantria|Griffin|Glowtail',
  dragon: 'Dragon|Wyvern|Dodo Wyvern|Drakeling|Rock Drake|Griffin|Manticore|Managarmr|Hydraskos|Aureliax|Umbra|Pyromane|Xeranox|Veilwyn|Reaper|Magmasaur',
  canine: 'Armadoggo|Direwolf|Hyaenodon|Ravager|Purlovia|Cerberax|Elderclaw|Grendel|Tidepup|Solwyn|Cat|Sabertooth|Thylacoleo|Pyromane',
@@ -29,7 +29,7 @@ export const anatomyGroups={
  amphibian: 'Beelzebufo|Diplocaulus|Bulbdog|Gasbags|Electrophorus|Oasisaur',
  snail: 'Achatina|Ammonite|Trilobite|Oasisaur',
  bat: 'Desmodus|Gigadesmodus|Onyc|Bloodstalker|Dreadmare|Griffin',
- humanoid: 'Defense Unit|Attack Drone|Enforcer|Scout|Overseer|Broodmother Lysrix|Desert Titan|Forest Titan|Ice Titan|King Titan|Megapithecus|Minotaur|Lost King|Lost Queen|Thrall|Revenant|Neophyte',
+ humanoid: 'Defense Unit|Attack Drone|Enforcer|Scout|Overseer|Broodmother Lysrix|Desert Titan|Forest Titan|Ice Titan|King Titan|Megapithecus|Mesopithecus|Rock Elemental|Minotaur|Lost King|Lost Queen|Thrall|Revenant|Neophyte',
  aquatic: 'Manta|Leedsichthys|Anglerfish|Basilosaurus|Beelzebufo|Ichthyosaurus|Liopleurodon|Mosasaurus|Plesiosaur|Shastasaurus|Tusoteuthis|Archelon',
  alien: 'Astrocetus|Aureliax|Dreadmare|Enigmasaur|Gloon|Hydraskos|Lumina|Malwyn|Natrix|Neophyte|Nunatak|Ossidon|Revenant|Solwyn|Thanatos|Thodes|Umbra|Veilwyn|Xeranox|Gargantar'
 };
