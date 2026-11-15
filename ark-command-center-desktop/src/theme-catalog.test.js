@@ -42,10 +42,12 @@ test('prismatic uses full spectrum while monolith remains grayscale',()=>{
  assert.ok(colors.length>10);
  for(const hex of colors){assert.equal(hex.slice(0,2),hex.slice(2,4));assert.equal(hex.slice(2,4),hex.slice(4,6));}
 });
-test('startup intro is skippable and obeys reduced motion',()=>{
+test('startup intro replays when website opens and obeys reduced motion',()=>{
  const intro=read('StartupSequence.jsx'),css=read('startup.css'),app=read('main.jsx');
- assert.match(app,/<StartupSequence\/>/);
- assert.match(intro,/sessionStorage\.getItem\('ark.startupSeen'\)/);
+ assert.match(app,/<StartupSequence enabled=\{showStartup\}\/>/);
+ assert.match(app,/ark\.showStartup/);
+ assert.doesNotMatch(intro,/sessionStorage\.getItem\('ark\.startupSeen'\)/);
+ assert.match(intro,/enabled=true/);
  assert.match(intro,/prefers-reduced-motion: reduce/);
  assert.match(intro,/Skip intro/);
  assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);
