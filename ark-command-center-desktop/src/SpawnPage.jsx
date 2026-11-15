@@ -1,6 +1,6 @@
 import React,{useMemo,useState} from 'react';
 import {MapPin,Search} from 'lucide-react';
-import {maps,tameCreatures,wikiSpawn,resourceMapUrl} from './data';
+import {maps,tameCreatures,creatureSpawnUrl,resourceMapUrl} from './data';
 import EmbeddedMap from './EmbeddedMap';
 import {officialReleaseMapAvailability} from './asa-release-v97.js';
 
@@ -17,7 +17,7 @@ export default function SpawnPage(){
    <div className="mapgrid compact-map-grid">{maps.map(name=><button key={name} className={`maptile ${map===name?'active':''}`} onClick={()=>setMap(name)}><MapPin size={18}/><strong>{name}</strong></button>)}</div>
    <div className="notice">Looking for <strong>{creature}</strong> on <strong>{map}</strong>. Use the map provider's creature filter to display its actual habitat overlay. The app does not fabricate spawn markers or claim that every creature exists on every map.</div>
    {releaseMap&&<div className="notice"><strong>ASA v97 confirmed Enigmasaur maps:</strong> {releaseMap.maps.join(', ')}. {releaseMap.available?`${map} is on Wildcard's release list.`:`${map} is not listed for Enigmasaur in Wildcard's v97 notes.`} <a href={releaseMap.source} target="_blank" rel="noreferrer">Official patch notes</a>. Exact spawn regions must still be verified on the map.</div>}
-   <EmbeddedMap key={map} url={wikiSpawn(map)} alternativeUrl={resourceMapUrl(map)} title={`${map} Wild Spawn Map`} selection={creature} kind="spawn"/>
+   <EmbeddedMap key={map+":"+creature} url={creatureSpawnUrl(map,creature)} alternativeUrl={resourceMapUrl(map)} title={`${map} Wild Spawn Map`} selection={creature} kind="spawn"/>
   </section>
  </>;
 }
