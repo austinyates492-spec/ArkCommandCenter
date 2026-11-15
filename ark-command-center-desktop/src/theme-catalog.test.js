@@ -115,3 +115,14 @@ test('premium Rex dossier is a live calculator, keeps theme responsiveness and c
  assert.match(css,/@media\(max-width:420px\)/);
  assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);
 });
+
+test('Rex preview uses attributed 3D art instead of the old silhouette',()=>{
+ const jsx=read('RexDossier.jsx'),css=read('rex-dossier.css');
+ assert.match(jsx,/Tyrannosaurus_rex_3D_render\.png/);
+ assert.match(jsx,/DERPYDUCKANIMATION/);
+ assert.match(jsx,/creativecommons\.org\/licenses\/by\/4\.0/);
+ assert.doesNotMatch(jsx,/function RexArtwork\(\)\{\s*return <svg/);
+ assert.match(jsx,/onError=\{\(\)=>setFailed\(true\)\}/);
+ assert.match(css,/\.rex-art-photo/);
+ assert.match(css,/@media\(max-width:420px\)/);
+});
