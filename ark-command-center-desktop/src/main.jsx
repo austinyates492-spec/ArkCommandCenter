@@ -49,6 +49,8 @@ function App(){
  const startingRates=ratesForPreset(DEFAULT_CLUSTER_ID,defaults);
  const [page,setPage]=useState('overview'),[savedRates,setRates]=useStored('ark.rates',startingRates),[customRates,setCustomRates]=useStored('ark.customRates',startingRates),[servers,setServers]=useState([]),[theme,setTheme]=useStored('ark.theme','red'),[clusterId,setClusterId]=useStored('ark.clusterId',DEFAULT_CLUSTER_ID),[now,setNow]=useState(Date.now());
  useEffect(()=>{if(!themeIds.includes(theme))setTheme('red')},[theme,setTheme]);
+ // Keep the first-paint animation in sync with cloud-hydrated and manually selected themes.
+ useEffect(()=>{if(themeIds.includes(theme))window.dispatchEvent(new CustomEvent('ark:theme-changed',{detail:theme}))},[theme]);
  const cloud=useCloudSync({rates:savedRates,setRates,customRates,setCustomRates,theme,setTheme,clusterId,setClusterId});
  const catalog=useLiveCatalog();
  const live=useTribeLive(cloud.token,setServers);

@@ -44,10 +44,10 @@ test('prismatic uses full spectrum while monolith remains grayscale',()=>{
 });
 test('startup splash is available in first HTML paint, before React bundle',()=>{
  const html=readFileSync(join(folder,'../index.html'),'utf8');
- const boot=readFileSync(join(folder,'../public/boot-intro-v816.js'),'utf8');
+ const boot=readFileSync(join(folder,'../public/boot-intro-v817.js'),'utf8');
  const app=read('main.jsx');
  assert.ok(html.indexOf('id="ark-boot-intro"')<html.indexOf('id="root"'));
- assert.ok(html.indexOf('/boot-intro-v816.js')<html.indexOf('/src/main.jsx'));
+ assert.ok(html.indexOf('/boot-intro-v817.js')<html.indexOf('/src/main.jsx'));
  assert.match(html,/arkBootEmblem/);
  assert.match(boot,/DOMContentLoaded/);
  assert.match(boot,/ark:replay-intro/);
@@ -57,4 +57,18 @@ test('startup splash is available in first HTML paint, before React bundle',()=>
  assert.doesNotMatch(html,/#ark-boot-intro\{display:none!important\}/);
  assert.match(app,/Replay opening animation/);
  assert.doesNotMatch(app,/<StartupSequence/);
+});
+
+test('boot intro matches the saved user theme and cloud-hydrated theme changes',()=>{
+ const html=readFileSync(join(folder,'../index.html'),'utf8');
+ const intro=readFileSync(join(folder,'../public/boot-intro-v817.js'),'utf8');
+ const app=read('main.jsx');
+ for(const id of ids)assert.ok(intro.includes(id+':{accent:'),id+' opening palette missing');
+ assert.match(intro,/localStorage\.getItem\('ark\.theme'\)/);
+ assert.match(intro,/ark:theme-changed/);
+ assert.match(intro,/--boot-accent/);
+ assert.match(intro,/spectrum:/);
+ assert.match(html,/var\(--boot-accent/);
+ assert.match(html,/var\(--boot-line/);
+ assert.match(app,/new CustomEvent\('ark:theme-changed'/);
 });
