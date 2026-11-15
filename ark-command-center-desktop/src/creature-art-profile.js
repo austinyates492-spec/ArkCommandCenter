@@ -67,10 +67,10 @@ export function creatureArtProfile(name){
   Pachyrhinosaurus:'frill',Dilophosaur:'frill',Cryolophosaurus:'crest',
   Parasaur:'crest',Deinosuchus:'crocodile',Basilisk:'spines',
   Yutyrannus:'feathers',Therizinosaurus:'claws',Megatherium:'claws',
-  Mammoth:'tusks',Woolly Rhino:'horn',Megaloceros:'antlers',
+  Mammoth:'tusks','Woolly Rhino':'horn',Megaloceros:'antlers',
   Unicorn:'horn',Dunkleosteus:'armor',Anglerfish:'lure',
   Argentavis:'feathers',Pteranodon:'crest',Quetzal:'crest',
-  Rock Drake:'feathers',Wyvern:'horns',Griffin:'feathers',
+  'Rock Drake':'feathers',Wyvern:'horns',Griffin:'feathers',
   Karkinos:'claws',Rhyniognatha:'wings',Bloodstalker:'legs',
   Mantis:'claws',Carbonemys:'shell',Archelon:'shell',Megachelon:'shell',
   Doedicurus:'club',Oviraptor:'crest',Rex:'rex'
