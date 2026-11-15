@@ -1,11 +1,12 @@
-# Creature Dossier Artwork Rollout
+# Taming Lab Creature Artwork Rollout
 
-> Live production checklist, ordered by taming method. A checked box indicates dedicated vector artwork integrated in code, not final human visual approval.
+> Live production checklist, ordered by taming method. A checked box indicates dedicated species-specific traced vector artwork integrated into the **searchable Taming Lab**, not final human visual approval.
 
 **Scope:** 214 official-base catalog creatures plus 64 variants; 278 dossier entries in total.
 **Release waves:** 1 Knockout, 2 Passive, 3 Specialty, 4 Variants / Untameable / final QA.
 **Baseline:** Rex's approved detailed anatomical outline; original creature artwork for each completed species, tinted by the active theme.
-**Existing functionality:** All creatures already have a basic dossier and method-aware calculator panels. This checklist tracks unique illustration upgrades and validation.
+**Existing functionality:** Taming Lab is the searchable knockout planner; passive and specialty retain their own searchable labs. The separate Creature Dossiers page was removed in v0.8.25 at the user's request. This checklist tracks unique artwork upgrades, not calculator coverage.
+**Interim knockout linework:** v0.8.26 adds individually keyed anatomical accents to all remaining knockout body-plan studies. These are provisional—not counted as completed high-detail drawings. The Rex and initial nine remain separately traced.
 **Backup:** `backup/v0.8.23-before-creature-wave1`.
 
 ## Phase 1 - Knockout species
