@@ -49,14 +49,14 @@ test('all three taming pages share the bottom spawn atlas, driven by current sel
  assert.match(atlas,/creatureSpawnUrl\(selectedMap,selectedCreature\)/);
  assert.match(atlas,/key=\{selectedMap\+':'\+selectedCreature\}/);
  assert.match(atlas,/alternativeUrl=\{wikiSpawn\(selectedMap\)\}/);
- assert.match(atlas,/may require selecting the creature in its own filter/);
+ assert.match(atlas,/supports creature selection via URL fragment/);
  for(const file of ['TamingLab.jsx','PassiveLab.jsx','SpecialtyLab.jsx']){
   const code=source(file);
   assert.match(code,/import TameSpawnAtlas from '\.\/TameSpawnAtlas\.jsx'/,file+' atlas import missing');
   assert.match(code,/<TameSpawnAtlas creature=\{creature\} map=\{map\}\/>/,file+' selection not wired to viewer');
   assert.ok(code.lastIndexOf('<TameSpawnAtlas')>code.lastIndexOf('</div>'),file+' atlas should be at the bottom');
  }
- assert.match(creatureSpawnUrl('The Island','Rex'),/creature=T-Rex/);
+ assert.match(creatureSpawnUrl('The Island','Rex'),/Spawn_Map_\\(The_Island\\)#T-Rex$/);
  assert.ok(creatureSpawnUrl('Aberration','Raptor').startsWith(wikiSpawn('Aberration')));
 });
 test('new art is part of the live detailed renderer, not a detached collection',()=>{
