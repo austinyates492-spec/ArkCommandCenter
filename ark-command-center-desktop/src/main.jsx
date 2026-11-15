@@ -116,6 +116,7 @@ function App(){
  },[cloud.user?.id,timers,now,live.clockOffsetMs,live.timerSounds,live.timerSoundsReady]);
  const active=timers.filter(t=>t.end>now);
  const addTimer=(name,minutes,type='Custom',soundEnabledForCreator=true)=>{const mins=Number(minutes);if(!Number.isFinite(mins)||mins<=0)return;if(!cloud.user){setPage('cloud');return;}void live.addTimer(name,mins,type,soundEnabledForCreator).catch(()=>{});setPage('timers')};
+ const openDossier=name=>{try{localStorage.setItem('ark.dossierCreature',JSON.stringify(name))}catch{}setPage('dossiers')};
  const pageName=nav.find(x=>x[0]===page)?.[1]||'Overview';
  return <div className={'shell'+(isDesktopApp?' tauri-desktop':'')} data-theme={theme}>
   {mobileNavOpen&&<button type="button" className="mobile-nav-backdrop" aria-label="Close navigation" onClick={()=>setMobileNavOpen(false)}/>}
@@ -131,9 +132,9 @@ function App(){
    <div className="two"><Panel title="Active Operations" aside={<button className="subtlebtn" onClick={()=>setPage('timers')}>View all →</button>}>{active.length?active.slice(0,4).map(t=><div className="listrow" key={t.id}><div className="roundicon"><Timer size={19}/></div><div><strong>{t.name}</strong><small>{t.type}</small></div><div className="push countdown">{clock(t.end-now)}</div></div>):<div className="empty">No active operations. Start a tame or raising timer to see it here.</div>}</Panel><Panel title="Server Intelligence" aside={<button className="subtlebtn" onClick={()=>setPage('servers')}>Manage →</button>}>{servers.length?servers.slice(0,4).map(s=><div className="listrow" key={s.id}><div className="roundicon"><Server size={17}/></div><div><strong>{s.name}</strong><small>{s.map}</small></div><div className="push"><Badge tone={statusColors[s.status]}>{s.status}</Badge></div></div>):<div className="empty">No servers tracked yet. Add your first server to start scouting.</div>}</Panel></div>
    {!isDesktopApp&&<AdPlacement placement="overview"/>}</>}
   {page==='dossiers'&&<CreatureDossiers rates={rates} onTimer={addTimer} clusterId={clusterId} onOpenLab={setPage}/>}
-  {page==='taming'&&<TamingLab rates={rates} onTimer={addTimer} discoveredCreatures={catalog.creatures} clusterId={clusterId}/>}
-  {page==='specialty'&&<SpecialtyLab rates={rates} onTimer={addTimer} clusterId={clusterId}/>}
-  {page==='passive'&&<PassiveLab rates={rates} onTimer={addTimer} clusterId={clusterId}/>}
+  {page==='taming'&&<TamingLab rates={rates} onTimer={addTimer} onOpenDossier={openDossier} discoveredCreatures={catalog.creatures} clusterId={clusterId}/>}
+  {page==='specialty'&&<SpecialtyLab rates={rates} onTimer={addTimer} onOpenDossier={openDossier} clusterId={clusterId}/>}
+  {page==='passive'&&<PassiveLab rates={rates} onTimer={addTimer} onOpenDossier={openDossier} clusterId={clusterId}/>}
   {page==='breeding'&&<BreedingLab rates={rates} onTimer={addTimer} clusterId={clusterId}/>}
   {page==='servers'&&<ServerIntelPage live={live} user={cloud.user} servers={servers} onOpenAccount={()=>setPage('cloud')}/>}
   {page==='maps'&&<SpawnPage/>}
