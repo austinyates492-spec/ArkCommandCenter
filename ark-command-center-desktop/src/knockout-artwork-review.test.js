@@ -20,7 +20,7 @@ test('18 additional species have self-contained unique black-ink vector illustra
   assert.match(svg,/^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg"/,species+' is not standalone SVG');
   assert.match(svg,/fill-rule="evenodd"/,species+' image lost separate interior strokes');
   assert.ok(svg.length>5000,species+' sketch has insufficient detail');
-  assert.doesNotMatch(svg,/<image|https?:\/\//,species+' must not fetch remote images');
+  assert.doesNotMatch(svg,/<image\b|(?:href|xlink:href)="https?:\/\//,species+' must not fetch remote images');
   const hash=createHash('sha256').update(svg).digest('hex');
   assert.ok(!seen.has(hash),species+' reused another creature\'s drawing');
   seen.add(hash);
