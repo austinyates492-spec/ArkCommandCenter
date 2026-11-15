@@ -24,3 +24,101 @@
 @media(max-width:1100px){.taming-hero-layout{grid-template-columns:1fr}.taming-hero-layout .taming-art-stage{height:clamp(310px,51vw,510px);min-height:0}}
 @media(max-width:600px){.taming-hero-layout{gap:13px}.taming-hero-layout .taming-art-stage{height:clamp(260px,76vw,365px)}.taming-hero-layout .taming-art-stage .rex-outline-frame{height:81%;inset:auto 4px 20px}}
 @media(max-width:390px){.taming-hero-layout .taming-art-stage{height:260px}}
+
+
+/* v0.8.30: compact unified creature dossier + adjacent live knockout planner.
+   The shared artwork component above remains available to passive and specialty tabs. */
+.taming-compact-title{margin-bottom:17px}
+.taming-compact-title h1{margin-bottom:3px}
+.taming-compact-title p{max-width:980px}
+.taming-workspace{display:grid;grid-template-columns:minmax(0,1.13fr) minmax(0,.87fr);align-items:start;gap:16px;min-width:0}
+.taming-workspace>.panel{min-width:0;height:100%;border-color:color-mix(in srgb,var(--ark-accent,#5de2ac) 22%,#213238);box-shadow:0 10px 35px rgba(0,0,0,.16)}
+.taming-workspace .panelhead{margin-bottom:13px;padding-bottom:12px;gap:12px}
+.taming-workspace .panelhead h2{display:flex;align-items:center;gap:9px}
+.taming-picker-bar{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);gap:9px;margin-bottom:12px;min-width:0}
+.taming-picker-bar .field{min-width:0;margin:0}
+.taming-picker-bar input,.taming-picker-bar select{width:100%;min-width:0;font-size:12px}
+.taming-plan-layout{display:grid;grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr);gap:14px;min-width:0}
+.taming-visual-column,.taming-plan-content{min-width:0}
+.taming-workspace .taming-art-stage{height:258px;min-height:0;margin:0;overflow:hidden;border-radius:10px}
+.taming-workspace .taming-art-stage .cad-illustration{width:99%;height:88%;max-width:100%}
+.taming-workspace .taming-art-stage .rex-outline-frame{height:88%;inset:auto 3px 17px}
+.taming-workspace .taming-art-stage .rex-outline-art{opacity:.97}
+.taming-workspace .taming-art-caption{top:10px;left:10px;right:10px;font-size:8px}
+.taming-workspace .taming-art-caption strong{font-size:9px}
+.taming-workspace .taming-art-status{font-size:8px;bottom:7px;right:7px}
+.taming-creature-meta{display:flex;flex-wrap:wrap;gap:4px 9px;margin-top:10px;font-size:10px;color:var(--ark-text,#d6e5e1)}
+.taming-creature-meta span{min-width:0;max-width:100%;overflow-wrap:anywhere}
+.taming-creature-meta strong{font-size:9px;color:var(--ark-accent,#5de2ac);letter-spacing:.06em;margin-right:3px}
+.taming-small-title{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:9px}
+.taming-small-title h3,.taming-ammo-header h3{font-size:14px;font-weight:800;margin:0;color:var(--ark-text,#e2eeed)}
+.taming-small-title small{font-size:9px;color:var(--ark-accent,#5de2ac);font-weight:800;white-space:nowrap}
+.taming-compact-fields{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:9px;min-width:0}
+.taming-compact-fields .field{min-width:0;margin:0}
+.taming-compact-fields .field span{font-size:10px}
+.taming-compact-fields input,.taming-compact-fields select{width:100%;min-width:0;font-size:12px}
+.taming-field-wide{grid-column:1/-1}
+.taming-estimate-cards{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}
+.taming-estimate-cards>div{min-width:0;padding:11px 9px;border:1px solid color-mix(in srgb,var(--ark-accent,#5de2ac) 31%,#243638);border-radius:9px;background:color-mix(in srgb,var(--ark-accent,#5de2ac) 8%,#0e171d);display:flex;flex-direction:column;gap:3px}
+.taming-estimate-cards span,.taming-estimate-cards small{font-size:9px;line-height:1.3;color:#a6c0bc;overflow-wrap:anywhere}
+.taming-estimate-cards strong{font-family:'Barlow Condensed',Inter,sans-serif;font-size:clamp(23px,2.1vw,30px);line-height:1;color:var(--ark-accent,#5de2ac);overflow-wrap:anywhere}
+.taming-start-btn{display:flex;justify-content:center;align-items:center;gap:8px;width:100%;margin-top:11px;padding:11px 10px}
+.taming-plan-notes{margin-top:12px;padding:11px 13px;border:1px solid color-mix(in srgb,var(--ark-accent,#5de2ac) 23%,#1e3737);border-left:3px solid var(--ark-accent,#5de2ac);border-radius:8px;background:linear-gradient(90deg,color-mix(in srgb,var(--ark-accent,#5de2ac) 7%,#111e22),rgba(14,23,26,.4))}
+.taming-note-heading{display:flex;align-items:center;gap:7px;color:var(--ark-accent,#5de2ac);font-size:12px}
+.taming-note-heading strong{color:var(--ark-text,#e2ece9)}
+.taming-note-heading span{margin-left:auto;font-size:9px;letter-spacing:.08em;color:#819e98}
+.taming-plan-notes p{margin:6px 0 0;line-height:1.45;font-size:11px;color:#b7c9c5}
+.taming-plan-notes small{display:block;margin-top:6px;font-size:9px;color:#8cb3a9}
+.taming-compact-links{display:flex;align-items:center;flex-wrap:wrap;gap:8px 14px;padding-top:11px;color:#95ada7;font-size:10px}
+.taming-compact-links a{display:inline-flex;align-items:center;gap:5px;color:var(--ark-accent,#5de2ac);font-weight:700}
+.taming-compact-links a:hover,.taming-ko-source:hover{text-decoration:underline}
+.taming-compact-links>span{margin-left:auto;font-size:9px}
+.taming-manual-input p{font-size:11px;line-height:1.5;color:#aec5c0}
+.taming-manual-input .field{margin-top:6px}
+.taming-method-callout{padding:12px;border:1px solid color-mix(in srgb,var(--ark-accent,#5de2ac) 26%,#2c3b41);border-radius:9px;background:#101c22}
+.taming-method-callout strong{font-size:10px;color:var(--ark-accent,#5de2ac)}
+.taming-method-callout p{font-size:11px;line-height:1.5;margin:8px 0}
+.taming-method-callout button{max-width:100%;white-space:normal}
+
+/* Knockout console: strong readout, edit-in-place weapon settings and ammo rows. */
+.taming-knockout-card .panelhead .badge{white-space:nowrap}
+.taming-ko-headline{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:9px;margin-bottom:11px}
+.taming-ko-headline>div{display:flex;flex-direction:column;justify-content:center;min-width:0;min-height:91px;padding:14px;border-radius:11px;border:1px solid color-mix(in srgb,var(--ark-accent,#5de2ac) 30%,#243e40);background:radial-gradient(circle at 10% 20%,color-mix(in srgb,var(--ark-accent,#5de2ac) 13%,transparent),transparent 79%),#101d23}
+.taming-ko-headline span{font-size:10px;letter-spacing:.08em;font-weight:800;color:#9bb5b0}
+.taming-ko-headline strong{font-family:'Barlow Condensed',Inter,sans-serif;font-size:clamp(29px,3vw,43px);line-height:1.15;color:var(--ark-accent,#5de2ac);overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.taming-ko-headline small{font-size:10px;color:#acc7c0;overflow-wrap:anywhere}
+.taming-ko-shortcut strong{color:#f1e5c4}
+.taming-ko-settings{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:9px;margin-bottom:12px}
+.taming-ko-settings .field{min-width:0;margin:0}
+.taming-ko-settings .field span{font-size:10px}
+.taming-ko-settings input{width:100%;min-width:0;font-size:12px}
+.taming-ammo-header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:4px 0 9px}
+.taming-ammo-header span{color:#8ba49c;font-weight:800;letter-spacing:.06em;font-size:9px}
+.taming-ammo-list{display:grid;gap:8px}
+.taming-ammo-row{display:grid;grid-template-columns:29px minmax(0,1fr) minmax(43px,.28fr) minmax(43px,.28fr);gap:8px;align-items:center;border:1px solid #263b41;border-radius:10px;background:linear-gradient(90deg,#111e25,#101920);padding:9px 10px;min-width:0}
+.taming-ammo-row.taming-ammo-best{border-color:color-mix(in srgb,var(--ark-accent,#5de2ac) 57%,#27373b);background:linear-gradient(90deg,color-mix(in srgb,var(--ark-accent,#5de2ac) 10%,#101e25),#101920)}
+.taming-ammo-icon{display:grid;place-items:center;color:var(--ark-accent,#5de2ac);background:#192c2d;border:1px solid #264440;width:29px;height:29px;border-radius:7px}
+.taming-ammo-description{min-width:0}
+.taming-ammo-description strong{display:block;font-size:11px;font-weight:750;color:#e1edeb;overflow-wrap:anywhere;line-height:1.25}
+.taming-ammo-meter{height:4px;background:#2d4042;border-radius:10px;margin-top:9px;overflow:hidden}
+.taming-ammo-meter span{display:block;height:100%;border-radius:10px;background:var(--ark-accent,#5de2ac)}
+.taming-shot-count{text-align:right;display:flex;flex-direction:column;gap:2px;min-width:0}
+.taming-shot-count strong{font-size:20px;font-weight:850;line-height:1;font-variant-numeric:tabular-nums;color:#f0f5ef}
+.taming-shot-count small{font-size:8px;letter-spacing:.06em;font-weight:800;color:#779c93}
+.taming-ammo-explainer{display:block;font-size:10px;line-height:1.5;color:#90a9a4;margin:9px 0}
+.taming-methodology{border-top:1px solid #263a3d;margin-top:11px;padding-top:10px;font-size:11px;color:#aac1b9}
+.taming-methodology summary{display:flex;justify-content:space-between;gap:6px;align-items:center;cursor:pointer;font-weight:800;color:#c9dcd6;list-style:none}
+.taming-methodology summary::-webkit-details-marker{display:none}
+.taming-methodology[open] summary svg{transform:rotate(180deg)}
+.taming-methodology>div{font-size:10px;line-height:1.6;padding-top:9px;color:#9bb7af}
+.taming-ko-source{display:inline-flex;gap:6px;align-items:center;color:var(--ark-accent,#5de2ac);font-size:10px;font-weight:700;margin-top:13px}
+.taming-ko-unverified{display:flex;gap:9px;align-items:flex-start;padding:13px;border:1px solid #655a37;color:#e4d6ab;background:#221e19;border-radius:8px;font-size:11px;line-height:1.5;margin-bottom:12px}
+.taming-method-visual{display:grid;gap:11px;justify-items:start;padding:16px;margin-bottom:15px;border:1px solid #25413d;border-radius:10px;background:radial-gradient(circle at 20% 0%,color-mix(in srgb,var(--ark-accent,#5de2ac) 12%,transparent),transparent 75%),#101b20}
+.taming-method-visual svg{color:var(--ark-accent,#5de2ac)}
+.taming-method-visual h3{margin:0;font-size:22px}
+.taming-method-visual p{font-size:12px;line-height:1.6;margin:0;color:#bed0c9}
+@media(max-width:1320px){.taming-workspace{grid-template-columns:1fr}.taming-workspace>.panel{height:auto}.taming-workspace .taming-art-stage{height:290px}}
+@media(max-width:780px){.taming-plan-layout{grid-template-columns:minmax(0,.84fr) minmax(0,1.16fr)}.taming-workspace .taming-art-stage{height:254px}}
+@media(max-width:600px){.taming-compact-title{margin-bottom:13px}.taming-workspace{gap:12px}.taming-picker-bar{grid-template-columns:1fr}.taming-plan-layout{grid-template-columns:1fr}.taming-workspace .taming-art-stage{height:clamp(250px,67vw,365px)}.taming-creature-meta{margin-bottom:6px}.taming-small-title{margin-top:5px}.taming-knockout-card .panelhead{align-items:flex-start}.taming-ko-headline>div{min-height:81px;padding:10px}.taming-ko-headline strong{font-size:32px}}
+@media(max-width:390px){.taming-ammo-row{grid-template-columns:23px minmax(0,1fr) 40px 40px;gap:5px;padding:9px 7px}.taming-ammo-icon{width:23px;height:23px}.taming-ammo-description strong{font-size:10px}.taming-shot-count strong{font-size:18px}.taming-ko-headline strong{font-size:27px}.taming-estimate-cards strong{font-size:24px}}
+@media(prefers-reduced-motion:reduce){.taming-methodology summary svg{transition:none}}
