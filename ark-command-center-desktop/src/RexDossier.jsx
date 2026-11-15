@@ -9,26 +9,15 @@ const time=seconds=>{
 };
 const wiki='https://ark.wiki.gg/wiki/Rex';
 function Panel({heading,aside,children,className=''}){return <section className={'rex-panel '+className}><div className="rex-panel-heading"><h2>{heading}</h2>{aside}</div>{children}</section>}
+// Licensed, real 3D creature rendering rather than the earlier vector approximation.
+// Wikimedia Commons: DerpyDuckAnimation, CC BY 4.0. Deliberately keep the
+// image isolated from live calculator rendering to avoid layout shifts.
+const rexArtUrl='https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5d/Tyrannosaurus_rex_3D_render.png/1280px-Tyrannosaurus_rex_3D_render.png';
 function RexArtwork(){
- return <svg className="rex-art" viewBox="0 0 820 580" role="img" aria-label="Decorative illustrated Tyrannosaurus rex silhouette in a rugged landscape" preserveAspectRatio="xMidYMid meet">
-  <defs>
-   <linearGradient id="rexSkin" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#8b8fa5"/><stop offset=".45" stopColor="#4b526a"/><stop offset="1" stopColor="#1c2335"/></linearGradient>
-   <linearGradient id="rexGround" x1="0" y1="0" x2="0" y2="1"><stop stopColor="#5e476c"/><stop offset="1" stopColor="#121723"/></linearGradient>
-  </defs>
-  <path d="M0 445 112 335 174 396 292 250 407 425 560 310 665 419 734 344 820 420V580H0Z" fill="url(#rexGround)" opacity=".43"/>
-  <path d="M0 516 125 465 212 487 382 445 516 485 688 447 820 478V580H0Z" fill="#111722" opacity=".85"/>
-  <g transform="translate(-45 28)">
-   <path d="M349 346C250 363 158 406 40 441c95-5 180-21 284-40 59-8 111-9 151-40Z" fill="#22283a" stroke="#a6a9bb" strokeWidth="4"/>
-   <path d="M300 315c-8-76 21-137 93-170 59-28 121-15 155 23l29 44 42-3 57 23 56 2 28 19-21 26-55 9-52-6-67-1c-12 26-37 45-78 57l-8 74 38 63 35 17-8 18-73-3-52-90-20-49-37 42-18 95 36 4-1 19-70 2-13-27 11-104Z" fill="url(#rexSkin)" stroke="#aeb2c6" strokeWidth="5" strokeLinejoin="round"/>
-   <path d="M579 273c30 9 65 11 111 4l46 17 29 2-19 19-61 17-90-18-34-21Z" fill="#242b3e" stroke="#b8b3c5" strokeWidth="4"/>
-   <path d="m634 296 10 17 8-16 10 16 9-17 9 16 9-18 10 17 12-17 8 12" fill="#e5dacf" stroke="#aab0bb" strokeWidth="2"/>
-   <path d="M470 294c-4 43 28 65 58 79l9 34 28 12 11-16-17-15-11-51-39-44" fill="#3a4258" stroke="#a9aabd" strokeWidth="4"/>
-   <path d="M358 358c-17 55-21 90-10 128l43 12-6 17-78-4-10-27 14-103" fill="#394257" stroke="#adb2c8" strokeWidth="5"/>
-   <path d="M558 223c18-12 35-11 51 2l-6 16-37 1Z" fill="#0b1119" stroke="#a9a1b9" strokeWidth="3"/>
-   <circle cx="585" cy="228" r="6" fill="#f5ad7d"/>
-   <path d="M338 272c85-64 140-71 209-44M311 339c51-10 82-5 124 7M356 410l58-3M413 186c21 38 17 75-3 111" fill="none" stroke="#c4bdd1" strokeOpacity=".32" strokeWidth="7"/>
-  </g>
- </svg>;
+ const [failed,setFailed]=React.useState(false);
+ return <div className="rex-art-frame">
+  {!failed?<img className="rex-art-photo" src={rexArtUrl} alt="Detailed 3D reconstruction of a Tyrannosaurus rex" loading="eager" decoding="async" onError={()=>setFailed(true)}/>:<div className="rex-art-fallback" aria-label="Rex illustration unavailable"><span>REX</span><small>CREATURE DOSSIER</small></div>}
+ </div>;
 }
 export default function RexDossier({level,setLevel,food,setFood,foods,map,setMap,maps,rates,result,knockout,weaponQuality,setWeaponQuality,longneckBuffPercent,setLongneckBuffPercent,clusterId,onStart,onClassic}){
  const canStart=result.ok&&Number.isFinite(result.minutes)&&result.minutes>0;
@@ -44,7 +33,7 @@ export default function RexDossier({level,setLevel,food,setFood,foods,map,setMap
       <div className="rex-tags"><span><Utensils size={13}/> Carnivore</span><span><MapPin size={13}/> Land</span><span className="rex-alert"><AlertTriangle size={13}/> Aggressive</span></div>
      </div>
      <RexArtwork/>
-     <div className="rex-art-credit">ORIGINAL STYLIZED ILLUSTRATION • NOT IN-GAME ART</div>
+     <div className="rex-art-credit">3D REX RENDER BY <a href="https://commons.wikimedia.org/wiki/File:Tyrannosaurus_rex_3D_render.png" target="_blank" rel="noreferrer">DERPYDUCKANIMATION</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">CC BY 4.0</a> · VISUAL RECONSTRUCTION</div>
     </section>
     <div className="rex-left-bottom">
      <Panel heading="FIELD INTELLIGENCE" aside={<span className="rex-section-tag">SPECIES PROFILE</span>}>
