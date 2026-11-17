@@ -53,7 +53,7 @@ test('Acro and Allo are default; Amargasaurus alone is an opt-in artwork review'
  assert.match(lab,/REVIEW ONLY/);
  assert.match(art,/previewAmarga&&creature==='Amargasaurus'\?amargaPreviewOutline:tracedOutlines\[creature\]/);
  assert.match(renderer,/previewAmarga=\{props\.previewAmarga\}/);
- assert.match(art,/\[creature,previewAmarga,previewAmmonite,previewAngler,previewAnky,previewAraneo,previewArchaeopteryx,previewArchelon,previewArgentavis,previewArmadoggo,previewArthropluera,previewAstrocetus\]/);
+ assert.match(art,/\[creature,previewAmarga,previewAmmonite,previewAngler,previewAnky,previewAraneo,previewArchaeopteryx,previewArchelon,previewArgentavis,previewArmadoggo,previewArthropluera,previewAstrocetus,previewAureliax,previewBaryonyx,previewBasilisk\]/);
  assert.doesNotMatch(app,/page==='dossiers'/);
 });
 test('Ammonite is available only through the dedicated preview URL and is not the default',()=>{
@@ -218,15 +218,15 @@ test('three alphabetic batch illustrations are independent theme masks, not rast
  }
 });
 
-test('alphabetical batch art is review-only in each lab and original default art remains intact',()=>{
+test('approved batch 01 artwork is default, with prior preview routes intact',()=>{
  const app=read('main.jsx'),passive=read('PassiveLab.jsx'),special=read('SpecialtyLab.jsx'),
   renderer=read('CreatureLineArt.jsx'),art=read('IndividualCreatureLineArt.jsx'),knockout=read('TamingLab.jsx');
  assert.match(app,/reviewArmadoggoArtwork=artworkPreview==='armadoggo'/);
  assert.match(app,/reviewArthroplueraArtwork=artworkPreview==='arthropluera'/);
  assert.match(app,/reviewAstrocetusArtwork=artworkPreview==='astrocetus'/);
- assert.match(app,/reviewArmadoggoArtwork\|\|reviewAstrocetusArtwork\?'specialty'/);
+ assert.match(app,/reviewArmadoggoArtwork\|\|reviewAstrocetusArtwork\|\|reviewAureliaxArtwork\|\|reviewBasiliskArtwork\?'specialty'/);
  assert.match(app,/reviewArthroplueraArtwork\|\|reviewArchelonArtwork\?'passive'/);
- assert.match(app,/selectedCreature=\{reviewArmadoggoArtwork\?'Armadoggo':reviewAstrocetusArtwork\?'Astrocetus':crossLabCreature\}/);
+ assert.match(app,/selectedCreature=\{reviewAureliaxArtwork\?'Aureliax':reviewBasiliskArtwork\?'Basilisk':reviewArmadoggoArtwork\?'Armadoggo':reviewAstrocetusArtwork\?'Astrocetus':crossLabCreature\}/);
  assert.match(app,/selectedCreature=\{reviewArthroplueraArtwork\?'Arthropluera':reviewArchelonArtwork\?'Archelon':crossLabCreature\}/);
  assert.match(special,/previewArmadoggo=\{artPreview==='armadoggo'\}/);
  assert.match(special,/previewAstrocetus=\{artPreview==='astrocetus'\}/);
@@ -235,7 +235,8 @@ test('alphabetical batch art is review-only in each lab and original default art
  assert.match(passive,/passiveRoster\.filter/);
  for(const [name,prop] of [['Armadoggo','armadoggoPreviewOutline'],['Arthropluera','arthroplueraPreviewOutline'],['Astrocetus','astrocetusPreviewOutline']]){
   assert.match(art,new RegExp("preview"+name+"&&creature==='"+name+"'\\?"+prop));
-  assert.doesNotMatch(art,new RegExp(name+":"+prop));
+  if(name==='Armadoggo')assert.doesNotMatch(art,new RegExp(name+":"+prop));
+   else assert.match(art,new RegExp(name+":"+prop));
  }
  assert.match(renderer,/previewArmadoggo=\{props\.previewArmadoggo\}/);
  assert.match(renderer,/previewArthropluera=\{props\.previewArthropluera\}/);
