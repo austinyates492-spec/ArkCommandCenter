@@ -5,7 +5,9 @@ import {maps} from './data.js';
 import CreatureLineArt from './CreatureLineArt.jsx';
 import {hasDetailedOutline} from './IndividualCreatureLineArt.jsx';
 import './taming-lab-art.css';
-import {specialtyRoster,getTamingMethod} from './special-taming-methods.js';
+import {getTamingMethod} from './special-taming-methods.js';
+import {vanillaTamesByMethod} from './vanilla-tame-picker.js';
+const specialtyRoster=vanillaTamesByMethod.specialty;
 import {specialtyAmmoOptions,estimateSpecialtyKnockout,specialtyFeeding,specialtyFoodOptions,specialtyFixedSupply} from './specialty-engine.js';
 
 const fmt=new Intl.NumberFormat('en-US');
