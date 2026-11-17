@@ -14,6 +14,9 @@ import {araneoPreviewOutline} from './araneo-preview-outline-data.js';
 import {archaeopteryxPreviewOutline} from './archaeopteryx-preview-outline-data.js';
 import {archelonPreviewOutline} from './archelon-preview-outline-data.js';
 import {argentavisPreviewOutline} from './argentavis-preview-outline-data.js';
+import {armadoggoPreviewOutline} from './armadoggo-preview-outline-data.js';
+import {arthroplueraPreviewOutline} from './arthropluera-preview-outline-data.js';
+import {astrocetusPreviewOutline} from './astrocetus-preview-outline-data.js';
 
 const dir=dirname(fileURLToPath(import.meta.url));
 const read=name=>readFileSync(join(dir,name),'utf8');
@@ -50,7 +53,7 @@ test('Acro and Allo are default; Amargasaurus alone is an opt-in artwork review'
  assert.match(lab,/REVIEW ONLY/);
  assert.match(art,/previewAmarga&&creature==='Amargasaurus'\?amargaPreviewOutline:tracedOutlines\[creature\]/);
  assert.match(renderer,/previewAmarga=\{props\.previewAmarga\}/);
- assert.match(art,/\[creature,previewAmarga,previewAmmonite,previewAngler,previewAnky,previewAraneo,previewArchaeopteryx,previewArchelon,previewArgentavis\]/);
+ assert.match(art,/\[creature,previewAmarga,previewAmmonite,previewAngler,previewAnky,previewAraneo,previewArchaeopteryx,previewArchelon,previewArgentavis,previewArmadoggo,previewArthropluera,previewAstrocetus\]/);
  assert.doesNotMatch(app,/page==='dossiers'/);
 });
 test('Ammonite is available only through the dedicated preview URL and is not the default',()=>{
@@ -166,9 +169,9 @@ test('Archelon review asset is a local standalone shell-and-four-flipper SVG',()
 test('Approved Archelon remains default in Passive Lab and its preview URL works',()=>{
  const app=read('main.jsx'),passive=read('PassiveLab.jsx'),knockout=read('TamingLab.jsx'),art=read('IndividualCreatureLineArt.jsx'),renderer=read('CreatureLineArt.jsx');
  assert.match(app,/reviewArchelonArtwork=artworkPreview==='archelon'/);
- assert.match(app,/reviewArchelonArtwork\?'passive':'overview'/);
- assert.match(app,/selectedCreature=\{reviewArchelonArtwork\?'Archelon':crossLabCreature\}/);
- assert.match(app,/artPreview=\{reviewArchelonArtwork\?'archelon':null\}/);
+ assert.match(app,/reviewArthroplueraArtwork\|\|reviewArchelonArtwork\?'passive'/);
+ assert.match(app,/selectedCreature=\{reviewArthroplueraArtwork\?'Arthropluera':reviewArchelonArtwork\?'Archelon':crossLabCreature\}/);
+ assert.match(app,/artPreview=\{reviewArthroplueraArtwork\?'arthropluera':reviewArchelonArtwork\?'archelon':null\}/);
  assert.match(passive,/const passiveRoster=vanillaTamesByMethod\.passive/);
  assert.match(passive,/passiveRoster\.filter/);
  assert.match(passive,/previewArchelon=\{artPreview==='archelon'\}/);
@@ -189,15 +192,53 @@ test('Argentavis preview asset is an original embedded ink vector with wing and 
  assert.doesNotMatch(svg,/<image\b|(?:href|xlink:href)=/);
 });
 
-test('Argentavis review link selects its preview and preserves the full knockout roster',()=>{
+test('Approved Argentavis remains selectable via legacy preview route and full knockout roster',()=>{
  const app=read('main.jsx'),lab=read('TamingLab.jsx'),art=read('IndividualCreatureLineArt.jsx'),renderer=read('CreatureLineArt.jsx');
  assert.match(app,/reviewArgentavisArtwork=artworkPreview==='argentavis'/);
  assert.match(app,/reviewArgentavisArtwork\?'Argentavis'/);
  assert.match(lab,/artPreview==='argentavis'\?'Argentavis'/);
  assert.match(lab,/previewArgentavis=\{artPreview==='argentavis'\}/);
- assert.match(lab,/artPreview==='argentavis'&&creature==='Argentavis'/);
+ assert.doesNotMatch(lab,/artPreview==='argentavis'&&creature==='Argentavis'/);
  assert.match(lab,/knockoutPickerCreatures\(reviewCreature\)\.filter/);
  assert.match(art,/previewArgentavis&&creature==='Argentavis'\?argentavisPreviewOutline/);
  assert.match(renderer,/previewArgentavis=\{props\.previewArgentavis\}/);
- assert.doesNotMatch(art,/Argentavis:argentavisPreviewOutline/);
+ assert.match(art,/Argentavis:argentavisPreviewOutline/);
+});
+
+
+test('three alphabetic batch illustrations are independent theme masks, not raster images',()=>{
+ const group=[['Armadoggo',armadoggoPreviewOutline],['Arthropluera',arthroplueraPreviewOutline],['Astrocetus',astrocetusPreviewOutline]];
+ for(const [name,b64] of group){
+  const svg=gunzipSync(Buffer.from(b64,'base64')).toString('utf8');
+  assert.match(svg,/^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" viewBox="0 0 1000 620">/);
+  assert.match(svg,/fill-rule="evenodd"/);
+  assert.ok(svg.length>4000,name+' silhouette was accidentally simplified too much');
+  assert.doesNotMatch(svg,/<image\b|(?:href|xlink:href)=/);
+  assert.ok(b64.length<10000,name+' preview should stay lightweight');
+ }
+});
+
+test('alphabetical batch art is review-only in each lab and original default art remains intact',()=>{
+ const app=read('main.jsx'),passive=read('PassiveLab.jsx'),special=read('SpecialtyLab.jsx'),
+  renderer=read('CreatureLineArt.jsx'),art=read('IndividualCreatureLineArt.jsx'),knockout=read('TamingLab.jsx');
+ assert.match(app,/reviewArmadoggoArtwork=artworkPreview==='armadoggo'/);
+ assert.match(app,/reviewArthroplueraArtwork=artworkPreview==='arthropluera'/);
+ assert.match(app,/reviewAstrocetusArtwork=artworkPreview==='astrocetus'/);
+ assert.match(app,/reviewArmadoggoArtwork\|\|reviewAstrocetusArtwork\?'specialty'/);
+ assert.match(app,/reviewArthroplueraArtwork\|\|reviewArchelonArtwork\?'passive'/);
+ assert.match(app,/selectedCreature=\{reviewArmadoggoArtwork\?'Armadoggo':reviewAstrocetusArtwork\?'Astrocetus':crossLabCreature\}/);
+ assert.match(app,/selectedCreature=\{reviewArthroplueraArtwork\?'Arthropluera':reviewArchelonArtwork\?'Archelon':crossLabCreature\}/);
+ assert.match(special,/previewArmadoggo=\{artPreview==='armadoggo'\}/);
+ assert.match(special,/previewAstrocetus=\{artPreview==='astrocetus'\}/);
+ assert.match(passive,/previewArthropluera=\{artPreview==='arthropluera'\}/);
+ assert.match(special,/specialtyRoster\.filter/);
+ assert.match(passive,/passiveRoster\.filter/);
+ for(const [name,prop] of [['Armadoggo','armadoggoPreviewOutline'],['Arthropluera','arthroplueraPreviewOutline'],['Astrocetus','astrocetusPreviewOutline']]){
+  assert.match(art,new RegExp("preview"+name+"&&creature==='"+name+"'\\?"+prop));
+  assert.doesNotMatch(art,new RegExp(name+":"+prop));
+ }
+ assert.match(renderer,/previewArmadoggo=\{props\.previewArmadoggo\}/);
+ assert.match(renderer,/previewArthropluera=\{props\.previewArthropluera\}/);
+ assert.match(renderer,/previewAstrocetus=\{props\.previewAstrocetus\}/);
+ assert.match(knockout,/knockoutPickerCreatures\(reviewCreature\)\.filter/);
 });
