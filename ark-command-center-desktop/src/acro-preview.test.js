@@ -8,6 +8,7 @@ import {acroPreviewOutline} from './acro-preview-outline-data.js';
 import {alloPreviewOutline} from './allo-preview-outline-data.js';
 import {amargaPreviewOutline} from './amarga-preview-outline-data.js';
 import {ammonitePreviewOutline} from './ammonite-preview-outline-data.js';
+import {anglerPreviewOutline} from './angler-preview-outline-data.js';
 
 const dir=dirname(fileURLToPath(import.meta.url));
 const read=name=>readFileSync(join(dir,name),'utf8');
@@ -44,7 +45,7 @@ test('Acro and Allo are default; Amargasaurus alone is an opt-in artwork review'
  assert.match(lab,/REVIEW ONLY/);
  assert.match(art,/previewAmarga&&creature==='Amargasaurus'\?amargaPreviewOutline:tracedOutlines\[creature\]/);
  assert.match(renderer,/previewAmarga=\{props\.previewAmarga\}/);
- assert.match(art,/\[creature,previewAmarga,previewAmmonite\]/);
+ assert.match(art,/\[creature,previewAmarga,previewAmmonite,previewAngler\]/);
  assert.doesNotMatch(app,/page==='dossiers'/);
 });
 test('Ammonite is available only through the dedicated preview URL and is not the default',()=>{
@@ -60,4 +61,24 @@ test('Ammonite is available only through the dedicated preview URL and is not th
  assert.match(art,/previewAmmonite&&creature==='Ammonite'\?ammonitePreviewOutline/);
  assert.match(renderer,/previewAmmonite=\{props\.previewAmmonite\}/);
  assert.doesNotMatch(art,/Ammonite:ammonitePreviewOutline/);
+});
+
+test('Anglerfish original SVG is a self-contained margin-padded three-lure woodcut',()=>{
+ const svg=gunzipSync(Buffer.from(anglerPreviewOutline,'base64')).toString('utf8');
+ assert.match(svg,/^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" viewBox="0 0 1000 620">/);
+ assert.match(svg,/fill-rule="evenodd"/);
+ assert.ok(svg.length>12000,'Maintain creature fins, jaw and lure detail in vector art');
+ assert.doesNotMatch(svg,/<image\b|(?:href|xlink:href)=/);
+});
+test('Anglerfish review is route-scoped and never becomes default artwork before approval',()=>{
+ const app=read('main.jsx'),lab=read('TamingLab.jsx'),art=read('IndividualCreatureLineArt.jsx'),renderer=read('CreatureLineArt.jsx');
+ assert.match(app,/reviewAnglerArtwork=artworkPreview==='angler'/);
+ assert.match(app,/reviewAnglerArtwork\?'Anglerfish'/);
+ assert.match(lab,/artPreview==='angler'\?'Anglerfish'/);
+ assert.match(lab,/previewAngler=\{artPreview==='angler'\}/);
+ assert.match(lab,/artPreview==='angler'&&creature==='Anglerfish'/);
+ assert.match(art,/previewAngler&&creature==='Anglerfish'\?anglerPreviewOutline/);
+ assert.match(renderer,/previewAngler=\{props\.previewAngler\}/);
+ assert.doesNotMatch(art,/Anglerfish:anglerPreviewOutline/);
+ assert.match(lab,/vanillaKnockoutRoster/);
 });
