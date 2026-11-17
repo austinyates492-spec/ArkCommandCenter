@@ -25,4 +25,4 @@ This file tracks the user's explicitly approved individual designs, separately f
 
 **Rules:** Work in batches of three creatures in strict alphabetical order, preserving individual approvals. Never promote a design until the user approves it. Don't alter the Taming Lab layout, taming calculations, or other creature artwork as part of this review workflow.
 
-Batch 02 correction (2026-11-17): Earlier placeholder geometric SVGs were visually inadequate. Replaced only the three unapproved art masks with image-traced anatomically recognizable originals in the approved line-art direction; calculations and other artwork untouched.
+Batch 02 correction (2026-11-17): Earlier placeholder geometric SVGs were visually inadequate. Replaced only the three unapproved art masks with individually rendered, high-resolution transparent PNG artwork masks (smooth antialiasing, natural eyes, anatomically recognizable forms). Existing calculator logic, approved artwork, and creature lists remain untouched.
