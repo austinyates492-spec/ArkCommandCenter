@@ -9,6 +9,7 @@ import {alloPreviewOutline} from './allo-preview-outline-data.js';
 import {amargaPreviewOutline} from './amarga-preview-outline-data.js';
 import {ammonitePreviewOutline} from './ammonite-preview-outline-data.js';
 import {anglerPreviewOutline} from './angler-preview-outline-data.js';
+import {ankyPreviewOutline} from './anky-preview-outline-data.js';
 
 const dir=dirname(fileURLToPath(import.meta.url));
 const read=name=>readFileSync(join(dir,name),'utf8');
@@ -45,7 +46,7 @@ test('Acro and Allo are default; Amargasaurus alone is an opt-in artwork review'
  assert.match(lab,/REVIEW ONLY/);
  assert.match(art,/previewAmarga&&creature==='Amargasaurus'\?amargaPreviewOutline:tracedOutlines\[creature\]/);
  assert.match(renderer,/previewAmarga=\{props\.previewAmarga\}/);
- assert.match(art,/\[creature,previewAmarga,previewAmmonite,previewAngler\]/);
+ assert.match(art,/\[creature,previewAmarga,previewAmmonite,previewAngler,previewAnky\]/);
  assert.doesNotMatch(app,/page==='dossiers'/);
 });
 test('Ammonite is available only through the dedicated preview URL and is not the default',()=>{
@@ -70,7 +71,7 @@ test('Anglerfish original SVG is a self-contained margin-padded three-lure woodc
  assert.ok(svg.length>12000,'Maintain creature fins, jaw and lure detail in vector art');
  assert.doesNotMatch(svg,/<image\b|(?:href|xlink:href)=/);
 });
-test('Anglerfish review is route-scoped and never becomes default artwork before approval',()=>{
+test('approved Anglerfish is the default image and its old preview route remains compatible',()=>{
  const app=read('main.jsx'),lab=read('TamingLab.jsx'),art=read('IndividualCreatureLineArt.jsx'),renderer=read('CreatureLineArt.jsx');
  assert.match(app,/reviewAnglerArtwork=artworkPreview==='angler'/);
  assert.match(app,/reviewAnglerArtwork\?'Anglerfish'/);
@@ -79,6 +80,28 @@ test('Anglerfish review is route-scoped and never becomes default artwork before
  assert.match(lab,/artPreview==='angler'&&creature==='Anglerfish'/);
  assert.match(art,/previewAngler&&creature==='Anglerfish'\?anglerPreviewOutline/);
  assert.match(renderer,/previewAngler=\{props\.previewAngler\}/);
- assert.doesNotMatch(art,/Anglerfish:anglerPreviewOutline/);
+ assert.match(art,/Anglerfish:anglerPreviewOutline/);
  assert.match(lab,/vanillaKnockoutRoster/);
+});
+
+
+test('Ankylosaurus preview artwork is a local theme-tintable vector with intact armor detail',()=>{
+ const svg=gunzipSync(Buffer.from(ankyPreviewOutline,'base64')).toString('utf8');
+ assert.match(svg,/^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" viewBox="0 0 1000 620">/);
+ assert.match(svg,/fill-rule="evenodd"/);
+ assert.ok(svg.length>16000,'Retain the armored body, four legs, head spikes and clubbed tail');
+ assert.doesNotMatch(svg,/<image\b|(?:href|xlink:href)=/);
+});
+
+test('Ankylosaurus review URL preselects Anky without hiding knockout tames or approving art',()=>{
+ const app=read('main.jsx'),lab=read('TamingLab.jsx'),art=read('IndividualCreatureLineArt.jsx'),renderer=read('CreatureLineArt.jsx');
+ assert.match(app,/reviewAnkyArtwork=artworkPreview==='anky'/);
+ assert.match(app,/reviewAnkyArtwork\?'Ankylosaurus'/);
+ assert.match(lab,/artPreview==='anky'\?'Ankylosaurus'/);
+ assert.match(lab,/knockoutPickerCreatures\(reviewCreature\)\.filter/);
+ assert.match(lab,/previewAnky=\{artPreview==='anky'\}/);
+ assert.match(lab,/artPreview==='anky'&&creature==='Ankylosaurus'/);
+ assert.match(art,/previewAnky&&creature==='Ankylosaurus'\?ankyPreviewOutline/);
+ assert.match(renderer,/previewAnky=\{props\.previewAnky\}/);
+ assert.doesNotMatch(art,/Ankylosaurus:ankyPreviewOutline/);
 });
