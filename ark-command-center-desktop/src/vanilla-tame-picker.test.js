@@ -97,3 +97,16 @@ test('Argentavis remains a standard official knockout tame and never appears in 
  assert.ok(knockoutPickerCreatures('Argentavis').includes('Rex'));
  assert.ok(knockoutPickerCreatures('Argentavis').includes('Karkinos'));
 });
+
+test('alphabetical batch previews stay in their correct tame-method labs',()=>{
+ assert.equal(tamingCategory('Armadoggo'),'specialty');
+ assert.equal(tamingCategory('Arthropluera'),'passive');
+ assert.equal(tamingCategory('Astrocetus'),'specialty');
+ assert.ok(vanillaTamesByMethod.specialty.includes('Armadoggo'));
+ assert.ok(vanillaTamesByMethod.passive.includes('Arthropluera'));
+ assert.ok(vanillaTamesByMethod.specialty.includes('Astrocetus'));
+ for(const name of ['Armadoggo','Arthropluera','Astrocetus'])
+  assert.ok(!vanillaKnockoutRoster.includes(name),name+' must not appear in ordinary knockout dropdown');
+ assert.ok(vanillaKnockoutRoster.includes('Rex'));
+ assert.ok(vanillaKnockoutRoster.includes('Argentavis'));
+});
