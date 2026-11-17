@@ -145,6 +145,6 @@ function FamilyCreatureLineArt({creature,className='',compact=false}){
 // Only published, individually drawn species replace the shared body-plan art.
 // Retain the original art on first load and on decompression failure.
 export default function CreatureLineArt(props){
- if(hasDetailedOutline(props.creature))return <IndividualCreatureLineArt creature={props.creature} previewAllo={props.previewAllo} fallback={<FamilyCreatureLineArt {...props}/>}/>;
+ if(hasDetailedOutline(props.creature)||(props.previewAmarga&&props.creature==='Amargasaurus'))return <IndividualCreatureLineArt creature={props.creature} previewAllo={props.previewAllo} previewAmarga={props.previewAmarga} fallback={<FamilyCreatureLineArt {...props}/>}/>
  return <FamilyCreatureLineArt {...props}/>;
 }
