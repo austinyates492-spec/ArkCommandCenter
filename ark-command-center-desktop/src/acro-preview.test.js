@@ -184,7 +184,8 @@ test('Argentavis preview asset is an original embedded ink vector with wing and 
  const svg=gunzipSync(Buffer.from(argentavisPreviewOutline,'base64')).toString('utf8');
  assert.match(svg,/^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" viewBox="0 0 1000 660">/);
  assert.match(svg,/fill-rule="evenodd"/);
- assert.ok(svg.length>9000,'Retain full feathers, ruff, both wings, talons and tail');
+ assert.ok(svg.length>7000,'Retain natural dark eye, folded wings, standing feet and layered tail');
+ assert.ok(argentavisPreviewOutline.length<6000,'Keep standing species art lightweight for website loading');
  assert.doesNotMatch(svg,/<image\b|(?:href|xlink:href)=/);
 });
 
