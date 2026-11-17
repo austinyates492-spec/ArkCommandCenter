@@ -12,6 +12,7 @@ import {anglerPreviewOutline} from './angler-preview-outline-data.js';
 import {ankyPreviewOutline} from './anky-preview-outline-data.js';
 import {araneoPreviewOutline} from './araneo-preview-outline-data.js';
 import {archaeopteryxPreviewOutline} from './archaeopteryx-preview-outline-data.js';
+import {archelonPreviewOutline} from './archelon-preview-outline-data.js';
 
 const dir=dirname(fileURLToPath(import.meta.url));
 const read=name=>readFileSync(join(dir,name),'utf8');
@@ -48,7 +49,7 @@ test('Acro and Allo are default; Amargasaurus alone is an opt-in artwork review'
  assert.match(lab,/REVIEW ONLY/);
  assert.match(art,/previewAmarga&&creature==='Amargasaurus'\?amargaPreviewOutline:tracedOutlines\[creature\]/);
  assert.match(renderer,/previewAmarga=\{props\.previewAmarga\}/);
- assert.match(art,/\[creature,previewAmarga,previewAmmonite,previewAngler,previewAnky,previewAraneo,previewArchaeopteryx\]/);
+ assert.match(art,/\[creature,previewAmarga,previewAmmonite,previewAngler,previewAnky,previewAraneo,previewArchaeopteryx,previewArchelon\]/);
  assert.doesNotMatch(app,/page==='dossiers'/);
 });
 test('Ammonite is available only through the dedicated preview URL and is not the default',()=>{
@@ -139,15 +140,40 @@ test('Archaeopteryx review asset is an embedded original feathered-dinosaur vect
  assert.doesNotMatch(svg,/<image\b|(?:href|xlink:href)=/);
 });
 
-test('Archaeopteryx review route preselects art and retains all knockout tames',()=>{
+test('approved Archaeopteryx defaults and legacy review preserves all knockout tames',()=>{
  const app=read('main.jsx'),lab=read('TamingLab.jsx'),art=read('IndividualCreatureLineArt.jsx'),renderer=read('CreatureLineArt.jsx');
  assert.match(app,/reviewArchaeopteryxArtwork=artworkPreview==='archaeopteryx'/);
  assert.match(app,/reviewArchaeopteryxArtwork\?'Archaeopteryx'/);
  assert.match(lab,/artPreview==='archaeopteryx'\?'Archaeopteryx'/);
  assert.match(lab,/previewArchaeopteryx=\{artPreview==='archaeopteryx'\}/);
- assert.match(lab,/artPreview==='archaeopteryx'&&creature==='Archaeopteryx'/);
+ assert.doesNotMatch(lab,/artPreview==='archaeopteryx'&&creature==='Archaeopteryx'/);
  assert.match(lab,/knockoutPickerCreatures\(reviewCreature\)\.filter/);
  assert.match(art,/previewArchaeopteryx&&creature==='Archaeopteryx'\?archaeopteryxPreviewOutline/);
  assert.match(renderer,/previewArchaeopteryx=\{props\.previewArchaeopteryx\}/);
- assert.doesNotMatch(art,/Archaeopteryx:archaeopteryxPreviewOutline/);
+ assert.match(art,/Archaeopteryx:archaeopteryxPreviewOutline/);
+});
+
+
+test('Archelon review asset is a local standalone shell-and-four-flipper SVG',()=>{
+ const svg=gunzipSync(Buffer.from(archelonPreviewOutline,'base64')).toString('utf8');
+ assert.match(svg,/^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" viewBox="0 0 1000 660">/);
+ assert.match(svg,/fill-rule="evenodd"/);
+ assert.ok(svg.length>10000,'Keep shell, head and four flippers in original vector');
+ assert.doesNotMatch(svg,/<image\b|(?:href|xlink:href)=/);
+});
+
+test('Archelon review opens Passive Lab with all passive tames retained, never the knockout dropdown',()=>{
+ const app=read('main.jsx'),passive=read('PassiveLab.jsx'),knockout=read('TamingLab.jsx'),art=read('IndividualCreatureLineArt.jsx'),renderer=read('CreatureLineArt.jsx');
+ assert.match(app,/reviewArchelonArtwork=artworkPreview==='archelon'/);
+ assert.match(app,/reviewArchelonArtwork\?'passive':'overview'/);
+ assert.match(app,/selectedCreature=\{reviewArchelonArtwork\?'Archelon':crossLabCreature\}/);
+ assert.match(app,/artPreview=\{reviewArchelonArtwork\?'archelon':null\}/);
+ assert.match(passive,/const passiveRoster=vanillaTamesByMethod\.passive/);
+ assert.match(passive,/passiveRoster\.filter/);
+ assert.match(passive,/previewArchelon=\{artPreview==='archelon'\}/);
+ assert.match(passive,/artPreview==='archelon'&&creature==='Archelon'/);
+ assert.match(art,/previewArchelon&&creature==='Archelon'\?archelonPreviewOutline/);
+ assert.match(renderer,/previewArchelon=\{props\.previewArchelon\}/);
+ assert.doesNotMatch(art,/Archelon:archelonPreviewOutline/);
+ assert.match(knockout,/knockoutPickerCreatures\(reviewCreature\)/);
 });
