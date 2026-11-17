@@ -49,7 +49,7 @@ export default function PassiveLab({rates,onTimer,selectedCreature,artPreview=nu
       <div className="taming-art-stage" aria-label={creature+' creature field sketch'}>
        <span className="taming-art-caption">CREATURE FIELD SKETCH <strong>{creature.toUpperCase()}</strong></span>
        <CreatureLineArt creature={creature} previewArchelon={artPreview==='archelon'} previewArthropluera={artPreview==='arthropluera'}/>
-       <span className="taming-art-status">{artPreview==='arthropluera'&&creature==='Arthropluera'?'REVIEW ONLY · NOT FINAL':hasDetailedOutline(creature)?'SPECIES LINE ART':'ANATOMY STUDY'}</span>
+       <span className="taming-art-status">{hasDetailedOutline(creature)?'SPECIES LINE ART':'ANATOMY STUDY'}</span>
       </div>
       <div className="taming-creature-meta"><span><strong>LEVEL</strong> {level||'—'}</span><span><strong>MAP</strong> {map}</span><span><strong>TYPE</strong> Passive</span></div>
      </div>
