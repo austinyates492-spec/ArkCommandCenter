@@ -103,7 +103,7 @@ test('original Rex art and verified model are available alongside searchable Tam
  const css=read('rex-dossier.css');
  const lab=read('TamingLab.jsx');
  assert.match(lab,/import \{RexArtwork\} from '.\/RexDossier.jsx'/);
- assert.match(lab,/Search all creatures and variants/);
+ assert.match(lab,/Search official creature names/);
  assert.match(lab,/RexArtwork/);
  assert.match(lab,/calculateTame\(/);
  assert.match(lab,/knockoutEstimate\(/);
