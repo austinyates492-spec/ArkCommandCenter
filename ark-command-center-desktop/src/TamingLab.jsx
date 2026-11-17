@@ -62,7 +62,7 @@ export default function TamingLab({rates,onTimer,onNavigate,clusterId='nomadark'
       <div className={'taming-art-stage'+(creature==='Rex'?' taming-art-rex':'')} aria-label={creature+' creature field sketch'}>
        <span className="taming-art-caption">CREATURE FIELD SKETCH <strong>{creature.toUpperCase()}</strong></span>
        {creature==='Rex'?<RexArtwork/>:<CreatureLineArt creature={creature} previewAllo={artPreview==='allo'} previewAmarga={artPreview==='amarga'} previewAmmonite={artPreview==='ammonite'} previewAngler={artPreview==='angler'} previewAnky={artPreview==='anky'}/>}
-       <span className="taming-art-status">{((artPreview==='amarga'&&creature==='Amargasaurus')||(artPreview==='ammonite'&&creature==='Ammonite')||(artPreview==='angler'&&creature==='Anglerfish')||(artPreview==='anky'&&creature==='Ankylosaurus'))?'REVIEW ONLY · NOT FINAL':creature==='Rex'||hasDetailedOutline(creature)?'SPECIES LINE ART':'ANATOMY STUDY'}</span>
+       <span className="taming-art-status">{((artPreview==='amarga'&&creature==='Amargasaurus')||(artPreview==='ammonite'&&creature==='Ammonite')||(artPreview==='anky'&&creature==='Ankylosaurus'))?'REVIEW ONLY · NOT FINAL':creature==='Rex'||hasDetailedOutline(creature)?'SPECIES LINE ART':'ANATOMY STUDY'}</span>
       </div>
       <div className="taming-creature-meta"><span><strong>LEVEL</strong> {level||'—'}</span><span><strong>MAP</strong> {map}</span><span><strong>TYPE</strong> {category}</span></div>
      </div>
