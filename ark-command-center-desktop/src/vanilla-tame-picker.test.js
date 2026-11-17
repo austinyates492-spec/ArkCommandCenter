@@ -5,7 +5,7 @@ import asaMethods from './asa-taming-methods.json' with {type:'json'};
 import {asaBaseCreatures} from './asa-official-catalog.js';
 import {breedingVariants} from './breeding-variants.js';
 import {tameCreatures} from './data.js';
-import {vanillaTameRoster,vanillaTamesByMethod,vanillaKnockoutRoster} from './vanilla-tame-picker.js';
+import {vanillaTameRoster,vanillaTamesByMethod,vanillaKnockoutRoster,knockoutPickerCreatures} from './vanilla-tame-picker.js';
 import {tamingCategory,getTamingMethod} from './special-taming-methods.js';
 
 test('official category rosters exclude mod-only, unavailable, unreleased and untameable creatures',()=>{
@@ -56,4 +56,28 @@ test('Taming Lab is dedicated to knockout tames; passive and specialty remain in
  assert.doesNotMatch(app,/discoveredCreatures=\{catalog\.creatures\}/);
  assert.match(passive,/const passiveRoster=vanillaTamesByMethod\.passive/);
  assert.match(special,/const specialtyRoster=vanillaTamesByMethod\.specialty/);
+});
+
+test('all artwork preview routes preserve the entire knockout picker, with only review exceptions added',()=>{
+ const normal=knockoutPickerCreatures();
+ assert.deepEqual(normal,vanillaKnockoutRoster);
+ for(const creature of ['Anglerfish','Ammonite','Amargasaurus']){
+  const preview=knockoutPickerCreatures(creature);
+  assert.ok(preview.includes(creature),creature+' must remain available for review');
+  for(const knockout of vanillaKnockoutRoster)assert.ok(preview.includes(knockout),creature+' preview hid '+knockout);
+  assert.equal(preview.length,vanillaKnockoutRoster.length+(vanillaKnockoutRoster.includes(creature)?0:1),'review must not add duplicates or drop knockouts');
+  assert.ok(preview.length>90,'art review must never switch dropdown to single-species mode');
+ }
+ assert.ok(knockoutPickerCreatures('Anglerfish').includes('Rex'));
+ assert.ok(knockoutPickerCreatures('Anglerfish').includes('Karkinos'));
+});
+
+test('Taming Lab uses the full knockout roster in preview and normal modes, never a review-only array',()=>{
+ const lab=readFileSync(new URL('./TamingLab.jsx',import.meta.url),'utf8');
+ const app=readFileSync(new URL('./main.jsx',import.meta.url),'utf8');
+ assert.match(lab,/knockoutPickerCreatures\(reviewCreature\)\.filter/);
+ assert.doesNotMatch(lab,/reviewCreature\?\[reviewCreature\]:vanillaKnockoutRoster/);
+ assert.match(lab,/matchingCreatures\.map/);
+ assert.match(app,/reviewAnglerArtwork\?'Anglerfish'/);
+ assert.match(app,/reviewAmmoniteArtwork\?'Ammonite'/);
 });
