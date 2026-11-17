@@ -61,7 +61,7 @@ test('Taming Lab is dedicated to knockout tames; passive and specialty remain in
 test('all artwork preview routes preserve the entire knockout picker, with only review exceptions added',()=>{
  const normal=knockoutPickerCreatures();
  assert.deepEqual(normal,vanillaKnockoutRoster);
- for(const creature of ['Anglerfish','Ankylosaurus','Araneo','Archaeopteryx','Ammonite','Amargasaurus']){
+ for(const creature of ['Anglerfish','Ankylosaurus','Araneo','Archaeopteryx','Argentavis','Ammonite','Amargasaurus']){
   const preview=knockoutPickerCreatures(creature);
   assert.ok(preview.includes(creature),creature+' must remain available for review');
   for(const knockout of vanillaKnockoutRoster)assert.ok(preview.includes(knockout),creature+' preview hid '+knockout);
@@ -89,4 +89,11 @@ test('official Archelon is passive-only and does not leak into the knockout tab'
  assert.ok(!vanillaKnockoutRoster.includes('Archelon'));
  assert.ok(vanillaKnockoutRoster.includes('Rex'));
  assert.ok(vanillaKnockoutRoster.includes('Giganotosaurus'));
+});
+
+test('Argentavis remains a standard official knockout tame and never appears in passive',()=>{
+ assert.ok(vanillaKnockoutRoster.includes('Argentavis'));
+ assert.ok(!vanillaTamesByMethod.passive.includes('Argentavis'));
+ assert.ok(knockoutPickerCreatures('Argentavis').includes('Rex'));
+ assert.ok(knockoutPickerCreatures('Argentavis').includes('Karkinos'));
 });
