@@ -52,8 +52,8 @@ export default function SpecialtyLab({rates,onTimer,selectedCreature,artPreview=
      <div className="taming-visual-column">
       <div className="taming-art-stage" aria-label={creature+' creature field sketch'}>
        <span className="taming-art-caption">CREATURE FIELD SKETCH <strong>{creature.toUpperCase()}</strong></span>
-       <CreatureLineArt creature={creature} previewArmadoggo={artPreview==='armadoggo'} previewAstrocetus={artPreview==='astrocetus'}/>
-       <span className="taming-art-status">{(artPreview==='armadoggo'&&creature==='Armadoggo')||(artPreview==='astrocetus'&&creature==='Astrocetus')?'REVIEW ONLY · NOT FINAL':hasDetailedOutline(creature)?'SPECIES LINE ART':'ANATOMY STUDY'}</span>
+       <CreatureLineArt creature={creature} previewArmadoggo={artPreview==='armadoggo'} previewAstrocetus={artPreview==='astrocetus'} previewAureliax={artPreview==='aureliax'} previewBasilisk={artPreview==='basilisk'}/>
+       <span className="taming-art-status">{(artPreview==='armadoggo'&&creature==='Armadoggo')||(artPreview==='aureliax'&&creature==='Aureliax')||(artPreview==='basilisk'&&creature==='Basilisk')?'REVIEW ONLY · NOT FINAL':hasDetailedOutline(creature)?'SPECIES LINE ART':'ANATOMY STUDY'}</span>
       </div>
       <div className="taming-creature-meta"><span><strong>LEVEL</strong> {level||'—'}</span><span><strong>MAP</strong> {map}</span><span><strong>TYPE</strong> Specialty</span></div>
      </div>
