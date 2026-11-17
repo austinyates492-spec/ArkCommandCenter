@@ -53,7 +53,7 @@ export default function PassiveLab({rates,onTimer,selectedCreature,artPreview=nu
    <section className="panel"><div className="panelhead"><h2>Passive Loadout</h2><span className="badge">NO TRANQS</span></div><div className="taming-art-stage" aria-label={creature+' detailed anatomical field sketch'}>
     <span className="taming-art-caption">CREATURE FIELD SKETCH <strong>{creature.toUpperCase()}</strong></span>
     <CreatureLineArt creature={creature} previewArchelon={artPreview==='archelon'}/>
-    <span className="taming-art-status">{artPreview==='archelon'&&creature==='Archelon'?'REVIEW ONLY · NOT FINAL':hasDetailedOutline(creature)?'TRACED SPECIES ART':'STYLIZED ANATOMICAL STUDY'}</span>
+    <span className="taming-art-status">{hasDetailedOutline(creature)?'TRACED SPECIES ART':'STYLIZED ANATOMICAL STUDY'}</span>
    </div>
     <div className="keyrow"><span>Species</span><strong>{creature}</strong></div>
     <div className="keyrow"><span>Method</span><strong>{method?.type||'Passive feeding'}</strong></div>
