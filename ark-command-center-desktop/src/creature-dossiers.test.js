@@ -117,9 +117,9 @@ test('rollout checklist covers all 214 base entries and 64 variants without clai
 
 test('restored Taming Lab keeps visible search and original calculator for Rex and all knockouts',()=>{
  const lab=source('TamingLab.jsx');
- assert.match(lab,/Search official creature names/);
+ assert.match(lab,/Search all knockout creatures and variants/);
  assert.match(lab,/matchingCreatures\.map/);
- assert.match(lab,/vanillaTamesByMethod\[tamingMethod\]/);
+ assert.match(lab,/vanillaKnockoutRoster/);
  assert.match(lab,/category==='knockout'/);
  assert.match(lab,/onNavigate/);
  assert.match(lab,/onChange=\{e=>setCreature\(e\.target\.value\)\}/);
@@ -141,13 +141,13 @@ test('Taming Lab combines a smaller creature image, dropdown and plan on the lef
  assert.match(lab,/className="taming-workspace"/);
  assert.match(lab,/className="panel taming-combined-panel"/);
  assert.match(lab,/className="taming-picker-bar"/);
- assert.ok(lab.indexOf('Loadout & Sources')<lab.indexOf('Taming type'),'Creature selection stays in Loadout & Sources');
- assert.ok(lab.indexOf('Taming type')<lab.indexOf('Plan a Tame'),'Search precedes the plan');
+ assert.ok(lab.indexOf('Loadout & Sources')<lab.indexOf('Search all knockout creatures and variants'),'Creature selection stays in Loadout & Sources');
+ assert.ok(lab.indexOf('Search all knockout creatures and variants')<lab.indexOf('Plan a Tame'),'Search precedes the plan');
  assert.ok(lab.indexOf('Plan a Tame')<lab.indexOf('Knockout Planner'),'The knockout panel appears alongside the combined loadout');
  assert.match(css,/\.taming-workspace\{display:grid;grid-template-columns/);
  assert.match(css,/\.taming-workspace \.taming-art-stage\{height:258px/);
  assert.match(css,/@media\(max-width:600px\)/);
- assert.match(lab,/Search official creature names/);
+ assert.match(lab,/Search all knockout creatures and variants/);
  assert.match(lab,/knockoutEstimate\(/);
  assert.match(lab,/taming-ammo-row/);
  assert.match(lab,/Plan Notes/);
@@ -170,7 +170,7 @@ test('knockout estimates retain exact model fields without inventing ammo counts
 test('v0.8.31 gives the artwork the wider internal column and shrinks the creature picker',()=>{
  const css=source('taming-lab-art.css');
  assert.match(css,/\.taming-workspace \.taming-combined-panel \.taming-plan-layout\{\s*grid-template-columns:minmax\(0,1\.7fr\) minmax\(0,\.9fr\)/);
- assert.match(css,/\.taming-workspace \.taming-combined-panel \.taming-picker-bar\{\s*grid-template-columns:minmax\(0,\.76fr\) minmax\(0,1fr\) minmax\(0,1\.12fr\)/);
+ assert.match(css,/\.taming-workspace \.taming-combined-panel \.taming-picker-bar\{\s*grid-template-columns:minmax\(0,1\.65fr\) minmax\(0,\.85fr\)/);
  assert.match(css,/\.taming-workspace \.taming-combined-panel \.taming-art-stage\{\s*width:100%;\s*height:auto;\s*aspect-ratio:1\.82 \/ 1/);
  assert.match(css,/\.taming-workspace \.taming-combined-panel \.taming-art-stage \.cad-illustration\{\s*width:100%;\s*height:100%/);
  assert.match(css,/\.taming-workspace \.taming-combined-panel \.taming-art-stage \.rex-outline-frame\{\s*inset:0;\s*width:100%;\s*height:100%/);
