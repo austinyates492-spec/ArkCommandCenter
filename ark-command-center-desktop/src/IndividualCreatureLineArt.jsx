@@ -7,6 +7,7 @@ import {knockoutLineArt1} from './knockout-art-1.js';
 import {knockoutLineArt2} from './knockout-art-2.js';
 import {knockoutCustom14} from './knockout-custom-14.js';
 import {approvedAchatinaOutline} from './achatina-approved-data.js';
+import {acroPreviewOutline} from './acro-preview-outline-data.js';
 
 // This is a curated set of species-specific silhouettes, not a generic body
 // family with per-name noise. Reviewed source illustration sheets were vectorized into
@@ -15,14 +16,14 @@ const tracedOutlines=Object.freeze({...individualOutlines,...predatorOutlines,..
 export const detailedOutlineNames=Object.freeze(Object.keys(tracedOutlines));
 export function hasDetailedOutline(name){return Object.hasOwn(tracedOutlines,name);}
 
-export default function IndividualCreatureLineArt({creature,fallback=null}){
+export default function IndividualCreatureLineArt({creature,fallback=null,previewAcro=false}){
  const [art,setArt]=useState({creature:null,url:null});
  useEffect(()=>{
   let alive=true;
   setArt({creature,url:null});
   async function decode(){
    try{
-    const payload=tracedOutlines[creature];
+    const payload=previewAcro&&creature==='Acrocanthosaurus'?acroPreviewOutline:tracedOutlines[creature];
     if(!payload||typeof DecompressionStream!=='function')return;
     const bytes=Uint8Array.from(atob(payload),c=>c.charCodeAt(0));
     const readable=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
@@ -33,7 +34,7 @@ export default function IndividualCreatureLineArt({creature,fallback=null}){
   }
   void decode();
   return ()=>{alive=false};
- },[creature]);
+ },[creature,previewAcro]);
  if(art.creature!==creature||!art.url)return fallback;
  return <div className="cad-illustration cad-detailed-outline" role="img"
   aria-label={creature+' original detailed anatomical contour illustration'}
