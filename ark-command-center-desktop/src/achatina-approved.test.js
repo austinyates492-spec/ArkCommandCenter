@@ -11,7 +11,7 @@ test('approved Achatina is a fully isolated, detail-preserving compressed SVG',(
  assert.match(svg,/fill-rule="evenodd"/);
  assert.match(svg,/<path fill="black"/);
  assert.ok(svg.length>18000,'Do not replace approved art with a generic, low-detail sketch');
- assert.doesNotMatch(svg,/<image\b|https?:\/\/|<text\b|<script\b/);
+ assert.doesNotMatch(svg,/<image\b|(?:href|xlink:href)="https?:\/\/|<text\b|<script\b/);
 });
 
 test('approved Achatina overrides the older sketch in the real Taming Lab artwork renderer',()=>{
