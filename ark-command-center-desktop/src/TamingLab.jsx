@@ -1,10 +1,11 @@
 import TameSpawnAtlas from './TameSpawnAtlas.jsx';
 import React,{useEffect,useMemo,useState} from 'react';
 import {ExternalLink,Timer,Crosshair,ShieldCheck,Info,ChevronDown} from 'lucide-react';
-import {maps,tameCreatures} from './data';
+import {maps} from './data';
+import {vanillaTameRoster,vanillaTamesByMethod} from './vanilla-tame-picker.js';
 import {availableFoods,calculateTame,knockoutProfiles} from './taming-engine';
 import {knockoutEstimate,knockoutSpecies} from './knockout-engine';
-import {getTamingMethod,knockoutRoster,tamingCategory} from './special-taming-methods.js';
+import {getTamingMethod,tamingCategory} from './special-taming-methods.js';
 import {RexArtwork} from './RexDossier.jsx';
 import CreatureLineArt from './CreatureLineArt.jsx';
 import {hasDetailedOutline} from './IndividualCreatureLineArt.jsx';
@@ -13,7 +14,9 @@ import './taming-lab-art.css';
 const numberFormat=new Intl.NumberFormat('en-US');
 const duration=(seconds)=>{const h=Math.floor(seconds/3600),m=Math.floor(seconds%3600/60),s=seconds%60;return [h?`${h}h`:null,m?`${m}m`:null,`${s}s`].filter(Boolean).join(' ')};
 
-export default function TamingLab({rates,onTimer,onNavigate,clusterId='nomadark',discoveredCreatures=[],initialCreature='Rex',artPreview=null}){
+export default function TamingLab({rates,onTimer,onNavigate,clusterId='nomadark',initialCreature='Rex',artPreview=null}){
+ const reviewCreature=artPreview==='ammonite'?'Ammonite':artPreview==='amarga'?'Amargasaurus':null;
+ const [tamingMethod,setTamingMethod]=useState(()=>reviewCreature?'review':(tamingCategory(initialCreature)==='untameable'?'knockout':tamingCategory(initialCreature)));
  const [creature,setCreature]=useState(initialCreature);
  const category=tamingCategory(creature);
  const isKnockout=category==='knockout';
@@ -28,8 +31,13 @@ export default function TamingLab({rates,onTimer,onNavigate,clusterId='nomadark'
  const [targetTorpor,setTargetTorpor]=useState('');
  const foods=useMemo(()=>availableFoods(creature),[creature]);
  const special=getTamingMethod(creature);
- const matchingCreatures=useMemo(()=>[...new Set([...tameCreatures,...discoveredCreatures])].filter(name=>name.toLowerCase().includes(creatureQuery.toLowerCase())).sort(),[creatureQuery,discoveredCreatures]);
- const isDiscovered=discoveredCreatures.includes(creature);
+ const matchingCreatures=useMemo(()=>(tamingMethod==='review'?(reviewCreature?[reviewCreature]:[]):vanillaTamesByMethod[tamingMethod]||[]).filter(name=>name.toLowerCase().includes(creatureQuery.toLowerCase())),[creatureQuery,tamingMethod,reviewCreature]);
+ const changeTamingMethod=nextMethod=>{
+  setTamingMethod(nextMethod);
+  setCreatureQuery('');
+  const nextRoster=nextMethod==='review'?(reviewCreature?[reviewCreature]:[]):vanillaTamesByMethod[nextMethod]||[];
+  setCreature(nextRoster[0]||'Rex');
+ };
  useEffect(()=>setLongneckBuffPercent(clusterId==='nomadark'?300:100),[clusterId]);
  useEffect(()=>{if(foods.length&&!foods.includes(food))setFood(foods[0]);},[foods,food]);
  const selectedFood=foods.includes(food)?food:(foods[0]||'');
@@ -47,14 +55,20 @@ export default function TamingLab({rates,onTimer,onNavigate,clusterId='nomadark'
   <div className="pagetitle taming-compact-title">
    <span className="eyebrow">FIELD OPERATIONS / 01</span>
    <h1>Taming Lab</h1>
-   <p>Choose any of {tameCreatures.length} creatures and forms. Search, artwork, taming plan and knockout estimates now share one compact workspace. Only supported knockout species use ordinary tranq calculations.</p>
+   <p>Browse {vanillaTameRoster.length} official ASA tames and forms by method. Vanilla and official DLC creatures only; no live-feed or mod-added entries. Only knockout tames use ordinary tranq calculations.</p>
   </div>
   <div className="taming-workspace">
    <section className="panel taming-combined-panel" aria-label="Creature loadout and tame plan">
     <div className="panelhead"><h2>Loadout & Sources</h2><span className={'badge '+(!special&&result.ok?'green':'gold')}>{special?special.type:result.ok?'WIKI MODEL':'METHOD REVIEW'}</span></div>
     <div className="taming-picker-bar">
-     <label className="field taming-search-field"><span>Search all creatures and variants</span><input value={creatureQuery} onChange={e=>setCreatureQuery(e.target.value)} placeholder="Search Rex, Spino, Tek, Aberrant..."/></label>
-     <label className="field taming-creature-field"><span>Creature ({matchingCreatures.length} matches)</span><select value={matchingCreatures.includes(creature)?creature:''} onChange={e=>setCreature(e.target.value)}>{!matchingCreatures.includes(creature)&&<option value="">Select a creature</option>}{matchingCreatures.map(name=><option key={name}>{name}</option>)}</select></label>
+     <label className="field taming-method-field"><span>Taming type</span><select value={tamingMethod} onChange={e=>changeTamingMethod(e.target.value)}>
+      <option value="knockout">Knockout ({vanillaTamesByMethod.knockout.length})</option>
+      <option value="passive">Passive ({vanillaTamesByMethod.passive.length})</option>
+      <option value="specialty">Specialty ({vanillaTamesByMethod.specialty.length})</option>
+      {reviewCreature&&<option value="review">Artwork review</option>}
+     </select></label>
+     <label className="field taming-search-field"><span>Search {tamingMethod==='review'?'review art':tamingMethod+' tames'}</span><input value={creatureQuery} onChange={e=>setCreatureQuery(e.target.value)} placeholder="Search official creature names..."/></label>
+     <label className="field taming-creature-field"><span>Creature ({matchingCreatures.length} matches)</span><select value={matchingCreatures.includes(creature)?creature:''} onChange={e=>setCreature(e.target.value)}>{!matchingCreatures.includes(creature)&&<option value="">Select a creature</option>}{matchingCreatures.map(name=><option key={name} value={name}>{name}</option>)}</select></label>
     </div>
     <div className="taming-plan-layout">
      <div className="taming-visual-column">
@@ -79,7 +93,7 @@ export default function TamingLab({rates,onTimer,onNavigate,clusterId='nomadark'
     <div className="taming-plan-notes">
      <div className="taming-note-heading"><ShieldCheck size={16}/><strong>Plan Notes</strong><span>FIELD GUIDANCE</span></div>
      <p>{planNote}</p>
-     {isDiscovered&&<p>This creature came from the live wiki feed. Its taming method, food and torpor are not yet verified; use a manually confirmed timer.</p>}
+     
      {isKnockout&&result.ok&&<small>Rates: {rates.taming}× taming · {rates.food}× dinosaur food drain. Check your server's actual settings.</small>}
     </div>
     <div className="taming-compact-links">
