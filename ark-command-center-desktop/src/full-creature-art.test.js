@@ -38,7 +38,7 @@ test('curated first nine traced artworks and Rex remain unchanged',()=>{
 });
 test('all-creature search retains category-safe calculators and opens correct separate planners',()=>{
  const lab=read('TamingLab.jsx'),app=read('main.jsx');
- assert.match(lab,/vanillaTamesByMethod\[tamingMethod\]/);
+ assert.match(lab,/vanillaKnockoutRoster/);
  assert.match(lab,/isKnockout\?calculateTame/);
  assert.match(lab,/isKnockout\?knockoutEstimate/);
  assert.match(lab,/isKnockout&&!special&&<section className="panel knockout-panel taming-knockout-card"/);
