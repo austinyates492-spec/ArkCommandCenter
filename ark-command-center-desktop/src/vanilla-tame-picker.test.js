@@ -81,3 +81,12 @@ test('Taming Lab uses the full knockout roster in preview and normal modes, neve
  assert.match(app,/reviewAnglerArtwork\?'Anglerfish'/);
  assert.match(app,/reviewAmmoniteArtwork\?'Ammonite'/);
 });
+
+test('official Archelon is passive-only and does not leak into the knockout tab',()=>{
+ assert.equal(tamingCategory('Archelon'),'passive');
+ assert.ok(vanillaTamesByMethod.passive.includes('Archelon'));
+ assert.ok(!vanillaTamesByMethod.specialty.includes('Archelon'));
+ assert.ok(!vanillaKnockoutRoster.includes('Archelon'));
+ assert.ok(vanillaKnockoutRoster.includes('Rex'));
+ assert.ok(vanillaKnockoutRoster.includes('Giganotosaurus'));
+});
