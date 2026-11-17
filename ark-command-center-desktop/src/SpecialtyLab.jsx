@@ -36,46 +36,63 @@ export default function SpecialtyLab({rates,onTimer,selectedCreature,artPreview=
  const canTimer=Number.isFinite(estimatedMinutes)&&estimatedMinutes>0;
  const wiki=method?.source||`https://ark.wiki.gg/wiki/${encodeURIComponent(creature.replaceAll(' ','_'))}`;
  return <>
-  <div className="pagetitle"><span className="eyebrow">FIELD OPERATIONS / SPECIAL</span><h1>Specialty Taming Lab</h1><p>{specialtyRoster.length} specialty species and forms. Heavy weapons, egg theft, trust mechanics, pheromones and unusual food interactions—separate from tranquilizers and ordinary passive feeds.</p></div>
-  <div className="two wideleft">
-   <section className="panel"><div className="panelhead"><h2>Specialty Tame Planner</h2><span className="badge gold">{rates.taming}× TAMING</span></div>
-    <label className="field"><span>Search specialty creatures</span><input value={query} placeholder="Karkinos, Basilisk, Rhyniognatha..." onChange={e=>setQuery(e.target.value)}/></label>
-    <div className="formgrid">
-     <label className="field"><span>Creature ({matches.length})</span><select value={matches.includes(creature)?creature:''} onChange={e=>{setCreature(e.target.value);setAmmo('');setFood('');setManualCount('');setMinutes('');}}>{!matches.includes(creature)&&<option value="">Choose creature</option>}{matches.map(name=><option key={name}>{name}</option>)}</select></label>
-     <label className="field"><span>Wild level</span><input type="number" min="1" max="1000" value={level} onChange={e=>setLevel(e.target.value)}/></label>
-     <label className="field"><span>Map</span><select value={map} onChange={e=>setMap(e.target.value)}>{maps.map(name=><option key={name}>{name}</option>)}</select></label>
-     {ammoChoices.length>0&&<label className="field"><span>Specialty knockout ammunition</span><select value={activeAmmo} onChange={e=>setAmmo(e.target.value)}>{ammoChoices.map(item=><option key={item.label}>{item.label}</option>)}</select></label>}
-     {foodChoices.length>0&&<label className="field"><span>{method?.quantityModel==='octopus-biotoxin'?'Bite-phase knockout item':method?.quantityModel==='bloodstalker'?'Grab-taming supply':method?.type==='Heavy knockout'?'Post-knockout food':'Specialty feeding / offering'}</span><select value={activeFood} onChange={e=>setFood(e.target.value)}>{foodChoices.map(item=><option key={item}>{item}</option>)}</select></label>}
+  <div className="pagetitle taming-compact-title">
+   <span className="eyebrow">FIELD OPERATIONS / SPECIALTY</span>
+   <h1>Specialty Taming Lab</h1>
+   <p>All {specialtyRoster.length} official specialty tames and forms. The same artwork-first layout as the Knockout Taming Lab, with creature-specific heavy weapons, trust, egg, and other nonstandard interactions.</p>
+  </div>
+  <div className="taming-workspace">
+   <section className="panel taming-combined-panel" aria-label="Specialty creature loadout and tame plan">
+    <div className="panelhead"><h2>Loadout &amp; Sources</h2><span className="badge gold">SPECIALTY METHOD</span></div>
+    <div className="taming-picker-bar">
+     <label className="field taming-search-field"><span>Search all specialty creatures and variants</span><input value={query} placeholder="Karkinos, Basilisk, Astrocetus..." onChange={e=>setQuery(e.target.value)}/></label>
+     <label className="field taming-creature-field"><span>Creature ({matches.length} matches)</span><select value={matches.includes(creature)?creature:''} onChange={e=>{setCreature(e.target.value);setAmmo('');setFood('');setManualCount('');setMinutes('');}}>{!matches.includes(creature)&&<option value="">Select a creature</option>}{matches.map(name=><option key={name} value={name}>{name}</option>)}</select></label>
     </div>
-    {knockout.ok&&<div className="tame-results"><div><span>ESTIMATED HEAVY AMMO</span><strong>{fmt.format(knockout.amount)} <small>{knockout.ammo}</small></strong></div><div><span>TARGET TORPOR</span><strong>{fmt.format(knockout.totalTorpor)}</strong></div></div>}
-    {knockout.ok&&<div className="notice">{knockout.caveat}</div>}
-    {foodChoices.length>0&&feeding.ok?<><div className="tame-results"><div><span>{feeding.model==='octopus-biotoxin'?'MINIMUM SUCCESSFUL BITE FEEDS':feeding.model==='bloodstalker'?'BASELINE BLOOD PACK ESTIMATE':'ESTIMATED FOOD / OFFERINGS'}</span><strong>{fmt.format(feeding.foodPieces)} <small>{activeFood}</small></strong></div><div><span>{feeding.model==='bloodstalker'?'RECOMMENDED PACK SUPPLY':feeding.model==='octopus-biotoxin'?'BITE-INTERVAL TIME ONLY':'THEORETICAL FOOD-DRAIN TIME'}</span><strong>{feeding.model==='bloodstalker'?`${fmt.format(feeding.bufferPieces)} packs`:feeding.model==='octopus-biotoxin'?`${period(feeding.minBiteSeconds)}–${period(feeding.maxBiteSeconds)}`:period(feeding.seconds)}</strong></div></div><div className="notice">{feeding.caveat||'Wiki-based feeding estimate. Special interactions and cooldowns can extend the total duration.'}</div></>:null}
-    {foodChoices.length>0&&!feeding.ok&&<div className="notice">{feeding.reason} Select a food or offering to see its documented interaction. A numerical count is shown only when we have a species-specific estimate.</div>}
-    {fixedSupply&&<div className="tame-results"><div><span>FIXED REQUIRED SUPPLY</span><strong>{fixedSupply.amount} <small>{fixedSupply.item}</small></strong></div></div>}
-    {fixedSupply&&<div className="notice">{fixedSupply.caveat}</div>}
-    {method?.status==='unreleased'&&<div className="notice"><strong>Not available in the current game:</strong> this is an announced creature, not a live taming method. No item count or timer is offered.</div>}
-    {method?.status==='unavailable'&&<div className="notice"><strong>Not an ordinary tame:</strong> event-only or otherwise unavailable to tame permanently on normal official rules.</div>}
-    {method?.postKnockoutFoods?.length>0&&<div className="notice"><strong>After knockout:</strong> feed {method.postKnockoutFoods.join(', ')}. These are not the Bio Toxin used to cause unconsciousness; a validated post-knockout food count is not available.</div>}
-    {method?.items?.length>0&&<div className="notice"><strong>Required specialty items:</strong> {method.items.join(' · ')}. {method.instructions}</div>}
-    {!method?.items?.length&&<div className="notice">{method?.instructions||'This specialty method still needs individual verification.'}</div>}
-    {method?.status==='documented'&&!knockout.ok&&(!feeding.ok||!Number.isFinite(feeding.minutes))&&<div className="formgrid"><label className="field"><span>Your observed item count (optional)</span><input type="number" min="1" placeholder="Manual, not auto-verified" value={manualCount} onChange={e=>setManualCount(e.target.value)}/></label><label className="field"><span>Your observed total duration (minutes)</span><input type="number" min="0.1" step="0.1" placeholder="Manual timer" value={minutes} onChange={e=>setMinutes(e.target.value)}/></label></div>}
-    <div className="actionrow"><a className="ghost linkbtn" target="_blank" rel="noreferrer" href={wiki}>Read species method <ExternalLink size={15}/></a><button className="primary" disabled={!canTimer} onClick={()=>onTimer(`${creature} Lv ${level} · ${map}`,estimatedMinutes,'Specialty Tame')}>Start Timer <Timer size={16}/></button></div>
+    <div className="taming-plan-layout">
+     <div className="taming-visual-column">
+      <div className="taming-art-stage" aria-label={creature+' creature field sketch'}>
+       <span className="taming-art-caption">CREATURE FIELD SKETCH <strong>{creature.toUpperCase()}</strong></span>
+       <CreatureLineArt creature={creature} previewArmadoggo={artPreview==='armadoggo'} previewAstrocetus={artPreview==='astrocetus'}/>
+       <span className="taming-art-status">{(artPreview==='armadoggo'&&creature==='Armadoggo')||(artPreview==='astrocetus'&&creature==='Astrocetus')?'REVIEW ONLY · NOT FINAL':hasDetailedOutline(creature)?'SPECIES LINE ART':'ANATOMY STUDY'}</span>
+      </div>
+      <div className="taming-creature-meta"><span><strong>LEVEL</strong> {level||'—'}</span><span><strong>MAP</strong> {map}</span><span><strong>TYPE</strong> Specialty</span></div>
+     </div>
+     <div className="taming-plan-content">
+      <div className="taming-small-title"><h3>Plan a Tame</h3><small>{rates.taming}× TAMING</small></div>
+      <div className="taming-compact-fields">
+       <label className="field"><span>Wild Level</span><input type="number" min="1" max="1000" value={level} onChange={e=>setLevel(e.target.value)}/></label>
+       <label className="field"><span>Map</span><select value={map} onChange={e=>setMap(e.target.value)}>{maps.map(name=><option key={name}>{name}</option>)}</select></label>
+       {ammoChoices.length>0&&<label className="field taming-field-wide"><span>Specialty knockout ammunition</span><select value={activeAmmo} onChange={e=>setAmmo(e.target.value)}>{ammoChoices.map(item=><option key={item.label} value={item.label}>{item.label}</option>)}</select></label>}
+       {foodChoices.length>0&&<label className="field taming-field-wide"><span>{method?.quantityModel==='octopus-biotoxin'?'Bite-phase knockout item':method?.quantityModel==='bloodstalker'?'Grab-taming supply':method?.type==='Heavy knockout'?'Post-knockout food':'Specialty feeding / offering'}</span><select value={activeFood} onChange={e=>setFood(e.target.value)}>{foodChoices.map(item=><option key={item} value={item}>{item}</option>)}</select></label>}
+      </div>
+      <div className="taming-method-callout taming-specialty-type"><strong>{method?.type||'METHOD REVIEW NEEDED'}</strong><p>{method?.items?.length?method.items.join(' · '):'Follow the verified species-specific interaction; ordinary tranquilizer estimates do not apply.'}</p></div>
+     </div>
+    </div>
+    <div className="taming-plan-notes">
+     <div className="taming-note-heading"><strong>Plan Notes</strong><span>FIELD GUIDANCE</span></div>
+     <p>{method?.instructions||'This specialty method still needs individual verification.'}</p>
+     <small>Only species-specific supplies can be estimated; server taming multipliers do not automatically scale egg counts, minigame actions, or sacrifices.</small>
+    </div>
+    <div className="taming-compact-links"><a href={wiki} target="_blank" rel="noreferrer">Species Wiki <ExternalLink size={14}/></a><span>SPECIALTY · NONSTANDARD TAME</span></div>
    </section>
-   <section className="panel"><div className="panelhead"><h2>Specialty Loadout</h2><span className={`badge ${method?.status==='documented'?'green':'gold'}`}>{method?.type||'Review needed'}</span></div>
-    <div className="taming-art-stage" aria-label={creature+' detailed anatomical field sketch'}>
-    <span className="taming-art-caption">CREATURE FIELD SKETCH <strong>{creature.toUpperCase()}</strong></span>
-    <CreatureLineArt creature={creature} previewArmadoggo={artPreview==='armadoggo'} previewAstrocetus={artPreview==='astrocetus'}/>
-    <span className="taming-art-status">{((artPreview==='armadoggo'&&creature==='Armadoggo')||(artPreview==='astrocetus'&&creature==='Astrocetus'))?'REVIEW ONLY · NOT FINAL':hasDetailedOutline(creature)?'TRACED SPECIES ART':'STYLIZED ANATOMICAL STUDY'}</span>
-   </div>
-    <div className="keyrow"><span>Creature</span><strong>{creature}</strong></div>
-    <div className="keyrow"><span>Level</span><strong>{level}</strong></div>
-    {method?.items?.map(item=><div className="keyrow" key={item}><span>Allowed item / method</span><strong>{item}</strong></div>)}
-    {manualCount&&Number(manualCount)>0&&<div className="keyrow"><span>Your manual supply count</span><strong>{manualCount}</strong></div>}
-    <div className="keyrow"><span>Method status</span><strong>{method?.status==='documented'?'Wiki-documented (not in-game certified)':method?.status==='unreleased'?'Announced / unreleased':method?.status==='unavailable'?'Unavailable as ordinary tame':'Review needed'}</strong></div>
-    <div className="keyrow"><span>Heavy-weapon math</span><strong>{knockout.ok?'Available':'Not applicable / unverified'}</strong></div>
-    <div className="keyrow"><span>Supply count model</span><strong>{feeding.model==='bloodstalker'?'Published blood-pack estimate':feeding.model==='octopus-biotoxin'?'Minimum Bio Toxin hits':feeding.ok?'Wiki food-affinity baseline':fixedSupply?'One item per new tame':'Interaction-specific / not quantified'}</strong></div>
-    <div className="keyrow"><span>Taming rate</span><strong>{rates.taming}×</strong></div>
-    <div className="notice">Methods are reviewed against the official community wiki, not certified in-game for your selected cluster. Its {rates.taming}× taming rate does not automatically divide egg counts, minigame actions, torpor effects or sacrifices. Treat unspecified quantities as unknown, not zero.</div>
+   <section className="panel taming-sibling-panel" aria-label="Specialty taming planner">
+    <div className="panelhead"><h2>Specialty Method Planner</h2><span className={'badge '+(method?.status==='documented'?'green':'gold')}>{method?.type||'Review Needed'}</span></div>
+    {knockout.ok&&<div className="taming-ko-headline"><div><span>ESTIMATED HEAVY AMMO</span><strong>{fmt.format(knockout.amount)}</strong><small>{knockout.ammo}</small></div><div><span>TARGET TORPOR</span><strong>{fmt.format(knockout.totalTorpor)}</strong><small>Wild Lv {level}</small></div></div>}
+    {knockout.ok&&<div className="taming-ko-unverified">{knockout.caveat}</div>}
+    {foodChoices.length>0&&feeding.ok&&<><div className="taming-ko-headline"><div><span>{feeding.model==='octopus-biotoxin'?'MIN. BITE FEEDS':feeding.model==='bloodstalker'?'BLOOD PACKS':'ESTIMATED FOOD / OFFERINGS'}</span><strong>{fmt.format(feeding.foodPieces)}</strong><small>{activeFood}</small></div><div><span>{feeding.model==='bloodstalker'?'RECOMMENDED SUPPLY':feeding.model==='octopus-biotoxin'?'BITE INTERVAL':'THEORETICAL DURATION'}</span><strong>{feeding.model==='bloodstalker'?fmt.format(feeding.bufferPieces):feeding.model==='octopus-biotoxin'?period(feeding.minBiteSeconds)+'–'+period(feeding.maxBiteSeconds):period(feeding.seconds)}</strong><small>{feeding.model==='bloodstalker'?'Packs':feeding.model==='octopus-biotoxin'?'Interaction time':rates.taming+'× profile'}</small></div></div><div className="taming-plan-notes"><div className="taming-note-heading"><strong>Supply Caveat</strong></div><p>{feeding.caveat||'Food-affinity estimate; specialty interactions and cooldowns can extend the duration.'}</p></div></>}
+    {foodChoices.length>0&&!feeding.ok&&<div className="taming-ko-unverified">{feeding.reason} Select a food or offering to see its documented interaction. A count is shown only when a species-specific estimate exists.</div>}
+    {fixedSupply&&<div className="taming-estimate-cards"><div><span>FIXED REQUIRED SUPPLY</span><strong>{fixedSupply.amount}</strong><small>{fixedSupply.item}</small></div></div>}
+    {fixedSupply&&<div className="taming-plan-notes"><div className="taming-note-heading"><strong>Fixed Supply Caveat</strong></div><p>{fixedSupply.caveat}</p></div>}
+    {method?.status==='unreleased'&&<div className="taming-ko-unverified"><strong>Not available in the current game.</strong> Announced creature; no validated item count or timer is available.</div>}
+    {method?.status==='unavailable'&&<div className="taming-ko-unverified"><strong>Not an ordinary tame:</strong> Event-only or otherwise unavailable for permanent taming on official rules.</div>}
+    {method?.postKnockoutFoods?.length>0&&<div className="taming-plan-notes"><div className="taming-note-heading"><strong>After Knockout</strong></div><p>Feed {method.postKnockoutFoods.join(', ')}. This is distinct from knockout Bio Toxin; a validated post-knockout count is not available.</p></div>}
+    {method?.items?.length>0&&<div className="taming-method-visual"><h3>Required Specialty Items</h3><p>{method.items.join(' · ')}. {method.instructions}</p></div>}
+    {!method?.items?.length&&<div className="taming-method-visual"><h3>Method Guidance</h3><p>{method?.instructions||'This specialty method still needs individual verification.'}</p></div>}
+    {method?.status==='documented'&&!knockout.ok&&(!feeding.ok||!Number.isFinite(feeding.minutes))&&<div className="taming-compact-fields"><label className="field"><span>Your observed item count (optional)</span><input type="number" min="1" placeholder="Manual, not auto-verified" value={manualCount} onChange={e=>setManualCount(e.target.value)}/></label><label className="field"><span>Your observed duration (minutes)</span><input type="number" min="0.1" step="0.1" placeholder="Manual timer" value={minutes} onChange={e=>setMinutes(e.target.value)}/></label></div>}
+    {manualCount&&Number(manualCount)>0&&<div className="taming-plan-notes"><div className="taming-note-heading"><strong>Manual Supply</strong></div><p>{manualCount} items observed on your server (not auto-verified).</p></div>}
+    <button className="primary taming-start-btn" disabled={!canTimer} onClick={()=>onTimer(creature+' Lv '+level+' · '+map,estimatedMinutes,'Specialty Tame')}>Start Timer <Timer size={16}/></button>
+    <div className="taming-plan-notes"><div className="taming-note-heading"><strong>Calculation Notes</strong><span>{rates.taming}× TAMING</span></div><p>Heavy-weapon math: {knockout.ok?'Species-specific estimate available':'Not applicable or unverified'}. Supply count: {feeding.model==='bloodstalker'?'Published blood-pack baseline':feeding.model==='octopus-biotoxin'?'Minimum Bio Toxin hits':feeding.ok?'Food-affinity baseline':fixedSupply?'Known fixed supply':'Interaction-specific / unquantified'}. Treat unknown quantities as unknown, never zero.</p></div>
+    <a className="taming-ko-source" href={wiki} target="_blank" rel="noreferrer">Read species method <ExternalLink size={14}/></a>
    </section>
   </div>
   <TameSpawnAtlas creature={creature} map={map}/>
