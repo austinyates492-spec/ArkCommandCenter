@@ -77,7 +77,7 @@ test('approved Anglerfish is the default image and its old preview route remains
  assert.match(app,/reviewAnglerArtwork\?'Anglerfish'/);
  assert.match(lab,/artPreview==='angler'\?'Anglerfish'/);
  assert.match(lab,/previewAngler=\{artPreview==='angler'\}/);
- assert.match(lab,/artPreview==='angler'&&creature==='Anglerfish'/);
+ assert.doesNotMatch(lab,/artPreview==='angler'&&creature==='Anglerfish'/);
  assert.match(art,/previewAngler&&creature==='Anglerfish'\?anglerPreviewOutline/);
  assert.match(renderer,/previewAngler=\{props\.previewAngler\}/);
  assert.match(art,/Anglerfish:anglerPreviewOutline/);
