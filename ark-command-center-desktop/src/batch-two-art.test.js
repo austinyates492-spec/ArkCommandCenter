@@ -1,17 +1,19 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {aureliaxPreviewSvg} from './aureliax-preview-svg-data.js';
-import {baryonyxPreviewSvg} from './baryonyx-preview-svg-data.js';
-import {basiliskPreviewSvg} from './basilisk-preview-svg-data.js';
+import {gunzipSync} from 'node:zlib';
+import {aureliaxPreviewOutline} from './aureliax-preview-svg-data.js';
+import {baryonyxPreviewOutline} from './baryonyx-preview-svg-data.js';
+import {basiliskPreviewOutline} from './basilisk-preview-svg-data.js';
 import {vanillaKnockoutRoster,vanillaTamesByMethod} from './vanilla-tame-picker.js';
 import {tamingCategory} from './special-taming-methods.js';
 const read=name=>readFileSync(new URL('./'+name,import.meta.url),'utf8');
 
 test('alphabetically next three official tames have separate transparent black-on-alpha SVG masks',()=>{
- for(const [name,svg] of [['Aureliax',aureliaxPreviewSvg],['Baryonyx',baryonyxPreviewSvg],['Basilisk',basiliskPreviewSvg]]){
+ for(const [name,b64] of [['Aureliax',aureliaxPreviewOutline],['Baryonyx',baryonyxPreviewOutline],['Basilisk',basiliskPreviewOutline]]){
+  const svg=gunzipSync(Buffer.from(b64,'base64')).toString('utf8');
   assert.match(svg,/^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" viewBox="0 0 1000 620">/);
-  assert.match(svg,/<g stroke="#000"/);
+  assert.match(svg,/<path fill="black" fill-rule="evenodd"/);
   assert.ok(svg.length>=1700,name+' was replaced with a generic placeholder');
   assert.doesNotMatch(svg,/<image\b|<rect\b|(?:xlink:)?href=/);
   assert.match(svg,/<\/svg>$/);
@@ -45,9 +47,9 @@ test('new review links and artwork flags preserve each lab and the full creature
  assert.match(renderer,/previewBaryonyx=\{props\.previewBaryonyx\}/);
  assert.match(renderer,/previewAureliax=\{props\.previewAureliax\}/);
  assert.match(renderer,/previewBasilisk=\{props\.previewBasilisk\}/);
- assert.match(art,/reviewSvg=previewAureliax&&creature==='Aureliax'/);
- assert.match(art,/data:image\/svg\+xml;charset=utf-8,/);
- assert.doesNotMatch(art,/Aureliax:aureliaxPreviewSvg|Baryonyx:baryonyxPreviewSvg|Basilisk:basiliskPreviewSvg/);
+ assert.match(art,/const payload=previewAureliax&&creature==='Aureliax'/);
+ assert.match(art,/new DecompressionStream\('gzip'\)/);
+ assert.doesNotMatch(art,/Aureliax:aureliaxPreviewOutline|Baryonyx:baryonyxPreviewOutline|Basilisk:basiliskPreviewOutline/);
 });
 
 test('approved Arthropluera/Astrocetus are default; discarded Armadoggo artwork remains unapproved',()=>{
