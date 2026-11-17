@@ -34,3 +34,11 @@ export const vanillaKnockoutRoster=Object.freeze(tameCreatures.filter(name=>{
  if(!methods.includes('knockout')||methods.includes('untameable'))return false;
  return !unavailableStatuses.has(getTamingMethod(name)?.status);
 }));
+
+// Artwork review routes may preselect a creature, but must never reduce the
+// ordinary knockout dropdown to just that creature. The extra review target
+// is only exposed on its explicit artPreview URL (e.g. untameable Ammonite).
+export function knockoutPickerCreatures(reviewCreature=null){
+ if(!reviewCreature||vanillaKnockoutRoster.includes(reviewCreature))return vanillaKnockoutRoster;
+ return Object.freeze([...vanillaKnockoutRoster,reviewCreature].sort());
+}
