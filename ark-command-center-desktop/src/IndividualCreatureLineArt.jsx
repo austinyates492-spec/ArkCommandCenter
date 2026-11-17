@@ -15,6 +15,7 @@ import {anglerPreviewOutline} from './angler-preview-outline-data.js';
 import {ankyPreviewOutline} from './anky-preview-outline-data.js';
 import {araneoPreviewOutline} from './araneo-preview-outline-data.js';
 import {archaeopteryxPreviewOutline} from './archaeopteryx-preview-outline-data.js';
+import {archelonPreviewOutline} from './archelon-preview-outline-data.js';
 
 // This is a curated set of species-specific silhouettes, not a generic body
 // family with per-name noise. Reviewed source illustration sheets were vectorized into
@@ -23,14 +24,14 @@ const tracedOutlines=Object.freeze({...individualOutlines,...predatorOutlines,..
 export const detailedOutlineNames=Object.freeze(Object.keys(tracedOutlines));
 export function hasDetailedOutline(name){return Object.hasOwn(tracedOutlines,name);}
 
-export default function IndividualCreatureLineArt({creature,fallback=null,previewAllo=false,previewAmarga=false,previewAmmonite=false,previewAngler=false,previewAnky=false,previewAraneo=false,previewArchaeopteryx=false}){
+export default function IndividualCreatureLineArt({creature,fallback=null,previewAllo=false,previewAmarga=false,previewAmmonite=false,previewAngler=false,previewAnky=false,previewAraneo=false,previewArchaeopteryx=false,previewArchelon=false}){
  const [art,setArt]=useState({creature:null,url:null});
  useEffect(()=>{
   let alive=true;
   setArt({creature,url:null});
   async function decode(){
    try{
-    const payload=previewArchaeopteryx&&creature==='Archaeopteryx'?archaeopteryxPreviewOutline:previewAraneo&&creature==='Araneo'?araneoPreviewOutline:previewAnky&&creature==='Ankylosaurus'?ankyPreviewOutline:previewAngler&&creature==='Anglerfish'?anglerPreviewOutline:previewAmmonite&&creature==='Ammonite'?ammonitePreviewOutline:previewAmarga&&creature==='Amargasaurus'?amargaPreviewOutline:tracedOutlines[creature];
+    const payload=previewArchelon&&creature==='Archelon'?archelonPreviewOutline:previewArchaeopteryx&&creature==='Archaeopteryx'?archaeopteryxPreviewOutline:previewAraneo&&creature==='Araneo'?araneoPreviewOutline:previewAnky&&creature==='Ankylosaurus'?ankyPreviewOutline:previewAngler&&creature==='Anglerfish'?anglerPreviewOutline:previewAmmonite&&creature==='Ammonite'?ammonitePreviewOutline:previewAmarga&&creature==='Amargasaurus'?amargaPreviewOutline:tracedOutlines[creature];
     if(!payload||typeof DecompressionStream!=='function')return;
     const bytes=Uint8Array.from(atob(payload),c=>c.charCodeAt(0));
     const readable=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
@@ -41,7 +42,7 @@ export default function IndividualCreatureLineArt({creature,fallback=null,previe
   }
   void decode();
   return ()=>{alive=false};
- },[creature,previewAmarga,previewAmmonite,previewAngler,previewAnky,previewAraneo,previewArchaeopteryx]);
+ },[creature,previewAmarga,previewAmmonite,previewAngler,previewAnky,previewAraneo,previewArchaeopteryx,previewArchelon]);
  if(art.creature!==creature||!art.url)return fallback;
  return <div className="cad-illustration cad-detailed-outline" role="img"
   aria-label={creature+' original detailed anatomical contour illustration'}
