@@ -2,7 +2,7 @@ import TameSpawnAtlas from './TameSpawnAtlas.jsx';
 import React,{useEffect,useMemo,useState} from 'react';
 import {ExternalLink,Timer,Crosshair,ShieldCheck,Info,ChevronDown} from 'lucide-react';
 import {maps} from './data';
-import {vanillaKnockoutRoster} from './vanilla-tame-picker.js';
+import {vanillaKnockoutRoster,knockoutPickerCreatures} from './vanilla-tame-picker.js';
 import {availableFoods,calculateTame,knockoutProfiles} from './taming-engine';
 import {knockoutEstimate,knockoutSpecies} from './knockout-engine';
 import {getTamingMethod,tamingCategory} from './special-taming-methods.js';
@@ -30,7 +30,7 @@ export default function TamingLab({rates,onTimer,onNavigate,clusterId='nomadark'
  const [targetTorpor,setTargetTorpor]=useState('');
  const foods=useMemo(()=>availableFoods(creature),[creature]);
  const special=getTamingMethod(creature);
- const matchingCreatures=useMemo(()=>(reviewCreature?[reviewCreature]:vanillaKnockoutRoster).filter(name=>name.toLowerCase().includes(creatureQuery.toLowerCase())),[creatureQuery,reviewCreature]);
+ const matchingCreatures=useMemo(()=>knockoutPickerCreatures(reviewCreature).filter(name=>name.toLowerCase().includes(creatureQuery.toLowerCase())),[creatureQuery,reviewCreature]);
  useEffect(()=>setLongneckBuffPercent(clusterId==='nomadark'?300:100),[clusterId]);
  useEffect(()=>{if(foods.length&&!foods.includes(food))setFood(foods[0]);},[foods,food]);
  const selectedFood=foods.includes(food)?food:(foods[0]||'');
