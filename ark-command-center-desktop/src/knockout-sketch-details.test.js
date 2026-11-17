@@ -26,7 +26,7 @@ test('signatures are knockout-specific, and do not generate fake species detail 
 });
 test('Taming Lab shows curated art inline and always retains creature search',()=>{
  const c=readFileSync(new URL('./TamingLab.jsx',import.meta.url),'utf8');
- assert.match(c,/Search all creatures and variants/);
+ assert.match(c,/Search official creature names/);
  assert.match(c,/CreatureLineArt creature=\{creature\}/);
  assert.doesNotMatch(c,/showRexDossier/);
 });
