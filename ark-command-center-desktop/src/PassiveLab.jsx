@@ -6,7 +6,9 @@ import CreatureLineArt from './CreatureLineArt.jsx';
 import {hasDetailedOutline} from './IndividualCreatureLineArt.jsx';
 import './taming-lab-art.css';
 import {passiveProfiles,passiveFoodPlan} from './passive-taming.js';
-import {passiveRoster,getTamingMethod} from './special-taming-methods.js';
+import {getTamingMethod} from './special-taming-methods.js';
+import {vanillaTamesByMethod} from './vanilla-tame-picker.js';
+const passiveRoster=vanillaTamesByMethod.passive;
 import {wikiFoodOptions} from './taming-engine.js';
 
 const fmt=new Intl.NumberFormat('en-US');
