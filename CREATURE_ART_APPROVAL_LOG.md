@@ -10,6 +10,7 @@ This file tracks the user's explicitly approved individual designs, separately f
 | Amargasaurus | **Review only; not the current approval target** | `amarga-preview-outline-data.js` | Original older preview at `/?artPreview=amarga` remains unapproved |
 | Ammonite | **Review only — not promoted to default** | `ammonite-preview-outline-data.js` | Simplified shell / tentacles at `/?artPreview=ammonite`; preserved separately because approval to promote was not explicit |
 | Anglerfish | **Approved and live** | `angler-preview-outline-data.js` | Approved by user ('Good. Next dino'), promoted to default species illustration; review URL remains usable |
-| Ankylosaurus | **Review only — awaiting approval** | `anky-preview-outline-data.js` | Original armored low-slung Ankylosaurus with layered osteoderms and spiked tail club; website `/?artPreview=anky`; default is unchanged |
+| Ankylosaurus | **Approved and live** | `anky-preview-outline-data.js` | Approved by user (“Looks good. Onto the next”), promoted to default; original preview URL still works |
+| Araneo | **Review only — current review target** | `araneo-preview-outline-data.js` | Bold black-and-white armored spider, theme-tinted vector at `/?artPreview=araneo`; untouched default artwork and full knockout roster |
 
 **Rules:** One creature at a time, alphabetical. Never promote or count a new artwork as approved without the user's review. Don't alter the Taming Lab layout, taming calculations, or other creature artwork as part of this review workflow.
