@@ -18,7 +18,7 @@ import {araneoPreviewOutline} from './araneo-preview-outline-data.js';
 // This is a curated set of species-specific silhouettes, not a generic body
 // family with per-name noise. Reviewed source illustration sheets were vectorized into
 // local, gzipped SVGs and is tinted solely by the currently selected theme.
-const tracedOutlines=Object.freeze({...individualOutlines,...predatorOutlines,...herbOutlines,...herbOutlinesB,...knockoutLineArt1,...knockoutLineArt2,...knockoutCustom14,Achatina:approvedAchatinaOutline,Acrocanthosaurus:acroPreviewOutline,Allosaurus:alloPreviewOutline,Anglerfish:anglerPreviewOutline,Ankylosaurus:ankyPreviewOutline});
+const tracedOutlines=Object.freeze({...individualOutlines,...predatorOutlines,...herbOutlines,...herbOutlinesB,...knockoutLineArt1,...knockoutLineArt2,...knockoutCustom14,Achatina:approvedAchatinaOutline,Acrocanthosaurus:acroPreviewOutline,Allosaurus:alloPreviewOutline,Anglerfish:anglerPreviewOutline,Ankylosaurus:ankyPreviewOutline,Araneo:araneoPreviewOutline});
 export const detailedOutlineNames=Object.freeze(Object.keys(tracedOutlines));
 export function hasDetailedOutline(name){return Object.hasOwn(tracedOutlines,name);}
 
