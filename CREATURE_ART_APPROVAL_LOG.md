@@ -15,8 +15,12 @@ This file tracks the user's explicitly approved individual designs, separately f
 | Archaeopteryx | **Approved and live** | `archaeopteryx-preview-outline-data.js` | User approved (“good. next”); approved feathered proto-bird promoted to default |
 | Archelon | **Approved and live** | `archelon-preview-outline-data.js` | Approved by user ('Good nest'); full sea-turtle woodcut promoted to default in the Passive Taming Lab |
 | Argentavis | **Approved and live** | `argentavis-preview-outline-data.js` | User approved refined standing pose ('Good'); promoted as default with folded wings, natural eye and restrained feather detail |
-| Armadoggo | **Review only — batch 01** | `armadoggo-preview-outline-data.js` | Left-facing four-legged plated canine at `/?artPreview=armadoggo` in Specialty Taming Lab; default unchanged |
-| Arthropluera | **Review only — batch 01** | `arthropluera-preview-outline-data.js` | Segmented centipede with many legs at `/?artPreview=arthropluera` in Passive Taming Lab; default unchanged |
-| Astrocetus | **Review only — batch 01** | `astrocetus-preview-outline-data.js` | Space-whale with broad head, baleen folds and fins at `/?artPreview=astrocetus` in Specialty Taming Lab; default unchanged |
+| Armadoggo | **Skipped at user's request** | `armadoggo-preview-outline-data.js` | Left-facing four-legged plated canine at `/?artPreview=armadoggo` in Specialty Taming Lab; default unchanged |
+| Arthropluera | **Approved and live — batch 01** | `arthropluera-preview-outline-data.js` | Segmented centipede with many legs at `/?artPreview=arthropluera` in Passive Taming Lab; approved artwork promoted to default in the Passive Lab |
+| Astrocetus | **Approved and live — batch 01** | `astrocetus-preview-outline-data.js` | Space-whale with broad head, baleen folds and fins; approved default artwork in Specialty Taming Lab |
+
+| Aureliax | **Review only — batch 02** | `aureliax-preview-svg-data.js` | Official Lost Colony dragon, special gift-and-egg defense method; `/?artPreview=aureliax` in Specialty Lab |
+| Baryonyx | **Review only — batch 02** | `baryonyx-preview-svg-data.js` | Side-profile crocodilian theropod, restrained natural eye, `/?artPreview=baryonyx` in Knockout Lab |
+| Basilisk | **Review only — batch 02** | `basilisk-preview-svg-data.js` | Coiled horned serpent with scales, `/?artPreview=basilisk` in Specialty Lab |
 
 **Rules:** Work in batches of three creatures in strict alphabetical order, preserving individual approvals. Never promote a design until the user approves it. Don't alter the Taming Lab layout, taming calculations, or other creature artwork as part of this review workflow.
