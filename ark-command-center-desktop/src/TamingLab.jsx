@@ -13,8 +13,8 @@ import './taming-lab-art.css';
 const numberFormat=new Intl.NumberFormat('en-US');
 const duration=(seconds)=>{const h=Math.floor(seconds/3600),m=Math.floor(seconds%3600/60),s=seconds%60;return [h?`${h}h`:null,m?`${m}m`:null,`${s}s`].filter(Boolean).join(' ')};
 
-export default function TamingLab({rates,onTimer,onNavigate,clusterId='nomadark',discoveredCreatures=[]}){
- const [creature,setCreature]=useState('Rex');
+export default function TamingLab({rates,onTimer,onNavigate,clusterId='nomadark',discoveredCreatures=[],initialCreature='Rex',artPreview=null}){
+ const [creature,setCreature]=useState(initialCreature);
  const category=tamingCategory(creature);
  const isKnockout=category==='knockout';
  const [creatureQuery,setCreatureQuery]=useState('');
@@ -60,8 +60,8 @@ export default function TamingLab({rates,onTimer,onNavigate,clusterId='nomadark'
      <div className="taming-visual-column">
       <div className={'taming-art-stage'+(creature==='Rex'?' taming-art-rex':'')} aria-label={creature+' creature field sketch'}>
        <span className="taming-art-caption">CREATURE FIELD SKETCH <strong>{creature.toUpperCase()}</strong></span>
-       {creature==='Rex'?<RexArtwork/>:<CreatureLineArt creature={creature}/>}
-       <span className="taming-art-status">{creature==='Rex'||hasDetailedOutline(creature)?'SPECIES LINE ART':'ANATOMY STUDY'}</span>
+       {creature==='Rex'?<RexArtwork/>:<CreatureLineArt creature={creature} previewAcro={artPreview==='acro'}/>}
+       <span className="taming-art-status">{artPreview==='acro'&&creature==='Acrocanthosaurus'?'REVIEW ONLY · NOT FINAL':creature==='Rex'||hasDetailedOutline(creature)?'SPECIES LINE ART':'ANATOMY STUDY'}</span>
       </div>
       <div className="taming-creature-meta"><span><strong>LEVEL</strong> {level||'—'}</span><span><strong>MAP</strong> {map}</span><span><strong>TYPE</strong> {category}</span></div>
      </div>
