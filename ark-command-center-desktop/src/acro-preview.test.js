@@ -13,6 +13,7 @@ import {ankyPreviewOutline} from './anky-preview-outline-data.js';
 import {araneoPreviewOutline} from './araneo-preview-outline-data.js';
 import {archaeopteryxPreviewOutline} from './archaeopteryx-preview-outline-data.js';
 import {archelonPreviewOutline} from './archelon-preview-outline-data.js';
+import {argentavisPreviewOutline} from './argentavis-preview-outline-data.js';
 
 const dir=dirname(fileURLToPath(import.meta.url));
 const read=name=>readFileSync(join(dir,name),'utf8');
@@ -49,7 +50,7 @@ test('Acro and Allo are default; Amargasaurus alone is an opt-in artwork review'
  assert.match(lab,/REVIEW ONLY/);
  assert.match(art,/previewAmarga&&creature==='Amargasaurus'\?amargaPreviewOutline:tracedOutlines\[creature\]/);
  assert.match(renderer,/previewAmarga=\{props\.previewAmarga\}/);
- assert.match(art,/\[creature,previewAmarga,previewAmmonite,previewAngler,previewAnky,previewAraneo,previewArchaeopteryx,previewArchelon\]/);
+ assert.match(art,/\[creature,previewAmarga,previewAmmonite,previewAngler,previewAnky,previewAraneo,previewArchaeopteryx,previewArchelon,previewArgentavis\]/);
  assert.doesNotMatch(app,/page==='dossiers'/);
 });
 test('Ammonite is available only through the dedicated preview URL and is not the default',()=>{
@@ -162,7 +163,7 @@ test('Archelon review asset is a local standalone shell-and-four-flipper SVG',()
  assert.doesNotMatch(svg,/<image\b|(?:href|xlink:href)=/);
 });
 
-test('Archelon review opens Passive Lab with all passive tames retained, never the knockout dropdown',()=>{
+test('Approved Archelon remains default in Passive Lab and its preview URL works',()=>{
  const app=read('main.jsx'),passive=read('PassiveLab.jsx'),knockout=read('TamingLab.jsx'),art=read('IndividualCreatureLineArt.jsx'),renderer=read('CreatureLineArt.jsx');
  assert.match(app,/reviewArchelonArtwork=artworkPreview==='archelon'/);
  assert.match(app,/reviewArchelonArtwork\?'passive':'overview'/);
@@ -171,9 +172,31 @@ test('Archelon review opens Passive Lab with all passive tames retained, never t
  assert.match(passive,/const passiveRoster=vanillaTamesByMethod\.passive/);
  assert.match(passive,/passiveRoster\.filter/);
  assert.match(passive,/previewArchelon=\{artPreview==='archelon'\}/);
- assert.match(passive,/artPreview==='archelon'&&creature==='Archelon'/);
+ assert.doesNotMatch(passive,/artPreview==='archelon'&&creature==='Archelon'/);
  assert.match(art,/previewArchelon&&creature==='Archelon'\?archelonPreviewOutline/);
  assert.match(renderer,/previewArchelon=\{props\.previewArchelon\}/);
- assert.doesNotMatch(art,/Archelon:archelonPreviewOutline/);
+ assert.match(art,/Archelon:archelonPreviewOutline/);
  assert.match(knockout,/knockoutPickerCreatures\(reviewCreature\)/);
+});
+
+
+test('Argentavis preview asset is an original embedded ink vector with wing and talon detail',()=>{
+ const svg=gunzipSync(Buffer.from(argentavisPreviewOutline,'base64')).toString('utf8');
+ assert.match(svg,/^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" viewBox="0 0 1000 660">/);
+ assert.match(svg,/fill-rule="evenodd"/);
+ assert.ok(svg.length>9000,'Retain full feathers, ruff, both wings, talons and tail');
+ assert.doesNotMatch(svg,/<image\b|(?:href|xlink:href)=/);
+});
+
+test('Argentavis review link selects its preview and preserves the full knockout roster',()=>{
+ const app=read('main.jsx'),lab=read('TamingLab.jsx'),art=read('IndividualCreatureLineArt.jsx'),renderer=read('CreatureLineArt.jsx');
+ assert.match(app,/reviewArgentavisArtwork=artworkPreview==='argentavis'/);
+ assert.match(app,/reviewArgentavisArtwork\?'Argentavis'/);
+ assert.match(lab,/artPreview==='argentavis'\?'Argentavis'/);
+ assert.match(lab,/previewArgentavis=\{artPreview==='argentavis'\}/);
+ assert.match(lab,/artPreview==='argentavis'&&creature==='Argentavis'/);
+ assert.match(lab,/knockoutPickerCreatures\(reviewCreature\)\.filter/);
+ assert.match(art,/previewArgentavis&&creature==='Argentavis'\?argentavisPreviewOutline/);
+ assert.match(renderer,/previewArgentavis=\{props\.previewArgentavis\}/);
+ assert.doesNotMatch(art,/Argentavis:argentavisPreviewOutline/);
 });
