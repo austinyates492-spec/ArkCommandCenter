@@ -10,6 +10,7 @@ import {amargaPreviewOutline} from './amarga-preview-outline-data.js';
 import {ammonitePreviewOutline} from './ammonite-preview-outline-data.js';
 import {anglerPreviewOutline} from './angler-preview-outline-data.js';
 import {ankyPreviewOutline} from './anky-preview-outline-data.js';
+import {araneoPreviewOutline} from './araneo-preview-outline-data.js';
 
 const dir=dirname(fileURLToPath(import.meta.url));
 const read=name=>readFileSync(join(dir,name),'utf8');
@@ -46,7 +47,7 @@ test('Acro and Allo are default; Amargasaurus alone is an opt-in artwork review'
  assert.match(lab,/REVIEW ONLY/);
  assert.match(art,/previewAmarga&&creature==='Amargasaurus'\?amargaPreviewOutline:tracedOutlines\[creature\]/);
  assert.match(renderer,/previewAmarga=\{props\.previewAmarga\}/);
- assert.match(art,/\[creature,previewAmarga,previewAmmonite,previewAngler,previewAnky\]/);
+ assert.match(art,/\[creature,previewAmarga,previewAmmonite,previewAngler,previewAnky,previewAraneo\]/);
  assert.doesNotMatch(app,/page==='dossiers'/);
 });
 test('Ammonite is available only through the dedicated preview URL and is not the default',()=>{
@@ -93,15 +94,37 @@ test('Ankylosaurus preview artwork is a local theme-tintable vector with intact 
  assert.doesNotMatch(svg,/<image\b|(?:href|xlink:href)=/);
 });
 
-test('Ankylosaurus review URL preselects Anky without hiding knockout tames or approving art',()=>{
+test('approved Ankylosaurus remains selectable and uses the default artwork',()=>{
  const app=read('main.jsx'),lab=read('TamingLab.jsx'),art=read('IndividualCreatureLineArt.jsx'),renderer=read('CreatureLineArt.jsx');
  assert.match(app,/reviewAnkyArtwork=artworkPreview==='anky'/);
  assert.match(app,/reviewAnkyArtwork\?'Ankylosaurus'/);
  assert.match(lab,/artPreview==='anky'\?'Ankylosaurus'/);
  assert.match(lab,/knockoutPickerCreatures\(reviewCreature\)\.filter/);
  assert.match(lab,/previewAnky=\{artPreview==='anky'\}/);
- assert.match(lab,/artPreview==='anky'&&creature==='Ankylosaurus'/);
+ assert.doesNotMatch(lab,/artPreview==='anky'&&creature==='Ankylosaurus'/);
  assert.match(art,/previewAnky&&creature==='Ankylosaurus'\?ankyPreviewOutline/);
  assert.match(renderer,/previewAnky=\{props\.previewAnky\}/);
- assert.doesNotMatch(art,/Ankylosaurus:ankyPreviewOutline/);
+ assert.match(art,/Ankylosaurus:ankyPreviewOutline/);
+});
+
+
+test('Araneo review artwork is a self-contained, margin-padded ink vector',()=>{
+ const svg=gunzipSync(Buffer.from(araneoPreviewOutline,'base64')).toString('utf8');
+ assert.match(svg,/^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" viewBox="0 0 1000 620"/);
+ assert.match(svg,/fill-rule="evenodd"/);
+ assert.ok(svg.length>12000,'Retain Araneo abdominal plates and articulated legs');
+ assert.doesNotMatch(svg,/<image\b|(?:href|xlink:href)=/);
+});
+
+test('Araneo review route selects its art but keeps the full knockout dropdown and unchanged default',()=>{
+ const app=read('main.jsx'),lab=read('TamingLab.jsx'),art=read('IndividualCreatureLineArt.jsx'),renderer=read('CreatureLineArt.jsx');
+ assert.match(app,/reviewAraneoArtwork=artworkPreview==='araneo'/);
+ assert.match(app,/reviewAraneoArtwork\?'Araneo'/);
+ assert.match(lab,/artPreview==='araneo'\?'Araneo'/);
+ assert.match(lab,/previewAraneo=\{artPreview==='araneo'\}/);
+ assert.match(lab,/artPreview==='araneo'&&creature==='Araneo'/);
+ assert.match(lab,/knockoutPickerCreatures\(reviewCreature\)\.filter/);
+ assert.match(art,/previewAraneo&&creature==='Araneo'\?araneoPreviewOutline/);
+ assert.match(renderer,/previewAraneo=\{props\.previewAraneo\}/);
+ assert.doesNotMatch(art,/Araneo:araneoPreviewOutline/);
 });
