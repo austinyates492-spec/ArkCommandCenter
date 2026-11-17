@@ -13,7 +13,7 @@ import {specialtyAmmoOptions,estimateSpecialtyKnockout,specialtyFeeding,specialt
 const fmt=new Intl.NumberFormat('en-US');
 function period(seconds){const m=Math.round(seconds/60);return m>=60?`${Math.floor(m/60)}h ${m%60}m`:`${m}m`;}
 
-export default function SpecialtyLab({rates,onTimer,selectedCreature}){
+export default function SpecialtyLab({rates,onTimer,selectedCreature,artPreview=null}){
  const [creature,setCreature]=useState(()=>specialtyRoster.includes(selectedCreature)?selectedCreature:specialtyRoster.includes('Karkinos')?'Karkinos':specialtyRoster[0]);
  useEffect(()=>{if(specialtyRoster.includes(selectedCreature))setCreature(selectedCreature)},[selectedCreature]);
  const [query,setQuery]=useState('');
@@ -64,8 +64,8 @@ export default function SpecialtyLab({rates,onTimer,selectedCreature}){
    <section className="panel"><div className="panelhead"><h2>Specialty Loadout</h2><span className={`badge ${method?.status==='documented'?'green':'gold'}`}>{method?.type||'Review needed'}</span></div>
     <div className="taming-art-stage" aria-label={creature+' detailed anatomical field sketch'}>
     <span className="taming-art-caption">CREATURE FIELD SKETCH <strong>{creature.toUpperCase()}</strong></span>
-    <CreatureLineArt creature={creature}/>
-    <span className="taming-art-status">{hasDetailedOutline(creature)?'TRACED SPECIES ART':'STYLIZED ANATOMICAL STUDY'}</span>
+    <CreatureLineArt creature={creature} previewArmadoggo={artPreview==='armadoggo'} previewAstrocetus={artPreview==='astrocetus'}/>
+    <span className="taming-art-status">{((artPreview==='armadoggo'&&creature==='Armadoggo')||(artPreview==='astrocetus'&&creature==='Astrocetus'))?'REVIEW ONLY · NOT FINAL':hasDetailedOutline(creature)?'TRACED SPECIES ART':'STYLIZED ANATOMICAL STUDY'}</span>
    </div>
     <div className="keyrow"><span>Creature</span><strong>{creature}</strong></div>
     <div className="keyrow"><span>Level</span><strong>{level}</strong></div>
