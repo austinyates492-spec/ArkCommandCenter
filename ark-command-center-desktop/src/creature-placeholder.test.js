@@ -4,7 +4,7 @@ import {readFileSync} from 'node:fs';
 
 test('knockout Taming Lab renders creature-specific outline while preserving search and calculations',()=>{
  const source=readFileSync(new URL('TamingLab.jsx',import.meta.url),'utf8');
- assert.match(source,/Search all creatures and variants/);
+ assert.match(source,/Search official creature names/);
  assert.match(source,/CreatureLineArt creature=\{creature\}/);
  assert.match(source,/RexArtwork/);
  assert.doesNotMatch(source,/Dinosaur illustration placeholder/);
