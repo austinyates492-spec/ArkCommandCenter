@@ -7,6 +7,7 @@ import {dirname,join} from 'node:path';
 import {acroPreviewOutline} from './acro-preview-outline-data.js';
 import {alloPreviewOutline} from './allo-preview-outline-data.js';
 import {amargaPreviewOutline} from './amarga-preview-outline-data.js';
+import {ammonitePreviewOutline} from './ammonite-preview-outline-data.js';
 
 const dir=dirname(fileURLToPath(import.meta.url));
 const read=name=>readFileSync(join(dir,name),'utf8');
@@ -43,6 +44,20 @@ test('Acro and Allo are default; Amargasaurus alone is an opt-in artwork review'
  assert.match(lab,/REVIEW ONLY/);
  assert.match(art,/previewAmarga&&creature==='Amargasaurus'\?amargaPreviewOutline:tracedOutlines\[creature\]/);
  assert.match(renderer,/previewAmarga=\{props\.previewAmarga\}/);
- assert.match(art,/\[creature,previewAmarga\]/);
+ assert.match(art,/\[creature,previewAmarga,previewAmmonite\]/);
  assert.doesNotMatch(app,/page==='dossiers'/);
+});
+test('Ammonite is available only through the dedicated preview URL and is not the default',()=>{
+ const svg=gunzipSync(Buffer.from(ammonitePreviewOutline,'base64')).toString('utf8');
+ assert.match(svg,/<svg xmlns="http:\/\/www.w3.org\/2000\/svg" viewBox="0 0 900 560"/);
+ assert.match(svg,/fill-rule="evenodd"/);
+ assert.ok(svg.length>7500,'Retain distinct shell ribs and tentacles');
+ assert.doesNotMatch(svg,/<image\b|\bhref=/);
+ const app=read('main.jsx'),lab=read('TamingLab.jsx'),art=read('IndividualCreatureLineArt.jsx'),renderer=read('CreatureLineArt.jsx');
+ assert.match(app,/reviewAmmoniteArtwork=artworkPreview==='ammonite'/);
+ assert.match(app,/reviewAmmoniteArtwork\?'Ammonite'/);
+ assert.match(lab,/artPreview==='ammonite'&&creature==='Ammonite'/);
+ assert.match(art,/previewAmmonite&&creature==='Ammonite'\?ammonitePreviewOutline/);
+ assert.match(renderer,/previewAmmonite=\{props\.previewAmmonite\}/);
+ assert.doesNotMatch(art,/Ammonite:ammonitePreviewOutline/);
 });
