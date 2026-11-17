@@ -1,6 +1,7 @@
 import {asaBaseCreatures} from './asa-official-catalog.js';
 import {breedingVariants} from './breeding-variants.js';
 import {tameCreatures} from './data.js';
+import asaMethods from './asa-taming-methods.json' with {type:'json'};
 import {getTamingMethod,tamingCategory} from './special-taming-methods.js';
 
 // The live wiki catalog is discovery-only. It must not add modded, unreleased,
@@ -21,3 +22,15 @@ export const vanillaTamesByMethod=Object.freeze({
  passive:Object.freeze(vanillaTameRoster.filter(name=>tamingCategory(name)==='passive')),
  specialty:Object.freeze(vanillaTameRoster.filter(name=>tamingCategory(name)==='specialty'))
 });
+
+// Taming Lab must show EVERY official knockout-method entry, including heavy
+// / special knockouts (e.g. Karkinos or post-v97 Giganotosaurus).
+// Displaying a species here does not authorize ordinary tranquilizer math;
+// the individual calculator still delegates non-standard encounters.
+export const vanillaKnockoutRoster=Object.freeze(tameCreatures.filter(name=>{
+ const base=breedingVariants[name]||name;
+ if(!officialBaseNames.has(base))return false;
+ const methods=asaMethods[name]?.methods||asaMethods[base]?.methods||[];
+ if(!methods.includes('knockout')||methods.includes('untameable'))return false;
+ return !unavailableStatuses.has(getTamingMethod(name)?.status);
+}));
