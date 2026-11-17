@@ -34,7 +34,7 @@ test('predator images are theme-colored in existing searchable labs, not a dossi
  assert.match(art,/maskImage/);
  assert.match(art,/WebkitMaskImage/);
  assert.match(art,/art\.creature!==creature/);
- assert.match(lab,/Search official creature names/);
+ assert.match(lab,/Search all knockout creatures and variants/);
  assert.match(lab,/CreatureLineArt creature=\{creature\}/);
  assert.match(specialty,/CreatureLineArt creature=\{creature\}/);
  assert.doesNotMatch(root,/\['dossiers','Creature Dossiers'/);
