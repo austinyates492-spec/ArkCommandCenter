@@ -80,6 +80,8 @@ export const specialMethods={
 
 export function tamingCategory(creature){
  const parent=breedingVariants[creature]||creature;
+ // Official ASA Archelon is torpor-immune and must be fed passively.
+ if(parent==='Archelon')return 'passive';
  if(specialMethods[creature]||specialMethods[parent])return 'specialty';
  if(passiveProfiles[creature]||passiveProfiles[parent])return 'passive';
  if(wikiCreatureRecord(creature)?.nonViolentTame)return 'passive';
