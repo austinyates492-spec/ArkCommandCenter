@@ -11,6 +11,7 @@ import {ammonitePreviewOutline} from './ammonite-preview-outline-data.js';
 import {anglerPreviewOutline} from './angler-preview-outline-data.js';
 import {ankyPreviewOutline} from './anky-preview-outline-data.js';
 import {araneoPreviewOutline} from './araneo-preview-outline-data.js';
+import {archaeopteryxPreviewOutline} from './archaeopteryx-preview-outline-data.js';
 
 const dir=dirname(fileURLToPath(import.meta.url));
 const read=name=>readFileSync(join(dir,name),'utf8');
@@ -47,7 +48,7 @@ test('Acro and Allo are default; Amargasaurus alone is an opt-in artwork review'
  assert.match(lab,/REVIEW ONLY/);
  assert.match(art,/previewAmarga&&creature==='Amargasaurus'\?amargaPreviewOutline:tracedOutlines\[creature\]/);
  assert.match(renderer,/previewAmarga=\{props\.previewAmarga\}/);
- assert.match(art,/\[creature,previewAmarga,previewAmmonite,previewAngler,previewAnky,previewAraneo\]/);
+ assert.match(art,/\[creature,previewAmarga,previewAmmonite,previewAngler,previewAnky,previewAraneo,previewArchaeopteryx\]/);
  assert.doesNotMatch(app,/page==='dossiers'/);
 });
 test('Ammonite is available only through the dedicated preview URL and is not the default',()=>{
@@ -116,15 +117,37 @@ test('Araneo review artwork is a self-contained, margin-padded ink vector',()=>{
  assert.doesNotMatch(svg,/<image\b|(?:href|xlink:href)=/);
 });
 
-test('Araneo review route selects its art but keeps the full knockout dropdown and unchanged default',()=>{
+test('approved Araneo is the default art and legacy review route leaves knockout dropdown intact',()=>{
  const app=read('main.jsx'),lab=read('TamingLab.jsx'),art=read('IndividualCreatureLineArt.jsx'),renderer=read('CreatureLineArt.jsx');
  assert.match(app,/reviewAraneoArtwork=artworkPreview==='araneo'/);
  assert.match(app,/reviewAraneoArtwork\?'Araneo'/);
  assert.match(lab,/artPreview==='araneo'\?'Araneo'/);
  assert.match(lab,/previewAraneo=\{artPreview==='araneo'\}/);
- assert.match(lab,/artPreview==='araneo'&&creature==='Araneo'/);
+ assert.doesNotMatch(lab,/artPreview==='araneo'&&creature==='Araneo'/);
  assert.match(lab,/knockoutPickerCreatures\(reviewCreature\)\.filter/);
  assert.match(art,/previewAraneo&&creature==='Araneo'\?araneoPreviewOutline/);
  assert.match(renderer,/previewAraneo=\{props\.previewAraneo\}/);
- assert.doesNotMatch(art,/Araneo:araneoPreviewOutline/);
+ assert.match(art,/Araneo:araneoPreviewOutline/);
+});
+
+
+test('Archaeopteryx review asset is an embedded original feathered-dinosaur vector',()=>{
+ const svg=gunzipSync(Buffer.from(archaeopteryxPreviewOutline,'base64')).toString('utf8');
+ assert.match(svg,/^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" viewBox="0 0 1000 620">/);
+ assert.match(svg,/fill-rule="evenodd"/);
+ assert.ok(svg.length>11000,'Preserve toothed head, feathered wings, primitive claws and long tail');
+ assert.doesNotMatch(svg,/<image\b|(?:href|xlink:href)=/);
+});
+
+test('Archaeopteryx review route preselects art and retains all knockout tames',()=>{
+ const app=read('main.jsx'),lab=read('TamingLab.jsx'),art=read('IndividualCreatureLineArt.jsx'),renderer=read('CreatureLineArt.jsx');
+ assert.match(app,/reviewArchaeopteryxArtwork=artworkPreview==='archaeopteryx'/);
+ assert.match(app,/reviewArchaeopteryxArtwork\?'Archaeopteryx'/);
+ assert.match(lab,/artPreview==='archaeopteryx'\?'Archaeopteryx'/);
+ assert.match(lab,/previewArchaeopteryx=\{artPreview==='archaeopteryx'\}/);
+ assert.match(lab,/artPreview==='archaeopteryx'&&creature==='Archaeopteryx'/);
+ assert.match(lab,/knockoutPickerCreatures\(reviewCreature\)\.filter/);
+ assert.match(art,/previewArchaeopteryx&&creature==='Archaeopteryx'\?archaeopteryxPreviewOutline/);
+ assert.match(renderer,/previewArchaeopteryx=\{props\.previewArchaeopteryx\}/);
+ assert.doesNotMatch(art,/Archaeopteryx:archaeopteryxPreviewOutline/);
 });
