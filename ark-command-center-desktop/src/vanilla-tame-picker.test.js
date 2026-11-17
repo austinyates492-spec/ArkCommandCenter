@@ -61,7 +61,7 @@ test('Taming Lab is dedicated to knockout tames; passive and specialty remain in
 test('all artwork preview routes preserve the entire knockout picker, with only review exceptions added',()=>{
  const normal=knockoutPickerCreatures();
  assert.deepEqual(normal,vanillaKnockoutRoster);
- for(const creature of ['Anglerfish','Ankylosaurus','Araneo','Ammonite','Amargasaurus']){
+ for(const creature of ['Anglerfish','Ankylosaurus','Araneo','Archaeopteryx','Ammonite','Amargasaurus']){
   const preview=knockoutPickerCreatures(creature);
   assert.ok(preview.includes(creature),creature+' must remain available for review');
   for(const knockout of vanillaKnockoutRoster)assert.ok(preview.includes(knockout),creature+' preview hid '+knockout);
