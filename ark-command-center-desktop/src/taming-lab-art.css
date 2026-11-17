@@ -216,3 +216,22 @@
  .taming-workspace .taming-sibling-panel .panelhead .badge{max-width:60%}
  .taming-workspace .taming-sibling-panel .taming-ko-headline strong{font-size:29px}
 }
+
+/* One Taming Lab hub, three method tabs. Same on desktop, app and mobile. */
+.taming-hub{min-width:0}
+.taming-mode-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 22px;padding:7px;border:1px solid var(--ark-line,#30484b);border-radius:16px;background:color-mix(in srgb,var(--ark-deep,#0d171c) 84%,transparent);box-shadow:0 7px 24px rgba(0,0,0,.13)}
+.taming-mode-tab{display:flex;justify-content:center;align-items:center;gap:12px;min-width:0;min-height:62px;padding:12px 10px;border:1px solid transparent;border-radius:11px;background:transparent;color:var(--ark-muted,#a2bbb4);font-size:clamp(12px,1.05vw,16px);font-weight:750;letter-spacing:-.01em;line-height:1.25;transition:border-color .16s,background .16s,color .16s,box-shadow .16s}
+.taming-mode-tab svg{flex:none;opacity:.83}
+.taming-mode-tab:hover{border-color:color-mix(in srgb,var(--ark-accent,#5de2ac) 45%,transparent);background:color-mix(in srgb,var(--ark-accent,#5de2ac) 11%,transparent);color:var(--ark-heading,#e7f6ee)}
+.taming-mode-tab.active{border-color:color-mix(in srgb,var(--ark-accent,#5de2ac) 70%,transparent);background:linear-gradient(145deg,color-mix(in srgb,var(--ark-accent,#5de2ac) 23%,var(--ark-deep,#0d171c)),color-mix(in srgb,var(--ark-accent,#5de2ac) 10%,var(--ark-deep,#0d171c)));box-shadow:inset 0 -3px var(--ark-accent,#5de2ac),0 2px 16px color-mix(in srgb,var(--ark-accent,#5de2ac) 10%,transparent);color:var(--ark-heading,#edf9f2)}
+.taming-mode-tab.active svg{color:var(--ark-accent,#5de2ac);opacity:1}
+.taming-mode-tab:focus-visible{outline:3px solid var(--ark-accent,#5de2ac);outline-offset:3px}
+.taming-mode-panel{min-width:0}
+@media(max-width:700px){
+ .taming-mode-tabs{gap:5px;padding:5px;margin-bottom:15px;border-radius:12px}
+ .taming-mode-tab{flex-direction:column;gap:5px;min-height:66px;padding:9px 4px;font-size:10px;text-align:center;border-radius:8px}
+ .taming-mode-tab svg{width:20px;height:20px}
+}
+@media(max-width:390px){
+ .taming-mode-tab{font-size:9px;letter-spacing:-.02em}
+}
