@@ -8,6 +8,7 @@ This file tracks the user's explicitly approved individual designs, separately f
 | Acrocanthosaurus | Approved and live | `acro-preview-outline-data.js` | Approved from website preview |
 | Allosaurus | Approved and live in v0.8.37 | `allo-preview-outline-data.js` | Promoted from review-only preview as explicitly requested |
 | Amargasaurus | **Review only; not the current approval target** | `amarga-preview-outline-data.js` | Original older preview at `/?artPreview=amarga` remains unapproved |
-| Ammonite | **Review only — awaiting approval** | `ammonite-preview-outline-data.js` | Simplified spiral-shell / flowing-tentacle woodcut at `/?artPreview=ammonite`; Ammonite is not a tame, so it is accessible only in review mode |
+| Ammonite | **Review only — not promoted to default** | `ammonite-preview-outline-data.js` | Simplified shell / tentacles at `/?artPreview=ammonite`; preserved separately because approval to promote was not explicit |
+| Anglerfish | **Review only — current review target** | `angler-preview-outline-data.js` | Original high-contrast three-lure, tooth-lined Anglerfish woodcut at `/?artPreview=angler`; existing tame and artwork defaults unchanged |
 
 **Rules:** One creature at a time, alphabetical. Never promote or count a new artwork as approved without the user's review. Don't alter the Taming Lab layout, taming calculations, or other creature artwork as part of this review workflow.
