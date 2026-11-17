@@ -50,7 +50,7 @@ test('Taming Lab is dedicated to knockout tames; passive and specialty remain in
  assert.match(lab,/matchingCreatures\.map/);
  assert.doesNotMatch(lab,/Taming type|changeTamingMethod|vanillaTamesByMethod\[tamingMethod\]/);
  assert.doesNotMatch(lab,/\.\.\.discoveredCreatures/);
- assert.match(lab,/reviewCreature=artPreview==='ammonite'\?'Ammonite'/);
+ assert.match(lab,/artPreview==='ammonite'\?'Ammonite'/);
  assert.match(lab,/isKnockout\?calculateTame/);
  assert.match(lab,/isKnockout\?knockoutEstimate/);
  assert.doesNotMatch(app,/discoveredCreatures=\{catalog\.creatures\}/);
