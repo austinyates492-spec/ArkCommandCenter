@@ -1,5 +1,11 @@
 name: Validate ArkTribeHQ Calculator & Responsive Changes
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'ark-command-center-desktop/**'
+      - 'ark-command-center-api/**'
+      - '.github/workflows/validate-app.yml'
   pull_request:
     branches: [main]
     paths:
