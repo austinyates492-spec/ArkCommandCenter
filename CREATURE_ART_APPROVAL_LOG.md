@@ -13,6 +13,7 @@ This file tracks the user's explicitly approved individual designs, separately f
 | Ankylosaurus | **Approved and live** | `anky-preview-outline-data.js` | Approved by user (“Looks good. Onto the next”), promoted to default; original preview URL still works |
 | Araneo | **Approved and live** | `araneo-preview-outline-data.js` | User approved ('Looks good. Next'); original Araneo woodcut promoted to default artwork |
 | Archaeopteryx | **Approved and live** | `archaeopteryx-preview-outline-data.js` | User approved (“good. next”); approved feathered proto-bird promoted to default |
-| Archelon | **Review only — current review target** | `archelon-preview-outline-data.js` | Sea turtle with three ridged carapace lines and four flippers, at `/?artPreview=archelon` in Passive Taming Lab; default art unchanged |
+| Archelon | **Approved and live** | `archelon-preview-outline-data.js` | Approved by user ('Good nest'); full sea-turtle woodcut promoted to default in the Passive Taming Lab |
+| Argentavis | **Review only — current review target** | `argentavis-preview-outline-data.js` | Broad-winged raptor, hooked beak, feather ruff, gripping talons, fanned tail at `/?artPreview=argentavis` in Knockout Taming Lab |
 
 **Rules:** One creature at a time, alphabetical. Never promote or count a new artwork as approved without the user's review. Don't alter the Taming Lab layout, taming calculations, or other creature artwork as part of this review workflow.
