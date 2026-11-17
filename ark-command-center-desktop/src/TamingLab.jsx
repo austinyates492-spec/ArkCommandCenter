@@ -15,7 +15,7 @@ const numberFormat=new Intl.NumberFormat('en-US');
 const duration=(seconds)=>{const h=Math.floor(seconds/3600),m=Math.floor(seconds%3600/60),s=seconds%60;return [h?`${h}h`:null,m?`${m}m`:null,`${s}s`].filter(Boolean).join(' ')};
 
 export default function TamingLab({rates,onTimer,onNavigate,clusterId='nomadark',initialCreature='Rex',artPreview=null}){
- const reviewCreature=artPreview==='argentavis'?'Argentavis':artPreview==='archaeopteryx'?'Archaeopteryx':artPreview==='araneo'?'Araneo':artPreview==='anky'?'Ankylosaurus':artPreview==='angler'?'Anglerfish':artPreview==='ammonite'?'Ammonite':artPreview==='amarga'?'Amargasaurus':null;
+ const reviewCreature=artPreview==='baryonyx'?'Baryonyx':artPreview==='argentavis'?'Argentavis':artPreview==='archaeopteryx'?'Archaeopteryx':artPreview==='araneo'?'Araneo':artPreview==='anky'?'Ankylosaurus':artPreview==='angler'?'Anglerfish':artPreview==='ammonite'?'Ammonite':artPreview==='amarga'?'Amargasaurus':null;
  const [creature,setCreature]=useState(initialCreature);
  const category=tamingCategory(creature);
  const isKnockout=category==='knockout';
@@ -61,8 +61,8 @@ export default function TamingLab({rates,onTimer,onNavigate,clusterId='nomadark'
      <div className="taming-visual-column">
       <div className={'taming-art-stage'+(creature==='Rex'?' taming-art-rex':'')} aria-label={creature+' creature field sketch'}>
        <span className="taming-art-caption">CREATURE FIELD SKETCH <strong>{creature.toUpperCase()}</strong></span>
-       {creature==='Rex'?<RexArtwork/>:<CreatureLineArt creature={creature} previewAllo={artPreview==='allo'} previewAmarga={artPreview==='amarga'} previewAmmonite={artPreview==='ammonite'} previewAngler={artPreview==='angler'} previewAnky={artPreview==='anky'} previewAraneo={artPreview==='araneo'} previewArchaeopteryx={artPreview==='archaeopteryx'} previewArgentavis={artPreview==='argentavis'}/>}
-       <span className="taming-art-status">{((artPreview==='amarga'&&creature==='Amargasaurus')||(artPreview==='ammonite'&&creature==='Ammonite'))?'REVIEW ONLY · NOT FINAL':creature==='Rex'||hasDetailedOutline(creature)?'SPECIES LINE ART':'ANATOMY STUDY'}</span>
+       {creature==='Rex'?<RexArtwork/>:<CreatureLineArt creature={creature} previewAllo={artPreview==='allo'} previewAmarga={artPreview==='amarga'} previewAmmonite={artPreview==='ammonite'} previewAngler={artPreview==='angler'} previewAnky={artPreview==='anky'} previewAraneo={artPreview==='araneo'} previewArchaeopteryx={artPreview==='archaeopteryx'} previewArgentavis={artPreview==='argentavis'} previewBaryonyx={artPreview==='baryonyx'}/>}
+       <span className="taming-art-status">{((artPreview==='amarga'&&creature==='Amargasaurus')||(artPreview==='ammonite'&&creature==='Ammonite')||(artPreview==='baryonyx'&&creature==='Baryonyx'))?'REVIEW ONLY · NOT FINAL':creature==='Rex'||hasDetailedOutline(creature)?'SPECIES LINE ART':'ANATOMY STUDY'}</span>
       </div>
       <div className="taming-creature-meta"><span><strong>LEVEL</strong> {level||'—'}</span><span><strong>MAP</strong> {map}</span><span><strong>TYPE</strong> {category}</span></div>
      </div>
