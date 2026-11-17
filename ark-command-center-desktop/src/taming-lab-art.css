@@ -195,3 +195,24 @@
  }
  .taming-workspace .taming-combined-panel .taming-plan-content{padding-left:0}
 }
+
+/* Unified artwork-first layouts for Passive and Specialty Taming Labs.
+   The two workspaces share the Knockout Taming Lab's responsive columns. */
+.taming-workspace .taming-sibling-panel{min-width:0;align-self:stretch}
+.taming-workspace .taming-sibling-panel .panelhead{align-items:flex-start}
+.taming-workspace .taming-sibling-panel .panelhead .badge{max-width:52%;white-space:normal;text-align:right;overflow-wrap:anywhere}
+.taming-workspace .taming-sibling-panel .taming-ko-headline{margin-top:8px}
+.taming-workspace .taming-sibling-panel .taming-ko-headline strong{font-size:clamp(25px,2.4vw,38px)}
+.taming-workspace .taming-sibling-panel>.field{margin:10px 0 0;min-width:0}
+.taming-workspace .taming-sibling-panel .taming-compact-fields{margin-top:12px}
+.taming-workspace .taming-sibling-panel .taming-compact-fields>.field{min-width:0}
+.taming-workspace .taming-sibling-panel .taming-method-visual{margin-top:12px;margin-bottom:11px}
+.taming-workspace .taming-sibling-panel .taming-method-visual h3{font-size:15px}
+.taming-workspace .taming-sibling-panel .taming-method-visual p{overflow-wrap:anywhere}
+.taming-workspace .taming-sibling-panel .taming-plan-notes{margin-top:12px}
+.taming-workspace .taming-specialty-type{margin-top:12px}
+.taming-workspace .taming-specialty-type p{overflow-wrap:anywhere}
+@media(max-width:600px){
+ .taming-workspace .taming-sibling-panel .panelhead .badge{max-width:60%}
+ .taming-workspace .taming-sibling-panel .taming-ko-headline strong{font-size:29px}
+}
