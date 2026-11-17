@@ -44,7 +44,7 @@ test('all-creature search retains category-safe calculators and opens correct se
  assert.match(lab,/isKnockout&&!special&&<section className="panel knockout-panel taming-knockout-card"/);
  assert.match(lab,/onNavigate\?\.\(category==='passive'\?'passive':'specialty',creature\)/);
  assert.match(app,/openCreaturePlanner/);
- assert.match(app,/selectedCreature=\{crossLabCreature\}/);
+ assert.match(app,/selectedCreature=\{reviewArmadoggoArtwork\?'Armadoggo':reviewAstrocetusArtwork\?'Astrocetus':crossLabCreature\}/);
  assert.doesNotMatch(app,/page==='dossiers'/);
  for(const file of ['PassiveLab.jsx','SpecialtyLab.jsx']){
   const src=read(file);
