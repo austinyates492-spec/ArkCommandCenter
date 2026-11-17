@@ -89,8 +89,8 @@ jobs:
         if: github.event_name == 'push' && startsWith(github.event.head_commit.message, 'release:')
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v0.8.33
-          name: ArkTribeHQ v0.8.33 - Linked Spawn Atlas and 40 New Art Studies
+          tag_name: v0.8.34
+          name: ArkTribeHQ v0.8.34 - Approved Achatina Field Sketch
           body: |
             Taming, Passive Taming, and Specialty Taming pages now show the
             map selected by the user and its currently selected creature.

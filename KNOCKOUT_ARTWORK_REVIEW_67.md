@@ -1,6 +1,6 @@
 # ARK Tribe HQ — 67 Pending Knockout Artwork Verification
 
-**Version:** v0.8.33. **Status:** 18 existing illustrations repaired for bleed; 40 additional species now have isolated artwork assets; 9 historical entries remain. All art requires in-app visual approval.
+**Version:** v0.8.34. **Status:** 18 existing illustrations repaired for bleed; 40 additional species now have isolated artwork assets; 9 historical entries remain. All art requires in-app visual approval.
 
 The historical artwork backlog includes some methods handled as passive/specialty in the actual app. Do not change the runtime taming classifier to match this artwork grouping.
 
@@ -47,7 +47,7 @@ All 40 have individual SVG source assets, separated and surrounded with clear ma
 - [ ] **Sarcosuchus** — individually isolated ink-study drawing integrated; **pending visual acceptance**
 - [ ] **Kaprosuchus** — individually isolated ink-study drawing integrated; **pending visual acceptance**
 - [ ] **Xiphactinus** — individually isolated ink-study drawing integrated; **pending visual acceptance**
-- [ ] **Achatina** — individually isolated ink-study drawing integrated; **pending visual acceptance**
+- [ ] **Achatina** — **v0.8.34 replacement** uses the individually approved bold woodcut illustration; design approved by user, **website and mobile appearance still awaiting user verification**. Replaces the prior sheet-cropped version with a single-creature SVG mask.
 - [ ] **Archaeopteryx** — individually isolated ink-study drawing integrated; **pending visual acceptance**
 - [ ] **Beelzebufo** — individually isolated ink-study drawing integrated; **pending visual acceptance**
 - [ ] **Bison** — individually isolated ink-study drawing integrated; **pending visual acceptance**
