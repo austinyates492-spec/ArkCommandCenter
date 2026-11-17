@@ -49,8 +49,8 @@ function App(){
  const startingRates=ratesForPreset(DEFAULT_CLUSTER_ID,defaults);
  const [crossLabCreature,setCrossLabCreature]=useState(null);
  const artworkPreview=typeof window!=='undefined'?new URLSearchParams(window.location.search).get('artPreview'):null;
- const reviewAlloArtwork=artworkPreview==='allo',reviewAmargaArtwork=artworkPreview==='amarga',reviewAmmoniteArtwork=artworkPreview==='ammonite',reviewAnglerArtwork=artworkPreview==='angler',reviewAnkyArtwork=artworkPreview==='anky',reviewAraneoArtwork=artworkPreview==='araneo',reviewArchaeopteryxArtwork=artworkPreview==='archaeopteryx',reviewOldAcroLink=artworkPreview==='acro';
- const [page,setPage]=useState(reviewAlloArtwork||reviewAmargaArtwork||reviewAmmoniteArtwork||reviewAnglerArtwork||reviewAnkyArtwork||reviewAraneoArtwork||reviewArchaeopteryxArtwork||reviewOldAcroLink?'taming':'overview'),[savedRates,setRates]=useStored('ark.rates',startingRates),[customRates,setCustomRates]=useStored('ark.customRates',startingRates),[servers,setServers]=useState([]),[theme,setTheme]=useStored('ark.theme','red'),[clusterId,setClusterId]=useStored('ark.clusterId',DEFAULT_CLUSTER_ID),[now,setNow]=useState(Date.now());
+ const reviewAlloArtwork=artworkPreview==='allo',reviewAmargaArtwork=artworkPreview==='amarga',reviewAmmoniteArtwork=artworkPreview==='ammonite',reviewAnglerArtwork=artworkPreview==='angler',reviewAnkyArtwork=artworkPreview==='anky',reviewAraneoArtwork=artworkPreview==='araneo',reviewArchaeopteryxArtwork=artworkPreview==='archaeopteryx',reviewArchelonArtwork=artworkPreview==='archelon',reviewOldAcroLink=artworkPreview==='acro';
+ const [page,setPage]=useState(reviewAlloArtwork||reviewAmargaArtwork||reviewAmmoniteArtwork||reviewAnglerArtwork||reviewAnkyArtwork||reviewAraneoArtwork||reviewArchaeopteryxArtwork||reviewOldAcroLink?'taming':reviewArchelonArtwork?'passive':'overview'),[savedRates,setRates]=useStored('ark.rates',startingRates),[customRates,setCustomRates]=useStored('ark.customRates',startingRates),[servers,setServers]=useState([]),[theme,setTheme]=useStored('ark.theme','red'),[clusterId,setClusterId]=useStored('ark.clusterId',DEFAULT_CLUSTER_ID),[now,setNow]=useState(Date.now());
  useEffect(()=>{if(!themeIds.includes(theme))setTheme('red')},[theme,setTheme]);
  // Keep the first-paint animation in sync with cloud-hydrated and manually selected themes.
  useEffect(()=>{if(themeIds.includes(theme))window.dispatchEvent(new CustomEvent('ark:theme-changed',{detail:theme}))},[theme]);
@@ -135,7 +135,7 @@ function App(){
    {!isDesktopApp&&<AdPlacement placement="overview"/>}</>}
   {page==='taming'&&<TamingLab rates={rates} onTimer={addTimer} onNavigate={openCreaturePlanner} clusterId={clusterId} initialCreature={reviewArchaeopteryxArtwork?'Archaeopteryx':reviewAraneoArtwork?'Araneo':reviewAnkyArtwork?'Ankylosaurus':reviewAnglerArtwork?'Anglerfish':reviewAmmoniteArtwork?'Ammonite':reviewAmargaArtwork?'Amargasaurus':reviewAlloArtwork?'Allosaurus':reviewOldAcroLink?'Acrocanthosaurus':undefined} artPreview={reviewArchaeopteryxArtwork?'archaeopteryx':reviewAraneoArtwork?'araneo':reviewAnkyArtwork?'anky':reviewAnglerArtwork?'angler':reviewAmmoniteArtwork?'ammonite':reviewAmargaArtwork?'amarga':null}/>}
   {page==='specialty'&&<SpecialtyLab rates={rates} onTimer={addTimer} selectedCreature={crossLabCreature} clusterId={clusterId}/>}
-  {page==='passive'&&<PassiveLab rates={rates} onTimer={addTimer} selectedCreature={crossLabCreature} clusterId={clusterId}/>}
+  {page==='passive'&&<PassiveLab rates={rates} onTimer={addTimer} selectedCreature={reviewArchelonArtwork?'Archelon':crossLabCreature} artPreview={reviewArchelonArtwork?'archelon':null} clusterId={clusterId}/>}
   {page==='breeding'&&<BreedingLab rates={rates} onTimer={addTimer} clusterId={clusterId}/>}
   {page==='servers'&&<ServerIntelPage live={live} user={cloud.user} servers={servers} onOpenAccount={()=>setPage('cloud')}/>}
   {page==='maps'&&<SpawnPage/>}
