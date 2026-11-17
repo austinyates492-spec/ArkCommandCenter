@@ -9,22 +9,23 @@ import {knockoutCustom14} from './knockout-custom-14.js';
 import {approvedAchatinaOutline} from './achatina-approved-data.js';
 import {acroPreviewOutline} from './acro-preview-outline-data.js';
 import {alloPreviewOutline} from './allo-preview-outline-data.js';
+import {amargaPreviewOutline} from './amarga-preview-outline-data.js';
 
 // This is a curated set of species-specific silhouettes, not a generic body
 // family with per-name noise. Reviewed source illustration sheets were vectorized into
 // local, gzipped SVGs and is tinted solely by the currently selected theme.
-const tracedOutlines=Object.freeze({...individualOutlines,...predatorOutlines,...herbOutlines,...herbOutlinesB,...knockoutLineArt1,...knockoutLineArt2,...knockoutCustom14,Achatina:approvedAchatinaOutline,Acrocanthosaurus:acroPreviewOutline});
+const tracedOutlines=Object.freeze({...individualOutlines,...predatorOutlines,...herbOutlines,...herbOutlinesB,...knockoutLineArt1,...knockoutLineArt2,...knockoutCustom14,Achatina:approvedAchatinaOutline,Acrocanthosaurus:acroPreviewOutline,Allosaurus:alloPreviewOutline});
 export const detailedOutlineNames=Object.freeze(Object.keys(tracedOutlines));
 export function hasDetailedOutline(name){return Object.hasOwn(tracedOutlines,name);}
 
-export default function IndividualCreatureLineArt({creature,fallback=null,previewAllo=false}){
+export default function IndividualCreatureLineArt({creature,fallback=null,previewAllo=false,previewAmarga=false}){
  const [art,setArt]=useState({creature:null,url:null});
  useEffect(()=>{
   let alive=true;
   setArt({creature,url:null});
   async function decode(){
    try{
-    const payload=previewAllo&&creature==='Allosaurus'?alloPreviewOutline:tracedOutlines[creature];
+    const payload=previewAmarga&&creature==='Amargasaurus'?amargaPreviewOutline:tracedOutlines[creature];
     if(!payload||typeof DecompressionStream!=='function')return;
     const bytes=Uint8Array.from(atob(payload),c=>c.charCodeAt(0));
     const readable=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
@@ -35,7 +36,7 @@ export default function IndividualCreatureLineArt({creature,fallback=null,previe
   }
   void decode();
   return ()=>{alive=false};
- },[creature,previewAllo]);
+ },[creature,previewAmarga]);
  if(art.creature!==creature||!art.url)return fallback;
  return <div className="cad-illustration cad-detailed-outline" role="img"
   aria-label={creature+' original detailed anatomical contour illustration'}
