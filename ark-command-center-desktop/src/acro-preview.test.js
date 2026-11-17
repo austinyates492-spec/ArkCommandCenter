@@ -14,7 +14,7 @@ test('Acro review art is a locally embedded, margin-padded vector silhouette',()
  assert.match(svg,/<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" viewBox="/);
  assert.match(svg,/fill-rule="evenodd"/);
  assert.ok(svg.length>12000,'The illustration should retain original cutout detail');
- assert.doesNotMatch(svg,/<image|href=|https?:/);
+ assert.doesNotMatch(svg,/<image\b|\bhref=/);
 });
 test('opt-in preview directly opens real Taming Lab without replacing public artwork',()=>{
  const app=read('main.jsx'),lab=read('TamingLab.jsx'),art=read('IndividualCreatureLineArt.jsx'),renderer=read('CreatureLineArt.jsx');
