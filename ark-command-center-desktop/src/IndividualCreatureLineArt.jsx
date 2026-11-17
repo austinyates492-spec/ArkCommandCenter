@@ -20,21 +20,26 @@ import {argentavisPreviewOutline} from './argentavis-preview-outline-data.js';
 import {armadoggoPreviewOutline} from './armadoggo-preview-outline-data.js';
 import {arthroplueraPreviewOutline} from './arthropluera-preview-outline-data.js';
 import {astrocetusPreviewOutline} from './astrocetus-preview-outline-data.js';
+import {aureliaxPreviewSvg} from './aureliax-preview-svg-data.js';
+import {baryonyxPreviewSvg} from './baryonyx-preview-svg-data.js';
+import {basiliskPreviewSvg} from './basilisk-preview-svg-data.js';
 
 // This is a curated set of species-specific silhouettes, not a generic body
 // family with per-name noise. Reviewed source illustration sheets were vectorized into
 // local, gzipped SVGs and is tinted solely by the currently selected theme.
-const tracedOutlines=Object.freeze({...individualOutlines,...predatorOutlines,...herbOutlines,...herbOutlinesB,...knockoutLineArt1,...knockoutLineArt2,...knockoutCustom14,Achatina:approvedAchatinaOutline,Acrocanthosaurus:acroPreviewOutline,Allosaurus:alloPreviewOutline,Anglerfish:anglerPreviewOutline,Ankylosaurus:ankyPreviewOutline,Araneo:araneoPreviewOutline,Archaeopteryx:archaeopteryxPreviewOutline,Archelon:archelonPreviewOutline,Argentavis:argentavisPreviewOutline});
+const tracedOutlines=Object.freeze({...individualOutlines,...predatorOutlines,...herbOutlines,...herbOutlinesB,...knockoutLineArt1,...knockoutLineArt2,...knockoutCustom14,Achatina:approvedAchatinaOutline,Acrocanthosaurus:acroPreviewOutline,Allosaurus:alloPreviewOutline,Anglerfish:anglerPreviewOutline,Ankylosaurus:ankyPreviewOutline,Araneo:araneoPreviewOutline,Archaeopteryx:archaeopteryxPreviewOutline,Archelon:archelonPreviewOutline,Argentavis:argentavisPreviewOutline,Arthropluera:arthroplueraPreviewOutline,Astrocetus:astrocetusPreviewOutline});
 export const detailedOutlineNames=Object.freeze(Object.keys(tracedOutlines));
 export function hasDetailedOutline(name){return Object.hasOwn(tracedOutlines,name);}
 
-export default function IndividualCreatureLineArt({creature,fallback=null,previewAllo=false,previewAmarga=false,previewAmmonite=false,previewAngler=false,previewAnky=false,previewAraneo=false,previewArchaeopteryx=false,previewArchelon=false,previewArgentavis=false,previewArmadoggo=false,previewArthropluera=false,previewAstrocetus=false}){
+export default function IndividualCreatureLineArt({creature,fallback=null,previewAllo=false,previewAmarga=false,previewAmmonite=false,previewAngler=false,previewAnky=false,previewAraneo=false,previewArchaeopteryx=false,previewArchelon=false,previewArgentavis=false,previewArmadoggo=false,previewArthropluera=false,previewAstrocetus=false,previewAureliax=false,previewBaryonyx=false,previewBasilisk=false}){
  const [art,setArt]=useState({creature:null,url:null});
  useEffect(()=>{
   let alive=true;
   setArt({creature,url:null});
   async function decode(){
    try{
+    const reviewSvg=previewAureliax&&creature==='Aureliax'?aureliaxPreviewSvg:previewBaryonyx&&creature==='Baryonyx'?baryonyxPreviewSvg:previewBasilisk&&creature==='Basilisk'?basiliskPreviewSvg:null;
+    if(reviewSvg){if(alive)setArt({creature,url:'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(reviewSvg)});return;}
     const payload=previewArmadoggo&&creature==='Armadoggo'?armadoggoPreviewOutline:previewArthropluera&&creature==='Arthropluera'?arthroplueraPreviewOutline:previewAstrocetus&&creature==='Astrocetus'?astrocetusPreviewOutline:previewArgentavis&&creature==='Argentavis'?argentavisPreviewOutline:previewArchelon&&creature==='Archelon'?archelonPreviewOutline:previewArchaeopteryx&&creature==='Archaeopteryx'?archaeopteryxPreviewOutline:previewAraneo&&creature==='Araneo'?araneoPreviewOutline:previewAnky&&creature==='Ankylosaurus'?ankyPreviewOutline:previewAngler&&creature==='Anglerfish'?anglerPreviewOutline:previewAmmonite&&creature==='Ammonite'?ammonitePreviewOutline:previewAmarga&&creature==='Amargasaurus'?amargaPreviewOutline:tracedOutlines[creature];
     if(!payload||typeof DecompressionStream!=='function')return;
     const bytes=Uint8Array.from(atob(payload),c=>c.charCodeAt(0));
@@ -46,7 +51,7 @@ export default function IndividualCreatureLineArt({creature,fallback=null,previe
   }
   void decode();
   return ()=>{alive=false};
- },[creature,previewAmarga,previewAmmonite,previewAngler,previewAnky,previewAraneo,previewArchaeopteryx,previewArchelon,previewArgentavis,previewArmadoggo,previewArthropluera,previewAstrocetus]);
+ },[creature,previewAmarga,previewAmmonite,previewAngler,previewAnky,previewAraneo,previewArchaeopteryx,previewArchelon,previewArgentavis,previewArmadoggo,previewArthropluera,previewAstrocetus,previewAureliax,previewBaryonyx,previewBasilisk]);
  if(art.creature!==creature||!art.url)return fallback;
  return <div className="cad-illustration cad-detailed-outline" role="img"
   aria-label={creature+' original detailed anatomical contour illustration'}
