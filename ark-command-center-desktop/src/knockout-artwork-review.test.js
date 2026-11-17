@@ -34,7 +34,7 @@ test('Taming Lab can display new traced art without changing tame methods',()=>{
  for(const name of groupOne.concat(groupTwo))
   assert.ok(['knockout','specialty','passive','untameable'].includes(tamingCategory(name)),name+' method classification missing');
  const lab=readFileSync(new URL('./TamingLab.jsx',import.meta.url),'utf8');
- assert.match(lab,/Search all creatures and variants/);
+ assert.match(lab,/Search official creature names/);
  assert.match(lab,/calculateTame\(/);
  assert.match(lab,/knockoutEstimate\(/);
  assert.match(lab,/taming-workspace/);
