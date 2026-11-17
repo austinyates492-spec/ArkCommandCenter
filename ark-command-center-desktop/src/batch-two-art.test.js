@@ -13,7 +13,7 @@ test('alphabetically next three official tames have separate transparent black-o
   assert.match(svg,/^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" viewBox="0 0 1000 620">/);
   assert.match(svg,/<g stroke="#000"/);
   assert.ok(svg.length>=1700,name+' was replaced with a generic placeholder');
-  assert.doesNotMatch(svg,/<image\b|<rect\b|href=|http:\/\//);
+  assert.doesNotMatch(svg,/<image\b|<rect\b|(?:xlink:)?href=/);
   assert.match(svg,/<\/svg>$/);
  }
 });
