@@ -19,8 +19,10 @@ This file tracks the user's explicitly approved individual designs, separately f
 | Arthropluera | **Approved and live — batch 01** | `arthropluera-preview-outline-data.js` | Segmented centipede with many legs at `/?artPreview=arthropluera` in Passive Taming Lab; approved artwork promoted to default in the Passive Lab |
 | Astrocetus | **Approved and live — batch 01** | `astrocetus-preview-outline-data.js` | Space-whale with broad head, baleen folds and fins; approved default artwork in Specialty Taming Lab |
 
-| Aureliax | **Review only — batch 02** | `aureliax-preview-svg-data.js` | Official Lost Colony dragon, special gift-and-egg defense method; `/?artPreview=aureliax` in Specialty Lab |
-| Baryonyx | **Review only — batch 02** | `baryonyx-preview-svg-data.js` | Side-profile crocodilian theropod, restrained natural eye, `/?artPreview=baryonyx` in Knockout Lab |
-| Basilisk | **Review only — batch 02** | `basilisk-preview-svg-data.js` | Coiled horned serpent with scales, `/?artPreview=basilisk` in Specialty Lab |
+| Aureliax | **Revised review only — awaiting re-approval** | `aureliax-preview-svg-data.js` | Official Lost Colony dragon, special gift-and-egg defense method; `/?artPreview=aureliax` in Specialty Lab |
+| Baryonyx | **Revised review only — awaiting re-approval** | `baryonyx-preview-svg-data.js` | Side-profile crocodilian theropod, restrained natural eye, `/?artPreview=baryonyx` in Knockout Lab |
+| Basilisk | **Revised review only — awaiting re-approval** | `basilisk-preview-svg-data.js` | Coiled horned serpent with scales, `/?artPreview=basilisk` in Specialty Lab |
 
 **Rules:** Work in batches of three creatures in strict alphabetical order, preserving individual approvals. Never promote a design until the user approves it. Don't alter the Taming Lab layout, taming calculations, or other creature artwork as part of this review workflow.
+
+Batch 02 correction (2026-11-17): Earlier placeholder geometric SVGs were visually inadequate. Replaced only the three unapproved art masks with image-traced anatomically recognizable originals in the approved line-art direction; calculations and other artwork untouched.
