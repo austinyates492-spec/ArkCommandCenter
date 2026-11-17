@@ -23,7 +23,7 @@ test('approved Achatina overrides the older sketch in the real Taming Lab artwor
  assert.match(src,/WebkitMaskImage/);
  assert.match(css,/background:currentColor/);
  assert.match(lab,/CreatureLineArt creature=\{creature\}/);
- assert.match(lab,/Search all creatures and variants/);
+ assert.match(lab,/Search official creature names/);
  assert.match(lab,/Plan Notes/);
  assert.match(lab,/TameSpawnAtlas creature=\{creature\} map=\{map\}/);
 });
