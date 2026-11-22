@@ -2,12 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
-test('creature profile stays pinned on tall desktops without its own scrollbar',()=>{
+test('horizontal layout removes sticky creature rail and keeps photo height fixed',()=>{
  const css=readFileSync(new URL('./taming-lab-art.css',import.meta.url),'utf8');
- assert.match(css,/\.taming-workspace>\.taming-combined-panel\{position:sticky;top:16px;max-height:none;overflow:visible\}/);
- assert.doesNotMatch(css,/\.taming-workspace>\.taming-combined-panel\{position:sticky;[^}]*overflow-y:auto/);
- assert.match(css,/@media\(min-width:1191px\) and \(min-height:850px\)/);
- assert.equal(css.split('grid-template-columns:minmax(280px,35fr) minmax(0,65fr)').length-1,2,'dashboard uses 35/65 split for base and desktop layout');
- assert.match(css,/@media\(min-width:1191px\) and \(max-height:849px\)/);
- assert.match(css,/\.taming-workspace>\.taming-combined-panel\{position:static;top:auto;overflow:visible;max-height:none\}/);
+ const current=css.slice(css.lastIndexOf('/* Approved horizontal redesign'));
+ assert.match(current,/\.taming-dashboard-tools\{display:contents\}/);
+ assert.match(current,/\.taming-workspace>\.taming-combined-panel\{[\s\S]*?position:static/);
+ assert.match(current,/\.taming-workspace \.taming-combined-panel \.taming-art-stage\{[\s\S]*?height:220px;[\s\S]*?min-height:220px;[\s\S]*?max-height:220px/);
+ assert.doesNotMatch(current,/overflow-y:auto/);
+ assert.match(current,/@media\(max-width:900px\)/);
 });
