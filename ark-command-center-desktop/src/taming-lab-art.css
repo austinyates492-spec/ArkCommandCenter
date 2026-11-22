@@ -235,3 +235,17 @@
 @media(max-width:390px){
  .taming-mode-tab{font-size:9px;letter-spacing:-.02em}
 }
+
+
+/* Keep torpor upkeep inside Loadout & Sources, filling space previously left
+   empty when the adjacent knockout ammo planner was taller. */
+.taming-maintenance-inline{margin-top:16px;padding-top:15px;border-top:1px solid color-mix(in srgb,var(--ark-accent,#5de2ac) 22%,#213238);min-width:0}
+.taming-maintenance-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+.taming-maintenance-heading h3{display:flex;align-items:center;gap:8px;margin:0;font-size:16px;line-height:1.3}
+.taming-maintenance-heading .badge{flex-shrink:0;white-space:nowrap}
+.taming-maintenance-inline>p{margin:0 0 10px;font-size:12px;line-height:1.5}
+.taming-maintenance-inline .taming-ko-settings{margin-bottom:12px}
+.taming-maintenance-inline .taming-ammo-list{min-width:0}
+.taming-maintenance-inline .taming-ammo-description{min-width:0;overflow-wrap:anywhere}
+.taming-maintenance-inline .taming-ko-headline{margin:10px 0}
+@media(max-width:600px){.taming-maintenance-heading{align-items:flex-start}.taming-maintenance-heading .badge{white-space:normal;text-align:right}.taming-maintenance-inline .taming-ko-settings{grid-template-columns:1fr}}
