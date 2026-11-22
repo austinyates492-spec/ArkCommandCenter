@@ -271,3 +271,23 @@
  .taming-visual-column .taming-ko-headline{grid-template-columns:repeat(2,minmax(0,1fr))}
  .taming-visual-column>.taming-maintenance-inline{margin-top:12px}
 }
+
+
+/* The right-hand Knockout Planner contains both tranq ammo and unconscious upkeep.
+   No third outer panel; keep the two workflows separated by a quiet rule. */
+.taming-knockout-card>.taming-maintenance-inline{
+ margin-top:19px;
+ padding-top:17px;
+ border-top:1px solid color-mix(in srgb,var(--ark-accent,#5de2ac) 30%,#27363c);
+ min-width:0;
+}
+.taming-knockout-card .taming-maintenance-heading h3{font-size:15px}
+.taming-knockout-card .taming-maintenance-inline>p{font-size:12px;line-height:1.5}
+.taming-knockout-card .taming-maintenance-inline .taming-ko-settings{grid-template-columns:repeat(2,minmax(0,1fr))}
+.taming-knockout-card .taming-maintenance-inline .taming-ko-headline{grid-template-columns:repeat(2,minmax(0,1fr))}
+.taming-knockout-card .taming-maintenance-inline .taming-ko-headline>div{min-height:80px;padding:11px}
+.taming-knockout-card .taming-maintenance-inline .taming-ammo-row{min-width:0}
+@media(max-width:600px){
+ .taming-knockout-card .taming-maintenance-inline .taming-ko-settings{grid-template-columns:1fr}
+ .taming-knockout-card .taming-maintenance-inline{margin-top:15px;padding-top:13px}
+}
