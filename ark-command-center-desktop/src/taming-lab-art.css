@@ -235,3 +235,59 @@
 @media(max-width:390px){
  .taming-mode-tab{font-size:9px;letter-spacing:-.02em}
 }
+
+
+/* Keep torpor upkeep inside Loadout & Sources, filling space previously left
+   empty when the adjacent knockout ammo planner was taller. */
+.taming-maintenance-inline{margin-top:16px;padding-top:15px;border-top:1px solid color-mix(in srgb,var(--ark-accent,#5de2ac) 22%,#213238);min-width:0}
+.taming-maintenance-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+.taming-maintenance-heading h3{display:flex;align-items:center;gap:8px;margin:0;font-size:16px;line-height:1.3}
+.taming-maintenance-heading .badge{flex-shrink:0;white-space:nowrap}
+.taming-maintenance-inline>p{margin:0 0 10px;font-size:12px;line-height:1.5}
+.taming-maintenance-inline .taming-ko-settings{margin-bottom:12px}
+.taming-maintenance-inline .taming-ammo-list{min-width:0}
+.taming-maintenance-inline .taming-ammo-description{min-width:0;overflow-wrap:anywhere}
+.taming-maintenance-inline .taming-ko-headline{margin:10px 0}
+@media(max-width:600px){.taming-maintenance-heading{align-items:flex-start}.taming-maintenance-heading .badge{white-space:normal;text-align:right}.taming-maintenance-inline .taming-ko-settings{grid-template-columns:1fr}}
+
+
+/* The unconsciousness planner belongs directly below the dinosaur sketch
+   inside the same left-side Loadout card, not in a third workspace card. */
+.taming-visual-column>.taming-maintenance-inline{margin-top:15px;padding-top:13px}
+.taming-visual-column .taming-maintenance-heading h3{font-size:14px}
+.taming-visual-column .taming-maintenance-heading .badge{font-size:9px}
+.taming-visual-column .taming-maintenance-inline>p{font-size:11px;line-height:1.4}
+.taming-visual-column .taming-ko-settings{grid-template-columns:minmax(0,1fr)}
+.taming-visual-column .taming-ko-headline{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.taming-visual-column .taming-ko-headline>div{min-height:66px;padding:8px}
+.taming-visual-column .taming-ko-headline span{font-size:9px}
+.taming-visual-column .taming-ko-headline strong{font-size:clamp(17px,1.8vw,26px)}
+.taming-visual-column .taming-ammo-row{gap:6px;min-width:0}
+.taming-visual-column .taming-ammo-description strong{font-size:11px}
+.taming-visual-column .taming-ammo-description small{font-size:9px}
+.taming-visual-column .taming-shot-count strong{font-size:19px}
+.taming-visual-column .taming-ammo-explainer{display:block;margin-top:8px}
+@media(max-width:600px){
+ .taming-visual-column .taming-ko-headline{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .taming-visual-column>.taming-maintenance-inline{margin-top:12px}
+}
+
+
+/* The right-hand Knockout Planner contains both tranq ammo and unconscious upkeep.
+   No third outer panel; keep the two workflows separated by a quiet rule. */
+.taming-knockout-card>.taming-maintenance-inline{
+ margin-top:19px;
+ padding-top:17px;
+ border-top:1px solid color-mix(in srgb,var(--ark-accent,#5de2ac) 30%,#27363c);
+ min-width:0;
+}
+.taming-knockout-card .taming-maintenance-heading h3{font-size:15px}
+.taming-knockout-card .taming-maintenance-inline>p{font-size:12px;line-height:1.5}
+.taming-knockout-card .taming-maintenance-inline .taming-ko-settings{grid-template-columns:repeat(2,minmax(0,1fr))}
+.taming-knockout-card .taming-maintenance-inline .taming-ko-headline{grid-template-columns:repeat(2,minmax(0,1fr))}
+.taming-knockout-card .taming-maintenance-inline .taming-ko-headline>div{min-height:80px;padding:11px}
+.taming-knockout-card .taming-maintenance-inline .taming-ammo-row{min-width:0}
+@media(max-width:600px){
+ .taming-knockout-card .taming-maintenance-inline .taming-ko-settings{grid-template-columns:1fr}
+ .taming-knockout-card .taming-maintenance-inline{margin-top:15px;padding-top:13px}
+}
