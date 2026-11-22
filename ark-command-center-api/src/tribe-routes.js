@@ -1,6 +1,6 @@
 import {randomUUID} from 'node:crypto';
 import {Client} from 'pg';
-import {normalizeTimer,normalizeTimerAdjustment,normalizeTimerSound,normalizeCrafting,normalizeServer,serializeTimer,serializeServer,serializeCraft} from './tribe-logic.js';
+import {normalizeTimer,normalizeTimerAdjustment,normalizeTimerEdit,normalizeTimerSound,normalizeCrafting,normalizeServer,serializeTimer,serializeServer,serializeCraft} from './tribe-logic.js';
 
 // Every stream is bound to its authenticated tribe. Never broadcast other tribes' events.
 const clients=new Map();
@@ -188,7 +188,29 @@ export async function handleTribe(req,res,options){
  const timerMatch=/^\/api\/v1\/tribe\/timers\/([a-f0-9-]{36})$/i.exec(path);
  if(method==='PUT'&&timerMatch){
   if(!UUID.test(timerMatch[1]))bad('Invalid timer ID.');
-  const adjustment=validated(normalizeTimerAdjustment,await bodyJson(req));
+  const input=await bodyJson(req);
+  if(input?.mode){
+   const edit=validated(normalizeTimerEdit,input);
+   const client=await pool.connect();let row;
+   try{
+    await client.query('BEGIN');
+    const found=await client.query('SELECT * FROM tribe_timers_v2 WHERE id=$1 AND tribe_id=$2 FOR UPDATE',[timerMatch[1],user.tribe_id]);
+    if(!found.rows.length)throw Object.assign(new Error('Timer not found.'),{status:404});
+    const previous=found.rows[0],now=Date.now();
+    if(Number(previous.end_ms)!==edit.expectedEnd)throw Object.assign(new Error('Timer changed on another device. Refresh before saving.'),{status:409});
+    if(Number(previous.end_ms)<=now&&!edit.reopen)throw Object.assign(new Error('Completed timers require explicit reopen confirmation.'),{status:409});
+    const delta=Math.round(edit.minutes*60000);
+    const created=edit.reopen&&Number(previous.end_ms)<=now?now:Number(previous.created_ms);
+    const end=edit.mode==='total'?created+delta:edit.mode==='extend'?Math.max(now,Number(previous.end_ms))+delta:now+delta;
+    if(end<=now&&!edit.reopen)throw Object.assign(new Error('New duration has already completed. Choose more time.'),{status:400});
+    const updated=await client.query('UPDATE tribe_timers_v2 SET name=$1,type=$2,created_ms=$3,end_ms=$4 WHERE id=$5 AND tribe_id=$6 RETURNING *',[edit.name,edit.type,created,end,timerMatch[1],user.tribe_id]);
+    row=updated.rows[0];
+    await client.query('COMMIT');
+   }catch(error){await client.query('ROLLBACK');throw error;}finally{client.release();}
+   await notify(pool,user.tribe_id,'timers');
+   json(res,200,{timer:serializeTimer({...row,display_name:user.display_name})});return true;
+  }
+  const adjustment=validated(normalizeTimerAdjustment,input);
   const client=await pool.connect();let row;
   try{
    await client.query('BEGIN');
