@@ -113,14 +113,24 @@ function TimerAdjustment({timer,now,live}){
 function TimerCard({timer,live,now,completed=false}){
  const duration=Math.max(1000,timer.end-timer.created),progress=Math.max(0,Math.min(100,(now-timer.created)/duration*100));
  const tone=category(timer.type),enabled=live.timerSounds[timer.id]!==false;
+ // Raising/maturation uses ARK's overall 10% and 50% growth milestones.
+ // Incubation, mating and other breeding timers keep the ordinary progress bar.
+ const maturation=timer.type==='Maturation'||(tone==='breeding'&&/matur|raising|baby growth/i.test(timer.name)&&!/incubat|hatch|gestat|mating|cooldown/i.test(timer.name+' '+timer.type));
+ const phase=progress<10?'Baby':progress<50?'Juvenile':progress<100?'Adolescent':'Adult';
  const Icon=tone==='breeding'?Egg:tone==='taming'?Crosshair:tone==='crafting'?Anvil:Clock3;
  return <article className={'timer-operation timer-tone-'+tone+(completed?' timer-completed':'')}>
   <div className="timer-operation-main"><div className="timer-operation-icon"><Icon size={22}/></div>
    <div className="timer-operation-name"><strong>{timer.name}</strong><small>{timer.type} · {timer.createdBy||'Tribe'}</small></div>
    <div className="timer-operation-countdown"><strong>{clock(timer.end-now)}</strong><small>{completed?'Completed':'Remaining'}</small></div>
   </div>
-  <div className="timer-progress-track" role="progressbar" aria-label={timer.name+' progress'} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress)}><span style={{width:progress+'%'}}/></div>
-  <div className="timer-progress-caption"><span>{Math.round(progress)}% complete</span><span>{completed?'FINISHED':tone.toUpperCase()}</span></div>
+  <div className="timer-overall-progress"><strong aria-label={'Overall progress '+progress.toFixed(1)+' percent'}>{progress.toFixed(1)}%</strong><span>OVERALL COMPLETE</span></div>
+  {maturation&&<div className="timer-phase-header" aria-label="Maturation milestones">
+   <span><b>10%</b> Juvenile</span>
+   <span><b>50%</b> Adolescent</span>
+   <span><b>100%</b> Adult</span>
+  </div>}
+  <div className={'timer-progress-track'+(maturation?' timer-progress-phased':'')} role="progressbar" aria-label={timer.name+' overall progress'} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Number(progress.toFixed(1))}><span className="timer-progress-fill" style={{width:progress+'%'}}/>{maturation&&<><i className="timer-milestone-marker timer-milestone-juvenile" aria-hidden="true"/><i className="timer-milestone-marker timer-milestone-adolescent" aria-hidden="true"/></>}</div>
+  <div className="timer-progress-caption"><span>{maturation?'Current phase: '+phase:'Timer progress'}</span><span>{completed?'FINISHED':tone.toUpperCase()}</span></div>
   <TimerAdjustment timer={timer} now={now} live={live}/>
   <div className="timer-operation-footer">
    <button type="button" className={'soundtoggle '+(enabled?'sound-on':'sound-off')} disabled={!live.timerSoundsReady} aria-pressed={enabled} onClick={()=>void live.setTimerSound(timer.id,!enabled).catch(()=>{})}>{enabled?<Bell size={15}/>:<BellOff size={15}/>} Sound {enabled?'On':'Off'}</button>

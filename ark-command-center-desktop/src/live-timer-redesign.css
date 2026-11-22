@@ -58,3 +58,24 @@
 .timer-completed{opacity:.86}
 @media(max-width:1100px){.timer-page-grid{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:650px){.timer-summary-grid{gap:6px}.timer-summary-grid>div{gap:4px;flex-direction:column;text-align:center;padding:10px 4px}.timer-summary-grid strong{font-size:21px}.timer-summary-grid span{font-size:10px}.timer-operation-main{gap:8px}.timer-operation-icon{width:36px;height:36px}.timer-operation-countdown strong{font-size:17px}.timer-operation{padding:11px}.timer-category{font-size:10px}.timer-operation-footer{gap:7px}.timer-operation-footer small{margin-left:0}}
+
+
+/* One readable percent per timer. Maturation markers show fixed ARK milestones,
+   not separate progress calculations for Baby/Juvenile/Adolescent. */
+.timer-overall-progress{display:flex;gap:8px;align-items:baseline;margin-top:12px}
+.timer-overall-progress strong{font-size:clamp(19px,2.3vw,27px);line-height:1;font-weight:850;font-variant-numeric:tabular-nums;color:var(--timer-color)}
+.timer-overall-progress span{font-size:10px;letter-spacing:.08em;font-weight:750;color:var(--ark-muted,#abb7c2)}
+.timer-phase-header{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin-top:15px;color:var(--ark-muted,#b4bbc5);font-size:10px;letter-spacing:.025em}
+.timer-phase-header span{min-width:0;white-space:nowrap}
+.timer-phase-header span:nth-child(2){text-align:center}
+.timer-phase-header span:nth-child(3){text-align:right}
+.timer-phase-header b{color:var(--timer-color);font-variant-numeric:tabular-nums;font-weight:800}
+.timer-progress-track.timer-progress-phased{height:11px;margin-top:9px;position:relative;isolation:isolate;overflow:hidden;border:1px solid color-mix(in srgb,var(--timer-color) 28%,transparent)}
+.timer-progress-phased .timer-progress-fill{position:relative;z-index:1}
+.timer-milestone-marker{position:absolute;top:0;bottom:0;width:2px;background:var(--ark-surface,#202430);z-index:2;box-shadow:0 0 0 1px color-mix(in srgb,var(--timer-color) 35%,transparent)}
+.timer-milestone-juvenile{left:10%}
+.timer-milestone-adolescent{left:50%}
+@media(max-width:420px){
+ .timer-phase-header{font-size:9px;gap:2px;letter-spacing:0}
+ .timer-overall-progress strong{font-size:21px}
+}
