@@ -1,6 +1,6 @@
 import {randomUUID} from 'node:crypto';
 import {Client} from 'pg';
-import {normalizeTimer,normalizeTimerSound,normalizeCrafting,normalizeServer,serializeTimer,serializeServer,serializeCraft} from './tribe-logic.js';
+import {normalizeTimer,normalizeTimerAdjustment,normalizeTimerSound,normalizeCrafting,normalizeServer,serializeTimer,serializeServer,serializeCraft} from './tribe-logic.js';
 
 // Every stream is bound to its authenticated tribe. Never broadcast other tribes' events.
 const clients=new Map();
@@ -186,6 +186,27 @@ export async function handleTribe(req,res,options){
   await notify(pool,user.tribe_id,'timer-sounds');json(res,200,{timerId:rows[0].timer_id,enabled:rows[0].enabled});return true;
  }
  const timerMatch=/^\/api\/v1\/tribe\/timers\/([a-f0-9-]{36})$/i.exec(path);
+ if(method==='PUT'&&timerMatch){
+  if(!UUID.test(timerMatch[1]))bad('Invalid timer ID.');
+  const adjustment=validated(normalizeTimerAdjustment,await bodyJson(req));
+  const client=await pool.connect();let row;
+  try{
+   await client.query('BEGIN');
+   const found=await client.query('SELECT * FROM tribe_timers_v2 WHERE id=$1 AND tribe_id=$2 FOR UPDATE',[timerMatch[1],user.tribe_id]);
+   if(!found.rows.length)throw Object.assign(new Error('Timer not found.'),{status:404});
+   const previous=found.rows[0];
+   if(Number(previous.end_ms)!==adjustment.expectedEnd)throw Object.assign(new Error('Timer changed on another device. Refresh before saving.'),{status:409});
+   const now=Date.now();
+   const duration=Math.max(1000,Number(previous.end_ms)-Number(previous.created_ms));
+   const remaining=Math.round(adjustment.remainingMinutes*60000);
+   const elapsed=Math.max(0,duration-Math.min(duration,remaining));
+   const updated=await client.query('UPDATE tribe_timers_v2 SET created_ms=$1,end_ms=$2 WHERE id=$3 AND tribe_id=$4 RETURNING *',[now-elapsed,now+remaining,timerMatch[1],user.tribe_id]);
+   row=updated.rows[0];
+   await client.query('COMMIT');
+  }catch(error){await client.query('ROLLBACK');throw error;}finally{client.release();}
+  await notify(pool,user.tribe_id,'timers');
+  json(res,200,{timer:serializeTimer({...row,display_name:user.display_name})});return true;
+ }
  if(method==='DELETE'&&timerMatch){
   if(!UUID.test(timerMatch[1]))bad('Invalid timer ID.');
   await pool.query('DELETE FROM tribe_timers_v2 WHERE id=$1 AND tribe_id=$2',[timerMatch[1],user.tribe_id]);

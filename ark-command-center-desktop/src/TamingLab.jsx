@@ -26,19 +26,19 @@ export default function TamingLab({rates,onTimer,onNavigate,clusterId='nomadark'
  const [manualFood,setManualFood]=useState('');
  const [manualMinutes,setManualMinutes]=useState('');
  const [weaponQuality,setWeaponQuality]=useState(100);
- const [longneckBuffPercent,setLongneckBuffPercent]=useState(300);
+ const [longneckBuffPercent,setLongneckBuffPercent]=useState(100);
+ const [torporMultiplier,setTorporMultiplier]=useState(1);
  const [targetTorpor,setTargetTorpor]=useState('');
  const foods=useMemo(()=>availableFoods(creature),[creature]);
  const special=getTamingMethod(creature);
  const matchingCreatures=useMemo(()=>knockoutPickerCreatures(reviewCreature).filter(name=>name.toLowerCase().includes(creatureQuery.toLowerCase())),[creatureQuery,reviewCreature]);
- useEffect(()=>setLongneckBuffPercent(clusterId==='nomadark'?300:100),[clusterId]);
  useEffect(()=>{if(foods.length&&!foods.includes(food))setFood(foods[0]);},[foods,food]);
  const selectedFood=foods.includes(food)?food:(foods[0]||'');
  const result=isKnockout?calculateTame({creature,level,food:selectedFood,tamingRate:rates.taming,foodDrainRate:rates.food}):{ok:false,reason:'Use this creature’s dedicated taming method.'};
  const isManual=!!special||!result.ok;
  const finalMinutes=isManual?Number(manualMinutes):result.minutes;
  const canStart=isKnockout&&Number.isFinite(finalMinutes)&&finalMinutes>0;
- const knockout=isKnockout?knockoutEstimate({creature,level,weaponQuality,longneckBuffPercent,targetTorpor}):{ok:false,reason:'Ordinary tranquilizers are not used for this encounter.'};
+ const knockout=isKnockout?knockoutEstimate({creature,level,weaponQuality,longneckBuffPercent,torporMultiplier,targetTorpor}):{ok:false,reason:'Ordinary tranquilizers are not used for this encounter.'};
  const bestAmmo=knockout.ok&&knockout.rows.length?knockout.rows.reduce((best,item)=>item.body<best.body?item:best):null;
  const maxBodyShots=knockout.ok?Math.max(1,...knockout.rows.map(item=>item.body)):1;
  const planNote=!isKnockout?(special?.instructions||'This species requires a dedicated taming method.'):special?special.instructions:result.ok?result.caveat:result.reason;
@@ -91,14 +91,15 @@ export default function TamingLab({rates,onTimer,onNavigate,clusterId='nomadark'
    </section>
 
    {isKnockout&&!special&&<section className="panel knockout-panel taming-knockout-card" aria-label="Knockout planner">
-    <div className="panelhead"><h2><Crosshair size={18}/> Knockout Planner</h2><span className="badge gold">THEORETICAL SHOTS</span></div>
+    <div className="panelhead"><h2><Crosshair size={18}/> Knockout Planner</h2><span className="badge gold">OFFICIAL BASE · 1×</span></div>
     {knockout.ok?<div className="taming-ko-headline">
      <div className="taming-ko-target"><span>TARGET TORPOR</span><strong>{numberFormat.format(knockout.totalTorpor)}</strong><small>Wild Lv {level}</small></div>
      <div className="taming-ko-shortcut"><span>FEWEST BODY SHOTS</span><strong>{bestAmmo?numberFormat.format(bestAmmo.body):'—'}</strong><small>{bestAmmo?.label||'Unknown'}</small></div>
     </div>:<div className="taming-ko-unverified"><Info size={17}/><span>{knockout.reason} Enter verified in-game torpor below or cross-check Dododex.</span></div>}
     <div className="taming-ko-settings">
      <label className="field"><span>Weapon damage %</span><input type="number" min="1" max={clusterId==='nomadark'?354:1000} value={weaponQuality} onChange={e=>setWeaponQuality(e.target.value)}/></label>
-     <label className="field"><span>Longneck buff %</span><input type="number" min="1" max="1000" value={longneckBuffPercent} onChange={e=>setLongneckBuffPercent(e.target.value)}/></label>
+     <label className="field"><span>Additional longneck damage % (100 = off)</span><input type="number" min="1" max="1000" value={longneckBuffPercent} onChange={e=>setLongneckBuffPercent(e.target.value)}/></label>
+     <label className="field"><span>Effective torpor multiplier (1× = official)</span><input type="number" min="0.01" max="1000" step="0.1" value={torporMultiplier} onChange={e=>setTorporMultiplier(e.target.value)}/></label>
      <label className="field taming-field-wide"><span>Manual target torpor (if unsupported)</span><input type="number" min="1" value={targetTorpor} onChange={e=>setTargetTorpor(e.target.value)} placeholder="Read from in-game creature stat"/></label>
     </div>
     {knockout.ok?<div className="taming-ammo-section">
@@ -114,11 +115,11 @@ export default function TamingLab({rates,onTimer,onNavigate,clusterId='nomadark'
        <div className="taming-shot-count"><strong>{item.head===null?'—':numberFormat.format(item.head)}</strong><small>HEAD</small></div>
       </div>)}
      </div>
-     <small className="taming-ammo-explainer">Bars compare theoretical body-shot counts (shorter means fewer shots). Estimates exclude misses, torpor decay and reloads.</small>
+     <small className="taming-ammo-explainer">Bars compare theoretical body-shot counts (shorter means fewer shots). Official 1× baseline; estimates exclude misses, torpor decay and reloads. Damage modifiers recalculate immediately.</small>
     </div>:<div className="taming-ko-unverified"><Info size={16}/><span>Shot counts will appear once torpor and applicable weapon values are available.</span></div>}
     <details className="taming-methodology">
      <summary>Calculation assumptions &amp; safety margins <ChevronDown size={15}/></summary>
-     <div><strong>NomadARK Longneck buff:</strong> The server lists 300%. Dart rows treat this as 300% total base damage (3×), separately from blueprint weapon damage. Bow and crossbow rows do not use this buff. If the game tooltip already includes it, adjust the field to avoid double-counting. {knockout.referenceOnly?'TORPOR REFERENCE ONLY: projectile resistance not verified. ':knockout.manual?'Manual torpor mode uses in-game torpor. ':knockout.verification!=='reviewed'?'Wiki-derived torpor profile: headshot and resistance may differ. ':''}These are theoretical minimum shots; allow a buffer for misses and torpor loss.</div>
+     <div><strong>NomadARK Longneck buff:</strong> Default is OFF (100%). Apply a verified server-specific modifier only if it is separate from the weapon tooltip's damage percentage. Bow and crossbow rows do not use this buff. If the game tooltip already includes it, adjust the field to avoid double-counting. {knockout.referenceOnly?'TORPOR REFERENCE ONLY: projectile resistance not verified. ':knockout.manual?'Manual torpor mode uses in-game torpor. ':knockout.verification!=='reviewed'?'Wiki-derived torpor profile: headshot and resistance may differ. ':''}The baseline is official 1×. Weapon percentage and effective torpor multiplier can be changed after a calculation and update all ammo rows immediately. Torpor over time must be allowed to finish before firing additional shots. These are theoretical minimum shots; allow a buffer for misses, resistance and torpor loss.</div>
     </details>
     <a className="taming-ko-source" href="https://ark.wiki.gg/wiki/Tranquilizer_Comparison_Table" target="_blank" rel="noreferrer">Ammo calculation reference <ExternalLink size={14}/></a>
    </section>}
