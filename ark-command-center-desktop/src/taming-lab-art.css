@@ -291,3 +291,45 @@
  .taming-knockout-card .taming-maintenance-inline .taming-ko-settings{grid-template-columns:1fr}
  .taming-knockout-card .taming-maintenance-inline{margin-top:15px;padding-top:13px}
 }
+
+
+/* Independent-height Taming Lab panels: do not grow the shorter creature
+   loadout card to the taller Knockout Planner's height. */
+.taming-workspace>.panel{
+ height:auto;
+ align-self:start;
+}
+.taming-workspace>.knockout-panel{
+ height:auto;
+ align-self:start;
+}
+/* Give the illustrated creature more visual presence, but keep all anatomy
+   visible in its existing contain-based SVG/artwork treatment. */
+.taming-workspace .taming-combined-panel .taming-art-stage{
+ aspect-ratio:1.55 / 1;
+ min-height:250px;
+ max-height:490px;
+}
+.taming-workspace .taming-combined-panel .taming-plan-layout{gap:11px}
+.taming-workspace .taming-combined-panel .taming-creature-meta{margin-top:7px}
+.taming-workspace .taming-combined-panel .taming-plan-notes{
+ margin-top:10px;
+ padding:10px 12px;
+}
+.taming-workspace .taming-combined-panel .taming-compact-links{
+ padding-top:8px;
+ gap:7px 12px;
+}
+@media(max-width:1190px){
+ .taming-workspace>.panel,.taming-workspace>.knockout-panel{
+  height:auto;
+  align-self:start;
+ }
+}
+@media(max-width:600px){
+ .taming-workspace .taming-combined-panel .taming-art-stage{
+  aspect-ratio:1.65 / 1;
+  min-height:220px;
+  max-height:355px;
+ }
+}
