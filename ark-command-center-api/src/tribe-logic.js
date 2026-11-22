@@ -7,6 +7,14 @@ export function normalizeTimer(input,now=Date.now()){
  if(!Number.isFinite(minutes)||minutes<=0||minutes>525600)throw new Error('Timer must be between 1 second and one year.');
  return {name,type,created:now,end:now+Math.round(minutes*60000)};
 }
+/** Validate a tribe-wide countdown correction. The duration remains the timer's baseline. */
+export function normalizeTimerAdjustment(input){
+ const remainingMinutes=Number(input?.remainingMinutes);
+ if(!Number.isFinite(remainingMinutes)||remainingMinutes<0||remainingMinutes>525600)throw new Error('Remaining time must be between 0 and one year.');
+ const expectedEnd=Number(input?.expectedEnd);
+ if(!Number.isSafeInteger(expectedEnd)||expectedEnd<=0)throw new Error('Refresh this timer before changing it.');
+ return {remainingMinutes,expectedEnd};
+}
 /** A sound preference always belongs to the signed-in member, not the shared timer. */
 export function normalizeTimerSound(input){
  if(typeof input?.enabled!=='boolean')throw new Error('Timer sound must be enabled or disabled.');
