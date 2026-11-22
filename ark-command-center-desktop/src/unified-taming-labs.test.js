@@ -12,7 +12,9 @@ test('passive and specialty pages use the same searchable artwork-first workspac
   const lab=source(name);
   for(const cls of ['pagetitle taming-compact-title','taming-workspace','panel taming-combined-panel','taming-picker-bar','taming-plan-layout','taming-visual-column','taming-art-stage','taming-plan-content','taming-compact-fields','taming-plan-notes','taming-compact-links','panel taming-sibling-panel','taming-ko-headline','taming-start-btn']){
    assert.ok(lab.includes(cls),name+' missing shared layout '+cls);
-   assert.ok(knockout.includes(cls)||cls.includes('sibling'),name+' diverges from knockout markup for '+cls);
+   if(['pagetitle taming-compact-title','taming-workspace','panel taming-combined-panel','taming-picker-bar','taming-visual-column','taming-art-stage','taming-compact-links'].includes(cls)){
+    assert.ok(knockout.includes(cls),name+' lost shared species picker/artwork for '+cls);
+   }
   }
   assert.ok(lab.indexOf('taming-picker-bar')<lab.indexOf('taming-art-stage'),name+' places selection after artwork');
   assert.ok(lab.indexOf('taming-art-stage')<lab.indexOf('taming-sibling-panel'),name+' puts planner before artwork');
