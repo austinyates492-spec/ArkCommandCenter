@@ -72,30 +72,7 @@ export default function TamingLab({rates,onTimer,onNavigate,clusterId='nomadark'
        <span className="taming-art-status">{((artPreview==='amarga'&&creature==='Amargasaurus')||(artPreview==='ammonite'&&creature==='Ammonite')||(artPreview==='baryonyx'&&creature==='Baryonyx'))?'REVIEW ONLY · NOT FINAL':creature==='Rex'||hasDetailedOutline(creature)?'SPECIES LINE ART':'ANATOMY STUDY'}</span>
       </div>
       <div className="taming-creature-meta"><span><strong>LEVEL</strong> {level||'—'}</span><span><strong>MAP</strong> {map}</span><span><strong>TYPE</strong> {category}</span></div>
-   {isKnockout&&!special&&<div className="taming-maintenance-inline" aria-label="Keeping your tame unconscious">
-    <div className="taming-maintenance-heading"><h3><ShieldCheck size={18}/> Keep It Unconscious</h3><span className="badge gold">TAMING SUPPLIES</span></div>
-    <p>Estimate each torpor consumable separately using <strong>{selectedFood||'the chosen food'}</strong>, {rates.taming}× taming and {rates.food}× food drain. Selecting different food can change the Narcotic estimate dramatically. Counts are alternatives, not items to add together.</p>
-    <div className="taming-ko-settings">
-     <label className="field"><span>Wild torpor drain multiplier (1× official)</span><input type="number" min="0.01" max="1000" step="0.1" value={torporDrainMultiplier} onChange={event=>setTorporDrainMultiplier(event.target.value)}/></label>
-     <label className="field"><span>Tame duration override (minutes, optional)</span><input type="number" min="0.01" max="525600" step="0.1" value={observedTameMinutes} onChange={event=>setObservedTameMinutes(event.target.value)} placeholder={result.ok?String(Math.round(result.minutes*10)/10):'Observed remaining minutes'}/></label>
-     <label className="field"><span>Current torpor (optional; defaults to full)</span><input type="number" min="0.01" max={knockout.ok?knockout.totalTorpor:undefined} step="0.1" value={currentTorpor} onChange={event=>setCurrentTorpor(event.target.value)} placeholder={knockout.ok?String(Math.round(knockout.totalTorpor)):'Maximum torpor'}/></label>
-    </div>
-    {maintenance.ok?<div className="taming-ammo-section">
-      <div className="taming-ko-headline">
-       <div className="taming-ko-target"><span>TORPOR DEPLETION</span><strong>{maintenance.drainPerSecond.toFixed(2)}/s</strong><small>Wild Lv {level}</small></div>
-       <div className="taming-ko-shortcut"><span>NO-ITEM WAKE-UP TIME</span><strong>{duration(Math.floor(maintenance.initialTorpor/maintenance.drainPerSecond))}</strong><small>Approximate if untreated</small></div>
-      </div>
-      <div className="taming-ammo-list">
-       {maintenance.rows.map(item=><div key={item.id} className="taming-ammo-row">
-        <div className="taming-ammo-icon" aria-hidden="true"><ShieldCheck size={18}/></div>
-        <div className="taming-ammo-description"><strong>{item.label}</strong><small>{item.torpor} torpor over {item.effectSeconds}s</small></div>
-        <div className="taming-shot-count"><strong>{numberFormat.format(item.amount)}</strong><small>THEORETICAL MIN</small></div>
-       </div>)}
-      </div>
-      <small className="taming-ammo-explainer">Wiki-model theoretical minimum assuming the selected food, uninterrupted taming and full starting torpor unless overridden. Bring extra and monitor torpor; do not feed all at once near maximum. High-drain creatures and server settings may differ.</small>
-     </div>:<div className="taming-ko-unverified"><Info size={17}/><span>{maintenance.reason}</span></div>}
-     <a className="taming-ko-source" href="https://ark.wiki.gg/wiki/Module:TamingTable" target="_blank" rel="noreferrer">Official wiki torpor formula <ExternalLink size={14}/></a>
-   </div>}
+
      </div>
      <div className="taming-plan-content">
       <div className="taming-small-title"><h3>Plan a Tame</h3><small>{rates.taming}× TAMING</small></div>
@@ -154,6 +131,30 @@ export default function TamingLab({rates,onTimer,onNavigate,clusterId='nomadark'
      <div><strong>NomadARK Longneck buff:</strong> Default is OFF (100%). Apply a verified server-specific modifier only if it is separate from the weapon tooltip's damage percentage. Bow and crossbow rows do not use this buff. If the game tooltip already includes it, adjust the field to avoid double-counting. {knockout.referenceOnly?'TORPOR REFERENCE ONLY: projectile resistance not verified. ':knockout.manual?'Manual torpor mode uses in-game torpor. ':knockout.verification!=='reviewed'?'Wiki-derived torpor profile: headshot and resistance may differ. ':''}The baseline is official 1×. Weapon percentage and effective torpor multiplier can be changed after a calculation and update all ammo rows immediately. Torpor over time must be allowed to finish before firing additional shots. These are theoretical minimum shots; allow a buffer for misses, resistance and torpor loss.</div>
     </details>
     <a className="taming-ko-source" href="https://ark.wiki.gg/wiki/Tranquilizer_Comparison_Table" target="_blank" rel="noreferrer">Ammo calculation reference <ExternalLink size={14}/></a>
+    <div className="taming-maintenance-inline" aria-label="Keeping your tame unconscious">
+    <div className="taming-maintenance-heading"><h3><ShieldCheck size={18}/> Keep It Unconscious</h3><span className="badge gold">TAMING SUPPLIES</span></div>
+    <p>Estimate each torpor consumable separately using <strong>{selectedFood||'the chosen food'}</strong>, {rates.taming}× taming and {rates.food}× food drain. Selecting different food can change the Narcotic estimate dramatically. Counts are alternatives, not items to add together.</p>
+    <div className="taming-ko-settings">
+     <label className="field"><span>Wild torpor drain multiplier (1× official)</span><input type="number" min="0.01" max="1000" step="0.1" value={torporDrainMultiplier} onChange={event=>setTorporDrainMultiplier(event.target.value)}/></label>
+     <label className="field"><span>Tame duration override (minutes, optional)</span><input type="number" min="0.01" max="525600" step="0.1" value={observedTameMinutes} onChange={event=>setObservedTameMinutes(event.target.value)} placeholder={result.ok?String(Math.round(result.minutes*10)/10):'Observed remaining minutes'}/></label>
+     <label className="field"><span>Current torpor (optional; defaults to full)</span><input type="number" min="0.01" max={knockout.ok?knockout.totalTorpor:undefined} step="0.1" value={currentTorpor} onChange={event=>setCurrentTorpor(event.target.value)} placeholder={knockout.ok?String(Math.round(knockout.totalTorpor)):'Maximum torpor'}/></label>
+    </div>
+    {maintenance.ok?<div className="taming-ammo-section">
+      <div className="taming-ko-headline">
+       <div className="taming-ko-target"><span>TORPOR DEPLETION</span><strong>{maintenance.drainPerSecond.toFixed(2)}/s</strong><small>Wild Lv {level}</small></div>
+       <div className="taming-ko-shortcut"><span>NO-ITEM WAKE-UP TIME</span><strong>{duration(Math.floor(maintenance.initialTorpor/maintenance.drainPerSecond))}</strong><small>Approximate if untreated</small></div>
+      </div>
+      <div className="taming-ammo-list">
+       {maintenance.rows.map(item=><div key={item.id} className="taming-ammo-row">
+        <div className="taming-ammo-icon" aria-hidden="true"><ShieldCheck size={18}/></div>
+        <div className="taming-ammo-description"><strong>{item.label}</strong><small>{item.torpor} torpor over {item.effectSeconds}s</small></div>
+        <div className="taming-shot-count"><strong>{numberFormat.format(item.amount)}</strong><small>THEORETICAL MIN</small></div>
+       </div>)}
+      </div>
+      <small className="taming-ammo-explainer">Wiki-model theoretical minimum assuming the selected food, uninterrupted taming and full starting torpor unless overridden. Bring extra and monitor torpor; do not feed all at once near maximum. High-drain creatures and server settings may differ.</small>
+     </div>:<div className="taming-ko-unverified"><Info size={17}/><span>{maintenance.reason}</span></div>}
+     <a className="taming-ko-source" href="https://ark.wiki.gg/wiki/Module:TamingTable" target="_blank" rel="noreferrer">Official wiki torpor formula <ExternalLink size={14}/></a>
+   </div>
    </section>}
 
    {!isKnockout&&<section className="panel taming-method-panel">
