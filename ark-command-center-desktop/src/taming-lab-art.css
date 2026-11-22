@@ -392,7 +392,7 @@
 .taming-dashboard-tools .taming-knockout-card>.taming-maintenance-inline{margin-top:15px;padding-top:14px}
 @media(min-width:1191px){
  .taming-workspace{grid-template-columns:minmax(280px,.68fr) minmax(0,1.32fr)}
- .taming-workspace>.taming-combined-panel{position:sticky;top:16px;max-height:calc(100vh - 32px);overflow-y:auto;overscroll-behavior:contain}
+ .taming-workspace>.taming-combined-panel{position:sticky;top:16px;max-height:none;overflow:visible}
 }
 @media(max-width:1190px){
  .taming-workspace{grid-template-columns:minmax(0,1fr)}
@@ -408,4 +408,21 @@
  .taming-dashboard-tame .taming-compact-fields{grid-template-columns:repeat(2,minmax(0,1fr))}
  .taming-dashboard-tame .taming-field-wide{grid-column:1/-1}
  .taming-dashboard-tools{gap:12px}
+}
+
+/* The creature rail is pinned, never independently scrollable.
+   Use ordinary page scrolling if the viewport cannot fit the profile. */
+@media(min-width:1191px) and (min-height:850px){
+ .taming-workspace .taming-combined-panel .taming-art-stage{
+  aspect-ratio:1.55 / 1;
+  min-height:190px;
+  max-height:min(350px,33vh);
+ }
+ .taming-workspace .taming-combined-panel .taming-picker-bar{gap:8px;margin-bottom:10px}
+ .taming-workspace .taming-combined-panel .taming-dashboard-key-stats{gap:6px;margin-top:9px}
+ .taming-workspace .taming-combined-panel .taming-dashboard-key-stats>div{padding:9px}
+ .taming-workspace .taming-combined-panel .taming-compact-links{margin-top:9px;padding-top:9px}
+}
+@media(min-width:1191px) and (max-height:849px){
+ .taming-workspace>.taming-combined-panel{position:static;top:auto;overflow:visible;max-height:none}
 }
