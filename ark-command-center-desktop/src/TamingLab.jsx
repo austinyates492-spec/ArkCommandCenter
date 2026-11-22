@@ -5,6 +5,7 @@ import {maps} from './data';
 import {vanillaKnockoutRoster,knockoutPickerCreatures} from './vanilla-tame-picker.js';
 import {availableFoods,calculateTame,knockoutProfiles} from './taming-engine';
 import {knockoutEstimate,knockoutSpecies} from './knockout-engine';
+import {unconsciousSupplies} from './torpor-maintenance.js';
 import {getTamingMethod,tamingCategory} from './special-taming-methods.js';
 import {RexArtwork} from './RexDossier.jsx';
 import CreatureLineArt from './CreatureLineArt.jsx';
@@ -29,6 +30,8 @@ export default function TamingLab({rates,onTimer,onNavigate,clusterId='nomadark'
  const [longneckBuffPercent,setLongneckBuffPercent]=useState(100);
  const [torporMultiplier,setTorporMultiplier]=useState(1);
  const [targetTorpor,setTargetTorpor]=useState('');
+ const [currentTorpor,setCurrentTorpor]=useState('');
+ const [torporDrainMultiplier,setTorporDrainMultiplier]=useState(1);
  const foods=useMemo(()=>availableFoods(creature),[creature]);
  const special=getTamingMethod(creature);
  const matchingCreatures=useMemo(()=>knockoutPickerCreatures(reviewCreature).filter(name=>name.toLowerCase().includes(creatureQuery.toLowerCase())),[creatureQuery,reviewCreature]);
@@ -39,6 +42,7 @@ export default function TamingLab({rates,onTimer,onNavigate,clusterId='nomadark'
  const finalMinutes=isManual?Number(manualMinutes):result.minutes;
  const canStart=isKnockout&&Number.isFinite(finalMinutes)&&finalMinutes>0;
  const knockout=isKnockout?knockoutEstimate({creature,level,weaponQuality,longneckBuffPercent,torporMultiplier,targetTorpor}):{ok:false,reason:'Ordinary tranquilizers are not used for this encounter.'};
+ const maintenance=isKnockout&&knockout.ok&&result.ok?unconsciousSupplies({creature,level,tameSeconds:result.seconds,totalTorpor:knockout.totalTorpor,drainMultiplier:torporDrainMultiplier,startingTorpor:currentTorpor}):{ok:false,reason:!result.ok?'Choose a verified food and tame-time calculation first.':'Enter verified knockout torpor to estimate keeping the creature unconscious.'};
  const bestAmmo=knockout.ok&&knockout.rows.length?knockout.rows.reduce((best,item)=>item.body<best.body?item:best):null;
  const maxBodyShots=knockout.ok?Math.max(1,...knockout.rows.map(item=>item.body)):1;
  const planNote=!isKnockout?(special?.instructions||'This species requires a dedicated taming method.'):special?special.instructions:result.ok?result.caveat:result.reason;
@@ -122,6 +126,30 @@ export default function TamingLab({rates,onTimer,onNavigate,clusterId='nomadark'
      <div><strong>NomadARK Longneck buff:</strong> Default is OFF (100%). Apply a verified server-specific modifier only if it is separate from the weapon tooltip's damage percentage. Bow and crossbow rows do not use this buff. If the game tooltip already includes it, adjust the field to avoid double-counting. {knockout.referenceOnly?'TORPOR REFERENCE ONLY: projectile resistance not verified. ':knockout.manual?'Manual torpor mode uses in-game torpor. ':knockout.verification!=='reviewed'?'Wiki-derived torpor profile: headshot and resistance may differ. ':''}The baseline is official 1×. Weapon percentage and effective torpor multiplier can be changed after a calculation and update all ammo rows immediately. Torpor over time must be allowed to finish before firing additional shots. These are theoretical minimum shots; allow a buffer for misses, resistance and torpor loss.</div>
     </details>
     <a className="taming-ko-source" href="https://ark.wiki.gg/wiki/Tranquilizer_Comparison_Table" target="_blank" rel="noreferrer">Ammo calculation reference <ExternalLink size={14}/></a>
+   </section>}
+
+   {isKnockout&&!special&&<section className="panel knockout-panel taming-torpor-maintenance-card" aria-label="Keeping your tame unconscious">
+    <div className="panelhead"><h2><ShieldCheck size={18}/> Keep It Unconscious</h2><span className="badge gold">TAMING SUPPLIES</span></div>
+    <p>Estimate each alternative torpor consumable needed to keep {creature} knocked out for the selected food and full tame duration. These counts are alternatives, not items to add together.</p>
+    <div className="taming-ko-settings">
+     <label className="field"><span>Wild torpor drain multiplier (1× official)</span><input type="number" min="0.01" max="1000" step="0.1" value={torporDrainMultiplier} onChange={event=>setTorporDrainMultiplier(event.target.value)}/></label>
+     <label className="field"><span>Current torpor (optional; defaults to full)</span><input type="number" min="0.01" max={knockout.ok?knockout.totalTorpor:undefined} step="0.1" value={currentTorpor} onChange={event=>setCurrentTorpor(event.target.value)} placeholder={knockout.ok?String(Math.round(knockout.totalTorpor)):'Maximum torpor'}/></label>
+    </div>
+    {maintenance.ok?<div className="taming-ammo-section">
+      <div className="taming-ko-headline">
+       <div className="taming-ko-target"><span>TORPOR DEPLETION</span><strong>{maintenance.drainPerSecond.toFixed(2)}/s</strong><small>Wild Lv {level}</small></div>
+       <div className="taming-ko-shortcut"><span>NO-ITEM WAKE-UP TIME</span><strong>{duration(Math.floor(maintenance.initialTorpor/maintenance.drainPerSecond))}</strong><small>Approximate if untreated</small></div>
+      </div>
+      <div className="taming-ammo-list">
+       {maintenance.rows.map(item=><div key={item.id} className="taming-ammo-row">
+        <div className="taming-ammo-icon" aria-hidden="true"><ShieldCheck size={18}/></div>
+        <div className="taming-ammo-description"><strong>{item.label}</strong><small>{item.torpor} torpor over {item.effectSeconds}s</small></div>
+        <div className="taming-shot-count"><strong>{numberFormat.format(item.amount)}</strong><small>EST. NEEDED</small></div>
+       </div>)}
+      </div>
+      <small className="taming-ammo-explainer">Wiki-model theoretical minimum assuming the selected food, an uninterrupted tame, and the entered starting torpor. Bring extra and monitor torpor; do not feed all at once near maximum. High-drain creatures and server settings may differ.</small>
+     </div>:<div className="taming-ko-unverified"><Info size={17}/><span>{maintenance.reason}</span></div>}
+     <a className="taming-ko-source" href="https://ark.wiki.gg/wiki/Module:TamingTable" target="_blank" rel="noreferrer">Official wiki torpor formula <ExternalLink size={14}/></a>
    </section>}
 
    {!isKnockout&&<section className="panel taming-method-panel">
