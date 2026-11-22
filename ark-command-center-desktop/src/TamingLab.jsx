@@ -32,6 +32,7 @@ export default function TamingLab({rates,onTimer,onNavigate,clusterId='nomadark'
  const [targetTorpor,setTargetTorpor]=useState('');
  const [currentTorpor,setCurrentTorpor]=useState('');
  const [torporDrainMultiplier,setTorporDrainMultiplier]=useState(1);
+ const [observedTameMinutes,setObservedTameMinutes]=useState('');
  const foods=useMemo(()=>availableFoods(creature),[creature]);
  const special=getTamingMethod(creature);
  const matchingCreatures=useMemo(()=>knockoutPickerCreatures(reviewCreature).filter(name=>name.toLowerCase().includes(creatureQuery.toLowerCase())),[creatureQuery,reviewCreature]);
@@ -42,7 +43,9 @@ export default function TamingLab({rates,onTimer,onNavigate,clusterId='nomadark'
  const finalMinutes=isManual?Number(manualMinutes):result.minutes;
  const canStart=isKnockout&&Number.isFinite(finalMinutes)&&finalMinutes>0;
  const knockout=isKnockout?knockoutEstimate({creature,level,weaponQuality,longneckBuffPercent,torporMultiplier,targetTorpor}):{ok:false,reason:'Ordinary tranquilizers are not used for this encounter.'};
- const maintenance=isKnockout&&knockout.ok&&result.ok?unconsciousSupplies({creature,level,tameSeconds:result.seconds,totalTorpor:knockout.totalTorpor,drainMultiplier:torporDrainMultiplier,startingTorpor:currentTorpor}):{ok:false,reason:!result.ok?'Choose a verified food and tame-time calculation first.':'Enter verified knockout torpor to estimate keeping the creature unconscious.'};
+ const useObservedTime=observedTameMinutes.trim()!=='';
+ const maintenanceSeconds=useObservedTime?Number(observedTameMinutes)*60:result.seconds;
+ const maintenance=isKnockout&&knockout.ok&&(result.ok||useObservedTime)?unconsciousSupplies({creature,level,tameSeconds:maintenanceSeconds,totalTorpor:knockout.totalTorpor,drainMultiplier:torporDrainMultiplier,startingTorpor:currentTorpor}):{ok:false,reason:!result.ok?'Choose a verified food and tame-time calculation first.':'Enter verified knockout torpor to estimate keeping the creature unconscious.'};
  const bestAmmo=knockout.ok&&knockout.rows.length?knockout.rows.reduce((best,item)=>item.body<best.body?item:best):null;
  const maxBodyShots=knockout.ok?Math.max(1,...knockout.rows.map(item=>item.body)):1;
  const planNote=!isKnockout?(special?.instructions||'This species requires a dedicated taming method.'):special?special.instructions:result.ok?result.caveat:result.reason;
@@ -130,9 +133,10 @@ export default function TamingLab({rates,onTimer,onNavigate,clusterId='nomadark'
 
    {isKnockout&&!special&&<section className="panel knockout-panel taming-torpor-maintenance-card" aria-label="Keeping your tame unconscious">
     <div className="panelhead"><h2><ShieldCheck size={18}/> Keep It Unconscious</h2><span className="badge gold">TAMING SUPPLIES</span></div>
-    <p>Estimate each alternative torpor consumable needed to keep {creature} knocked out for the selected food and full tame duration. These counts are alternatives, not items to add together.</p>
+    <p>Estimate each torpor consumable separately using <strong>{selectedFood||'the chosen food'}</strong>, {rates.taming}× taming and {rates.food}× food drain. Selecting different food can change the Narcotic estimate dramatically. Counts are alternatives, not items to add together.</p>
     <div className="taming-ko-settings">
      <label className="field"><span>Wild torpor drain multiplier (1× official)</span><input type="number" min="0.01" max="1000" step="0.1" value={torporDrainMultiplier} onChange={event=>setTorporDrainMultiplier(event.target.value)}/></label>
+     <label className="field"><span>Tame duration override (minutes, optional)</span><input type="number" min="0.01" max="525600" step="0.1" value={observedTameMinutes} onChange={event=>setObservedTameMinutes(event.target.value)} placeholder={result.ok?String(Math.round(result.minutes*10)/10):'Observed remaining minutes'}/></label>
      <label className="field"><span>Current torpor (optional; defaults to full)</span><input type="number" min="0.01" max={knockout.ok?knockout.totalTorpor:undefined} step="0.1" value={currentTorpor} onChange={event=>setCurrentTorpor(event.target.value)} placeholder={knockout.ok?String(Math.round(knockout.totalTorpor)):'Maximum torpor'}/></label>
     </div>
     {maintenance.ok?<div className="taming-ammo-section">
@@ -144,10 +148,10 @@ export default function TamingLab({rates,onTimer,onNavigate,clusterId='nomadark'
        {maintenance.rows.map(item=><div key={item.id} className="taming-ammo-row">
         <div className="taming-ammo-icon" aria-hidden="true"><ShieldCheck size={18}/></div>
         <div className="taming-ammo-description"><strong>{item.label}</strong><small>{item.torpor} torpor over {item.effectSeconds}s</small></div>
-        <div className="taming-shot-count"><strong>{numberFormat.format(item.amount)}</strong><small>EST. NEEDED</small></div>
+        <div className="taming-shot-count"><strong>{numberFormat.format(item.amount)}</strong><small>THEORETICAL MIN</small></div>
        </div>)}
       </div>
-      <small className="taming-ammo-explainer">Wiki-model theoretical minimum assuming the selected food, an uninterrupted tame, and the entered starting torpor. Bring extra and monitor torpor; do not feed all at once near maximum. High-drain creatures and server settings may differ.</small>
+      <small className="taming-ammo-explainer">Wiki-model theoretical minimum assuming the selected food, uninterrupted taming and full starting torpor unless overridden. Bring extra and monitor torpor; do not feed all at once near maximum. High-drain creatures and server settings may differ.</small>
      </div>:<div className="taming-ko-unverified"><Info size={17}/><span>{maintenance.reason}</span></div>}
      <a className="taming-ko-source" href="https://ark.wiki.gg/wiki/Module:TamingTable" target="_blank" rel="noreferrer">Official wiki torpor formula <ExternalLink size={14}/></a>
    </section>}
