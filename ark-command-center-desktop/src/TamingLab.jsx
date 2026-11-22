@@ -72,29 +72,6 @@ export default function TamingLab({rates,onTimer,onNavigate,clusterId='nomadark'
        <span className="taming-art-status">{((artPreview==='amarga'&&creature==='Amargasaurus')||(artPreview==='ammonite'&&creature==='Ammonite')||(artPreview==='baryonyx'&&creature==='Baryonyx'))?'REVIEW ONLY · NOT FINAL':creature==='Rex'||hasDetailedOutline(creature)?'SPECIES LINE ART':'ANATOMY STUDY'}</span>
       </div>
       <div className="taming-creature-meta"><span><strong>LEVEL</strong> {level||'—'}</span><span><strong>MAP</strong> {map}</span><span><strong>TYPE</strong> {category}</span></div>
-     </div>
-     <div className="taming-plan-content">
-      <div className="taming-small-title"><h3>Plan a Tame</h3><small>{rates.taming}× TAMING</small></div>
-      <div className="taming-compact-fields">
-       <label className="field"><span>Wild Level</span><input type="number" min="1" max="1000" value={level} onChange={e=>setLevel(e.target.value)}/></label>
-       <label className="field"><span>Map</span><select value={map} onChange={e=>setMap(e.target.value)}>{maps.map(name=><option key={name}>{name}</option>)}</select></label>
-       {isKnockout&&!special&&<label className="field taming-field-wide"><span>Food</span><select value={selectedFood} disabled={!foods.length} onChange={e=>setFood(e.target.value)}>{foods.length?foods.map(name=><option key={name}>{name}</option>):<option value="">Manual verification required</option>}</select></label>}
-      </div>
-      {!isKnockout?<div className="taming-method-callout"><strong>{category.toUpperCase()} METHOD</strong><p>{category==='untameable'?'Not an ordinary tame. No taming timer or tranquilizer estimate is available.':'This creature uses a different taming process, so standard food and tranquilizer counts are hidden.'}</p>{category!=='untameable'&&<button className="primary" type="button" onClick={()=>onNavigate?.(category==='passive'?'passive':'specialty',creature)}>Open {category==='passive'?'Passive':'Specialty'} Planner</button>}</div>:special?<div className="taming-manual-input"><p>{special.type}: {special.instructions}</p>{special.status!=='untameable'&&<label className="field"><span>Verified time (minutes)</span><input type="number" min="0.1" step="0.1" value={manualMinutes} onChange={e=>setManualMinutes(e.target.value)} placeholder="Optional manual timer"/></label>}</div>:result.ok?<div className="taming-estimate-cards"><div><span>FOOD REQUIRED</span><strong>{numberFormat.format(result.foodPieces)}</strong><small>{selectedFood}</small></div><div><span>TAME TIME</span><strong>{duration(result.seconds)}</strong><small>{rates.taming}× profile</small></div></div>:<div className="taming-manual-input"><p>{result.reason} Enter values verified against your cluster.</p><div className="taming-compact-fields"><label className="field"><span>Verified food count</span><input type="number" min="1" value={manualFood} onChange={e=>setManualFood(e.target.value)} placeholder="Optional"/></label><label className="field"><span>Verified minutes</span><input type="number" min="0.1" step="0.1" value={manualMinutes} onChange={e=>setManualMinutes(e.target.value)} placeholder="Timer duration"/></label></div></div>}
-      {isKnockout&&<button type="button" className="primary taming-start-btn" disabled={!canStart||special?.status==='untameable'} onClick={()=>onTimer(creature+' Lv '+level+' · '+map+(isManual?' · manual':''),finalMinutes,'Taming')}>Start Timer <Timer size={16}/></button>}
-     </div>
-    </div>
-    <div className="taming-plan-notes">
-     <div className="taming-note-heading"><ShieldCheck size={16}/><strong>Plan Notes</strong><span>FIELD GUIDANCE</span></div>
-     <p>{planNote}</p>
-     
-     {isKnockout&&result.ok&&<small>Rates: {rates.taming}× taming · {rates.food}× dinosaur food drain. Check your server's actual settings.</small>}
-    </div>
-    <div className="taming-compact-links">
-     <a href={special?.source||wikiUrl} target="_blank" rel="noreferrer">Species Wiki <ExternalLink size={14}/></a>
-     <a href={dododexUrl} target="_blank" rel="noreferrer">Cross-check Dododex <ExternalLink size={14}/></a>
-     <span>{Object.keys(knockoutProfiles).length} built-in food profiles</span>
-    </div>
    {isKnockout&&!special&&<div className="taming-maintenance-inline" aria-label="Keeping your tame unconscious">
     <div className="taming-maintenance-heading"><h3><ShieldCheck size={18}/> Keep It Unconscious</h3><span className="badge gold">TAMING SUPPLIES</span></div>
     <p>Estimate each torpor consumable separately using <strong>{selectedFood||'the chosen food'}</strong>, {rates.taming}× taming and {rates.food}× food drain. Selecting different food can change the Narcotic estimate dramatically. Counts are alternatives, not items to add together.</p>
@@ -119,6 +96,30 @@ export default function TamingLab({rates,onTimer,onNavigate,clusterId='nomadark'
      </div>:<div className="taming-ko-unverified"><Info size={17}/><span>{maintenance.reason}</span></div>}
      <a className="taming-ko-source" href="https://ark.wiki.gg/wiki/Module:TamingTable" target="_blank" rel="noreferrer">Official wiki torpor formula <ExternalLink size={14}/></a>
    </div>}
+     </div>
+     <div className="taming-plan-content">
+      <div className="taming-small-title"><h3>Plan a Tame</h3><small>{rates.taming}× TAMING</small></div>
+      <div className="taming-compact-fields">
+       <label className="field"><span>Wild Level</span><input type="number" min="1" max="1000" value={level} onChange={e=>setLevel(e.target.value)}/></label>
+       <label className="field"><span>Map</span><select value={map} onChange={e=>setMap(e.target.value)}>{maps.map(name=><option key={name}>{name}</option>)}</select></label>
+       {isKnockout&&!special&&<label className="field taming-field-wide"><span>Food</span><select value={selectedFood} disabled={!foods.length} onChange={e=>setFood(e.target.value)}>{foods.length?foods.map(name=><option key={name}>{name}</option>):<option value="">Manual verification required</option>}</select></label>}
+      </div>
+      {!isKnockout?<div className="taming-method-callout"><strong>{category.toUpperCase()} METHOD</strong><p>{category==='untameable'?'Not an ordinary tame. No taming timer or tranquilizer estimate is available.':'This creature uses a different taming process, so standard food and tranquilizer counts are hidden.'}</p>{category!=='untameable'&&<button className="primary" type="button" onClick={()=>onNavigate?.(category==='passive'?'passive':'specialty',creature)}>Open {category==='passive'?'Passive':'Specialty'} Planner</button>}</div>:special?<div className="taming-manual-input"><p>{special.type}: {special.instructions}</p>{special.status!=='untameable'&&<label className="field"><span>Verified time (minutes)</span><input type="number" min="0.1" step="0.1" value={manualMinutes} onChange={e=>setManualMinutes(e.target.value)} placeholder="Optional manual timer"/></label>}</div>:result.ok?<div className="taming-estimate-cards"><div><span>FOOD REQUIRED</span><strong>{numberFormat.format(result.foodPieces)}</strong><small>{selectedFood}</small></div><div><span>TAME TIME</span><strong>{duration(result.seconds)}</strong><small>{rates.taming}× profile</small></div></div>:<div className="taming-manual-input"><p>{result.reason} Enter values verified against your cluster.</p><div className="taming-compact-fields"><label className="field"><span>Verified food count</span><input type="number" min="1" value={manualFood} onChange={e=>setManualFood(e.target.value)} placeholder="Optional"/></label><label className="field"><span>Verified minutes</span><input type="number" min="0.1" step="0.1" value={manualMinutes} onChange={e=>setManualMinutes(e.target.value)} placeholder="Timer duration"/></label></div></div>}
+      {isKnockout&&<button type="button" className="primary taming-start-btn" disabled={!canStart||special?.status==='untameable'} onClick={()=>onTimer(creature+' Lv '+level+' · '+map+(isManual?' · manual':''),finalMinutes,'Taming')}>Start Timer <Timer size={16}/></button>}
+     </div>
+    </div>
+    <div className="taming-plan-notes">
+     <div className="taming-note-heading"><ShieldCheck size={16}/><strong>Plan Notes</strong><span>FIELD GUIDANCE</span></div>
+     <p>{planNote}</p>
+     
+     {isKnockout&&result.ok&&<small>Rates: {rates.taming}× taming · {rates.food}× dinosaur food drain. Check your server's actual settings.</small>}
+    </div>
+    <div className="taming-compact-links">
+     <a href={special?.source||wikiUrl} target="_blank" rel="noreferrer">Species Wiki <ExternalLink size={14}/></a>
+     <a href={dododexUrl} target="_blank" rel="noreferrer">Cross-check Dododex <ExternalLink size={14}/></a>
+     <span>{Object.keys(knockoutProfiles).length} built-in food profiles</span>
+    </div>
+
    </section>
 
    {isKnockout&&!special&&<section className="panel knockout-panel taming-knockout-card" aria-label="Knockout planner">
