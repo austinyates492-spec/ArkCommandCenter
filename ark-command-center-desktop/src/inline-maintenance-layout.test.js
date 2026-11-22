@@ -14,7 +14,7 @@ test('unconscious maintenance sits directly below dinosaur artwork in left card,
  assert.ok(loadout>=0 && loadout<photo && photo<artwork && artwork<metadata && metadata<maintenance && maintenance<planContent && planContent<planner, 'maintenance must be after photo metadata and before plan fields');
  assert.equal((src.match(/className="panel (?:taming-combined-panel|knockout-panel taming-knockout-card)"/g)||[]).length,2,'exactly two main cards');
  assert.doesNotMatch(src,/className="panel knockout-panel taming-torpor-maintenance-card"/);
- assert.match(src,/<\/div>\}\s*<\/section>\s*\{isKnockout&&!special&&<section className="panel knockout-panel taming-knockout-card"/);
+ assert.match(src, /className="taming-creature-meta"[^\n]*<\/div>\s*\{isKnockout&&!special&&<div className="taming-maintenance-inline"/);
  for(const important of ['Wild torpor drain multiplier','Current torpor','Tame duration override','maintenance.rows.map','Keep It Unconscious']){
   assert.ok(src.includes(important),important+' is preserved');
  }
