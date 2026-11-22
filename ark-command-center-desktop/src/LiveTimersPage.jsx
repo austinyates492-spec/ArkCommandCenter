@@ -16,18 +16,19 @@ function TimerAdjustment({timer,now,live}){
  const currentProgress=Math.max(0,Math.min(100,(now-timer.created)/duration*100));
  const [open,setOpen]=useState(false);
  const [progress,setProgress]=useState(currentProgress);
- const [remaining,setRemaining]=useState(currentRemaining.toFixed(2));
+ const [manualPercent,setManualPercent]=useState(currentProgress.toFixed(1));
  const [saving,setSaving]=useState(false);
  const [message,setMessage]=useState('');
- useEffect(()=>{setProgress(Math.max(0,Math.min(100,(Date.now()-timer.created)/Math.max(1000,timer.end-timer.created)*100)));setRemaining(Math.max(0,(timer.end-Date.now())/60000).toFixed(2));setMessage('');},[timer.created,timer.end]);
+ useEffect(()=>{setProgress(Math.max(0,Math.min(100,(Date.now()-timer.created)/Math.max(1000,timer.end-timer.created)*100)));setManualPercent(Math.max(0,Math.min(100,(Date.now()-timer.created)/Math.max(1000,timer.end-timer.created)*100)).toFixed(1));setMessage('');},[timer.created,timer.end]);
  const isGrowth=timer.type==='Maturation';
  const next=isGrowth?growthStages.find(stage=>currentProgress/100<stage.at):null;
  const nextTime=next?timer.created+duration*next.at:null;
- const remainingNumber=Number(remaining);
+ const enteredPercent=manualPercent.trim()===''?NaN:Number(manualPercent);
  const save=async()=>{
-  if(!Number.isFinite(remainingNumber)||remainingNumber<0||remainingNumber>525600){setMessage('Enter a valid remaining time of 0 to 525600 minutes.');return;}
+  if(!Number.isFinite(enteredPercent)||enteredPercent<0||enteredPercent>100){setMessage('Enter a valid growth or timer progress percentage from 0 to 100.');return;}
+  const remainingMinutes=duration*(1-enteredPercent/100)/60000;
   setSaving(true);setMessage('');
-  try{await live.adjustTimer(timer.id,remainingNumber,timer.end);setOpen(false);}
+  try{await live.adjustTimer(timer.id,remainingMinutes,timer.end);setOpen(false);}
   catch(error){setMessage(error.message||'Could not save this adjustment.');}
   finally{setSaving(false);}
  };
@@ -38,12 +39,12 @@ function TimerAdjustment({timer,now,live}){
   <button className="ghost" type="button" aria-expanded={open} onClick={()=>setOpen(value=>!value)}>{open?'Close adjustment':'Adjust time / progress'}</button>
   {open&&<div className="timer-adjust-controls">
    <label className="field"><span>Progress: {Number(progress).toFixed(1)}%</span>
-    <input type="range" min="0" max="100" step="0.1" value={progress} onChange={event=>{const p=Number(event.target.value);setProgress(p);setRemaining((duration*(1-p/100)/60000).toFixed(2));}}/>
+    <input type="range" min="0" max="100" step="0.1" value={progress} onChange={event=>{const p=Number(event.target.value);setProgress(p);setManualPercent(p.toFixed(1));}}/>
    </label>
-   <label className="field"><span>Time remaining (minutes, manual entry)</span>
-    <input type="number" min="0" max="525600" step="0.01" value={remaining} onChange={event=>{setRemaining(event.target.value);const v=Number(event.target.value);if(Number.isFinite(v))setProgress(Math.max(0,Math.min(100,100-v*60000/duration*100)));}}/>
+   <label className="field"><span>Progress percentage (manual entry, %)</span>
+    <input type="number" min="0" max="100" step="0.1" value={manualPercent} onChange={event=>{setManualPercent(event.target.value);const v=Number(event.target.value);if(event.target.value!==''&&Number.isFinite(v))setProgress(Math.max(0,Math.min(100,v)));}}/>
    </label>
-   <small>Slide to the baby's current growth percentage or enter the corrected time remaining. Saving updates this shared timer for the whole tribe.</small>
+   <small>Slide or type the creature's current growth percentage (0–100%). Both inputs remain synchronized. The original timer duration determines remaining time. Saving updates this shared timer for the whole tribe.</small>
    {message&&<div className="notice" role="alert">{message}</div>}
    <button className="primary" type="button" disabled={saving} onClick={save}>{saving?'Saving…':'Save for entire tribe'}</button>
   </div>}
@@ -57,7 +58,7 @@ export default function LiveTimersPage({live,user,now,onAdd,onOpenAccount,onTest
  const active=live.timers.filter(t=>t.end>now),finished=live.timers.filter(t=>t.end<=now);
  const old=legacy().filter(t=>Number(t.end)>now&&t.name);
  const importOld=()=>{setImporting(true);void(async()=>{for(const timer of old)await live.addTimer(timer.name,(timer.end-Date.now())/60000,timer.type||'Imported');localStorage.setItem('ark.timersImportedV08','true');setImported(true);})().catch(()=>{}).finally(()=>setImporting(false));};
- return <><div className="pagetitle"><span className="eyebrow">OPERATIONS / SHARED COUNTDOWNS</span><h1>Tribe Live Timers</h1><p>Everyone in your tribe sees the same timers. Adjust them with a progress slider or manual time entry; raising timers also show the next growth milestone.</p></div>
+ return <><div className="pagetitle"><span className="eyebrow">OPERATIONS / SHARED COUNTDOWNS</span><h1>Tribe Live Timers</h1><p>Everyone in your tribe sees the same timers. Adjust them with a progress slider or manual percentage entry; raising timers also show the next growth milestone.</p></div>
  {!user?<section className="panel"><h2>Sign in for shared timers</h2><p>All new timers are live tribe operations. Sign in to create and view them.</p><button className="primary" onClick={onOpenAccount}><Cloud size={17}/> Open Tribe Cloud</button></section>:
  <><div className="notice">{live.status==='live'?'● Live stream connected.':`Cloud updates: ${live.status}.`} {old.length>0&&!imported&&<button className="ghost" disabled={importing} onClick={importOld}><Upload size={16}/> Import {old.length} old timers</button>}</div>{live.error&&<div className="notice">{live.error}</div>}
   <div className="two wideleft"><section className="panel"><div className="panelhead"><h2>Active Tribe Countdowns</h2><span className="badge green">{active.length} RUNNING</span></div>
