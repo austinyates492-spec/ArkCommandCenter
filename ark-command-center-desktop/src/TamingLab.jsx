@@ -59,12 +59,12 @@ export default function TamingLab({rates,onTimer,onNavigate,clusterId='nomadark'
   </div>
   <div className="taming-workspace">
    <section className="panel taming-combined-panel" aria-label="Creature loadout and tame plan">
-    <div className="panelhead"><h2>Loadout & Sources</h2><span className={'badge '+(!special&&result.ok?'green':'gold')}>{special?special.type:result.ok?'WIKI MODEL':'METHOD REVIEW'}</span></div>
+    <div className="panelhead"><h2>Creature Profile</h2><span className={'badge '+(!special&&result.ok?'green':'gold')}>{special?special.type:result.ok?'WIKI MODEL':'METHOD REVIEW'}</span></div>
     <div className="taming-picker-bar">
      <label className="field taming-search-field"><span>Search all knockout creatures and variants</span><input value={creatureQuery} onChange={e=>setCreatureQuery(e.target.value)} placeholder="Search Rex, Allosaurus, Giga, Tek, Aberrant..."/></label>
      <label className="field taming-creature-field"><span>Creature ({matchingCreatures.length} matches)</span><select value={matchingCreatures.includes(creature)?creature:''} onChange={e=>setCreature(e.target.value)}>{!matchingCreatures.includes(creature)&&<option value="">Select a creature</option>}{matchingCreatures.map(name=><option key={name} value={name}>{name}</option>)}</select></label>
     </div>
-    <div className="taming-plan-layout">
+    <div className="taming-dashboard-creature">
      <div className="taming-visual-column">
       <div className={'taming-art-stage'+(creature==='Rex'?' taming-art-rex':'')} aria-label={creature+' creature field sketch'}>
        <span className="taming-art-caption">CREATURE FIELD SKETCH <strong>{creature.toUpperCase()}</strong></span>
@@ -74,6 +74,24 @@ export default function TamingLab({rates,onTimer,onNavigate,clusterId='nomadark'
       <div className="taming-creature-meta"><span><strong>LEVEL</strong> {level||'—'}</span><span><strong>MAP</strong> {map}</span><span><strong>TYPE</strong> {category}</span></div>
 
      </div>
+
+     <div className="taming-dashboard-key-stats" aria-label="Creature quick stats">
+      <div><span>WILD LEVEL</span><strong>{level||'—'}</strong></div>
+      <div><span>TARGET TORPOR</span><strong>{knockout.ok?numberFormat.format(knockout.totalTorpor):'—'}</strong></div>
+      <div><span>TAME DURATION</span><strong>{result.ok?duration(result.seconds):'—'}</strong></div>
+      <div><span>FOOD REQUIRED</span><strong>{result.ok?numberFormat.format(result.foodPieces):'—'}</strong></div>
+     </div>
+    </div>
+    <div className="taming-compact-links">
+     <a href={special?.source||wikiUrl} target="_blank" rel="noreferrer">Species Wiki <ExternalLink size={14}/></a>
+     <a href={dododexUrl} target="_blank" rel="noreferrer">Cross-check Dododex <ExternalLink size={14}/></a>
+     <span>{Object.keys(knockoutProfiles).length} built-in food profiles</span>
+    </div>
+   </section>
+
+   <div className="taming-dashboard-tools" aria-label="Creature operations">
+    <section className="panel taming-dashboard-tame" aria-label="Tame calculator">
+     <div className="panelhead"><h2><Timer size={18}/> Tame Calculator</h2><span className="badge green">{rates.taming}× TAMING</span></div>
      <div className="taming-plan-content">
       <div className="taming-small-title"><h3>Plan a Tame</h3><small>{rates.taming}× TAMING</small></div>
       <div className="taming-compact-fields">
@@ -84,23 +102,15 @@ export default function TamingLab({rates,onTimer,onNavigate,clusterId='nomadark'
       {!isKnockout?<div className="taming-method-callout"><strong>{category.toUpperCase()} METHOD</strong><p>{category==='untameable'?'Not an ordinary tame. No taming timer or tranquilizer estimate is available.':'This creature uses a different taming process, so standard food and tranquilizer counts are hidden.'}</p>{category!=='untameable'&&<button className="primary" type="button" onClick={()=>onNavigate?.(category==='passive'?'passive':'specialty',creature)}>Open {category==='passive'?'Passive':'Specialty'} Planner</button>}</div>:special?<div className="taming-manual-input"><p>{special.type}: {special.instructions}</p>{special.status!=='untameable'&&<label className="field"><span>Verified time (minutes)</span><input type="number" min="0.1" step="0.1" value={manualMinutes} onChange={e=>setManualMinutes(e.target.value)} placeholder="Optional manual timer"/></label>}</div>:result.ok?<div className="taming-estimate-cards"><div><span>FOOD REQUIRED</span><strong>{numberFormat.format(result.foodPieces)}</strong><small>{selectedFood}</small></div><div><span>TAME TIME</span><strong>{duration(result.seconds)}</strong><small>{rates.taming}× profile</small></div></div>:<div className="taming-manual-input"><p>{result.reason} Enter values verified against your cluster.</p><div className="taming-compact-fields"><label className="field"><span>Verified food count</span><input type="number" min="1" value={manualFood} onChange={e=>setManualFood(e.target.value)} placeholder="Optional"/></label><label className="field"><span>Verified minutes</span><input type="number" min="0.1" step="0.1" value={manualMinutes} onChange={e=>setManualMinutes(e.target.value)} placeholder="Timer duration"/></label></div></div>}
       {isKnockout&&<button type="button" className="primary taming-start-btn" disabled={!canStart||special?.status==='untameable'} onClick={()=>onTimer(creature+' Lv '+level+' · '+map+(isManual?' · manual':''),finalMinutes,'Taming')}>Start Timer <Timer size={16}/></button>}
      </div>
-    </div>
     <div className="taming-plan-notes">
      <div className="taming-note-heading"><ShieldCheck size={16}/><strong>Plan Notes</strong><span>FIELD GUIDANCE</span></div>
      <p>{planNote}</p>
      
      {isKnockout&&result.ok&&<small>Rates: {rates.taming}× taming · {rates.food}× dinosaur food drain. Check your server's actual settings.</small>}
     </div>
-    <div className="taming-compact-links">
-     <a href={special?.source||wikiUrl} target="_blank" rel="noreferrer">Species Wiki <ExternalLink size={14}/></a>
-     <a href={dododexUrl} target="_blank" rel="noreferrer">Cross-check Dododex <ExternalLink size={14}/></a>
-     <span>{Object.keys(knockoutProfiles).length} built-in food profiles</span>
-    </div>
-
-   </section>
-
+    </section>
    {isKnockout&&!special&&<section className="panel knockout-panel taming-knockout-card" aria-label="Knockout planner">
-    <div className="panelhead"><h2><Crosshair size={18}/> Knockout Planner</h2><span className="badge gold">OFFICIAL BASE · 1×</span></div>
+    <div className="panelhead"><h2><Crosshair size={18}/> Knockout Calculator</h2><span className="badge gold">OFFICIAL BASE · 1×</span></div>
     {knockout.ok?<div className="taming-ko-headline">
      <div className="taming-ko-target"><span>TARGET TORPOR</span><strong>{numberFormat.format(knockout.totalTorpor)}</strong><small>Wild Lv {level}</small></div>
      <div className="taming-ko-shortcut"><span>FEWEST BODY SHOTS</span><strong>{bestAmmo?numberFormat.format(bestAmmo.body):'—'}</strong><small>{bestAmmo?.label||'Unknown'}</small></div>
@@ -163,6 +173,7 @@ export default function TamingLab({rates,onTimer,onNavigate,clusterId='nomadark'
     {category!=='untameable'&&<button className="primary" type="button" onClick={()=>onNavigate?.(category==='passive'?'passive':'specialty',creature)}>Open {category==='passive'?'Passive':'Specialty'} Taming Lab</button>}
     <a className="taming-ko-source" href={special?.source||wikiUrl} target="_blank" rel="noreferrer">Read species method <ExternalLink size={14}/></a>
    </section>}
+   </div>
   </div>
   <TameSpawnAtlas creature={creature} map={map}/>
  </>;

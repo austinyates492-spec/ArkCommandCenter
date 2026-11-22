@@ -136,18 +136,20 @@ test('restored Taming Lab keeps visible search and original calculator for Rex a
  assert.match(css,/@media\(max-width:480px\)/);
 });
 
-test('Taming Lab combines a smaller creature image, dropdown and plan on the left, knockout alongside',()=>{
+test('Taming Lab renders artwork-and-stats rail with stacked calculator modules',()=>{
  const lab=source('TamingLab.jsx'),css=source('taming-lab-art.css');
  assert.match(lab,/className="taming-workspace"/);
  assert.match(lab,/className="panel taming-combined-panel"/);
  assert.match(lab,/className="taming-picker-bar"/);
- assert.ok(lab.indexOf('Loadout & Sources')<lab.indexOf('Search all knockout creatures and variants'),'Creature selection stays in Loadout & Sources');
- assert.ok(lab.indexOf('Search all knockout creatures and variants')<lab.indexOf('Plan a Tame'),'Search precedes the plan');
- assert.ok(lab.indexOf('Plan a Tame')<lab.indexOf('Knockout Planner'),'The knockout panel appears alongside the combined loadout');
+ assert.ok(lab.indexOf('Creature Profile')<lab.indexOf('Search all knockout creatures and variants'));
+ assert.ok(lab.indexOf('Search all knockout creatures and variants')<lab.indexOf('taming-dashboard-key-stats'));
+ assert.ok(lab.indexOf('taming-dashboard-tools')<lab.indexOf('Tame Calculator'));
+ assert.ok(lab.indexOf('Tame Calculator')<lab.indexOf('Knockout Calculator'));
+ assert.match(lab,/className="taming-visual-column"/);
+ assert.match(lab,/className="taming-dashboard-key-stats"/);
  assert.match(css,/\.taming-workspace\{display:grid;grid-template-columns/);
- assert.match(css,/\.taming-workspace \.taming-art-stage\{height:258px/);
+ assert.match(css,/\.taming-dashboard-tools\{min-width:0;display:grid/);
  assert.match(css,/@media\(max-width:600px\)/);
- assert.match(lab,/Search all knockout creatures and variants/);
  assert.match(lab,/knockoutEstimate\(/);
  assert.match(lab,/taming-ammo-row/);
  assert.match(lab,/Plan Notes/);
