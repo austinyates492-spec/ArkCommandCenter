@@ -81,6 +81,7 @@ export function useTribeLive(token,setServers){
  return {timers,timerSounds,timerSoundsReady,crafting,clockOffsetMs,status,error,refresh,
   addTimer:(name,minutes,type='Custom',soundEnabledForCreator=true)=>perform('/tribe/timers','POST',{name,minutes,type,soundEnabledForCreator},'all'),
   setTimerSound:(id,enabled)=>perform(`/tribe/timers/${encodeURIComponent(id)}/sound`,'PUT',{enabled},'timer-sounds'),
+  adjustTimer:(id,remainingMinutes,expectedEnd)=>perform(`/tribe/timers/${encodeURIComponent(id)}`,'PUT',{remainingMinutes,expectedEnd},'timers'),
   removeTimer:id=>perform(`/tribe/timers/${encodeURIComponent(id)}`,'DELETE',undefined,'timers'),
   addCraft:(name,quantity)=>perform('/tribe/crafting','POST',{name,quantity},'crafting'),
   setCraft:(name,quantity,expectedQuantity)=>perform('/tribe/crafting','PUT',{name,quantity,expectedQuantity},'crafting'),
