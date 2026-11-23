@@ -27,8 +27,8 @@ export default function CraftingPage({liveRecipes={},live,user,onOpenAccount,onO
  const recipes=useMemo(()=>({...(includeCommunity?communityRecipes:{}),...wikiRecipes,...liveRecipes,...starterRecipes,...extra}),[extra,includeCommunity,liveRecipes]);
  const matches=useMemo(()=>Object.keys(recipes).filter(name=>name.toLowerCase().includes(search.toLowerCase())||recipes[name].category?.toLowerCase().includes(search.toLowerCase())).sort(),[recipes,search]);
  let result=null,planError='';try{result=calculateCraftingCart(cart,recipes);}catch(e){planError=e.message}
- const add=()=>{const name=matches.includes(selected)?selected:matches[0];if(!name||!Number.isSafeInteger(Number(quantity))||Number(quantity)<1)return;setCart([...cart.filter(x=>x.name!==name),{name,quantity:Number(quantity)+(cart.find(x=>x.name===name)?.quantity||0)}]);setError('');};
- const updateQty=(name,n)=>{if(!Number.isSafeInteger(Number(n))||Number(n)<1)return;setCart(cart.map(x=>x.name===name?{...x,quantity:Number(n)}:x));};
+ const add=()=>{const name=matches.includes(selected)?selected:matches[0];if(!name||!Number.isSafeInteger(Number(quantity))||Number(quantity)<1||Number(quantity)>1000000)return;setCart([...cart.filter(x=>x.name!==name),{name,quantity:Number(quantity)+(cart.find(x=>x.name===name)?.quantity||0)}]);setError('');};
+ const updateQty=(name,n)=>{if(!Number.isSafeInteger(Number(n))||Number(n)<1||Number(n)>1000000)return;setCart(cart.map(x=>x.name===name?{...x,quantity:Number(n)}:x));};
  const addCustom=()=>{try{
   const name=form.name.trim();if(!name||starterRecipes[name])throw new Error('Choose a unique name that does not overwrite a verified recipe.');
   const ingredients={};for(const line of form.ingredients.split(/\r?\n/)){if(!line.trim())continue;const idx=line.lastIndexOf(':');if(idx<1)throw new Error(`Use Ingredient: amount, one per line (problem: ${line})`);const ingredient=line.slice(0,idx).trim(),amount=Number(line.slice(idx+1).trim());if(!ingredient||!Number.isSafeInteger(amount)||amount<1)throw new Error(`Invalid ingredient: ${line}`);ingredients[recipeAliases[ingredient]||ingredient]=amount;}
