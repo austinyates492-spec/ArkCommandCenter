@@ -79,3 +79,58 @@
  .timer-phase-header{font-size:9px;gap:2px;letter-spacing:0}
  .timer-overall-progress strong{font-size:21px}
 }
+
+
+/* OPTION B: Theme-independent, high-contrast operational timer cards.
+   The activity color is semantic and remains consistent across theme presets. */
+.timer-operation.timer-tone-breeding{--timer-color:#c39aff;--timer-card-bg:#322046;--timer-card-border:#a576ea}
+.timer-operation.timer-tone-taming{--timer-color:#60e5ac;--timer-card-bg:#153c32;--timer-card-border:#34bf83}
+.timer-operation.timer-tone-crafting{--timer-color:#ffc16e;--timer-card-bg:#473019;--timer-card-border:#dd953a}
+.timer-operation.timer-tone-custom{--timer-color:#79c5ff;--timer-card-bg:#183851;--timer-card-border:#439feb}
+.timer-operation{
+ position:relative;
+ isolation:isolate;
+ overflow:hidden;
+ border:1px solid var(--timer-card-border,#439feb);
+ background:var(--timer-card-bg,#183851);
+ box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--timer-color) 12%,transparent),0 6px 18px #00000024;
+ padding-left:18px;
+}
+.timer-operation::before{
+ content:"";
+ position:absolute;
+ top:0;
+ bottom:0;
+ left:0;
+ width:5px;
+ background:var(--timer-color);
+ box-shadow:1px 0 12px color-mix(in srgb,var(--timer-color) 35%,transparent);
+ pointer-events:none;
+}
+.timer-operation .timer-operation-icon{
+ background:#ffffff12;
+ color:var(--timer-color);
+}
+.timer-operation .timer-operation-name strong,
+.timer-operation .timer-editor h3{color:#f7f4ff}
+.timer-operation .timer-operation-name small,
+.timer-operation .timer-operation-countdown small,
+.timer-operation .timer-progress-caption,
+.timer-operation .timer-operation-footer small,
+.timer-operation .timer-overall-progress span,
+.timer-operation .timer-phase-header{color:#ded6e6}
+.timer-operation .timer-progress-track{
+ background:#0c0b15a8;
+}
+.timer-operation .timer-progress-track .timer-progress-fill{
+ background:var(--timer-color);
+}
+.timer-operation .timer-editor{
+ background:#121522eb;
+ border-color:var(--timer-card-border);
+}
+.timer-operation .timer-growth-note,
+.timer-operation .timer-phase-header b{color:var(--timer-color)}
+@media(max-width:650px){
+ .timer-operation{padding-left:15px}
+}
