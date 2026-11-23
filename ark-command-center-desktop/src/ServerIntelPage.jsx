@@ -24,14 +24,14 @@ export default function ServerIntelPage({live,user,servers=[],onOpenAccount}){
  const currentDraft=id=>drafts[id]||{type:'Dangerous Area',text:''};
  const run=async(task,success)=>{
   setBusy(true);setFeedback('');
-  try{await task();setFeedback(success);}
-  catch(e){setFeedback('Update failed: '+e.message);}
+  try{await task();setFeedback(success);return true;}
+  catch(e){setFeedback('Update failed: '+e.message);return false;}
   finally{setBusy(false);}
  };
  const save=event=>{
   event.preventDefault();
   if(!user||!form.name.trim()||busy)return;
-  void run(()=>live.saveServer(form),'Scouting report saved for your entire tribe.').then(()=>{if(!live.error)setForm(p=>({...p,name:'',notes:''}));});
+  void run(()=>live.saveServer(form),'Scouting report saved for your entire tribe.').then(ok=>{if(ok)setForm(p=>({...p,name:'',notes:''}));});
  };
  const importOld=()=>void run(async()=>{
    for(const s of oldServers)await live.saveServer(s);
@@ -45,7 +45,7 @@ export default function ServerIntelPage({live,user,servers=[],onOpenAccount}){
  const addNote=server=>{
   const draft=currentDraft(server.id);
   if(!draft.text.trim()||busy)return;
-  void run(()=>live.addScoutingNote(server.id,draft.type,draft.text.trim()),'Scouting note added for '+server.name+'.').then(()=>{
+  void run(()=>live.addScoutingNote(server.id,draft.type,draft.text.trim()),'Scouting note added for '+server.name+'.').then(ok=>{if(!ok)return;
    setDrafts(p=>({...p,[server.id]:{...currentDraft(server.id),text:''}}));
   });
  };
