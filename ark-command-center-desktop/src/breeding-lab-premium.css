@@ -1,0 +1,64 @@
+/* Breeding Lab premium layout. Inherits every installed theme's --ark-* and --personality-* tokens. */
+.shell .breeding-lab{display:grid;gap:clamp(12px,1.5vw,22px);min-width:0}
+.shell .breeding-lab .pagetitle{margin-bottom:0}
+.shell .breeding-top-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(12px,1.5vw,22px);align-items:stretch}
+.shell .breeding-top-grid>.panel{margin:0;min-width:0;display:flex;flex-direction:column;padding:clamp(15px,1.7vw,24px);background:var(--ark-surface);border:1px solid var(--personality-border,var(--ark-line));border-radius:var(--personality-radius,var(--hq-radius,16px));box-shadow:var(--personality-panel-shadow)}
+.shell .breeding-section-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:15px}
+.shell .breeding-section-head h2{font-size:clamp(16px,1.4vw,22px);font-weight:820;letter-spacing:-.045em;margin:0;color:var(--ark-heading)}
+.shell .breeding-section-head p{font-size:11px;color:var(--ark-muted);margin:6px 0 0;line-height:1.55}
+.shell .breeding-pill{display:inline-block;padding:6px 9px;border:1px solid var(--ark-border);background:var(--ark-deep);color:var(--ark-bright);font-size:9px;font-weight:850;border-radius:7px;letter-spacing:.04em;white-space:nowrap}
+.shell .breeding-picker-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.shell .breeding-picker-grid .field{min-width:0;margin-bottom:10px}
+.shell .breeding-picker-grid .searchbox{min-width:0}
+.shell .breeding-picker-grid .searchbox input{min-width:0;width:100%}
+.shell .breeding-art-stage{height:clamp(175px,17vw,250px);position:relative;display:grid;place-items:center;isolation:isolate;overflow:hidden;background:radial-gradient(ellipse at center,color-mix(in srgb,var(--ark-accent) 17%,var(--ark-surface)) 0%,var(--ark-deep) 75%);border:1px solid var(--ark-border);border-radius:12px;color:var(--ark-accent);margin-bottom:12px}
+.shell .breeding-art-stage:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.24;background-image:linear-gradient(color-mix(in srgb,var(--ark-accent) 17%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--ark-accent) 17%,transparent) 1px,transparent 1px);background-size:40px 40px}
+.shell .breeding-art-stage .cad-illustration{display:block;z-index:1;position:relative;height:80%;width:94%;color:var(--ark-accent);filter:drop-shadow(0 3px 6px #0006)}
+.shell .breeding-art-stage .cad-detailed-outline{background:currentColor;mask-repeat:no-repeat;mask-position:center;mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;-webkit-mask-size:contain}
+.shell .breeding-art-stage>svg{position:relative;z-index:1;max-width:95%;max-height:78%;width:auto;height:78%;color:var(--ark-accent)}
+.shell .breeding-art-label{position:absolute;z-index:2;top:11px;left:12px;right:12px;display:flex;justify-content:space-between;align-items:center;gap:7px;color:var(--ark-text);font-size:9px;letter-spacing:.07em;font-weight:800}
+.shell .breeding-art-label strong{color:var(--ark-bright);overflow-wrap:anywhere;text-align:right}
+.shell .breeding-art-method{position:absolute;z-index:2;bottom:11px;right:12px;padding:5px 8px;color:var(--ark-bright);background:var(--ark-surface);border:1px solid var(--ark-border);border-radius:5px;font-size:9px;font-weight:800}
+.shell .breeding-profile-facts{display:grid;gap:0;margin-top:auto}
+.shell .breeding-profile-facts>div,.shell .breeding-calculator-details>div{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid var(--ark-line);font-size:11px}
+.shell .breeding-profile-facts>div:last-child,.shell .breeding-calculator-details>div:last-child{border-bottom:0}
+.shell .breeding-profile-facts span,.shell .breeding-calculator-details span{color:var(--ark-muted)}
+.shell .breeding-profile-facts strong,.shell .breeding-calculator-details strong{color:var(--ark-bright);font-variant-numeric:tabular-nums;text-align:right;overflow-wrap:anywhere}
+.shell .breeding-calculator-details span{display:inline-flex;align-items:center;gap:5px}
+.shell .breeding-metric-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.shell .breeding-metric{min-width:0;background:var(--ark-surface-2);border:1px solid var(--ark-line);border-radius:10px;padding:13px}
+.shell .breeding-metric-primary{border-color:var(--ark-accent);background:linear-gradient(135deg,var(--ark-deep),var(--ark-surface-2))}
+.shell .breeding-metric-label{display:flex;align-items:center;gap:6px;color:var(--ark-muted);font-size:10px;line-height:1.35}
+.shell .breeding-metric-label svg{color:var(--ark-accent);flex-shrink:0}
+.shell .breeding-metric>strong{display:block;margin:9px 0 4px;font-size:clamp(17px,1.7vw,25px);letter-spacing:-.045em;color:var(--ark-heading);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.shell .breeding-metric-primary>strong{color:var(--ark-bright)}
+.shell .breeding-metric>small{color:var(--ark-muted);font-size:10px}
+.shell .breeding-readiness{display:flex;gap:10px;padding:12px;background:var(--ark-surface-2);border:1px solid var(--ark-line);border-radius:10px;margin-top:12px}
+.shell .breeding-readiness svg{flex-shrink:0;color:var(--ark-accent)}
+.shell .breeding-readiness strong{font-size:12px;color:var(--ark-heading)}
+.shell .breeding-readiness p{font-size:10px;color:var(--ark-muted);line-height:1.6;margin:4px 0 0}
+.shell .breeding-calculator-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0 4px}
+.shell .breeding-calculator-actions button{min-width:0;min-height:43px;padding:9px 8px;font-size:11px}
+.shell .breeding-calculator-actions button:disabled{opacity:.5;cursor:not-allowed}
+.shell .breeding-calculator-details{margin-top:auto}
+.shell .breeding-timeline-panel{padding:clamp(15px,2vw,26px);margin:0;background:var(--ark-surface);border-color:var(--personality-border,var(--ark-line));border-radius:var(--personality-radius,var(--hq-radius,16px))}
+.shell .breeding-timeline-track{display:flex;height:24px;width:100%;border-radius:9px;overflow:hidden;border:1px solid var(--ark-border);background:var(--ark-deep)}
+.shell .breeding-timeline-track>div{min-width:0;border-right:2px solid var(--ark-bg);background:var(--ark-accent)}
+.shell .breeding-timeline-track .breeding-timeline-baby{opacity:.53}
+.shell .breeding-timeline-track .breeding-timeline-juvenile{opacity:.76}
+.shell .breeding-timeline-track .breeding-timeline-adolescent{opacity:1;border-right:0}
+.shell .breeding-timeline-labels{display:flex;justify-content:space-between;gap:6px;margin:8px 0 18px;color:var(--ark-muted);font-size:10px}
+.shell .breeding-timeline-labels b{color:var(--ark-bright)}
+.shell .breeding-milestones{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.shell .breeding-milestone-card{min-width:0;padding:13px;background:var(--ark-surface-2);border:1px solid var(--ark-line);border-radius:10px}
+.shell .breeding-milestone-card span,.shell .breeding-milestone-card small{display:block;color:var(--ark-muted);font-size:10px}
+.shell .breeding-milestone-card strong{display:block;color:var(--ark-bright);font-size:clamp(15px,1.6vw,24px);font-variant-numeric:tabular-nums;letter-spacing:-.045em;margin:8px 0 5px;overflow-wrap:anywhere}
+.shell .breeding-timeline-footnote{color:var(--ark-muted);font-size:11px;line-height:1.6;margin:12px 0 0}
+.shell .breeding-source-note{display:flex;align-items:center;justify-content:space-between;gap:18px;border:1px solid var(--ark-line);background:var(--ark-surface-2);padding:15px 18px;border-radius:12px}
+.shell .breeding-source-note strong{color:var(--ark-heading);font-size:12px}
+.shell .breeding-source-note p{color:var(--ark-muted);font-size:11px;line-height:1.6;margin:4px 0 0}
+.shell .breeding-source-note a{flex-shrink:0}
+@media(max-width:1180px){.shell .breeding-top-grid{grid-template-columns:minmax(0,1fr)}.shell .breeding-metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.shell .breeding-milestones{grid-template-columns:repeat(2,minmax(0,1fr))}.shell .breeding-source-note{flex-direction:column;align-items:stretch}.shell .breeding-source-note a{align-self:flex-start}}
+@media(max-width:480px){.shell .breeding-picker-grid{grid-template-columns:1fr}.shell .breeding-art-stage{height:190px}.shell .breeding-calculator-actions{grid-template-columns:1fr}.shell .breeding-metric{padding:10px}.shell .breeding-metric>strong{font-size:17px}.shell .breeding-timeline-labels{font-size:9px}.shell .breeding-section-head{flex-wrap:wrap}}
+@media(prefers-reduced-motion:reduce){.shell .breeding-lab *{scroll-behavior:auto}}
