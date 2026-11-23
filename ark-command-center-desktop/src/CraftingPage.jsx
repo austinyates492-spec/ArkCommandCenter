@@ -69,7 +69,7 @@ export default function CraftingPage({liveRecipes={},live,user,onOpenAccount,onO
  const totals=Object.entries(result?.materials||{}).sort((a,b)=>b[1]-a[1]);
  const crafts=Object.entries(result?.crafts||{}).sort((a,b)=>b[1]-a[1]);
  return <div className="craft-workspace crafting-lab-v3">
-  <div className="pagetitle"><span className="eyebrow">COMMAND CENTER / LOGISTICS</span><h1>Crafting Lab</h1><p>Plan. Gather. Craft. Coordinate. Expand ingredient dependencies and combine production projects without losing your existing recipes.</p></div>
+  <div className="pagetitle"><span className="eyebrow">COMMAND CENTER / LOGISTICS</span><h1>Crafting Lab <span className="craftv3-release-label">NEW DESIGN</span></h1><p>Plan. Gather. Craft. Coordinate. Expand ingredient dependencies and combine production projects without losing your existing recipes.</p></div>
   <div className="craftv3-upper">
    <section className="panel craftv3-planner" aria-label="Recipe planner">
     <div className="craftv3-head"><h2>Recipe Planner</h2><span className="craftv3-pill">01 / PLAN</span></div>
