@@ -1,0 +1,76 @@
+/* Crafting Lab V3: calculation-first, no recipe artwork. All surrounding colors follow active app theme. */
+.shell .crafting-lab-v3{display:grid;gap:clamp(12px,1.5vw,21px);min-width:0}
+.shell .crafting-lab-v3>.pagetitle{margin:0}
+.shell .craftv3-upper,.shell .craftv3-lower{display:grid;grid-template-columns:minmax(0,.76fr) minmax(0,1.24fr);gap:clamp(12px,1.5vw,20px);align-items:stretch}
+.shell .craftv3-lower{grid-template-columns:minmax(0,1.18fr) minmax(0,.82fr)}
+.shell .crafting-lab-v3 .panel{min-width:0;margin:0;padding:clamp(15px,1.8vw,23px);border-radius:var(--personality-radius,var(--hq-radius,16px));border:1px solid var(--personality-border,var(--ark-line));background:var(--ark-surface);box-shadow:var(--personality-panel-shadow,0 8px 24px #0003)}
+.shell .craftv3-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:15px}
+.shell .craftv3-head h2{font-size:clamp(16px,1.3vw,20px);letter-spacing:-.035em;font-weight:850;color:var(--ark-heading);margin:0}
+.shell .craftv3-pill{font-size:9px;font-weight:850;letter-spacing:.06em;white-space:nowrap;border-radius:7px;border:1px solid var(--ark-border);background:var(--ark-deep);color:var(--ark-bright);padding:6px 8px}
+.shell .craftv3-planner>.field{margin-bottom:12px}
+.shell .craftv3-planner .searchbox{min-width:0}
+.shell .craftv3-planner select{width:100%}
+.shell .craftv3-recipe-summary{background:var(--ark-surface-2);border:1px solid var(--ark-line);border-radius:10px;padding:13px;margin:11px 0 15px}
+.shell .craftv3-recipe-name{display:block;color:var(--ark-bright);font-size:clamp(15px,1.3vw,20px);letter-spacing:-.035em;margin-bottom:10px}
+.shell .craftv3-recipe-summary>div{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 0;font-size:11px}
+.shell .craftv3-recipe-summary span{color:var(--ark-muted)}
+.shell .craftv3-recipe-summary div strong{color:var(--ark-heading);text-align:right;overflow-wrap:anywhere}
+.shell .craftv3-quantity{display:grid;grid-template-columns:42px minmax(0,1fr) 42px;gap:8px}
+.shell .craftv3-quantity input{min-width:0;width:100%;text-align:center;font-size:15px;font-weight:800;min-height:44px}
+.shell .craftv3-quantity button{min-width:0;padding:7px}
+.shell .craftv3-features{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 0}
+.shell .craftv3-features span{background:var(--ark-surface-2);border:1px solid var(--ark-line);border-radius:7px;padding:6px 8px;color:var(--ark-muted);font-size:10px}
+.shell .craftv3-advanced{margin-top:14px;border-top:1px solid var(--ark-line);padding-top:12px}
+.shell .craftv3-advanced>summary,.shell .craftv3-custom-details>summary{color:var(--ark-bright);font-size:11px;font-weight:800;cursor:pointer;padding:5px 0}
+.shell .craftv3-advanced>.notice{margin:12px 0}
+.shell .craftv3-summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:13px}
+.shell .craftv3-summary-grid>div{padding:12px 9px;background:var(--ark-surface-2);border:1px solid var(--ark-line);border-radius:10px;min-width:0}
+.shell .craftv3-summary-grid small{display:block;font-size:10px;color:var(--ark-muted)}
+.shell .craftv3-summary-grid strong{display:block;margin-top:4px;color:var(--ark-bright);font-variant-numeric:tabular-nums;letter-spacing:-.05em;font-size:clamp(19px,2vw,29px)}
+.shell .craftv3-resource-list{display:grid;gap:8px}
+.shell .craftv3-resource{--craftv3-resource-color:var(--ark-accent);display:grid;grid-template-columns:minmax(115px,.8fr) minmax(0,1fr) auto;align-items:center;gap:11px;padding:11px 12px;background:var(--ark-surface-2);border:1px solid var(--ark-line);border-radius:10px;min-width:0}
+.shell .craftv3-resource.collected{--craftv3-resource-color:#64e6aa}
+.shell .craftv3-resource-name{display:flex;align-items:center;gap:8px;min-width:0}
+.shell .craftv3-resource-name strong{font-size:11px;font-weight:780;color:var(--ark-heading);overflow-wrap:anywhere}
+.shell .craftv3-resource-symbol{display:grid;place-items:center;flex-shrink:0;border-radius:7px;background:var(--ark-deep);color:var(--ark-bright);width:28px;height:28px;font-size:13px}
+.shell .craftv3-resource-progress{min-width:0}
+.shell .craftv3-resource-progress>div:first-child{display:flex;justify-content:space-between;align-items:center;gap:7px;font-size:10px;margin-bottom:6px}
+.shell .craftv3-resource-progress strong{color:var(--ark-heading);font-weight:780}
+.shell .craftv3-resource-progress small{color:var(--ark-muted);font-size:9px}
+.shell .craftv3-progress{height:7px;overflow:hidden;background:var(--ark-input);border-radius:99px}
+.shell .craftv3-progress>span{display:block;background:var(--craftv3-resource-color);height:100%;border-radius:99px;transition:width .2s ease}
+.shell .craftv3-gather-button{display:flex;align-items:center;justify-content:center;gap:4px;font-size:10px;font-weight:770;white-space:nowrap;border:1px solid var(--ark-border);border-radius:8px;background:var(--ark-deep);color:var(--ark-bright);padding:8px 9px}
+.shell .craftv3-gather-button:disabled{opacity:.7;cursor:default}
+.shell .craftv3-inventory-actions{display:flex;align-items:center;justify-content:space-between;gap:11px;margin-top:14px;border-top:1px solid var(--ark-line);padding-top:12px}
+.shell .craftv3-inventory-actions>span{font-size:10px;color:var(--ark-muted);line-height:1.5}
+.shell .craftv3-inventory-actions button{padding:8px 10px;font-size:10px;white-space:nowrap}
+.shell .craftv3-explain{color:var(--ark-muted);font-size:11px;line-height:1.65;margin:0 0 12px}
+.shell .craftv3-tree{display:grid;gap:9px}
+.shell .craftv3-tree .craft-tree-root{border:1px solid var(--ark-line);background:var(--ark-surface-2);padding:12px;margin:0}
+.shell .craftv3-tree .craftbranch{background:var(--ark-surface-2);border:1px solid var(--ark-line);border-radius:8px;margin:6px 0;overflow:hidden}
+.shell .craftv3-tree .craftbranch>summary{padding:11px;gap:9px;color:var(--ark-heading);font-size:11px}
+.shell .craftv3-tree .craftbranch>summary span{color:var(--ark-muted);font-size:10px}
+.shell .craftv3-tree .craftleaf{color:var(--ark-heading);font-size:11px}
+.shell .craftv3-tree .craftleaf small{color:var(--ark-bright)}
+.shell .craftv3-tree .craftnode-dot{background:var(--ark-accent)}
+.shell .craftv3-combined{margin-top:17px}
+.shell .craftv3-combined .craft-material{background:var(--ark-surface-2);border-color:var(--ark-line);padding:11px}
+.shell .craftv3-combined .craft-material strong{color:var(--ark-bright);font-size:19px}
+.shell .craftv3-combined .craft-material span{color:var(--ark-muted);font-size:11px}
+.shell .craftv3-queue-list{display:grid;gap:8px;margin-bottom:14px}
+.shell .craftv3-queue-item{display:flex;align-items:center;justify-content:space-between;gap:9px;min-width:0;background:var(--ark-surface-2);border:1px solid var(--ark-line);padding:12px;border-radius:10px}
+.shell .craftv3-queue-item>div{flex:1;min-width:0}
+.shell .craftv3-queue-item strong{display:block;color:var(--ark-heading);font-size:11px;overflow-wrap:anywhere}
+.shell .craftv3-queue-item small{display:block;color:var(--ark-muted);margin-top:4px;font-size:10px}
+.shell .craftv3-queue-item input{width:80px;min-width:56px;padding:9px 4px;text-align:center}
+.shell .craftv3-queue-actions{display:grid;gap:9px;margin-top:13px}
+.shell .craftv3-queue-actions button{width:100%;min-height:42px}
+.shell .craftv3-open-shared{width:100%;border:0;background:transparent;color:var(--ark-bright);display:flex;align-items:center;justify-content:center;gap:6px;font-weight:800;padding:10px;font-size:11px}
+.shell .craftv3-queue-panel .craftv3-explain{margin-top:10px}
+.shell .craftv3-custom-panel{padding-top:14px!important;padding-bottom:14px!important}
+.shell .craftv3-custom-details>p{color:var(--ark-muted);font-size:11px;margin:12px 0}
+.shell .craftv3-custom-details .craft-editor{max-width:760px}
+@media(max-width:1220px){.shell .craftv3-upper,.shell .craftv3-lower{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:680px){.shell .craftv3-resource{grid-template-columns:minmax(0,1fr) auto}.shell .craftv3-resource-name{grid-column:1/-1}.shell .craftv3-inventory-actions{flex-wrap:wrap}}
+@media(max-width:420px){.shell .craftv3-resource{padding:9px;gap:7px}.shell .craftv3-resource-progress>div:first-child{flex-wrap:wrap}.shell .craftv3-summary-grid{gap:5px}.shell .craftv3-summary-grid>div{padding:9px 6px}.shell .craftv3-summary-grid small{font-size:9px}.shell .craftv3-summary-grid strong{font-size:18px}.shell .craftv3-pill{font-size:8px}}
+@media(prefers-reduced-motion:reduce){.shell .craftv3-progress>span{transition:none}}
