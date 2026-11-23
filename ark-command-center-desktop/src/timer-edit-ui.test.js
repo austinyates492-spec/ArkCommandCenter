@@ -35,3 +35,11 @@ test('incubation does not receive creature maturation milestones',()=>{
  assert.ok(src.includes("timer.type==='Maturation'"));
  assert.ok(src.includes('/incubat|hatch|gestat|mating|cooldown/i'));
 });
+
+test('bold timer cards retain distinct category contrast across all themes',()=>{
+ const css=readFileSync(new URL('./live-timer-redesign.css',import.meta.url),'utf8');
+ for(const tone of ['breeding','taming','crafting','custom'])assert.ok(css.includes('.timer-operation.timer-tone-'+tone),tone);
+ for(const feature of ['--timer-card-bg','--timer-card-border','.timer-operation::before','width:5px','background:var(--timer-card-bg','#f7f4ff'])assert.ok(css.includes(feature),feature);
+ assert.match(css,/\.timer-operation\s*\{[\s\S]*?border:1px solid var\(--timer-card-border/);
+ assert.match(css,/\.timer-operation \.timer-progress-track \.timer-progress-fill/);
+});
