@@ -301,7 +301,7 @@ export async function handleTribe(req,res,options){
    await notify(pool,user.tribe_id,'servers');json(res,200,{ok:true});return true;
   }
  }
- const noteCollection=/^\\/api\\/v1\\/tribe\\/servers\\/live\\/([a-f0-9-]{36})\\/notes$/i.exec(path);
+ const noteCollection=/^\/api\/v1\/tribe\/servers\/live\/([a-f0-9-]{36})\/notes$/i.exec(path);
  if(noteCollection&&method==='POST'){
   const serverId=noteCollection[1];if(!UUID.test(serverId))bad('Invalid server ID.');
   const input=validated(normalizeScoutingNote,await bodyJson(req));
@@ -312,7 +312,7 @@ export async function handleTribe(req,res,options){
   if(!result.rows.length)throw Object.assign(new Error('Server not found in your tribe.'),{status:404});
   await notify(pool,user.tribe_id,'servers');json(res,201,{ok:true,id});return true;
  }
- const noteItem=/^\\/api\\/v1\\/tribe\\/servers\\/live\\/([a-f0-9-]{36})\\/notes\\/([a-f0-9-]{36})$/i.exec(path);
+ const noteItem=/^\/api\/v1\/tribe\/servers\/live\/([a-f0-9-]{36})\/notes\/([a-f0-9-]{36})$/i.exec(path);
  if(noteItem&&method==='DELETE'){
   const [,serverId,noteId]=noteItem;
   if(!UUID.test(serverId)||!UUID.test(noteId))bad('Invalid note ID.');
