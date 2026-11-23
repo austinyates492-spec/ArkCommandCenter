@@ -1,0 +1,61 @@
+/* Theme-driven shared production command center — no imagery or invented inventory sync. */
+.shell .tribe-crafting-v3{max-width:none;display:grid;gap:clamp(12px,1.5vw,21px);min-width:0}
+.shell .tribe-crafting-v3>.pagetitle{margin:0}
+.shell .tribe-v3-release{display:inline-flex;vertical-align:middle;align-items:center;letter-spacing:.065em;font:800 10px/1 Inter,system-ui,sans-serif;background:var(--ark-deep);color:var(--ark-bright);border:1px solid var(--ark-border);border-radius:7px;padding:7px 9px;margin-left:8px}
+.shell .tribe-v3-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(8px,1.2vw,16px)}
+.shell .tribe-v3-stat{min-width:0;border:1px solid var(--personality-border,var(--ark-line));border-radius:var(--personality-radius,16px);background:var(--ark-surface);box-shadow:var(--personality-panel-shadow,0 8px 22px #0002);padding:clamp(13px,1.4vw,20px)}
+.shell .tribe-v3-stat>span{display:flex;align-items:center;gap:7px;color:var(--ark-muted);font-size:11px;font-weight:760}
+.shell .tribe-v3-stat>span svg{color:var(--ark-accent);flex-shrink:0}
+.shell .tribe-v3-stat>strong{display:block;color:var(--ark-heading);font-size:clamp(23px,2.5vw,37px);font-weight:850;letter-spacing:-.045em;margin:6px 0 2px;font-variant-numeric:tabular-nums}
+.shell .tribe-v3-stat>strong.tribe-v3-sync-label{color:var(--ark-bright);font-size:clamp(17px,2vw,27px);letter-spacing:0}
+.shell .tribe-v3-stat>small{display:block;font-size:10px;color:var(--ark-muted)}
+.shell .tribe-v3-top,.shell .tribe-v3-bottom{display:grid;gap:clamp(12px,1.5vw,20px);align-items:stretch;grid-template-columns:minmax(0,.76fr) minmax(0,1.24fr)}
+.shell .tribe-v3-bottom{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr)}
+.shell .tribe-crafting-v3 .panel{min-width:0;margin:0;padding:clamp(15px,1.8vw,24px);border:1px solid var(--personality-border,var(--ark-line));background:var(--ark-surface);border-radius:var(--personality-radius,16px);box-shadow:var(--personality-panel-shadow,0 8px 22px #0002)}
+.shell .tribe-v3-head{display:flex;justify-content:space-between;align-items:center;gap:9px;margin-bottom:15px}
+.shell .tribe-v3-head h2{color:var(--ark-heading);font-size:clamp(16px,1.35vw,21px);letter-spacing:-.035em;font-weight:850;margin:0}
+.shell .tribe-v3-pill{display:inline-block;flex-shrink:0;white-space:nowrap;background:var(--ark-deep);color:var(--ark-bright);border:1px solid var(--ark-border);border-radius:7px;padding:6px 8px;font-size:9px;font-weight:850;letter-spacing:.05em}
+.shell .tribe-v3-planner>.field{margin-bottom:12px}
+.shell .tribe-v3-planner .searchbox{min-width:0}
+.shell .tribe-v3-planner select{width:100%}
+.shell .tribe-v3-recipe-card{border:1px solid var(--ark-line);border-radius:10px;background:var(--ark-surface-2);padding:14px;margin:13px 0}
+.shell .tribe-v3-recipe-card>strong{display:block;color:var(--ark-bright);font-size:clamp(16px,1.45vw,20px);letter-spacing:-.035em;margin-bottom:8px;overflow-wrap:anywhere}
+.shell .tribe-v3-recipe-card>div{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:11px;padding:6px 0}
+.shell .tribe-v3-recipe-card span{color:var(--ark-muted)}
+.shell .tribe-v3-recipe-card b{color:var(--ark-heading);font-weight:750;text-align:right}
+.shell .tribe-v3-description{font-size:11px;line-height:1.65;color:var(--ark-muted);margin:12px 0 0}
+.shell .tribe-v3-material-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:13px}
+.shell .tribe-v3-material-summary>div{padding:12px 10px;background:var(--ark-surface-2);border:1px solid var(--ark-line);border-radius:10px;min-width:0}
+.shell .tribe-v3-material-summary small{display:block;font-size:10px;color:var(--ark-muted)}
+.shell .tribe-v3-material-summary strong{display:block;color:var(--ark-bright);font-size:clamp(19px,2vw,30px);font-weight:850;letter-spacing:-.05em;margin-top:5px;font-variant-numeric:tabular-nums}
+.shell .tribe-v3-resources{display:grid;gap:7px;max-height:490px;overflow:auto;padding-right:3px}
+.shell .tribe-v3-resource{display:flex;align-items:center;gap:10px;min-width:0;padding:10px 12px;background:var(--ark-surface-2);border:1px solid var(--ark-line);border-radius:9px}
+.shell .tribe-v3-resource-icon{display:grid;place-items:center;width:28px;height:28px;flex-shrink:0;border-radius:7px;color:var(--ark-bright);background:var(--ark-deep);font-size:13px}
+.shell .tribe-v3-resource strong{flex:1;min-width:0;color:var(--ark-heading);font-size:11px;overflow-wrap:anywhere}
+.shell .tribe-v3-resource>span:last-child{color:var(--ark-bright);font-size:12px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.shell .tribe-v3-resource small{color:var(--ark-muted);font-size:9px;font-weight:500}
+.shell .tribe-v3-trees{display:grid;gap:9px}
+.shell .tribe-v3-trees .craft-tree-root{background:var(--ark-surface-2);border:1px solid var(--ark-line);border-radius:10px;margin:0;padding:10px}
+.shell .tribe-v3-trees .craftbranch{border:1px solid var(--ark-line);background:var(--ark-surface-2);border-radius:7px;margin:6px 0;overflow:hidden}
+.shell .tribe-v3-trees .craftbranch>summary{color:var(--ark-heading);padding:10px;font-size:11px}
+.shell .tribe-v3-trees .craftbranch>summary>span{font-size:10px;color:var(--ark-muted)}
+.shell .tribe-v3-trees .craftleaf{color:var(--ark-heading);font-size:11px}
+.shell .tribe-v3-trees .craftleaf small{color:var(--ark-bright)}
+.shell .tribe-v3-trees .craftnode-dot{background:var(--ark-accent)}
+.shell .tribe-v3-batches{margin-top:16px}
+.shell .tribe-v3-queue-list{display:grid;gap:8px}
+.shell .tribe-v3-project{display:flex;align-items:center;gap:9px;min-width:0;border:1px solid var(--ark-line);background:var(--ark-surface-2);border-radius:9px;padding:11px}
+.shell .tribe-v3-project-name{flex:1;min-width:0}
+.shell .tribe-v3-project-name strong{display:block;overflow-wrap:anywhere;color:var(--ark-heading);font-size:11px}
+.shell .tribe-v3-project-name small{display:block;color:var(--ark-muted);font-size:10px;margin-top:4px}
+.shell .tribe-v3-project .tribe-quantity{flex:0 0 90px}
+.shell .tribe-v3-project .tribe-quantity input{width:100%;max-width:none;text-align:center;padding:8px 4px}
+.shell .tribe-v3-project .iconbtn{flex-shrink:0}
+.shell .tribe-v3-queue-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.shell .tribe-v3-queue-actions button{min-width:0;padding:10px 13px;font-size:11px}
+.shell .tribe-v3-signin{display:flex;align-items:center;flex-direction:column;gap:12px;text-align:center;max-width:660px;margin:auto!important}
+.shell .tribe-v3-signin>svg{color:var(--ark-accent)}
+.shell .tribe-v3-signin p{color:var(--ark-muted);font-size:12px}
+@media(max-width:1150px){.shell .tribe-v3-top,.shell .tribe-v3-bottom{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:750px){.shell .tribe-v3-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:450px){.shell .tribe-v3-resource{padding:9px;gap:7px}.shell .tribe-v3-material-summary{gap:5px}.shell .tribe-v3-material-summary>div{padding:8px 6px}.shell .tribe-v3-material-summary strong{font-size:17px}.shell .tribe-v3-project .tribe-quantity{flex:0 0 62px}.shell .tribe-v3-project{gap:5px;padding:9px}.shell .tribe-v3-release{font-size:8px;padding:5px}.shell .tribe-v3-head{flex-wrap:wrap}}
