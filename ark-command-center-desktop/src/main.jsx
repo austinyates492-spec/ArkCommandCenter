@@ -37,7 +37,7 @@ import './mobile.css';
 import './premium.css';
 import './personality.css';
 
-const nav=[['overview','Overview',LayoutDashboard],['taming','Taming Lab',Calculator],['breeding','Breeding Lab',Egg],['crafting','Crafting Calculator',Layers],['tribe-crafting','Tribe Crafting',Layers],['servers','Server Intel',Server],['maps','Spawn Maps',Compass],['resources','Resource Atlas',Layers],['timers','Live Timers',Timer],['cloud','Tribe Cloud',Cloud],['settings','Settings',Settings]];
+const nav=[['overview','Overview',LayoutDashboard],['taming','Taming Lab',Calculator],['breeding','Breeding Lab',Egg],['crafting','Crafting Lab',Layers],['tribe-crafting','Tribe Crafting',Layers],['servers','Server Intel',Server],['maps','Spawn Maps',Compass],['resources','Resource Atlas',Layers],['timers','Live Timers',Timer],['cloud','Tribe Cloud',Cloud],['settings','Settings',Settings]];
 const tamingModes=[['taming','Knockout Tames',Crosshair],['passive','Passive Tames',Hand],['specialty','Specialty Taming',Wrench]];
 const isTamingPage=page=>tamingModes.some(([key])=>key===page);
 const statusColors={'Available':'green','Contested':'gold','Locked Down':'red','Unscouted':'muted'};
