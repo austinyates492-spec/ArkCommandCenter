@@ -74,3 +74,5 @@
 @media(max-width:680px){.shell .craftv3-resource{grid-template-columns:minmax(0,1fr) auto}.shell .craftv3-resource-name{grid-column:1/-1}.shell .craftv3-inventory-actions{flex-wrap:wrap}}
 @media(max-width:420px){.shell .craftv3-resource{padding:9px;gap:7px}.shell .craftv3-resource-progress>div:first-child{flex-wrap:wrap}.shell .craftv3-summary-grid{gap:5px}.shell .craftv3-summary-grid>div{padding:9px 6px}.shell .craftv3-summary-grid small{font-size:9px}.shell .craftv3-summary-grid strong{font-size:18px}.shell .craftv3-pill{font-size:8px}}
 @media(prefers-reduced-motion:reduce){.shell .craftv3-progress>span{transition:none}}
+
+.shell .craftv3-release-label{display:inline-flex;vertical-align:middle;align-items:center;font:800 10px/1 Inter,system-ui,sans-serif;letter-spacing:.065em;background:var(--ark-deep);color:var(--ark-bright);border:1px solid var(--ark-border);border-radius:7px;padding:7px 9px;margin-left:8px;white-space:nowrap}
