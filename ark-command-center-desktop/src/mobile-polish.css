@@ -1,0 +1,75 @@
+/* Mobile-first polish layer. Loaded AFTER page and personality styles.
+   Target audit widths: 375px, 390px, 430px. Does not affect desktop app. */
+@media(max-width:800px){
+ .shell:not(.tauri-desktop){min-width:0;width:100%;overflow-x:clip}
+ .shell:not(.tauri-desktop) .main{min-width:0;width:100%;overflow-x:clip}
+ .shell:not(.tauri-desktop) .topbar{position:sticky;top:0;z-index:80;background:var(--ark-surface);border-bottom:1px solid var(--ark-line);padding-top:max(9px,env(safe-area-inset-top));padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);isolation:isolate;min-height:58px;box-shadow:0 4px 16px #0003}
+ .shell:not(.tauri-desktop) .mobile-nav-toggle,.shell:not(.tauri-desktop) .mobile-nav-close{min-width:44px;min-height:44px;width:44px;height:44px;background:var(--ark-deep);border-color:var(--ark-border);color:var(--ark-bright);touch-action:manipulation}
+ .shell:not(.tauri-desktop) .sidebar{width:min(86vw,324px);padding-top:max(16px,env(safe-area-inset-top));padding-bottom:max(16px,env(safe-area-inset-bottom));background:var(--ark-surface);overscroll-behavior:contain}
+ .shell:not(.tauri-desktop) .sidebar .navitem{min-height:48px;border-radius:10px;touch-action:manipulation}
+ .shell:not(.tauri-desktop) .content{min-width:0;max-width:100%;padding:14px max(12px,env(safe-area-inset-right)) calc(36px + env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));overflow-x:clip}
+ .shell:not(.tauri-desktop) .content :is(.panel,.card,.craft-workspace,.crafting-lab-v3,.tribe-crafting-v3,.intel-v2,.breeding-lab,.timer-workspace){min-width:0;max-width:100%}
+ .shell:not(.tauri-desktop) .pagetitle{min-width:0;margin-bottom:14px}
+ .shell:not(.tauri-desktop) .pagetitle h1{font-size:clamp(23px,6vw,31px);line-height:1.15;overflow-wrap:anywhere}
+ .shell:not(.tauri-desktop) .pagetitle p{font-size:12px;line-height:1.5;margin-top:7px}
+ .shell:not(.tauri-desktop) :is(.panelhead,.craftv3-head,.tribe-v3-head,.intel-v2-head){min-width:0;gap:8px;flex-wrap:wrap}
+ .shell:not(.tauri-desktop) :is(.panelhead h2,.craftv3-head h2,.tribe-v3-head h2,.intel-v2-head h2){min-width:0;overflow-wrap:anywhere}
+ .shell:not(.tauri-desktop) :is(.primary,.ghost,.iconbtn,.mobile-install-action,.mobile-install-dismiss,.craftv3-gather-button,.intel-v2-notes-toggle,.intel-v2-quick-status button,.intel-v2-filters button,.tribe-v3-queue-actions button,.craftv3-quantity button){min-height:44px;touch-action:manipulation}
+ .shell:not(.tauri-desktop) .iconbtn{min-width:44px;display:inline-grid;place-items:center;flex-shrink:0}
+ .shell:not(.tauri-desktop) :is(input:not([type=checkbox]):not([type=radio]),select,textarea){min-height:44px;font-size:16px;max-width:100%;box-sizing:border-box}
+ .shell:not(.tauri-desktop) textarea{line-height:1.45}
+ .shell:not(.tauri-desktop) input[type=checkbox]{width:20px;height:20px;accent-color:var(--ark-accent)}
+ .shell:not(.tauri-desktop) :is(button,input,select,textarea,summary):focus-visible{outline:2px solid var(--ark-accent);outline-offset:2px}
+ .shell:not(.tauri-desktop) :is(.formgrid,.two,.two.wideleft){grid-template-columns:minmax(0,1fr)}
+ .shell:not(.tauri-desktop) :is(.craftv3-upper,.craftv3-lower,.tribe-v3-top,.tribe-v3-bottom,.intel-v2-layout,.breeding-top-grid){grid-template-columns:minmax(0,1fr)}
+ .shell:not(.tauri-desktop) :is(.craftv3-upper,.craftv3-lower,.tribe-v3-top,.tribe-v3-bottom,.intel-v2-layout){gap:12px}
+ .shell:not(.tauri-desktop) .craftv3-resource{grid-template-columns:minmax(0,1fr) auto}
+ .shell:not(.tauri-desktop) .craftv3-resource-name{grid-column:1/-1}
+ .shell:not(.tauri-desktop) .craftv3-resource-name strong{overflow-wrap:anywhere}
+ .shell:not(.tauri-desktop) .craftv3-resource-progress{min-width:0}
+ .shell:not(.tauri-desktop) .craftv3-resource-progress>div:first-child{flex-wrap:wrap}
+ .shell:not(.tauri-desktop) .craftv3-gather-button{min-width:88px}
+ .shell:not(.tauri-desktop) .craftv3-queue-item input{width:74px;flex-shrink:0;text-align:center}
+ .shell:not(.tauri-desktop) .craftv3-queue-item>div{min-width:0}
+ .shell:not(.tauri-desktop) .tribe-v3-summary,.shell:not(.tauri-desktop) .intel-v2-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .shell:not(.tauri-desktop) .tribe-v3-resource{flex-wrap:wrap;min-width:0}
+ .shell:not(.tauri-desktop) .tribe-v3-resource strong{overflow-wrap:anywhere}
+ .shell:not(.tauri-desktop) .tribe-v3-resource>span:last-child{margin-left:auto}
+ .shell:not(.tauri-desktop) .tribe-v3-queue-actions button{flex:1 1 145px}
+ .shell:not(.tauri-desktop) .intel-v2-controls{grid-template-columns:minmax(0,1fr)}
+ .shell:not(.tauri-desktop) .intel-v2-quick-status{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;width:100%}
+ .shell:not(.tauri-desktop) .intel-v2-quick-status button{width:100%;white-space:normal}
+ .shell:not(.tauri-desktop) .intel-v2-card-actions{align-items:stretch}
+ .shell:not(.tauri-desktop) .intel-v2-notes-toggle{width:100%}
+ .shell:not(.tauri-desktop) .intel-v2-note-section{overflow-wrap:anywhere}
+ .shell:not(.tauri-desktop) .intel-v2-note-editor{padding:11px}
+ .shell:not(.tauri-desktop) .breeding-milestones{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .shell:not(.tauri-desktop) .breeding-calculator-actions{grid-template-columns:minmax(0,1fr)}
+ .shell:not(.tauri-desktop) .timer-alerts{position:fixed;left:max(12px,env(safe-area-inset-left));right:max(12px,env(safe-area-inset-right));bottom:calc(12px + env(safe-area-inset-bottom));max-width:none;width:auto}
+ .shell:not(.tauri-desktop) .tablewrap{overflow-x:auto;max-width:100%;overscroll-behavior-inline:contain;-webkit-overflow-scrolling:touch}
+ .shell:not(.tauri-desktop) .craftv3-tree :is(.craftbranch,.craftleaf),.shell:not(.tauri-desktop) .tribe-v3-trees :is(.craftbranch,.craftleaf){min-width:0;overflow-wrap:anywhere}
+ .shell:not(.tauri-desktop) :is(.craftv3-tree,.tribe-v3-trees) .craftbranch>summary{flex-wrap:wrap}
+ .shell:not(.tauri-desktop) :is(.craftv3-tree,.tribe-v3-trees) .craftbranch>summary>span{margin-left:0}
+ .shell:not(.tauri-desktop) .mobile-install{background:var(--ark-surface-2);border-color:var(--ark-border);color:var(--ark-heading)}
+ .shell:not(.tauri-desktop) .mobile-install-action{background:var(--ark-accent);color:var(--ark-bg)}
+}
+@media(max-width:430px){
+ .shell:not(.tauri-desktop) .content{padding-left:11px;padding-right:11px}
+ /* Keep compact dashboard tiles two across at 375–430, avoiding a long single-column dashboard. */
+ .shell:not(.tauri-desktop) .metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .shell:not(.tauri-desktop) .metric{min-width:0;padding:11px}
+ .shell:not(.tauri-desktop) .metric strong{font-size:clamp(18px,5.8vw,24px);overflow-wrap:anywhere}
+ .shell:not(.tauri-desktop) .craftv3-summary-grid,.shell:not(.tauri-desktop) .tribe-v3-material-summary{gap:5px}
+ .shell:not(.tauri-desktop) .craftv3-summary-grid>div,.shell:not(.tauri-desktop) .tribe-v3-material-summary>div{min-width:0;padding:9px 6px}
+ .shell:not(.tauri-desktop) .craftv3-summary-grid strong,.shell:not(.tauri-desktop) .tribe-v3-material-summary strong{font-size:clamp(16px,4.8vw,20px);overflow-wrap:anywhere}
+ .shell:not(.tauri-desktop) .craftv3-queue-item,.shell:not(.tauri-desktop) .tribe-v3-project{gap:6px;padding:9px}
+ .shell:not(.tauri-desktop) .tribe-v3-project .tribe-quantity{flex:0 0 62px}
+ .shell:not(.tauri-desktop) .intel-v2-stat{padding:11px}
+ .shell:not(.tauri-desktop) .intel-v2-stat>span{font-size:10px}
+ .shell:not(.tauri-desktop) .intel-v2-stat>strong{font-size:27px}
+ .shell:not(.tauri-desktop) .breeding-art-stage{height:165px}
+ .shell:not(.tauri-desktop) .craftv3-quantity{grid-template-columns:44px minmax(0,1fr) 44px}
+}
+@media(prefers-reduced-motion:reduce){
+ .shell:not(.tauri-desktop) .topbar{scroll-behavior:auto}
+}
