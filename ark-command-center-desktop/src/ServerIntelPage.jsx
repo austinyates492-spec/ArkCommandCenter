@@ -80,7 +80,7 @@ export default function ServerIntelPage({live,user,servers=[],onOpenAccount}){
         <div className="intel-v2-quick-status" aria-label={'Status for '+server.name}>{statuses.map(s=><button key={s} type="button" disabled={busy} className={server.status===s?'selected':''} aria-pressed={server.status===s} onClick={()=>changeStatus(server,s)}>{s==='Locked Down'?'Locked':s==='Unscouted'?'Unknown':s}</button>)}</div>
         <button className="intel-v2-notes-toggle" type="button" aria-expanded={open} onClick={()=>setExpanded(p=>({...p,[server.id]:!open}))}><NotebookPen size={15}/> Notes ({count}) {open?<ChevronUp size={15}/>:<ChevronDown size={15}/>}</button>
        </div>
-       <div className="intel-v2-meta">Last status report: {server.updatedBy||'Tribe'} · {stamp(server.updated)}</div>
+       <div className="intel-v2-meta"><span>Last status report: {server.updatedBy||'Tribe'} · {stamp(server.updated)}</span><button type="button" className="intel-v2-remove-server" title={'Remove '+server.name+' from the tribe'} disabled={busy} onClick={()=>{if(window.confirm('Remove '+server.name+' and all its scouting notes from the entire tribe?'))void run(()=>live.removeServer(server.id),'Removed '+server.name+' from the shared board.');}}><Trash2 size={13}/> Remove</button></div>
        {open&&<div className="intel-v2-note-section">
         <div className="intel-v2-note-heading"><strong>Scouting Notes</strong><small>Shared with your tribe</small></div>
         {!!server.notes?.trim()&&<div className="intel-v2-note"><span className="intel-v2-note-category general">GENERAL INTEL · EXISTING NOTES</span><p>{server.notes}</p><small>Saved with original server report</small></div>}
