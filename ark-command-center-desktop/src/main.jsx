@@ -150,7 +150,7 @@ function App(){
   {page==='settings'&&<ThemePicker value={theme} onChange={setTheme}/>}
   {page==='settings'&&<section className="panel"><div className="panelhead"><h2>Opening Animation</h2></div><label className="startup-preference"><input type="checkbox" checked={showStartup} onChange={event=>setShowStartup(event.target.checked)}/><span>Play the cinematic intro when I open the website or launch the app</span></label><button className="ghost" type="button" onClick={()=>window.dispatchEvent(new Event('ark:replay-intro'))}>Replay opening animation</button><p className="notice">The intro is always skippable and does not play when navigating between pages. Reduced Motion disables it automatically.</p></section>}
   {page==='cloud'&&<CloudAccount cloud={cloud}/>}
-  {page==='crafting'&&<CraftingPage liveRecipes={catalog.recipes}/>}
+  {page==='crafting'&&<CraftingPage liveRecipes={catalog.recipes} live={live} user={cloud.user} onOpenAccount={()=>setPage('cloud')} onOpenTribeCrafting={()=>setPage('tribe-crafting')}/>}
   {page==='tribe-crafting'&&<TribeCraftingPage live={live} user={cloud.user} liveRecipes={catalog.recipes} onOpenAccount={()=>setPage('cloud')}/>}
   {page==='catalog'&&<CatalogUpdatesPage catalog={catalog}/>}
   </div></main>
