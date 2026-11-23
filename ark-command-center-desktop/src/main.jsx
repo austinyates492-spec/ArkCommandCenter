@@ -36,6 +36,7 @@ import './timer-sounds.css';
 import './mobile.css';
 import './premium.css';
 import './personality.css';
+import './mobile-polish.css';
 
 const nav=[['overview','Overview',LayoutDashboard],['taming','Taming Lab',Calculator],['breeding','Breeding Lab',Egg],['crafting','Crafting Lab',Layers],['tribe-crafting','Tribe Crafting',Layers],['servers','Server Intel',Server],['maps','Spawn Maps',Compass],['resources','Resource Atlas',Layers],['timers','Live Timers',Timer],['cloud','Tribe Cloud',Cloud],['settings','Settings',Settings]];
 const tamingModes=[['taming','Knockout Tames',Crosshair],['passive','Passive Tames',Hand],['specialty','Specialty Taming',Wrench]];
@@ -109,6 +110,12 @@ function App(){
   return()=>{window.removeEventListener('pointerdown',unlock);window.removeEventListener('keydown',unlock);};
  },[]);
  useEffect(()=>setAlarmAlerts([]),[cloud.user?.id]);
+ useEffect(()=>{
+  if(!mobileNavOpen)return;
+  const previous=document.body.style.overflow;
+  document.body.style.overflow='hidden';
+  return()=>{document.body.style.overflow=previous;};
+ },[mobileNavOpen]);
  useEffect(()=>{
   if(!mobileNavOpen)return;
   const onKeyDown=event=>{if(event.key==='Escape')setMobileNavOpen(false)};
