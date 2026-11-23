@@ -1,5 +1,6 @@
 import {randomUUID} from 'node:crypto';
 import {Client} from 'pg';
+import {normalizeScoutingNote,serializeScoutingNote} from './scouting-notes.js';
 import {normalizeTimer,normalizeTimerAdjustment,normalizeTimerEdit,normalizeTimerSound,normalizeCrafting,normalizeServer,serializeTimer,serializeServer,serializeCraft} from './tribe-logic.js';
 
 // Every stream is bound to its authenticated tribe. Never broadcast other tribes' events.
@@ -61,6 +62,15 @@ export async function initializeTribeTables(pool){
    notes TEXT NOT NULL,updated_ms BIGINT NOT NULL,
    updated_by UUID REFERENCES members(id) ON DELETE SET NULL,UNIQUE(tribe_id,server_key)
  )`);
+
+ await pool.query(`CREATE TABLE IF NOT EXISTS tribe_scouting_notes (
+   id UUID PRIMARY KEY, tribe_id UUID NOT NULL REFERENCES tribes(id) ON DELETE CASCADE,
+   server_id UUID NOT NULL REFERENCES tribe_servers_v2(id) ON DELETE CASCADE,
+   type TEXT NOT NULL CHECK(type IN ('Major Tribe','Dangerous Area','General Intel')),
+   text TEXT NOT NULL CHECK(length(text) BETWEEN 1 AND 1500),
+   created_ms BIGINT NOT NULL,updated_by UUID REFERENCES members(id) ON DELETE SET NULL
+ )`);
+ await pool.query('CREATE INDEX IF NOT EXISTS tribe_scouting_notes_server ON tribe_scouting_notes(tribe_id,server_id,created_ms)');
 
  // Import the old shared server snapshot exactly once; repeated deploys never resurrect deleted entries.
  const client=await pool.connect();
@@ -277,7 +287,10 @@ export async function handleTribe(req,res,options){
   if(method==='GET'){
    const {rows}=await pool.query(`SELECT s.*,m.display_name FROM tribe_servers_v2 s LEFT JOIN members m ON m.id=s.updated_by
      WHERE s.tribe_id=$1 ORDER BY s.updated_ms DESC`,[user.tribe_id]);
-   json(res,200,{servers:listOf(rows,serializeServer)});return true;
+   const {rows:noteRows}=await pool.query(`SELECT n.*,m.display_name FROM tribe_scouting_notes n
+     LEFT JOIN members m ON m.id=n.updated_by WHERE n.tribe_id=$1 ORDER BY n.created_ms ASC,n.id ASC`,[user.tribe_id]);
+   const byServer=new Map();for(const note of noteRows){const list=byServer.get(note.server_id)||[];list.push(serializeScoutingNote(note));byServer.set(note.server_id,list);}
+   json(res,200,{servers:rows.map(row=>({...serializeServer(row),scoutingNotes:byServer.get(row.id)||[]}))});return true;
   }
   if(method==='POST'){
    const input=validated(normalizeServer,await bodyJson(req));const id=randomUUID();
@@ -287,6 +300,25 @@ export async function handleTribe(req,res,options){
      [id,user.tribe_id,input.serverKey,input.map,input.name,input.status,input.notes,Date.now(),user.id]);
    await notify(pool,user.tribe_id,'servers');json(res,200,{ok:true});return true;
   }
+ }
+ const noteCollection=/^\\/api\\/v1\\/tribe\\/servers\\/live\\/([a-f0-9-]{36})\\/notes$/i.exec(path);
+ if(noteCollection&&method==='POST'){
+  const serverId=noteCollection[1];if(!UUID.test(serverId))bad('Invalid server ID.');
+  const input=validated(normalizeScoutingNote,await bodyJson(req));
+  const id=randomUUID();
+  const result=await pool.query(`INSERT INTO tribe_scouting_notes(id,tribe_id,server_id,type,text,created_ms,updated_by)
+    SELECT $1,$2,s.id,$4,$5,$6,$7 FROM tribe_servers_v2 s WHERE s.id=$3 AND s.tribe_id=$2
+    RETURNING id`,[id,user.tribe_id,serverId,input.type,input.text,Date.now(),user.id]);
+  if(!result.rows.length)throw Object.assign(new Error('Server not found in your tribe.'),{status:404});
+  await notify(pool,user.tribe_id,'servers');json(res,201,{ok:true,id});return true;
+ }
+ const noteItem=/^\\/api\\/v1\\/tribe\\/servers\\/live\\/([a-f0-9-]{36})\\/notes\\/([a-f0-9-]{36})$/i.exec(path);
+ if(noteItem&&method==='DELETE'){
+  const [,serverId,noteId]=noteItem;
+  if(!UUID.test(serverId)||!UUID.test(noteId))bad('Invalid note ID.');
+  const result=await pool.query('DELETE FROM tribe_scouting_notes WHERE id=$1 AND server_id=$2 AND tribe_id=$3 RETURNING id',[noteId,serverId,user.tribe_id]);
+  if(!result.rows.length)throw Object.assign(new Error('Note not found in your tribe.'),{status:404});
+  await notify(pool,user.tribe_id,'servers');json(res,200,{ok:true});return true;
  }
  const serverMatch=/^\/api\/v1\/tribe\/servers\/live\/([a-f0-9-]{36})$/i.exec(path);
  if(method==='DELETE'&&serverMatch){
