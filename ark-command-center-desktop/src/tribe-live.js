@@ -89,5 +89,7 @@ export function useTribeLive(token,setServers){
   removeCraft:name=>perform(`/tribe/crafting/${encodeURIComponent(name)}`,'DELETE',undefined,'crafting'),
   clearCraft:()=>perform('/tribe/crafting','DELETE',undefined,'crafting'),
   saveServer:data=>perform('/tribe/servers/live','POST',data,'servers'),
+  addScoutingNote:(serverId,type,text)=>perform(`/tribe/servers/live/${encodeURIComponent(serverId)}/notes`,'POST',{type,text},'servers'),
+  removeScoutingNote:(serverId,noteId)=>perform(`/tribe/servers/live/${encodeURIComponent(serverId)}/notes/${encodeURIComponent(noteId)}`,'DELETE',undefined,'servers'),
   removeServer:id=>perform(`/tribe/servers/live/${encodeURIComponent(id)}`,'DELETE',undefined,'servers')};
 }
