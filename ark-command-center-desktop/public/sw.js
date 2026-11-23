@@ -1,4 +1,4 @@
-const CACHE='arktribehq-shell-v1';
+const CACHE='arktribehq-shell-crafting-v3';
 const PRECACHE=['/','/manifest.webmanifest','/icons/arktribehq-192.png'];
 self.addEventListener('install',event=>{
  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(PRECACHE)).then(()=>self.skipWaiting()));
