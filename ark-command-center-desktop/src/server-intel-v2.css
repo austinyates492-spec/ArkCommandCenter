@@ -70,3 +70,7 @@
 @media(max-width:1170px){.shell .intel-v2-layout{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:700px){.shell .intel-v2-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:480px){.shell .intel-v2-controls{grid-template-columns:minmax(0,1fr)}.shell .intel-v2-card-head{flex-wrap:wrap}.shell .intel-v2-card{padding:12px}.shell .intel-v2-stat>strong{font-size:27px}}
+
+.shell .intel-v2-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.shell .intel-v2-remove-server{display:inline-flex;align-items:center;gap:4px;background:transparent;color:var(--ark-muted);border:0;padding:4px 7px;border-radius:5px;font-size:10px}
+.shell .intel-v2-remove-server:hover{color:#f38188;background:var(--ark-surface)}
