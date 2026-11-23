@@ -1,0 +1,69 @@
+/* Overview Command Center: inherits the selected theme through .shell[data-theme].
+   Operational timer colors stay semantic; surrounding dashboard adapts to all ten themes. */
+.shell .overview-dashboard{display:grid;gap:clamp(13px,1.6vw,22px);min-width:0}
+.shell .overview-command-hero{position:relative;isolation:isolate;overflow:hidden;min-height:214px;padding:clamp(20px,2.7vw,36px);display:flex;align-items:center;border:1px solid var(--ark-border,var(--ark-line));border-radius:calc(var(--personality-radius,17px) + 6px);background-image:var(--personality-pattern,none),var(--personality-hero,linear-gradient(120deg,var(--ark-deep),var(--ark-surface)));box-shadow:var(--personality-panel-shadow,0 10px 30px #0002)}
+.shell .overview-command-copy{position:relative;z-index:1;max-width:75%;min-width:0}
+.shell .overview-kicker{font-size:10px;color:var(--ark-bright,var(--ark-accent));font-weight:800;letter-spacing:.13em}
+.shell .overview-command-hero h1{font-size:clamp(30px,3.2vw,52px);font-weight:850;line-height:1.07;letter-spacing:-.06em;color:var(--ark-heading);margin:10px 0}
+.shell .overview-command-hero h1 em{font-style:normal;color:var(--ark-bright,var(--ark-accent))}
+.shell .overview-command-hero p{font-size:12px;max-width:520px;line-height:1.65;color:var(--ark-text);margin:0}
+.shell .overview-hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:19px}
+.shell .overview-command-emblem{position:absolute;right:5%;top:50%;transform:translateY(-50%) rotate(-13deg);opacity:.16;color:var(--ark-accent);pointer-events:none}
+.shell .overview-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(8px,1vw,16px)}
+.shell .overview-metric,.shell .overview-command-panel{min-width:0;background:var(--ark-surface);border:1px solid var(--personality-border,var(--ark-line));box-shadow:var(--personality-panel-shadow,0 8px 22px #0002);border-radius:var(--personality-radius,var(--hq-radius,17px))}
+.shell .overview-metric{padding:clamp(12px,1.35vw,21px)}
+.shell .overview-metric-title{display:flex;align-items:center;justify-content:space-between;gap:5px;color:var(--ark-muted);font-size:11px;font-weight:750}
+.shell .overview-metric-title svg{flex-shrink:0;color:var(--ark-accent)}
+.shell .overview-metric>strong{display:block;font-size:clamp(25px,2.8vw,40px);font-weight:850;letter-spacing:-.06em;color:var(--ark-heading);font-variant-numeric:tabular-nums;margin:7px 0 3px}
+.shell .overview-metric>small{color:var(--ark-muted);font-size:10px}
+.shell .overview-command-columns{display:grid;grid-template-columns:minmax(0,1.22fr) minmax(0,.78fr);gap:clamp(12px,1.4vw,20px);align-items:start}
+.shell .overview-command-panel{padding:clamp(14px,1.6vw,23px)}
+.shell .overview-panel-header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px}
+.shell .overview-panel-header h2{color:var(--ark-heading);font-size:clamp(15px,1.3vw,19px);font-weight:850;letter-spacing:-.035em;margin:0}
+.shell .overview-text-link{display:inline-flex;align-items:center;gap:4px;background:none;color:var(--ark-bright,var(--ark-accent));font-size:11px;font-weight:800;border:0;padding:4px;white-space:nowrap}
+.shell .overview-panel-meta{color:var(--ark-muted);font-size:9px;letter-spacing:.08em;font-weight:800}
+.shell .overview-operation-list,.shell .overview-server-list,.shell .overview-activity-list{display:grid;gap:9px}
+.shell .overview-operation{--operation-color:#79c5ff;--operation-bg:#183851;--operation-border:#439feb;min-width:0;background:var(--operation-bg);border:1px solid var(--operation-border);border-radius:10px;position:relative;overflow:hidden;padding:12px 13px 12px 17px;box-shadow:inset 0 0 0 1px #ffffff08}
+.shell .overview-operation:before{position:absolute;content:"";left:0;top:0;bottom:0;width:5px;background:var(--operation-color)}
+.shell .overview-operation-breeding{--operation-color:#c39aff;--operation-bg:#322046;--operation-border:#a576ea}
+.shell .overview-operation-taming{--operation-color:#60e5ac;--operation-bg:#153c32;--operation-border:#34bf83}
+.shell .overview-operation-crafting{--operation-color:#ffc16e;--operation-bg:#473019;--operation-border:#dd953a}
+.shell .overview-operation-head{display:flex;gap:8px;justify-content:space-between;align-items:flex-start}
+.shell .overview-operation-copy{display:grid;gap:4px;min-width:0}
+.shell .overview-operation-copy strong{color:#f9f5ff;font-size:12px;overflow-wrap:anywhere}
+.shell .overview-operation-copy span{color:#dad3e3;font-size:10px}
+.shell .overview-operation-clock{color:var(--operation-color);font-variant-numeric:tabular-nums;font-size:clamp(12px,1.25vw,18px);font-weight:850;white-space:nowrap}
+.shell .overview-operation-progress{display:flex;justify-content:space-between;gap:8px;color:#e1dbe8;font-size:10px;margin:10px 0 6px}
+.shell .overview-operation-progress strong{color:var(--operation-color)}
+.shell .overview-operation-track{position:relative;overflow:hidden;background:#0c0b15bb;height:8px;border-radius:7px}
+.shell .overview-operation-track>span{display:block;height:100%;background:var(--operation-color);border-radius:7px;transition:width .4s linear}
+.shell .overview-operation-track>i{position:absolute;top:0;bottom:0;width:2px;background:#14101d}
+.shell .overview-phase-labels{display:flex;justify-content:space-between;gap:4px;margin-top:6px;color:#e2d8ed;font-size:9px}
+.shell .overview-server{display:flex;gap:10px;align-items:center;justify-content:space-between;border:1px solid var(--ark-line);background:var(--ark-surface-2);border-radius:9px;padding:11px}
+.shell .overview-server-label{display:grid;gap:4px;min-width:0}
+.shell .overview-server-label strong{font-size:11px;color:var(--ark-heading);overflow-wrap:anywhere}
+.shell .overview-server-label small{font-size:10px;color:var(--ark-muted);max-width:360px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.shell .overview-server-status{flex-shrink:0;font-size:9px;font-weight:850;border-radius:6px;padding:6px 8px;white-space:nowrap}
+.shell .overview-status-available{background:#153b30;color:#86f2bc;border:1px solid #34865d}
+.shell .overview-status-contested{background:#4a301b;color:#ffd18d;border:1px solid #946a3d}
+.shell .overview-status-locked{background:#48212c;color:#ffa0b2;border:1px solid #a45263}
+.shell .overview-status-unscouted{background:var(--ark-input);color:var(--ark-muted);border:1px solid var(--ark-line)}
+.shell .overview-panel-footnote{font-size:10px;color:var(--ark-muted);margin-top:13px;line-height:1.5;border-top:1px solid var(--ark-line);padding-top:11px}
+.shell .overview-quick-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.shell .overview-quick-grid button{display:flex;align-items:center;gap:10px;min-width:0;text-align:left;background:var(--ark-surface-2);color:var(--ark-heading);border:1px solid var(--ark-line);border-radius:11px;padding:13px 12px;font-size:12px;font-weight:750;transition:background .15s,border-color .15s}
+.shell .overview-quick-grid button:hover{border-color:var(--ark-accent);background:var(--ark-deep)}
+.shell .overview-quick-grid button svg:first-child{flex-shrink:0;color:var(--ark-accent)}
+.shell .overview-quick-grid button svg:last-child{margin-left:auto;flex-shrink:0;color:var(--ark-muted)}
+.shell .overview-activity{display:flex;align-items:flex-start;gap:9px;font-size:11px}
+.shell .overview-activity-dot{width:8px;height:8px;flex-shrink:0;border-radius:50%;background:var(--ark-accent);margin-top:5px;box-shadow:0 0 9px var(--ark-glow)}
+.shell .overview-activity strong{display:block;font-size:11px;color:var(--ark-heading)}
+.shell .overview-activity small{display:block;color:var(--ark-muted);font-size:10px;margin-top:3px}
+.shell .overview-empty{min-height:125px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px;text-align:center;padding:17px;color:var(--ark-muted)}
+.shell .overview-empty svg{color:var(--ark-accent)}
+.shell .overview-empty strong{color:var(--ark-heading);font-size:13px}
+.shell .overview-empty span{font-size:11px;max-width:330px}
+.shell .overview-empty-compact{min-height:90px}
+@media(max-width:1150px){.shell .overview-command-columns{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:800px){.shell .overview-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.shell .overview-command-copy{max-width:88%}.shell .overview-command-emblem{opacity:.08}}
+@media(max-width:480px){.shell .overview-command-hero{min-height:0;padding:20px 16px}.shell .overview-command-copy{max-width:100%}.shell .overview-command-emblem{right:-55px}.shell .overview-hero-actions{flex-direction:column;align-items:stretch}.shell .overview-hero-actions button{width:100%}.shell .overview-metric{padding:12px}.shell .overview-metric-title{font-size:10px}.shell .overview-server-status{font-size:8px;padding:5px}.shell .overview-operation-clock{font-size:12px}.shell .overview-phase-labels{font-size:8px}.shell .overview-quick-grid{gap:7px}.shell .overview-quick-grid button{padding:10px 8px;font-size:10px;gap:5px}.shell .overview-panel-header h2{font-size:15px}}
+@media(prefers-reduced-motion:reduce){.shell .overview-operation-track>span,.shell .overview-quick-grid button{transition:none}}
