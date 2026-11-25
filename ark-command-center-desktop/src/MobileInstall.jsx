@@ -3,8 +3,8 @@ import {Download,Smartphone,X} from 'lucide-react';
 
 export default function MobileInstall(){
  const [installEvent,setInstallEvent]=useState(null);
- const [dismissed,setDismissed]=useState(()=>sessionStorage.getItem('ark.mobileInstallDismissed')==='yes');
- const [standalone,setStandalone]=useState(()=>window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true);
+ const [dismissed,setDismissed]=useState(()=>{try{return sessionStorage.getItem('ark.mobileInstallDismissed')==='yes';}catch{return false;}});
+ const [standalone,setStandalone]=useState(()=>Boolean(window.matchMedia?.('(display-mode: standalone)')?.matches||navigator.standalone===true));
  const [showInstructions,setShowInstructions]=useState(false);
  useEffect(()=>{
   const onPrompt=event=>{event.preventDefault();setInstallEvent(event)};
@@ -20,6 +20,6 @@ export default function MobileInstall(){
   </div><button type="button" className="mobile-install-action" onClick={async()=>{
    if(installEvent){await installEvent.prompt();const choice=await installEvent.userChoice;if(choice?.outcome==='accepted')setDismissed(true);setInstallEvent(null)}
    else setShowInstructions(previous=>!previous);
-  }}><Download size={15}/> Install</button><button type="button" className="mobile-install-dismiss" aria-label="Dismiss install suggestion" onClick={()=>{sessionStorage.setItem('ark.mobileInstallDismissed','yes');setDismissed(true)}}><X size={16}/></button>
+  }}><Download size={15}/> Install</button><button type="button" className="mobile-install-dismiss" aria-label="Dismiss install suggestion" onClick={()=>{try{sessionStorage.setItem('ark.mobileInstallDismissed','yes');}catch{/* Storage can be unavailable on iOS private tabs. */}setDismissed(true)}}><X size={16}/></button>
  </section>;
 }
