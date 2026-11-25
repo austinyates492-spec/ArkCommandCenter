@@ -1,5 +1,5 @@
-import React,{useMemo,useRef,useState} from 'react';
-import {ZoomIn,ZoomOut,RotateCcw,MapPin,Info,Plus,Move} from 'lucide-react';
+import React,{useEffect,useMemo,useRef,useState} from 'react';
+import {RotateCcw,MapPin,Info,Plus} from 'lucide-react';
 import IslandContourTerrain from './IslandContourTerrain';
 import {islandWikiResources,islandWikiSource,visibleWikiSites} from './island-wiki-resource-overlay';
 import './island-native-map.css';
@@ -17,8 +17,11 @@ export default function IslandNativeMap({pins=[],stops=[],selectedId=null,onSele
  const [selectedWiki,setSelectedWiki]=useState(null);
  const [terrainFailed,setTerrainFailed]=useState(false);
  const drag=useRef(null);
+ const pointers=useRef(new Map());
+ const pinch=useRef(null);
+ const svgRef=useRef(null);
  const moved=useRef(false);
- const bounded=Number.isFinite(zoom)?Math.min(4,Math.max(1,zoom)):1;
+ const bounded=Number.isFinite(zoom)?Math.min(8,Math.max(1,zoom)):1;
  const extent=1000/bounded;
  const offsetX=Math.max(0,Math.min(1000-extent,center.x-extent/2));
  const offsetY=Math.max(0,Math.min(1000-extent,center.y-extent/2));
@@ -40,52 +43,104 @@ export default function IslandNativeMap({pins=[],stops=[],selectedId=null,onSele
   if(position){setInspected(position);setSelectedWiki(null);}
  };
  const beginDrag=event=>{
-  if(event.button!==undefined&&event.button!==0)return;
-  drag.current={x:event.clientX,y:event.clientY,originX:center.x,originY:center.y};
-  moved.current=false;
+  if(event.pointerType==='mouse'&&event.button!==0)return;
+  pointers.current.set(event.pointerId,{x:event.clientX,y:event.clientY});
   if(event.currentTarget.setPointerCapture)event.currentTarget.setPointerCapture(event.pointerId);
+  if(pointers.current.size===2){
+   const [a,b]=[...pointers.current.values()];
+   const box=event.currentTarget.getBoundingClientRect();
+   const midX=(a.x+b.x)/2,midY=(a.y+b.y)/2;
+   pinch.current={
+    distance:Math.hypot(a.x-b.x,a.y-b.y),
+    startZoom:bounded,
+    anchorX:offsetX+((midX-box.left)/box.width)*extent,
+    anchorY:offsetY+((midY-box.top)/box.height)*extent,
+    initialX:(midX-box.left)/box.width,
+    initialY:(midY-box.top)/box.height
+   };
+   drag.current=null;moved.current=true;
+  }else if(pointers.current.size===1){
+   drag.current={x:event.clientX,y:event.clientY,originX:center.x,originY:center.y};
+   moved.current=false;
+  }
  };
  const duringDrag=event=>{
-  if(!drag.current||zoom<=1)return;
+  if(!pointers.current.has(event.pointerId))return;
+  pointers.current.set(event.pointerId,{x:event.clientX,y:event.clientY});
   const box=event.currentTarget.getBoundingClientRect();
-  if(!box.width)return;
-  const dx=event.clientX-drag.current.x,dy=event.clientY-drag.current.y;
-  if(Math.abs(dx)+Math.abs(dy)>5)moved.current=true;
-  setCenter({x:drag.current.originX-dx/box.width*extent,y:drag.current.originY-dy/box.height*extent});
+  if(!box.width||!box.height)return;
+  if(pointers.current.size===2&&pinch.current){
+   const [a,b]=[...pointers.current.values()];
+   const distance=Math.hypot(a.x-b.x,a.y-b.y);
+   const nextZoom=Math.max(1,Math.min(8,pinch.current.startZoom*distance/Math.max(1,pinch.current.distance)));
+   const nextExtent=1000/nextZoom;
+   const fx=((a.x+b.x)/2-box.left)/box.width,fy=((a.y+b.y)/2-box.top)/box.height;
+   const ox=Math.max(0,Math.min(1000-nextExtent,pinch.current.anchorX-fx*nextExtent));
+   const oy=Math.max(0,Math.min(1000-nextExtent,pinch.current.anchorY-fy*nextExtent));
+   setZoom(nextZoom);
+   setCenter({x:ox+nextExtent/2,y:oy+nextExtent/2});
+   moved.current=true;
+  }else if(drag.current&&bounded>1){
+   const dx=event.clientX-drag.current.x,dy=event.clientY-drag.current.y;
+   if(Math.abs(dx)+Math.abs(dy)>5)moved.current=true;
+   setCenter({x:drag.current.originX-dx/box.width*extent,y:drag.current.originY-dy/box.height*extent});
+  }
  };
- const finishDrag=()=>{drag.current=null;};
- const chooseSite=(event,p)=>{event.stopPropagation();setSelectedWiki(p);setInspected({lat:p.lat,lon:p.lon});};
- const setZoomSafe=next=>setZoom(v=>Math.min(4,Math.max(1,typeof next==='function'?next(v):next)));
+ const finishDrag=event=>{
+  pointers.current.delete(event.pointerId);
+  if(pointers.current.size<2)pinch.current=null;
+  drag.current=null;
+ };
+ // Register a non-passive wheel handler so scrolling the map zooms the map
+ // instead of scrolling the page; zoom is anchored to the mouse position.
+ useEffect(()=>{
+  const svg=svgRef.current;
+  if(!svg)return;
+  const wheel=e=>{
+   e.preventDefault();
+   const box=svg.getBoundingClientRect();
+   if(!box.width||!box.height)return;
+   const px=Math.max(0,Math.min(1,(e.clientX-box.left)/box.width));
+   const py=Math.max(0,Math.min(1,(e.clientY-box.top)/box.height));
+   const nextZoom=Math.min(8,Math.max(1,bounded*Math.exp(-e.deltaY*.0015)));
+   if(Math.abs(nextZoom-bounded)<.001)return;
+   const nextExtent=1000/nextZoom;
+   const anchorX=offsetX+px*extent,anchorY=offsetY+py*extent;
+   const ox=Math.max(0,Math.min(1000-nextExtent,anchorX-px*nextExtent));
+   const oy=Math.max(0,Math.min(1000-nextExtent,anchorY-py*nextExtent));
+   setZoom(nextZoom);
+   setCenter({x:ox+nextExtent/2,y:oy+nextExtent/2});
+  };
+  svg.addEventListener('wheel',wheel,{passive:false});
+  return()=>svg.removeEventListener('wheel',wheel);
+ },[bounded,offsetX,offsetY,extent]);
+ const chooseSite=(event,p)=>{event.stopPropagation();if(moved.current){moved.current=false;return;}setSelectedWiki(p);setInspected({lat:p.lat,lon:p.lon});};
  return <div className="island-native-map">
   <div className="island-map-toolbar">
-   <div><strong>The Island · ASA Resource Atlas</strong><small>{publishedCount.toLocaleString()} sourced sites selected · {wikiSites.length.toLocaleString()} visible marker groups</small></div>
+   <div><strong>The Island · ASA Resource Atlas</strong><small>Scroll to zoom · pinch on mobile · drag to pan · {wikiSites.length.toLocaleString()} marker groups</small></div>
    <div className="island-map-actions">
-    <button type="button" onClick={()=>setZoomSafe(v=>+(v+.5).toFixed(1))} aria-label="Zoom in"><ZoomIn size={17}/></button>
-    <button type="button" onClick={()=>setZoomSafe(v=>+(v-.5).toFixed(1))} aria-label="Zoom out"><ZoomOut size={17}/></button>
     <button type="button" onClick={()=>{setZoom(1);setCenter({x:500,y:500});}} aria-label="Reset map zoom and position"><RotateCcw size={16}/></button>
     <label><input type="checkbox" checked={showGrid} onChange={e=>setShowGrid(e.target.checked)}/> GPS grid</label>
     <label><input type="checkbox" checked={showResources} onChange={e=>setShowResources(e.target.checked)}/> Resources</label>
    </div>
   </div>
   <div className="island-map-frame">
-   <svg viewBox={`${offsetX} ${offsetY} ${extent} ${extent}`} role="img" aria-label="The Island ASA map with GPS, wiki resource points and personal pins; tap to inspect or drag to pan" preserveAspectRatio="xMidYMid meet" onClick={inspectAt} onPointerDown={beginDrag} onPointerMove={duringDrag} onPointerUp={finishDrag} onPointerCancel={finishDrag}>
+   <svg ref={svgRef} viewBox={`${offsetX} ${offsetY} ${extent} ${extent}`} role="img" aria-label="The Island ASA map with GPS, wiki resource points and personal pins; use mouse wheel or pinch to zoom, drag to pan, tap to inspect" preserveAspectRatio="xMidYMid meet" onClick={inspectAt} onPointerDown={beginDrag} onPointerMove={duringDrag} onPointerUp={finishDrag} onPointerCancel={finishDrag}>
     <defs><pattern id="island-gps-grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="#7187a8" strokeOpacity=".38" strokeWidth="2"/></pattern></defs>
     {terrainFailed?<IslandContourTerrain/>:<image href="/maps/the-island-asa.jpg" x="0" y="0" width="1000" height="1000" preserveAspectRatio="none" onError={()=>setTerrainFailed(true)}/>}
     {showGrid&&<rect width="1000" height="1000" fill="url(#island-gps-grid)" pointerEvents="none"/>}
     <rect x="2" y="2" width="996" height="996" fill="none" stroke="#7895ae" strokeOpacity=".5" strokeWidth="3" pointerEvents="none"/>
     {showGrid&&Array.from({length:9},(_,i)=><g key={i} pointerEvents="none"><text x={(i+1)*100} y="22" fill="#e1ecf6" stroke="#102331" strokeWidth="3" paintOrder="stroke" fontSize="17" textAnchor="middle">{(i+1)*10}</text><text x="12" y={(i+1)*100} fill="#e1ecf6" stroke="#102331" strokeWidth="3" paintOrder="stroke" fontSize="17">{(i+1)*10}</text></g>)}
-    {wikiSites.map(p=><g key={p.id} role="button" tabIndex={0} aria-label={`${p.resource} at latitude ${p.lat.toFixed(1)}, longitude ${p.lon.toFixed(1)}; ${p.count} mapped site${p.count===1?'':'s'}`} onPointerDown={e=>e.stopPropagation()} onClick={e=>chooseSite(e,p)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setSelectedWiki(p);setInspected({lat:p.lat,lon:p.lon});}}} style={{cursor:'pointer'}}>
+    {wikiSites.map(p=><g key={p.id} role="button" tabIndex={0} aria-label={`${p.resource} at latitude ${p.lat.toFixed(1)}, longitude ${p.lon.toFixed(1)}; ${p.count} mapped site${p.count===1?'':'s'}`} onClick={e=>chooseSite(e,p)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setSelectedWiki(p);setInspected({lat:p.lat,lon:p.lon});}}} style={{cursor:'pointer'}}>
       <circle cx={p.lon*10} cy={p.lat*10} r={selectedWiki?.id===p.id?11:7} stroke={selectedWiki?.id===p.id?'#fff':'#061522'} strokeWidth="2.7" vectorEffect="non-scaling-stroke" fill={colors[p.resource]||'#dfcef8'} fillOpacity=".92"/>
       {p.count>1&&bounded<3&&<text x={p.lon*10} y={p.lat*10+3.5} textAnchor="middle" pointerEvents="none" fontSize="10" fontWeight="800" fill="#101323">{p.count}</text>}
     </g>)}
-    {inspected&&<g pointerEvents="none"><path d={`M ${inspected.lon*10-17} ${inspected.lat*10} h34 M ${inspected.lon*10} ${inspected.lat*10-17} v34`} stroke="#ffe998" strokeWidth="2" vectorEffect="non-scaling-stroke"/><circle cx={inspected.lon*10} cy={inspected.lat*10} r="11" fill="none" stroke="#ffe998" strokeWidth="2" vectorEffect="non-scaling-stroke"/></g>}
     {stops.length>1&&<polyline points={routePath} fill="none" stroke="#f5c25b" strokeWidth="6" strokeLinejoin="round" strokeLinecap="round" vectorEffect="non-scaling-stroke" opacity=".9" pointerEvents="none"/>}
-    {pins.filter(p=>Number.isFinite(p.lat)&&Number.isFinite(p.lon)&&p.lat>=0&&p.lat<=100&&p.lon>=0&&p.lon<=100).map(p=><g key={p.id} tabIndex="0" role="button" aria-label={`${p.title||p.resource} at latitude ${p.lat}, longitude ${p.lon}`} onPointerDown={e=>e.stopPropagation()} onClick={e=>{e.stopPropagation();onSelect(p.id);setInspected({lat:p.lat,lon:p.lon});setSelectedWiki(null);}} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelect(p.id);setInspected({lat:p.lat,lon:p.lon});}}} style={{cursor:'pointer'}}>
+    {pins.filter(p=>Number.isFinite(p.lat)&&Number.isFinite(p.lon)&&p.lat>=0&&p.lat<=100&&p.lon>=0&&p.lon<=100).map(p=><g key={p.id} tabIndex="0" role="button" aria-label={`${p.title||p.resource} at latitude ${p.lat}, longitude ${p.lon}`} onClick={e=>{e.stopPropagation();if(moved.current){moved.current=false;return;}onSelect(p.id);setInspected({lat:p.lat,lon:p.lon});setSelectedWiki(null);}} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelect(p.id);setInspected({lat:p.lat,lon:p.lon});}}} style={{cursor:'pointer'}}>
      <circle cx={p.lon*10} cy={p.lat*10} r={selectedId===p.id?17:12} fill={colors[p.resource]||'#ffaf63'} stroke={selectedId===p.id?'#fff':'#09101b'} strokeWidth="5" vectorEffect="non-scaling-stroke"/>
      <path d={`M ${p.lon*10-6} ${p.lat*10} h12 M ${p.lon*10} ${p.lat*10-6} v12`} stroke="#0a1422" strokeWidth="2" pointerEvents="none"/>
     </g>)}
    </svg>
-   <div className="island-map-watermark"><Move size={14}/> Drag to pan · Zoom to separate nearby markers</div>
   </div>
   <div className="island-map-inspection" aria-live="polite">
    <div><strong><MapPin size={16}/> Inspected location</strong>
