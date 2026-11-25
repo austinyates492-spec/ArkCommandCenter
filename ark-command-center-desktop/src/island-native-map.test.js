@@ -5,7 +5,7 @@ const page=readFileSync(new URL('./ResourcePage.jsx',import.meta.url),'utf8');
 const native=readFileSync(new URL('./IslandNativeMap.jsx',import.meta.url),'utf8');
 const css=readFileSync(new URL('./island-native-map.css',import.meta.url),'utf8');
 test('The Island selects first-party map instead of provider iframe',()=>{
- assert.match(page,/map==='The Island'\?<IslandNativeMap/);
+ assert.ok(page.includes('nativeAtlas?<IslandNativeMap'));
  assert.match(page,/:<EmbeddedMap key=\{map\}/);
  assert.match(page,/onSelect=\{setSelection\}/);
  assert.ok(!native.includes('<iframe'));
