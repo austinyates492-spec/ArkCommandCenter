@@ -59,6 +59,14 @@ test('relative tiers never claim a real per-creature encounter probability',()=>
  const castor=spawnZonesForCreature(source,'Castoroides','The Island');
  assert.ok(castor.count>=6);
  assert.ok(castor.zones.every(p=>p.tier==='unverified'));
+ const rex=spawnZonesForCreature(source,'Rex','The Island');
+ assert.ok(rex.count>0&&rex.zones.every(p=>p.tier!=='unverified'));
+ assert.ok(rex.zones.some(p=>p.container==='DinoSpawnEntriesMountain'&&p.tier==='lower'));
+ assert.ok(rex.zones.some(p=>p.container==='DinoSpawnEntriesMonsterIsland'&&p.tier==='moderate'));
+ assert.ok(spawnZonesForCreature(load('Scorched Earth'),'Rex','Scorched Earth').zones.every(p=>p.tier==='rare'));
+ const carcha=spawnZonesForCreature(source,'Carcharodontosaurus','The Island');
+ assert.ok(carcha.count>0&&carcha.zones.every(p=>p.tier==='rare'&&p.species==='Carcharodontosaurus'));
+ assert.ok(spawnZonesForCreature(source,'Therizinosaurus','The Island').count>0);
  const quetzal=spawnZonesForCreature(source,'Quetzal','The Island');
  assert.ok(quetzal.count>0);
  assert.ok(quetzal.zones.every(p=>p.tier==='rare'));
@@ -80,7 +88,7 @@ test('every tame in existing roster can be queried on every native map without f
    const zones=spawnZonesForCreature(source,tame,map);
    assert.ok(Array.isArray(coverage.matched)&&Array.isArray(zones.zones));
    if(!coverage.documented)assert.equal(zones.count,0, `no fabricated ${tame} on ${map}`);
-   for(const z of zones.zones)assert.ok(z.species&&source.species[z.species],map+':'+tame);
+   for(const z of zones.zones)assert.ok(z.species&&source.species[z.sourceSpecies||z.species],map+':'+tame);
   }
  }
 });

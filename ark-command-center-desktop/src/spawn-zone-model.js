@@ -1,3 +1,4 @@
+import {reviewedSpawnEvidence} from './spawn-rarity-evidence.js';
 /** Source-grounded ASA spawn zone projection.
  * Source spawn records encode a container, group weight and creature weight,
  * with rectangles in [latitude 1, longitude 1, latitude 2, longitude 2].
@@ -34,7 +35,7 @@ export const spawnLoaders={
  'Genesis: Part 1 Ocean':()=>import('./spawn-source/genesis-part-1-ocean.json',{with:{type:'json'}})
 };
 const aliasNames={
- Rex:['T-Rex'],Triceratops:['Trike'],Plesiosaur:['Plesiosaurus'],
+ Rex:['T-Rex'],Spinosaurus:['Spino'],Therizinosaurus:['Therizinosaur'],Direbear:['Dire Bear'],'Giant Bee':['Giant Queen Bee'],Wyvern:['Fire Wyvern','Lightning Wyvern','Poison Wyvern','Ice Wyvern'],Reaper:['Reaper Queen'],Drakeling:['Spring Drakeling','Summer Drakeling','Autumn Drakeling','Winter Drakeling'],Triceratops:['Trike'],Plesiosaur:['Plesiosaurus'],
  Pulmonoscorpius:['Scorpion'],'Dung Beetle':['Dungbeetle'],
  Anglerfish:['Angler'],Sarcosuchus:['Sarco'],Megalosaurus:['Megalo'],
  'Arthropluera':['Arthropleura']
@@ -52,7 +53,7 @@ export function findSpawnSpecies(dataset,creature,map){
  // When the plain species name isn't present, an explicitly named native
  // variant may be documented in its own map; show which was selected.
  const nativePrefix=map==='Aberration'?'Aberrant ':map==='Genesis: Part 1'||map==='Genesis: Part 1 Ocean'?'X-':null;
- if(nativePrefix)return names.filter(n=>normalized(n)===normalized(nativePrefix+creature));
+ if(nativePrefix){const nativeNames=[creature,...(aliasNames[creature]||[])].map(n=>normalized(nativePrefix+n));return names.filter(n=>nativeNames.includes(normalized(n)));}
  return [];
 }
 export function relativeSpawnTier(weight){
@@ -73,31 +74,38 @@ export function regionalRarity(species,container,map){
  if(sparseMaps.has(map)&&((container==='DinoSpawnEntriesQuetz'&&species==='Quetzal')||(container==='DinoSpawnEntriesGigant'&&species==='Giganotosaurus')))return {tier:'rare',basis:'Sparse dedicated population target',source:source+container.toLowerCase()};
  const table=map==='The Island'?(container==='DinoSpawnEntriesBeach'?beach:container==='DinoSpawnEntriesJungle'?jungle:null):null;
  const row=table&&Object.hasOwn(table,species)?table[species]:null;
- if(!row)return {tier:'unverified',basis:'Regional abundance evidence unavailable'};
- const [share,cap]=row;
+ const reviewed=reviewedSpawnEvidence[container];
+ const extraRow=reviewed?.maps.includes(map)?reviewed.rows[species]:null;
+ if(species==='Rex'&&((map==='Scorched Earth'&&container==='SE_DinoSpawnEntries_RexSolo')||(map==='Lost Colony'&&container==='DinoSpawnEntries_Tundra_TREX')))return {tier:'rare',basis:'Sparse dedicated population target',source:source+(map==='Scorched Earth'?'se-dinospawnentries-rexsolo':'dinospawnentries-tundra-trex')};
+ if(!row&&!extraRow)return {tier:'unverified',basis:'Regional abundance evidence unavailable'};
+ const [share,cap]=row||extraRow;
  const score=Math.min(share,cap??share);
  // Fixed modeled population-share bands, not measured presence/encounter percentages.
  const tier=score>=25?'veryHigh':score>=10?'higher':score>=3?'moderate':score>=1?'lower':'rare';
- return {tier,basis:'Modeled spawn composition and cap',source:source+container.toLowerCase()};
+ return {tier,basis:'Modeled spawn composition and cap',source:source+(extraRow?reviewed.slug:container.toLowerCase())};
 }
 
 export function spawnZonesForCreature(dataset,creature,map,layer='all',mode='rarity'){
  const matched=findSpawnSpecies(dataset,creature,map);
  const zones=[];
+ // Core game-data additions put Carchas in the dedicated Giga pool; do not borrow other Giga containers.
+ const sharedCarcha=creature==='Carcharodontosaurus'&&!matched.length&&sparseMaps.has(map)&&Array.isArray(dataset?.species?.Giganotosaurus);
+ if(sharedCarcha)matched.push('Giganotosaurus');
  for(const species of matched){
   for(const row of dataset.species[species]||[]){
    const [pos,weight,container,flags]=row;
    if(!Array.isArray(pos)||(pos.length!==2&&pos.length!==4)||!Number.isFinite(weight))continue;
    if(/CaveTek|TekCave|Mission|Gauntlet/i.test(container))continue;
-   const classification=regionalRarity(species,container,map);
+   if(sharedCarcha&&!/^DinoSpawnEntriesGigant(?:_Generic)?$/i.test(container))continue;
+   const classification=sharedCarcha?{tier:'rare',basis:'Shared sparse Giganotosaurus pool (core game-data addition)',source:'https://hypernatrema.com/ark/devkit/make/spawns'}:regionalRarity(species,container,map);
    const tier=mode==='weight'?relativeSpawnTier(weight):mode==='documented'?'unverified':classification.tier;
    if(layer!=='all'&&tier!==layer)continue;
-   zones.push({pos,weight,tier,species,container,flags,basis:classification.basis,source:classification.source});
+   zones.push({pos,weight,tier,species:sharedCarcha?'Carcharodontosaurus':species,sourceSpecies:species,container,flags,basis:classification.basis,source:classification.source});
   }
  }
  return {matched,zones,count:zones.length,verifiedASA:dataset?.verifiedASA===true};
 }
 export function spawnLocationCoverage(dataset,creature,map){
- const matched=findSpawnSpecies(dataset,creature,map);
- return {matched,documented:matched.some(name=>(dataset.species[name]||[]).length>0),source:dataset?.source||null,revision:dataset?.revision||null};
+ const {matched,zones}=spawnZonesForCreature(dataset,creature,map);
+ return {matched,documented:zones.length>0,source:dataset?.source||null,revision:dataset?.revision||null};
 }
