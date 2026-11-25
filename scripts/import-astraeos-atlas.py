@@ -51,7 +51,7 @@ if info:
 
 # The explorer overlay (if available) may contain oil/water/gas veins, caves,
 # artifacts and drops, independent of the absent resource dataset.
-for explorer in ["Data:Maps/Explorer/Astraeos","Data:Maps/Explorer/Astraeos/ASA","Data:Maps/Exploration/Astraeos","Data:Maps/Explorer/Astreos"]:
+for explorer in ["Data:Maps/Explorer/Astraeos","Data:Maps/Explorer/Astraeos/ASA","Data:Maps/Exploration/Astraeos","Data:Maps/Exploration/Astraeos/ASA","Data:Maps/Explorer/Astreos"]:
  try:
   r=S.get(API,params={"action":"query","titles":explorer,"prop":"revisions","rvprop":"content|ids","rvslots":"main","format":"json"},timeout=25);r.raise_for_status()
   page=list(r.json()["query"]["pages"].values())[0]
