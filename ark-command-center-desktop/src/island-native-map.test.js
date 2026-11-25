@@ -25,8 +25,8 @@ test('native map does not represent incomplete terrain or node coverage as verif
  assert.ok(native.includes('<image href="/maps/the-island-asa.jpg"'));
  assert.ok(native.includes('onError={()=>setTerrainFailed(true)}'));
  assert.ok(!native.includes('<iframe'));
- assert.ok(native.includes('Locally hosted image; no iframe'));
- assert.ok(native.includes('Only your saved GPS pins and routes are shown'));
+ assert.ok(native.includes('Resource sites are published estimates'));
+ assert.ok(native.includes('visibleWikiSites(islandWikiResources'));
 });
 test('mobile layout has touch sized controls',()=>{
  assert.ok(css.includes('@media(max-width:750px)'));
@@ -35,9 +35,16 @@ test('mobile layout has touch sized controls',()=>{
 });
 
 test('GPS calibration inspection follows same 1000 square coordinate plane as plotted pins',()=>{
- assert.ok(native.includes('const x=offset+(event.clientX-rect.left)/rect.width*extent'));
- assert.ok(native.includes('const y=offset+(event.clientY-rect.top)/rect.height*extent'));
+ assert.ok(native.includes('(offsetX+px*extent)/10'));
+ assert.ok(native.includes('(offsetY+py*extent)/10'));
  assert.ok(native.includes('inspected.lon*10'));
  assert.ok(native.includes('inspected.lat*10'));
- assert.ok(native.includes('Tap the map to inspect GPS coordinates'));
+ assert.ok(native.includes('Inspected location'));
+});
+
+test('inspector below map creates a named custom pin through ResourcePage',()=>{
+ assert.ok(native.indexOf('className="island-map-inspection"')>native.indexOf('className="island-map-frame"'));
+ assert.ok(native.includes('onSaveAt(inspected)'));
+ assert.ok(page.includes('onSaveAt={saveAtMapPoint}'));
+ assert.ok(css.includes('.island-map-inspection'));
 });
