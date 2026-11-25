@@ -38,12 +38,12 @@ test('Center region route filters include cave GPS nodes inside a polygon withou
 test('Center native viewer has honest attribution, source layers and saved routes separate by map',()=>{
  const page=readFileSync(new URL('./ResourcePage.jsx',import.meta.url),'utf8');
  const map=readFileSync(new URL('./IslandNativeMap.jsx',import.meta.url),'utf8');
- assert.ok(page.includes("map==='The Center'?centerWikiResources:islandWikiResources"));
+ assert.ok(page.includes("map==='The Center'?centerWikiResources"));
  assert.ok(page.includes("map==='The Center'?'/maps/the-center-asa.jpg'"));
  assert.ok(page.includes("map==='The Island'||map==='Scorched Earth'||map==='The Center'"));
  assert.ok(page.includes("map==='The Center'?'Authentic") || page.includes("map==='The Center'?'These filters"));
  assert.ok(page.includes("savedPlans.filter(p=>p.map===map).map"));
  assert.ok(page.includes('plannedStops={generated?.stops||[]}'));
  assert.ok(map.includes("resourceSource.verifiedASA===false"));
- assert.ok(map.includes('these are NOT ASA-verified positions'));
+ assert.ok(map.includes('NOT independently ASA-verified'));
 });
