@@ -98,3 +98,54 @@ export function gpsRouteDistance(stops,start=null){
  for(const p of start?stops:stops.slice(1)){total+=Math.sqrt(dist2(previous,p));previous=p;}
  return total;
 }
+
+/** A route may require boundary waypoints when the user draws a concave region.
+ * This keeps the *illustrated GPS path* inside the region, without claiming
+ * terrain walkability, realistic travel time or a navigable flight corridor.
+ */
+const orientation=(a,b,c)=>(b.lon-a.lon)*(c.lat-a.lat)-(b.lat-a.lat)*(c.lon-a.lon);
+export function gpsSegmentInsideArea(a,b,polygon){
+ if(!insideFarmingArea(a,polygon)||!insideFarmingArea(b,polygon))return false;
+ for(let i=0;i<polygon.length;i++){
+  const c=polygon[i],d=polygon[(i+1)%polygon.length];
+  const abC=orientation(a,b,c),abD=orientation(a,b,d);
+  const cdA=orientation(c,d,a),cdB=orientation(c,d,b);
+  // Proper crossing excludes touching a polygon corner.
+  if(abC*abD<-1e-10&&cdA*cdB<-1e-10)return false;
+ }
+ for(const fraction of [.2,.4,.6,.8]){
+  const p={lat:a.lat+(b.lat-a.lat)*fraction,lon:a.lon+(b.lon-a.lon)*fraction};
+  if(!insideFarmingArea(p,polygon))return false;
+ }
+ return true;
+}
+function withinAreaLeg(start,end,polygon){
+ if(gpsSegmentInsideArea(start,end,polygon))return [start,end];
+ const nodes=[start,end,...polygon],n=nodes.length;
+ const costs=Array(n).fill(Infinity),prev=Array(n).fill(-1),visited=new Set();
+ costs[0]=0;
+ for(let step=0;step<n;step++){
+  let u=-1;
+  for(let i=0;i<n;i++)if(!visited.has(i)&&(u===-1||costs[i]<costs[u]))u=i;
+  if(u===-1||!Number.isFinite(costs[u])||u===1)break;
+  visited.add(u);
+  for(let v=0;v<n;v++){
+   if(v===u||visited.has(v)||!gpsSegmentInsideArea(nodes[u],nodes[v],polygon))continue;
+   const alt=costs[u]+Math.sqrt(dist2(nodes[u],nodes[v]));
+   if(alt<costs[v]){costs[v]=alt;prev[v]=u;}
+  }
+ }
+ if(!Number.isFinite(costs[1]))return [start,end]; // Should only occur for a malformed polygon.
+ const order=[];for(let i=1;i!==-1;i=prev[i])order.push(nodes[i]);
+ return order.reverse();
+}
+export function areaRoutePolyline(stops,polygon){
+ if(!Array.isArray(stops)||!stops.length)return [];
+ if(!Array.isArray(polygon)||polygon.length<3)return stops.slice();
+ const result=[stops[0]];
+ for(let i=1;i<stops.length;i++){
+  const leg=withinAreaLeg(stops[i-1],stops[i],polygon);
+  result.push(...leg.slice(1));
+ }
+ return result;
+}
