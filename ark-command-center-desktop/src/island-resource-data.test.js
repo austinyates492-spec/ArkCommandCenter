@@ -30,7 +30,9 @@ test('native viewer replaces wiki embed and includes all/deselect, mobile naviga
   assert.ok(page.includes(fragment),fragment);
  }
  assert.ok(page.includes('schematic'));
- assert.ok(!page.includes('<EmbeddedMap'));
+ assert.ok(page.includes('function IslandAtlas({onMapChange})'));
+ assert.ok(page.includes('if(map===\'The Island\')return <IslandAtlas onMapChange={setMap}/>'));
+ assert.ok(page.includes('<EmbeddedMap key={map}'));
  assert.ok(!page.includes('<iframe'));
 });
 test('phone layout uses stacking, touch-ready controls and theme tokens',()=>{
