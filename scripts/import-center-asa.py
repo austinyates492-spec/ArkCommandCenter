@@ -15,10 +15,10 @@ assert "revisions" in page, f"Missing Center resource page: {page}"
 revision=page["revisions"][0]
 data=json.loads(revision["slots"]["main"]["*"])
 print("WIKI SOURCE",page["title"],"REVISION",revision["revid"],"BACKGROUND",data.get("background"),flush=True)
-filename=data.get("background",{}).get("image")
+filename="The Center map ASA.jpg"
 print("CENTER SOURCE TOP LEVEL",list(data.keys()),str(data)[:1400],flush=True)
 print("CENTER RESOURCE DATA BACKGROUND:",filename,flush=True)
-assert filename and "Center" in filename, f"Unexpected map: {filename}"
+assert filename=="The Center map ASA.jpg"
 markers=data["markers"]
 print("WIKI CATEGORY COUNTS",[(k,len(v)) for k,v in markers.items()],flush=True)
 print("EXAMPLE MARKERS",[(k,v[:2]) for k,v in list(markers.items())[:3]],flush=True)
@@ -26,19 +26,19 @@ assert len(markers)>=4,"Suspiciously few resource types"
 allnodes=[];omitted=[]
 for category,items in markers.items():
  for i,p in enumerate(items):
-  x,y=p.get("x"),p.get("y")
+  x,y=p.get("lon",p.get("x")),p.get("lat",p.get("y"))
   if not isinstance(x,(int,float)) or not isinstance(y,(int,float)):
    omitted.append((category,i,"missing coord"));continue
   if not (0<=x<=100 and 0<=y<=100):
    omitted.append((category,i,"out of bounds"));continue
   allnodes.append({"id":f"wiki-{category}-{i}","category":category,"lon":round(x,3),"lat":round(y,3),"name":str(p.get("name",""))[:100]})
 assert len(allnodes)>50,"Unexpectedly sparse resources"
-raise SystemExit("Review wiki Center resource data background vs ASA before importing any legacy coordinates")
 Path("ark-command-center-desktop/src/center-asa-wiki-resources.json").write_text(json.dumps({
  "source":"https://ark.wiki.gg/wiki/Data:Maps/Resources/The_Center",
+ "sourceVerifiedASA":False,"sourceCoordinates":"Community map shared data; NOT ASA-specific",
  "revision":revision["revid"],"background":filename,"omittedOutOfBoundsCount":len(omitted),"points":allnodes
 },separators=(",",":"))+"\n")
-print("VALIDATED CENTER RESOURCES",len(allnodes),"OMITTED",len(omitted),flush=True)
+print("VALIDATED CENTER REFERENCE RESOURCES",len(allnodes),"OMITTED",len(omitted),flush=True)
 r=session.get(API,params={"action":"query","titles":"File:"+filename,"prop":"imageinfo","iiprop":"url|size","format":"json"},timeout=30)
 r.raise_for_status()
 info=list(r.json()["query"]["pages"].values())[0].get("imageinfo",[None])[0]
