@@ -11,6 +11,11 @@ pages=[
  "Data:Maps/Resources/Genesis Ocean/ASA",
  "Data:Maps/Resources/Genesis: Part 1/Ocean/ASA",
  "Data:Maps/Resources/Genesis: Part 1 Ocean",
+ "Data:Maps/Resources/Genesis: Part 1/Ocean",
+ "Data:Maps/Resources/Genesis: Part 1/Ocean/ASA",
+ "Data:Maps/Resources/Genesis: Part 1 (Ocean)",
+ "Data:Maps/Resources/Genesis: Part 1 Ocean Map",
+ "Data:Maps/Resources/Genesis Part 1 Ocean",
 ]
 for name in pages:
  try:
@@ -38,3 +43,10 @@ for filename in [
   p=list(r.json()["query"]["pages"].values())[0];info=p.get("imageinfo",[None])[0]
   if info:print("IMAGE FOUND",filename,info,flush=True)
  except Exception as e:print("IMAGE ERROR",filename,str(e),flush=True)
+
+# Inspect page's explicit dataset references and ocean-specific file names.
+for title in ["Resource Map/Genesis: Part 1","Resource Map/Genesis: Part 1/Ocean","Explorer Map/Genesis: Part 1"]:
+ r=S.get(API,params={"action":"query","titles":title,"prop":"revisions","rvprop":"content|ids","rvslots":"main","format":"json"},timeout=25);r.raise_for_status()
+ page=list(r.json()["query"]["pages"].values())[0]
+ rev=page.get("revisions",[None])[0]
+ if rev:print("PAGE REFS",title,rev["slots"]["main"]["*"][:8000],flush=True)
