@@ -16,7 +16,7 @@ jobs:
       - run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add ark-command-center-desktop/src/lost-colony-wiki-resources.json ark-command-center-desktop/public/maps/lost-colony-asa.jpg 2>/dev/null || true
+          git add ark-command-center-desktop/src/lost-colony-wiki-resources.json ark-command-center-desktop/src/lost-colony-explorer-outposts.json ark-command-center-desktop/public/maps/lost-colony-asa.jpg
           if ! git diff --cached --quiet; then
             git commit -m "Import authentic Lost Colony terrain and wiki sources"
             git pull --rebase origin feature/lost-colony-native-atlas-20261125
