@@ -10,7 +10,16 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
-      - name: Probe wiki source
+      - name: Import and verify wiki source
         run: |
           python -m pip install --quiet requests
           python scripts/import-island-resource-data.py
+      - name: Commit pinned ASA resource dataset to review branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ark-command-center-desktop/src/island-asa-wiki-resources.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Import verified ASA Island Wiki resource coordinates"
+            git push
+          fi
