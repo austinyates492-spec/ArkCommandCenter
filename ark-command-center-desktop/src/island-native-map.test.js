@@ -33,3 +33,11 @@ test('mobile layout has touch sized controls',()=>{
  assert.ok(css.includes('width:44px;height:44px'));
  assert.ok(css.includes('aspect-ratio:1'));
 });
+
+test('GPS calibration inspection follows same 1000 square coordinate plane as plotted pins',()=>{
+ assert.ok(native.includes('const x=offset+(event.clientX-rect.left)/rect.width*extent'));
+ assert.ok(native.includes('const y=offset+(event.clientY-rect.top)/rect.height*extent'));
+ assert.ok(native.includes('inspected.lon*10'));
+ assert.ok(native.includes('inspected.lat*10'));
+ assert.ok(native.includes('Tap the map to inspect grid coordinates'));
+});
