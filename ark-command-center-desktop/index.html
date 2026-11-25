@@ -46,4 +46,34 @@
 <div class="boot-emblem" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M32 4 54 13V29C54 44 45 54 32 60 19 54 10 44 10 29V13Z"/><path d="M22 28 30 36 44 20"/></svg></div>
 <div class="boot-title">ARK TRIBE <b>HQ</b></div><div class="boot-welcome" data-boot-welcome>WELCOME, SURVIVOR</div><div class="boot-tribe" data-boot-tribe hidden></div><div class="boot-tag">YOUR TRIBE. YOUR COMMAND.</div>
 <div class="boot-track" aria-hidden="true"><div class="boot-fill"></div></div>
-<button type="button" class="boot-skip" data-intro-skip>Skip intro</button></div></div><div id="root"></div><script type="module" src="/src/main.jsx"></script></body></html>
+<button type="button" class="boot-skip" data-intro-skip>Skip intro</button></div></div><div id="root"></div>
+<script>
+// Mobile startup watchdog: the intro is independent of React and can finish
+// even when a stale asset or unsupported browser feature prevents app startup.
+(function(){
+ let lastError='';
+ window.addEventListener('error',function(event){lastError=String(event.message||'Script failed to load').slice(0,200);},true);
+ window.addEventListener('unhandledrejection',function(event){lastError=String(event.reason?.message||event.reason||'Startup request failed').slice(0,200);});
+ function renderRecovery(){
+  var root=document.getElementById('root');
+  if(!root||root.querySelector('.shell')||root.querySelector('[role="alert"]'))return;
+  var wrapper=document.createElement('main');
+  wrapper.setAttribute('role','alert');
+  wrapper.style.cssText='min-height:100dvh;background:#0b1116;color:#f1f6f3;padding:32px 20px;display:flex;align-items:center;justify-content:center;text-align:center;font-family:system-ui,sans-serif';
+  var panel=document.createElement('div');panel.style.cssText='max-width:430px';
+  var title=document.createElement('h1');title.textContent='ARK Tribe HQ could not start';title.style.cssText='font-size:23px;margin:0 0 12px';
+  var desc=document.createElement('p');desc.textContent='The opening animation finished, but the app did not load. This may be an outdated mobile cache or a browser error. Your tribe information is safe.';desc.style.cssText='line-height:1.65';
+  var reload=document.createElement('button');reload.textContent='Refresh App Files';reload.style.cssText='padding:14px 20px;min-height:48px;border:0;border-radius:10px;background:#84e6b8;color:#112c20;font-weight:800;font-size:16px;cursor:pointer';
+  reload.addEventListener('click',function(){
+   reload.disabled=true;reload.textContent='Refreshing…';
+   Promise.resolve().then(function(){
+    return 'serviceWorker' in navigator?navigator.serviceWorker.getRegistrations().then(function(regs){return Promise.all(regs.map(function(reg){return reg.unregister();}));}):null;
+   }).then(function(){return 'caches' in window?caches.keys().then(function(keys){return Promise.all(keys.filter(function(key){return key.startsWith('arktribehq-');}).map(function(key){return caches.delete(key);}));}):null;}).catch(function(){}).then(function(){location.replace('/?refresh='+Date.now());});
+  });
+  var detail=document.createElement('p');detail.textContent=lastError?'Browser error: '+lastError:'If this continues, try opening the site in a new browser tab.';detail.style.cssText='font-size:11px;opacity:.7;margin-top:18px;overflow-wrap:anywhere';
+  panel.append(title,desc,reload,detail);wrapper.append(panel);root.replaceChildren(wrapper);
+  document.getElementById('ark-boot-intro')?.classList.add('boot-intro-finished');
+ }
+ window.setTimeout(renderRecovery,12000);
+})();
+</script><script type="module" src="/src/main.jsx"></script></body></html>

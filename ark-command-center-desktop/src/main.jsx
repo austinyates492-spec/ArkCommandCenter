@@ -46,6 +46,20 @@ function useStored(key,initial){const [value,setValue]=useState(()=>{try{return 
 function Badge({children,tone='green'}){return <span className={'badge '+tone}>{children}</span>}
 function Panel({title,aside,children,className=''}){return <section className={'panel '+className}><div className="panelhead"><h2>{title}</h2>{aside}</div>{children}</section>}
 function Field({label,children}){return <label className="field"><span>{label}</span>{children}</label>}
+class AppErrorBoundary extends React.Component{
+ constructor(props){super(props);this.state={error:null};}
+ static getDerivedStateFromError(error){return {error};}
+ componentDidCatch(error,info){console.error('ARK Tribe HQ startup/render error',error,info);}
+ render(){
+  if(!this.state.error)return this.props.children;
+  return <main role="alert" style={{minHeight:'100dvh',background:'#0b1116',color:'#f2f6f4',fontFamily:'system-ui,sans-serif',padding:'max(24px,env(safe-area-inset-top)) 22px',display:'grid',alignContent:'center',justifyItems:'center',textAlign:'center',gap:15}}>
+   <h1 style={{margin:0,fontSize:25}}>ARK Tribe HQ couldn't load</h1>
+   <p style={{maxWidth:440,lineHeight:1.6}}>The app hit a startup error. Your tribe data has not been deleted. Try reloading the latest version.</p>
+   <button type="button" style={{minHeight:48,borderRadius:12,padding:'12px 20px',background:'#7ed7ae',border:0,color:'#11251c',fontWeight:800}} onClick={()=>window.location.reload()}>Reload ARK Tribe HQ</button>
+   <small style={{opacity:.72,maxWidth:460,overflowWrap:'anywhere'}}>Error: {String(this.state.error?.message||'Unknown application error').slice(0,180)}</small>
+  </main>;
+ }
+}
 function App(){
  const isDesktopApp=typeof window!=='undefined'&&('__TAURI_INTERNALS__' in window);
  const [mobileNavOpen,setMobileNavOpen]=useState(false);
@@ -167,7 +181,7 @@ function App(){
 function clock(ms){const s=Math.max(0,Math.ceil(ms/1000));return `${Math.floor(s/86400)?Math.floor(s/86400)+'d ':''}${String(Math.floor(s%86400/3600)).padStart(2,'0')}:${String(Math.floor(s%3600/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`}
 function QuickTimer({onAdd}){const [name,setName]=useState('Tribe reminder'),[minutes,setMinutes]=useState(30);return <form onSubmit={e=>{e.preventDefault();onAdd(name,minutes,'Custom')}}><Field label="Timer name"><input value={name} onChange={e=>setName(e.target.value)} required/></Field><Field label="Duration (minutes)"><input type="number" min="1" value={minutes} onChange={e=>setMinutes(e.target.value)} required/></Field><button className="primary full" type="submit"><Plus size={17}/> Start Countdown</button></form>}
 resetLocalWorkspaceOnce();
-createRoot(document.getElementById('root')).render(<App/>);
+createRoot(document.getElementById('root')).render(<AppErrorBoundary><App/></AppErrorBoundary>);
 if(!('__TAURI_INTERNALS__' in window)&&'serviceWorker' in navigator){
  window.addEventListener('load',()=>{
   navigator.serviceWorker.register('/sw.js').catch(()=>{/* Normal web experience works without offline support. */});
