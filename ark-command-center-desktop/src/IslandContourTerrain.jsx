@@ -1,51 +1,68 @@
 import React from 'react';
 
 /**
- * Original ARK Tribe HQ cartographic illustration, NOT a wiki image trace.
- * Decorative geographic concept only. Coastline, terrain and biomes are approximate;
- * do not interpret this art as calibrated GPS geography.
- * The parent viewport owns pin coordinates and zoom.
+ * Original, independently drawn contour interpretation of ARK: ASA The Island.
+ * Geographic reference: ARK Official Community Wiki, The Island ASA terrain.
+ * Approximate visual correspondence only; not a copy of the source pixels,
+ * not a calibrated navigation or published-resource layer.
+ * Co-ordinate viewport: 1000x1000, lon increases right, lat increases down.
  */
-const outline='M 169 212 C 215 146 298 119 362 146 L 404 115 460 130 500 111 C 579 126 647 90 704 146 L 746 154 801 217 822 281 874 324 869 384 893 428 872 477 889 530 861 575 840 638 810 667 802 742 750 768 715 805 655 789 616 837 562 815 516 846 470 821 416 844 371 806 313 820 277 770 222 761 201 705 161 677 144 623 112 578 136 535 113 480 127 434 107 390 126 340 117 282 Z';
-const contourLines=[
- 'M175 275 C290 185 372 200 445 175 S630 160 748 250 S850 416 809 540 S742 743 608 771 S350 752 253 665 S151 430 175 275',
- 'M220 287 C300 222 382 228 467 215 S630 217 709 284 S803 430 773 533 S694 702 591 723 S394 714 300 633 S196 409 220 287',
- 'M261 306 C342 247 435 265 507 255 S650 290 707 358 S752 462 725 547 S642 653 568 667 S414 656 346 580 S238 415 261 306',
- 'M306 326 C374 278 461 295 518 305 S642 346 671 399 S702 486 676 544 S604 605 540 606 S420 580 378 531 S292 405 306 326',
- 'M342 353 C400 320 470 327 526 359 S612 388 624 449 S613 518 570 550 S459 542 423 507 S339 424 342 353',
- 'M394 371 C437 344 488 371 527 399 S580 449 561 485 S483 507 452 482 S403 417 394 371'
+const mainCoast='M 80 110 Q108 77 150 101 L188 75 Q242 83 271 74 Q326 92 371 77 Q400 102 440 104 L480 142 Q527 159 555 125 L601 102 Q630 77 659 101 L694 136 Q725 160 751 144 Q776 113 789 102 Q825 106 836 151 L848 197 Q825 235 848 268 L875 305 Q884 359 866 406 Q883 448 866 487 L882 542 Q878 598 858 629 L872 690 Q859 757 826 789 Q796 817 759 799 L741 756 Q696 783 677 815 L647 857 Q603 886 573 853 L543 804 Q520 765 485 783 L464 852 Q437 907 392 881 L367 838 Q330 811 296 842 L271 890 Q240 911 218 889 L191 842 Q161 828 145 792 L123 741 Q112 687 122 636 Q109 588 124 543 L111 500 Q127 442 105 407 L119 361 Q103 314 132 274 L119 224 Q88 207 80 175 Z';
+const southWest='M 130 742 Q176 707 222 737 Q257 757 259 813 L232 878 Q215 909 172 900 Q128 877 105 834 Q101 783 130 742 Z';
+const southMid='M 366 764 Q412 732 448 758 L484 803 Q477 864 443 903 Q406 920 373 882 L352 825 Z';
+const southEast='M 610 743 Q651 730 686 757 L729 799 Q735 841 707 879 Q673 901 636 875 L598 829 Z';
+const islets=['M 174 900 Q203 891 223 918 Q228 948 193 958 Q158 950 174 900Z','M 464 917 Q495 887 528 913 L542 943 Q513 968 486 957 Z','M 843 879 Q865 868 888 895 L880 927 Q854 928 843 879Z','M 856 104 Q883 83 907 112 Q929 145 899 170 L860 147 Z','M 75 291 Q93 273 105 288 L106 320 82 332Z'];
+const heights=[
+ {x:235,y:155,rx:95,ry:68,color:'#d0e0dc'},
+ {x:470,y:335,rx:96,ry:82,color:'#596b70'},
+ {x:624,y:302,rx:78,ry:75,color:'#5c777b'},
+ {x:762,y:370,rx:86,ry:104,color:'#6b7563'},
+ {x:492,y:588,rx:139,ry:116,color:'#6c5d4d'}
+];
+const majorContours=[
+ 'M 96 159 Q227 88 361 121 T597 184 Q730 172 823 284 T795 570 Q741 697 614 724 Q495 763 412 708 T210 617 Q116 467 134 315',
+ 'M 156 191 Q276 126 368 176 T555 235 Q696 215 779 311 Q834 427 772 538 Q701 626 609 655 Q502 686 421 627 Q343 574 242 569 Q167 466 173 350',
+ 'M 222 243 Q306 195 392 242 T560 273 Q686 270 729 370 Q773 444 718 518 Q644 580 547 600 Q443 605 379 531 Q292 515 256 420 Q224 336 222 243'
+];
+const mountainRings=[
+ [249,154,82,54],[468,329,77,70],[625,307,57,58],[757,378,62,78],[486,584,107,82]
 ];
 export default function IslandContourTerrain(){
- return <g aria-label="Original stylized Island terrain artwork; approximate geography" role="group" pointerEvents="none">
+ return <g role="group" aria-label="Original dark contour interpretation of The Island with approximate geography" pointerEvents="none">
   <defs>
-   <linearGradient id="hq-island-water" x1="0" y1="0" x2="1" y2="1"><stop stopColor="#10283b"/><stop offset=".55" stopColor="#071c2c"/><stop offset="1" stopColor="#0c1a31"/></linearGradient>
-   <linearGradient id="hq-island-land" x1="0" y1="0" x2=".85" y2="1"><stop stopColor="#294d57"/><stop offset=".4" stopColor="#254c43"/><stop offset=".73" stopColor="#315544"/><stop offset="1" stopColor="#193f39"/></linearGradient>
-   <linearGradient id="hq-island-ice" x1="0" y1="0" x2=".4" y2="1"><stop stopColor="#d9e9e8"/><stop offset=".65" stopColor="#8fb9bd"/><stop offset="1" stopColor="#497888"/></linearGradient>
-   <pattern id="hq-island-wave" width="42" height="42" patternUnits="userSpaceOnUse"><path d="M0 36 Q21 29 42 36" stroke="#2b5367" strokeWidth="1" fill="none" opacity=".25"/></pattern>
-   <clipPath id="hq-island-clip"><path d={outline}/></clipPath>
-   <filter id="hq-island-shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="12" stdDeviation="15" floodColor="#000" floodOpacity=".7"/></filter>
+   <linearGradient id="hq-island-ocean" x1="0" y1="0" x2=".6" y2="1"><stop stopColor="#11334c"/><stop offset=".5" stopColor="#0b2033"/><stop offset="1" stopColor="#061424"/></linearGradient>
+   <linearGradient id="hq-island-ground" x1="0" y1="0" x2="1" y2="1"><stop stopColor="#4b6960"/><stop offset=".45" stopColor="#245145"/><stop offset="1" stopColor="#304c39"/></linearGradient>
+   <linearGradient id="hq-island-snow" x1="0" y1="0" x2=".15" y2="1"><stop stopColor="#d8ece9"/><stop offset="1" stopColor="#799aa0"/></linearGradient>
+   <pattern id="hq-island-ocean-lines" width="37" height="37" patternUnits="userSpaceOnUse"><path d="M0 29 Q18 20 37 29" fill="none" stroke="#478098" strokeWidth="1" strokeOpacity=".18"/></pattern>
+   <clipPath id="hq-island-mainclip"><path d={mainCoast}/></clipPath>
   </defs>
-  <rect width="1000" height="1000" fill="url(#hq-island-water)"/>
-  <rect width="1000" height="1000" fill="url(#hq-island-wave)"/>
-  <g filter="url(#hq-island-shadow)"><path d={outline} fill="url(#hq-island-land)" stroke="#87b6a3" strokeWidth="7"/></g>
-  <g clipPath="url(#hq-island-clip)">
-   <path d="M90 0 H910 V304 Q836 285 766 253 Q680 300 600 270 Q514 313 437 260 Q320 274 230 322 L90 285Z" fill="url(#hq-island-ice)" opacity=".94"/>
-   <path d="M400 290 Q475 220 554 282 Q603 330 579 403 Q538 445 478 416 Q427 386 400 290Z" fill="#61716f" opacity=".8"/>
-   <path d="M390 470 Q441 425 518 457 Q588 487 570 558 Q538 637 455 635 Q401 596 390 470Z" fill="#173d35" opacity=".8"/>
-   <path d="M131 625 Q310 589 427 704 T813 676 L917 890 H90Z" fill="#60704d" opacity=".45"/>
-   <path d="M585 363 Q620 390 608 429 T669 500 Q687 538 731 558" fill="none" stroke="#75bec1" strokeWidth="18" opacity=".55" strokeLinecap="round"/>
-   <path d="M312 274 Q336 345 324 416 T369 544 Q370 603 428 667" fill="none" stroke="#77c4bd" strokeWidth="13" opacity=".6" strokeLinecap="round"/>
-   {contourLines.map((d,i)=><path key={i} d={d} fill="none" stroke={i%2?'#c5d1ab':'#a5d2b0'} opacity={.18+i*.035} strokeWidth="3"/>)}
-   <path d="M462 352 L503 279 548 344 562 389 521 419 476 400Z" fill="#5f6b65" stroke="#b7b5a2" strokeWidth="6"/>
-   <path d="M489 355 L503 314 522 357 511 386Z" fill="#a4aaa5" opacity=".8"/>
-   <g fill="#d1e3d5" fontSize="22" fontWeight="700" opacity=".85" letterSpacing="3"><text x="271" y="222">SNOW</text><text x="433" y="568">REDWOODS</text><text x="248" y="681">SOUTHERN COAST</text></g>
+  <rect width="1000" height="1000" fill="url(#hq-island-ocean)"/>
+  <rect width="1000" height="1000" fill="url(#hq-island-ocean-lines)"/>
+  <g stroke="#9fbca4" strokeWidth="4" strokeLinejoin="round">
+   <path d={mainCoast} fill="url(#hq-island-ground)"/>
+   {[southWest,southMid,southEast].map((p,i)=><path key={i} d={p} fill="#395b48"/>)}
+   {islets.map((p,i)=><path key={i} d={p} fill="#4b6856"/>)}
   </g>
-  <g fill="#416253" stroke="#7fae99" strokeWidth="4">
-   <path d="M320 872 Q351 847 374 869 L386 895 352 919 316 901Z"/>
-   <path d="M590 893 Q618 868 642 891 L655 919 613 933 588 913Z"/>
-   <path d="M754 815 Q774 802 787 825 L779 853 751 845Z"/>
-   <path d="M880 692 Q904 683 914 708 L896 725 879 715Z"/>
+  <g clipPath="url(#hq-island-mainclip)">
+   <path d="M65 0 H706 V245 Q645 224 587 199 Q553 256 490 215 Q439 194 396 222 Q317 200 265 230 Q168 228 111 277 L65 250Z" fill="url(#hq-island-snow)" opacity=".93"/>
+   <path d="M402 285 Q476 230 540 291 Q584 358 522 409 Q453 441 399 367 Z" fill="#617673" opacity=".88"/>
+   <path d="M602 244 Q653 231 701 276 Q722 324 689 372 Q636 382 596 345 Z" fill="#58756b" opacity=".8"/>
+   <path d="M713 306 Q781 275 835 320 L884 472 795 559 Q739 531 702 449 Z" fill="#536747" opacity=".55"/>
+   <path d="M328 497 Q407 446 529 471 Q626 502 612 617 Q562 689 421 672 Q322 616 328 497 Z" fill="#715e48" opacity=".72"/>
+   {heights.map((h,i)=><ellipse key={i} cx={h.x} cy={h.y} rx={h.rx} ry={h.ry} fill={h.color} opacity=".45"/>)}
+   <path d="M362 230 Q350 304 327 378 Q329 433 306 467 Q287 500 305 560 Q321 594 292 658 L259 760" fill="none" stroke="#76b6bd" strokeWidth="22" strokeLinecap="round" opacity=".82"/>
+   <path d="M551 378 Q598 406 609 465 Q645 507 698 539 Q730 588 714 663 L691 752" fill="none" stroke="#72b3b6" strokeWidth="24" strokeLinecap="round" opacity=".82"/>
+   <path d="M173 556 Q286 526 338 538 Q398 540 457 513 Q543 499 617 542 Q698 579 834 550" fill="none" stroke="#6eaeb8" strokeWidth="27" strokeLinecap="round" opacity=".9"/>
+   {majorContours.map((p,i)=><path key={i} d={p} fill="none" stroke="#cbd9ad" strokeWidth="2.5" strokeOpacity=".18"/>)}
+   {mountainRings.map(([x,y,rx,ry],i)=><g key={i}>{[1,.75,.5,.28].map((v,k)=><ellipse key={k} cx={x} cy={y} rx={rx*v} ry={ry*v} fill="none" stroke="#d5dfc8" strokeWidth={k===0?2.5:3} strokeOpacity={.22+k*.11}/>)}</g>)}
+   <path d="M450 325 L471 264 493 309 523 351 494 383Z" fill="#a1aaa2" opacity=".8"/>
+   <g fill="#d1e2d8" fontSize="23" fontWeight="700" letterSpacing="2" opacity=".75">
+    <text x="195" y="185">SNOWFIELD</text><text x="393" y="613">REDWOODS</text><text x="714" y="460">EAST</text>
+   </g>
   </g>
-  <g fontSize="23" fill="#b4dae4" letterSpacing="4" opacity=".5"><text x="378" y="950">THE ISLAND</text></g>
+  <g fill="none" stroke="#9ab6a3" strokeWidth="3" opacity=".45">
+   <path d="M105 785 Q158 734 230 782"/><path d="M379 815 Q419 776 467 825"/><path d="M622 805 Q665 770 715 817"/>
+  </g>
+  <text x="400" y="978" fontSize="23" letterSpacing="5" fill="#9bbdc2" opacity=".6">THE ISLAND · CONTOUR STUDY</text>
  </g>;
 }
