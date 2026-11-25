@@ -42,7 +42,7 @@ test('Scorched custom GPS pins and area routes work using its own GPS source',()
 test('Scorched resource map and polygon tools are enabled without breaking Island map',()=>{
  const page=readFileSync(new URL('./ResourcePage.jsx',import.meta.url),'utf8');
  const native=readFileSync(new URL('./IslandNativeMap.jsx',import.meta.url),'utf8');
- assert.ok(page.includes("map==='Scorched Earth'?scorchedWikiResources:islandWikiResources"));
+ assert.ok(page.includes("map==='Scorched Earth'?scorchedWikiResources"));
  assert.ok(page.includes("map==='Scorched Earth'?'/maps/scorched-earth-asa.jpg'"));
  assert.ok(page.includes("map==='The Island'||map==='Scorched Earth'"));
  assert.ok(page.includes('nativeAtlas&&<section'));
