@@ -1,0 +1,31 @@
+name: Import original Island ASA terrain (review branch only)
+on:
+  push:
+    branches:
+      - feature/real-island-wiki-terrain-20261125
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  acquire-wiki-terrain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Retrieve and validate ARK Community Wiki ASA Island image
+        run: |
+          python -m pip install --quiet requests pillow
+          python scripts/fetch-island-asa-map.py
+      - name: Commit verified terrain asset to review branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ark-command-center-desktop/public/maps/the-island-asa.jpg
+          if git diff --cached --quiet; then
+            echo 'Asset already present; no new commit.'
+          else
+            git commit -m "Import verified ASA Island terrain from ARK Official Community Wiki"
+            git push
+          fi
