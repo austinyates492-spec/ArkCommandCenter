@@ -173,7 +173,7 @@ function App(){
    </div></section>}
   {page==='breeding'&&<BreedingLab rates={rates} key={targetFor('breeding')?.sequence||'breeding'} initialCreature={targetFor('breeding')?.creature} onTimer={addTimer} clusterId={clusterId}/>}
   {page==='servers'&&<ServerIntelPage live={live} user={cloud.user} servers={servers} onOpenAccount={()=>setPage('cloud')}/>}
-  {page==='resources'&&<ResourcePage key={targetFor('resources')?.sequence||'resources'} initialTarget={targetFor('resources')}/>}
+  {page==='resources'&&<ResourcePage key={targetFor('resources')?.sequence||'resources'} initialTarget={targetFor('resources')} onCreature={(page,creature)=>chooseSearchResult({page,target:{creature}})}/>}
   {page==='timers'&&<LiveTimersPage live={live} key={targetFor('timers')?.sequence||'timers'} targetId={targetFor('timers')?.timerId} user={cloud.user} now={now-live.clockOffsetMs} onAdd={addTimer} onOpenAccount={()=>setPage('cloud')} onTestSound={()=>void unlockTimerAudio().then(ok=>{if(ok)playTimerAlarm();}).catch(()=>{})}/>}
   {page==='settings'&&<ClusterSettings rates={rates} setRates={updateRates} clusterId={clusterId} onClusterChange={onClusterChange}/>}
   {page==='settings'&&<CoveragePanel/>}
