@@ -2,13 +2,14 @@ import React,{useEffect,useMemo,useRef,useState} from 'react';
 import {RotateCcw,MapPin,Info,Plus} from 'lucide-react';
 import IslandContourTerrain from './IslandContourTerrain';
 import {islandWikiResources,islandWikiSource,visibleWikiSites} from './island-wiki-resource-overlay';
+import {areaRoutePolyline} from './island-area-route-planner.js';
 import './island-native-map.css';
 
 /** Native interactive terrain, GPS overlay, wiki ASA resource survey and personal pins.
  * The wiki revision and exact coordinates are retained; published wiki points
  * are never presented as user markers or altered to fit the terrain.
  */
-export default function IslandNativeMap({pins=[],stops=[],selectedId=null,onSelect=()=>{},colors={},enabledResources=[],onSaveAt=()=>{}}){
+export default function IslandNativeMap({pins=[],stops=[],selectedId=null,onSelect=()=>{},colors={},enabledResources=[],onSaveAt=()=>{},areaDrawing=false,areaPolygon=[],onAreaPoint=()=>{},plannedStops=[]}){
  const [zoom,setZoom]=useState(1);
  const [center,setCenter]=useState({x:500,y:500});
  const [showGrid,setShowGrid]=useState(true);
@@ -28,6 +29,8 @@ export default function IslandNativeMap({pins=[],stops=[],selectedId=null,onSele
  const selected=pins.find(p=>p.id===selectedId);
  const wikiSites=useMemo(()=>showResources?visibleWikiSites(islandWikiResources,enabledResources,bounded):[],[showResources,enabledResources,bounded]);
  const publishedCount=islandWikiResources.filter(p=>enabledResources.includes(p.resource)).length;
+ const areaLine=areaPolygon.map(p=>`${p.lon*10},${p.lat*10}`).join(' ');
+ const planPath=areaRoutePolyline(plannedStops,areaPolygon).map(p=>`${p.lon*10},${p.lat*10}`).join(' ');
  const routePath=stops.filter(p=>Number.isFinite(p.lat)&&Number.isFinite(p.lon))
    .map(p=>`${p.lon*10},${p.lat*10}`).join(' ');
  const pointerCoords=event=>{
@@ -40,7 +43,7 @@ export default function IslandNativeMap({pins=[],stops=[],selectedId=null,onSele
  const inspectAt=event=>{
   if(moved.current){moved.current=false;return;}
   const position=pointerCoords(event);
-  if(position){setInspected(position);setSelectedWiki(null);}
+  if(position){if(areaDrawing){onAreaPoint(position);return;}setInspected(position);setSelectedWiki(null);}
  };
  const beginDrag=event=>{
   if(event.pointerType==='mouse'&&event.button!==0)return;
@@ -114,10 +117,10 @@ export default function IslandNativeMap({pins=[],stops=[],selectedId=null,onSele
   svg.addEventListener('wheel',wheel,{passive:false});
   return()=>svg.removeEventListener('wheel',wheel);
  },[bounded,offsetX,offsetY,extent]);
- const chooseSite=(event,p)=>{event.stopPropagation();if(moved.current){moved.current=false;return;}setSelectedWiki(p);setInspected({lat:p.lat,lon:p.lon});};
+ const chooseSite=(event,p)=>{if(areaDrawing)return;event.stopPropagation();if(moved.current){moved.current=false;return;}setSelectedWiki(p);setInspected({lat:p.lat,lon:p.lon});};
  return <div className="island-native-map">
   <div className="island-map-toolbar">
-   <div><strong>The Island · ASA Resource Atlas</strong><small>Scroll to zoom · pinch on mobile · drag to pan · {wikiSites.length.toLocaleString()} marker groups</small></div>
+   <div><strong>The Island · ASA Resource Atlas</strong><small>{areaDrawing?'Draw area: tap map to add vertices (minimum 3)':'Scroll / pinch to zoom · drag to pan'} · {wikiSites.length.toLocaleString()} marker groups</small></div>
    <div className="island-map-actions">
     <button type="button" onClick={()=>{setZoom(1);setCenter({x:500,y:500});}} aria-label="Reset map zoom and position"><RotateCcw size={16}/></button>
     <label><input type="checkbox" checked={showGrid} onChange={e=>setShowGrid(e.target.checked)}/> GPS grid</label>
@@ -131,12 +134,17 @@ export default function IslandNativeMap({pins=[],stops=[],selectedId=null,onSele
     {showGrid&&<rect width="1000" height="1000" fill="url(#island-gps-grid)" pointerEvents="none"/>}
     <rect x="2" y="2" width="996" height="996" fill="none" stroke="#7895ae" strokeOpacity=".5" strokeWidth="3" pointerEvents="none"/>
     {showGrid&&Array.from({length:9},(_,i)=><g key={i} pointerEvents="none"><text x={(i+1)*100} y="22" fill="#e1ecf6" stroke="#102331" strokeWidth="3" paintOrder="stroke" fontSize="17" textAnchor="middle">{(i+1)*10}</text><text x="12" y={(i+1)*100} fill="#e1ecf6" stroke="#102331" strokeWidth="3" paintOrder="stroke" fontSize="17">{(i+1)*10}</text></g>)}
-    {wikiSites.map(p=><g key={p.id} role="button" tabIndex={0} aria-label={`${p.resource} at latitude ${p.lat.toFixed(1)}, longitude ${p.lon.toFixed(1)}; ${p.count} mapped site${p.count===1?'':'s'}`} onClick={e=>chooseSite(e,p)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setSelectedWiki(p);setInspected({lat:p.lat,lon:p.lon});}}} style={{cursor:'pointer'}}>
+    {wikiSites.map(p=><g pointerEvents={areaDrawing?'none':'auto'} key={p.id} role="button" tabIndex={0} aria-label={`${p.resource} at latitude ${p.lat.toFixed(1)}, longitude ${p.lon.toFixed(1)}; ${p.count} mapped site${p.count===1?'':'s'}`} onClick={e=>chooseSite(e,p)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setSelectedWiki(p);setInspected({lat:p.lat,lon:p.lon});}}} style={{cursor:'pointer'}}>
       <circle cx={p.lon*10} cy={p.lat*10} r={selectedWiki?.id===p.id?11:7} stroke={selectedWiki?.id===p.id?'#fff':'#061522'} strokeWidth="2.7" vectorEffect="non-scaling-stroke" fill={colors[p.resource]||'#dfcef8'} fillOpacity=".92"/>
       {p.count>1&&bounded<3&&<text x={p.lon*10} y={p.lat*10+3.5} textAnchor="middle" pointerEvents="none" fontSize="10" fontWeight="800" fill="#101323">{p.count}</text>}
     </g>)}
+    {areaPolygon.length>1&&<polyline points={areaLine} fill="none" stroke="#dda2ff" strokeWidth="3" strokeDasharray="8 6" vectorEffect="non-scaling-stroke" pointerEvents="none"/>}
+    {areaPolygon.length>=3&&<polygon points={areaLine} fill="#b38af0" fillOpacity=".17" stroke="#d9b1ff" strokeWidth="3" strokeDasharray="8 6" vectorEffect="non-scaling-stroke" pointerEvents="none"/>}
+    {areaPolygon.map((p,i)=><g key={'area-'+i} pointerEvents="none"><circle cx={p.lon*10} cy={p.lat*10} r="7" fill="#dfb3ff" stroke="#190b24" strokeWidth="2"/><text x={p.lon*10} y={p.lat*10+3} textAnchor="middle" fontSize="8" fontWeight="700" fill="#180c20">{i+1}</text></g>)}
+    {plannedStops.length>1&&<polyline points={planPath} fill="none" stroke="#ffe08c" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" opacity=".95" pointerEvents="none"/>}
+    {plannedStops.map((p,i)=><g key={'route-'+p.id} pointerEvents="none"><circle cx={p.lon*10} cy={p.lat*10} r="11" fill="#ffe08c" stroke="#1a2534" strokeWidth="3" vectorEffect="non-scaling-stroke"/><text x={p.lon*10} y={p.lat*10+3.7} fontSize="11" textAnchor="middle" fontWeight="800" fill="#172434">{i+1}</text></g>)}
     {stops.length>1&&<polyline points={routePath} fill="none" stroke="#f5c25b" strokeWidth="6" strokeLinejoin="round" strokeLinecap="round" vectorEffect="non-scaling-stroke" opacity=".9" pointerEvents="none"/>}
-    {pins.filter(p=>Number.isFinite(p.lat)&&Number.isFinite(p.lon)&&p.lat>=0&&p.lat<=100&&p.lon>=0&&p.lon<=100).map(p=><g key={p.id} tabIndex="0" role="button" aria-label={`${p.title||p.resource} at latitude ${p.lat}, longitude ${p.lon}`} onClick={e=>{e.stopPropagation();if(moved.current){moved.current=false;return;}onSelect(p.id);setInspected({lat:p.lat,lon:p.lon});setSelectedWiki(null);}} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelect(p.id);setInspected({lat:p.lat,lon:p.lon});}}} style={{cursor:'pointer'}}>
+    {pins.filter(p=>Number.isFinite(p.lat)&&Number.isFinite(p.lon)&&p.lat>=0&&p.lat<=100&&p.lon>=0&&p.lon<=100).map(p=><g pointerEvents={areaDrawing?'none':'auto'} key={p.id} tabIndex="0" role="button" aria-label={`${p.title||p.resource} at latitude ${p.lat}, longitude ${p.lon}`} onClick={e=>{e.stopPropagation();if(moved.current){moved.current=false;return;}onSelect(p.id);setInspected({lat:p.lat,lon:p.lon});setSelectedWiki(null);}} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelect(p.id);setInspected({lat:p.lat,lon:p.lon});}}} style={{cursor:'pointer'}}>
      <circle cx={p.lon*10} cy={p.lat*10} r={selectedId===p.id?17:12} fill={colors[p.resource]||'#ffaf63'} stroke={selectedId===p.id?'#fff':'#09101b'} strokeWidth="5" vectorEffect="non-scaling-stroke"/>
      <path d={`M ${p.lon*10-6} ${p.lat*10} h12 M ${p.lon*10} ${p.lat*10-6} v12`} stroke="#0a1422" strokeWidth="2" pointerEvents="none"/>
     </g>)}
@@ -144,10 +152,11 @@ export default function IslandNativeMap({pins=[],stops=[],selectedId=null,onSele
   </div>
   <div className="island-map-inspection" aria-live="polite">
    <div><strong><MapPin size={16}/> Inspected location</strong>
+    {areaDrawing?<small>Drawing region · {areaPolygon.length} corners selected · click the map to add more</small>:null}
     {inspected?<span>LAT <b>{inspected.lat.toFixed(1)}</b> · LON <b>{inspected.lon.toFixed(1)}</b></span>:<span>Click or tap any point on the map to inspect its GPS position.</span>}
     {selectedWiki&&<small><b>{selectedWiki.resource}</b> · {selectedWiki.name||`${selectedWiki.count} mapped site(s)`} · Wiki ASA resource survey (rev. {islandWikiSource.revision})</small>}
    </div>
-   <button type="button" className="island-map-create-pin" disabled={!inspected} onClick={()=>inspected&&onSaveAt(inspected)}><Plus size={16}/> Add custom pin here</button>
+   <button type="button" className="island-map-create-pin" disabled={!inspected||areaDrawing} onClick={()=>inspected&&onSaveAt(inspected)}><Plus size={16}/> Add custom pin here</button>
   </div>
   <div className="island-map-caption"><Info size={16}/><span>Terrain and resource coordinate source: <a href="https://ark.wiki.gg/wiki/Resource_Map/The_Island" target="_blank" rel="noopener noreferrer">ARK Official Community Wiki, ASA The Island</a>. Resource sites are published estimates rather than guaranteed live spawns; six sourced categories available, other filters are for personal observations. Wiki-derived resource data: CC BY-NC-SA 4.0; game artwork belongs to its rights holders. {islandWikiSource.omittedOutOfBoundsCount} source points outside the map bounds are not displayed. ARK ASA's full-screen map and minimap can disagree; compare GPS readouts against the minimap.</span></div>
   {selected&&<div className="island-map-selection">Selected personal pin: <strong>{selected.title||selected.resource}</strong> — {selected.lat.toFixed(1)} LAT, {selected.lon.toFixed(1)} LON</div>}

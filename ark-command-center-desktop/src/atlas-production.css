@@ -78,3 +78,17 @@
 @media(max-width:1150px){.shell .atlas-v3-grid{grid-template-columns:minmax(0,1fr)}.shell .atlas-v3-side{grid-template-columns:repeat(2,minmax(0,1fr))}.shell .atlas-v3-side>.atlas-v3-selected{grid-column:1/-1}}
 @media(max-width:750px){.shell .atlas-v3-statgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.shell .atlas-v3-side{grid-template-columns:1fr}.shell .atlas-v3-side>.atlas-v3-selected{grid-column:auto}.shell .atlas-v3-main .embedded-atlas iframe{min-height:460px}.shell .atlas-v3-tabs button{min-height:48px;padding:10px 12px}.shell .atlas-v3-top-actions{width:100%}}
 @media(max-width:420px){.shell .atlas-v3-main .embedded-atlas iframe{min-height:400px}.shell .atlas-v3-filters{gap:5px}.shell .atlas-v3-filters button{padding:7px 6px;font-size:10px}.shell .atlas-v3-statgrid b{font-size:21px}.shell .atlas-v3-main .map-tools{flex-direction:column;align-items:stretch}.shell .atlas-v3-main .map-tools button{width:100%;justify-content:center}}
+
+/* Farming Route Planner: isolated from the existing personal-pin route list. */
+.shell .atlas-v3-planner{display:grid;gap:10px}
+.shell .atlas-v3-plan-progress{font-size:12px;font-weight:700;color:var(--ark-bright);background:var(--ark-deep);border:1px solid var(--ark-border);border-radius:9px;padding:10px 12px}
+.shell .atlas-v3-plan-tools{display:flex;gap:8px;flex-wrap:wrap}
+.shell .atlas-v3-plan-tools button{min-height:40px;padding:9px 13px;font-size:11px}
+.shell .atlas-v3-planner .field{display:grid;gap:4px}
+.shell .atlas-v3-planner :is(input,select){width:100%;min-width:0}
+.shell .atlas-v3-planner input[type="range"]{min-height:28px;accent-color:var(--ark-accent);padding:0}
+.shell .atlas-v3-planner .atlas-v3-route{max-height:350px;overflow-y:auto}
+.shell .atlas-v3-planner .atlas-v3-saved-plan{display:flex;align-items:center;min-width:0;gap:4px;padding:4px;border:1px solid var(--ark-border);border-radius:9px;background:var(--ark-deep)}
+.shell .atlas-v3-planner .atlas-v3-saved-plan button:first-child{display:grid;gap:3px;min-width:0;flex:1;text-align:left;padding:8px 10px}
+.shell .atlas-v3-planner .atlas-v3-saved-plan button:last-child{flex:0 0 44px;display:grid;place-items:center;min-height:44px}
+.shell .atlas-v3-planner .atlas-v3-saved-plan small{font-size:10px;color:var(--ark-muted)}
