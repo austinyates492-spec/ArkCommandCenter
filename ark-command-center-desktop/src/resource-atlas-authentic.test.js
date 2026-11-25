@@ -18,8 +18,8 @@ test('resource atlas uses authentic provider maps and no fictional terrain or fa
 });
 test('provider resource overlays remain separate from the local filter controls',()=>{
  assert.ok(page.includes('authentic ASA terrain from the ARK Official Community Wiki'));
- assert.ok(page.includes('Published resource nodes are not imported yet.'));
- assert.ok(page.includes('These filters immediately change which of your saved GPS markers'));
+ assert.ok(page.includes('Wiki ASA resource sites are overlaid'));
+ assert.ok(page.includes('These filters change published Wiki ASA resource markers'));
  assert.ok(page.includes('Open detailed map'));
  assert.ok(page.includes('Official community wiki map'));
  assert.ok(embedded.includes('Open Full Map'));
@@ -33,4 +33,10 @@ test('official map selector and personal GPS tools are available without replaci
 });
 test('authentic map keeps theme-aware mobile layout and external links',()=>{
  for(const expected of ['.atlas-v3-source-explainer','.atlas-v3-main .embedded-atlas iframe','@media(max-width:420px)','--ark-accent','--ark-border'])assert.ok(style.includes(expected));
+});
+
+test('Island imported resource overlay remains separate from custom personal GPS pins',()=>{
+ assert.ok(page.includes('enabledResources={enabled}'));
+ assert.ok(page.includes('onSaveAt={saveAtMapPoint}'));
+ assert.ok(page.includes('Custom Pin'));
 });

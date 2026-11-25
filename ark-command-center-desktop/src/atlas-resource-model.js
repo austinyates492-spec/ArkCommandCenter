@@ -1,9 +1,9 @@
 /**
  * ARK Tribe HQ atlas data contract.
- * Source maps retain control of their own published node coordinates.
- * Only user-entered GPS pins are rendered by this app until a licensed,
- * verified resource dataset can be integrated.
+ * Official Community Wiki ASA map points are a separately attributed dataset.
+ * Custom and personal map pins remain browser-local and distinct from wiki points.
  */
+export const CUSTOM_PIN_RESOURCE='Custom';
 export const islandResourceTypes=[
  {id:'Metal',color:'#b7bdc8'},
  {id:'Rich Metal',color:'#f1c05c'},
@@ -31,9 +31,11 @@ export function checkAtlasPin(pin,map){
  const resource=String(pin?.resource||'');
  const lat=Number(pin?.lat),lon=Number(pin?.lon);
  const note=String(pin?.note||'').trim().slice(0,180);
- if(!resourcesForMap(map).some(item=>item.id===resource))throw new Error('Choose a supported resource on this map.');
+ const title=String(pin?.title||'').trim().slice(0,60);
+ if(resource!==CUSTOM_PIN_RESOURCE&&!resourcesForMap(map).some(item=>item.id===resource))throw new Error('Choose a supported resource on this map.');
+ if(resource===CUSTOM_PIN_RESOURCE&&!title)throw new Error('Give your custom pin a name.');
  if(pin?.lat===''||pin?.lon===''||!Number.isFinite(lat)||!Number.isFinite(lon)||lat<0||lat>100||lon<0||lon>100)throw new Error('Enter GPS latitude and longitude between 0 and 100.');
- return {resource,lat:Math.round(lat*10)/10,lon:Math.round(lon*10)/10,note};
+ return {resource,lat:Math.round(lat*10)/10,lon:Math.round(lon*10)/10,note,title};
 }
 export const atlasSourceLinks={
  oilVein:'https://ark.wiki.gg/wiki/Oil_Vein',
