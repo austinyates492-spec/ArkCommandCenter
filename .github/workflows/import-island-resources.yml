@@ -1,0 +1,16 @@
+name: Import Island ASA resource dataset (review)
+on:
+  push:
+    branches: [feature/island-resource-overlay-custom-pin-20261125]
+  workflow_dispatch:
+permissions: {contents: write}
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Probe wiki source
+        run: |
+          python -m pip install --quiet requests
+          python scripts/import-island-resource-data.py
