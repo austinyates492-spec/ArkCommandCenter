@@ -27,3 +27,10 @@
 /* The frame contains only the terrain, native GPS grid and map pins. Interactions stay within the SVG. */
 .shell .island-map-frame svg{cursor:grab;overscroll-behavior:contain;touch-action:none}
 .shell .island-map-frame svg:active{cursor:grabbing}
+
+/* Aberration-exclusive zone focus selector is above the map; map image contains no floating UI. */
+.shell .island-map-actions .island-zone-select{display:flex;align-items:center;gap:8px;min-height:44px}
+.shell .island-zone-select>span{font-size:10px;letter-spacing:.08em;font-weight:800;color:var(--ark-muted)}
+.shell .island-zone-select select{width:auto;max-width:220px;min-height:40px;min-width:168px;border:1px solid var(--ark-border);border-radius:9px;padding:7px 10px;color:var(--ark-heading);background:var(--ark-deep);font-size:12px}
+.shell .island-zone-note{padding:9px 12px;border:1px solid var(--ark-border);border-radius:9px;background:var(--ark-deep);color:var(--ark-muted);font-size:11px;line-height:1.5}
+@media(max-width:750px){.shell .island-map-actions .island-zone-select{justify-content:space-between;width:100%}.shell .island-zone-select select{max-width:72%;flex:1}}
