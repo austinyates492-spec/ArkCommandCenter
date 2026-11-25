@@ -32,6 +32,21 @@ export const centerCaveResources=[
  {id:'Oil (Cave)',color:'#a3e6f0'},
  {id:'Silica Pearls (Cave)',color:'#efffff'}
 ];
+export const ragnarokSpecificResources=[
+ {id:'Black Pearls',color:'#33384a'},
+ {id:'Cactus Sap',color:'#b5d48b'},
+ {id:'Clay',color:'#d6a783'},
+ {id:'Crystal (Cave)',color:'#dac1ff'},
+ {id:'Metal (Cave)',color:'#d5dce7'},
+ {id:'Rich Metal (Cave)',color:'#ffdd9f'},
+ {id:'Obsidian (Cave)',color:'#a6a0d5'},
+ {id:'Rockarrot',color:'#ef985d'},
+ {id:'Salt',color:'#e1c5b0'},
+ {id:'Savoroot',color:'#d9ce89'},
+ {id:'Silica Pearls (Cave)',color:'#f3faff'},
+ {id:'Sulfur',color:'#e6dc66'},
+ {id:'Water Vein',color:'#60c2ef'}
+];
 export const extinctionSpecificResources=[
  {id:'Cactus Sap',color:'#b6d388'},
  {id:'Crystal (Cave)',color:'#d2b8ff'},
@@ -71,6 +86,7 @@ export const scorchedSpecificResources=[
  {id:'Water Vein',color:'#51baf4'}
 ];
 export function resourcesForMap(map){
+ if(map==='Ragnarok')return [...islandResourceTypes,...ragnarokSpecificResources,oilVeinResource];
  if(map==='Extinction')return [...islandResourceTypes,...extinctionSpecificResources];
  if(map==='Aberration')return [...islandResourceTypes,...aberrationSpecificResources];
  if(map==='The Center')return [...islandResourceTypes,...centerCaveResources];
