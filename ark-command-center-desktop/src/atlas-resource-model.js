@@ -32,6 +32,23 @@ export const centerCaveResources=[
  {id:'Oil (Cave)',color:'#a3e6f0'},
  {id:'Silica Pearls (Cave)',color:'#efffff'}
 ];
+export const aberrationSpecificResources=[
+ {id:'Black Pearls',color:'#2b3048'},
+ {id:'Crystal (Cave)',color:'#d4b6ff'},
+ {id:'Charge Node',color:'#69f5d8'},
+ {id:'Gas Vein',color:'#c1e875'},
+ {id:'Element Ore',color:'#cf5fa9'},
+ {id:'Blue Gems (Cave)',color:'#8daeff'},
+ {id:'Blue Gems',color:'#438cf5'},
+ {id:'Green Gems (Cave)',color:'#93efba'},
+ {id:'Green Gems',color:'#4be09a'},
+ {id:'Red Gems',color:'#e75d7a'},
+ {id:'Keratin',color:'#c9b39b'},
+ {id:'Metal (Cave)',color:'#ccd2e1'},
+ {id:'Rich Metal (Cave)',color:'#f5d398'},
+ {id:'Obsidian (Cave)',color:'#aea9da'},
+ {id:'Organic Polymer',color:'#d6b2ff'}
+];
 export const scorchedSpecificResources=[
  {id:'Silk',color:'#f4d6a1'},
  {id:'Salt',color:'#e1c1a9'},
@@ -40,6 +57,7 @@ export const scorchedSpecificResources=[
  {id:'Water Vein',color:'#51baf4'}
 ];
 export function resourcesForMap(map){
+ if(map==='Aberration')return [...islandResourceTypes,...aberrationSpecificResources];
  if(map==='The Center')return [...islandResourceTypes,...centerCaveResources];
  if(map==='Scorched Earth')return [...islandResourceTypes,...scorchedSpecificResources,oilVeinResource];
  return mapsWithOilVeins.includes(map)?[...islandResourceTypes,oilVeinResource]:islandResourceTypes;
