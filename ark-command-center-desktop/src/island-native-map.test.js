@@ -26,7 +26,7 @@ test('native map does not represent incomplete terrain or node coverage as verif
  assert.ok(!native.includes('terrainFailed'));
  assert.ok(!native.includes('<iframe'));
  assert.ok(native.includes('No third-party image or iframe'));
- assert.ok(native.includes('Only your saved GPS markers and routes'));
+ assert.ok(native.includes('Only your saved GPS pins and routes are shown'));
 });
 test('mobile layout has touch sized controls',()=>{
  assert.ok(css.includes('@media(max-width:750px)'));
