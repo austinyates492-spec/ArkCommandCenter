@@ -1,0 +1,14 @@
+name: Inspect official ARK spawn maps for native source regions
+on:
+  push:
+    branches: [feature/native-spawn-heatmaps-20261125]
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          python -m pip install --quiet requests
+          python scripts/probe-spawn-map-datasource.py
