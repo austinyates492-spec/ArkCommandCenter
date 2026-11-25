@@ -10,7 +10,7 @@ test('The Island selects first-party map instead of provider iframe',()=>{
  assert.match(page,/onSelect=\{setSelection\}/);
  assert.ok(!native.includes('<iframe'));
  assert.ok(!native.includes('wikily.gg'));
- assert.ok(!native.includes('ark.wiki.gg'));
+ assert.ok(native.includes('ark.wiki.gg/wiki/Special:Redirect/file/'));
 });
 test('native pins and routes use ARK GPS coordinate ordering',()=>{
  assert.ok(native.includes('p.lon*10'));
@@ -21,9 +21,12 @@ test('native pins and routes use ARK GPS coordinate ordering',()=>{
  assert.ok(native.includes('onSelect(p.id)'));
 });
 test('native map does not represent incomplete terrain or node coverage as verified',()=>{
- assert.ok(native.includes('terrain asset not yet licensed'));
- assert.ok(native.includes('verified, authorized ASA terrain layer'));
- assert.ok(native.includes('Only your own saved GPS locations'));
+ assert.ok(native.includes('The_Island_map_ASA.jpg'));
+ assert.ok(native.includes('<image href={ISLAND_ASA_TERRAIN}'));
+ assert.ok(native.includes('onError={()=>setTerrainFailed(true)}'));
+ assert.ok(!native.includes('<iframe'));
+ assert.ok(native.includes('ARK Official Community Wiki'));
+ assert.ok(native.includes('Only your saved GPS markers and routes'));
 });
 test('mobile layout has touch sized controls',()=>{
  assert.ok(css.includes('@media(max-width:750px)'));

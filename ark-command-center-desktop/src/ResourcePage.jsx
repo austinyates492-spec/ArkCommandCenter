@@ -72,7 +72,7 @@ export default function ResourcePage(){
   <div className="atlas-v3-grid">
    <section className="panel atlas-v3-main">
     <div className="atlas-native-head"><h2><Map size={18}/> {map} <span className="atlas-v3-map-type">{map==='The Island'?'NATIVE GPS WORKSPACE':'GENUINE SOURCE MAP'}</span></h2><span className="atlas-native-chip">ASA REFERENCE</span></div>
-    <div className="atlas-v3-source-explainer"><ShieldCheck size={17}/><span>{map==='The Island'?'The Island now uses a first-party GPS workspace with no third-party iframe on desktop or mobile. Verified terrain artwork and published resource nodes have not yet been licensed/imported; only your personal pins appear.':'This map uses an external community provider. The provider controls terrain and published marker layers.'}</span></div>
+    <div className="atlas-v3-source-explainer"><ShieldCheck size={17}/><span>{map==='The Island'?'The Island now displays genuine ASA terrain artwork from the ARK Official Community Wiki as an image layer, not a third-party iframe. Personal GPS markers are overlaid natively. Published resource nodes are not imported yet.':'This map uses an external community provider. The provider controls terrain and published marker layers.'}</span></div>
     {map==='The Island'?<IslandNativeMap pins={shownPersonal} stops={stops} selectedId={selection} onSelect={setSelection} colors={colors}/>:<EmbeddedMap key={map} url={resourceMapUrl(map)} alternativeUrl={wikiResourceMapUrl(map)} title={map+' Resources'} selection="Source-managed coordinates" kind="resource"/>}
     <div className="atlas-v3-source-links"><a href={resourceMapUrl(map)} target="_blank" rel="noopener noreferrer"><ExternalLink size={14}/> Open detailed map</a><a href={wikiResourceMapUrl(map)} target="_blank" rel="noopener noreferrer"><ExternalLink size={14}/> Official community wiki map</a></div>
     {map==='The Island'&&<div className="atlas-v3-source-note"><Info size={16}/> This map has gatherable Oil nodes, not Oil Well sites. Oil veins are only offered for maps with documented pumpable deposits.</div>}
@@ -113,6 +113,6 @@ export default function ResourcePage(){
    </div>
   </div>
   {(error||savedMessage)&&<div className="notice" role="status">{error||savedMessage}</div>}
-  <div className="atlas-v3-foot"><Compass size={16}/><span><strong>Atlas integrity:</strong> No invented terrain images, node positions, resource totals or oil-well counts. The Island native view shows only saved personal markers and routes, not community-published nodes. Full native terrain and resource coverage requires an authorized base map and verified GPS dataset.</span></div>
+  <div className="atlas-v3-foot"><Compass size={16}/><span><strong>Atlas integrity:</strong> No invented terrain images, node positions, resource totals or oil-well counts. The Island terrain is sourced from the ARK Official Community Wiki and is loaded as a standalone image, not an iframe. Current markers and routes are personal entries; community resource nodes still require a vetted GPS dataset.</span></div>
  </div>;
 }
