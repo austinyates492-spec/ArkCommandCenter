@@ -9,7 +9,7 @@ import './island-native-map.css';
  * The wiki revision and exact coordinates are retained; published wiki points
  * are never presented as user markers or altered to fit the terrain.
  */
-export default function IslandNativeMap({pins=[],stops=[],selectedId=null,onSelect=()=>{},colors={},enabledResources=[],onSaveAt=()=>{},areaDrawing=false,areaPolygon=[],onAreaPoint=()=>{},plannedStops=[]}){
+export default function IslandNativeMap({pins=[],stops=[],selectedId=null,onSelect=()=>{},colors={},enabledResources=[],onSaveAt=()=>{},areaDrawing=false,areaPolygon=[],onAreaPoint=()=>{},plannedStops=[],mapName='The Island',terrainSrc='/maps/the-island-asa.jpg',resourcePoints=islandWikiResources,resourceSource=islandWikiSource}){
  const [zoom,setZoom]=useState(1);
  const [center,setCenter]=useState({x:500,y:500});
  const [showGrid,setShowGrid]=useState(true);
@@ -27,8 +27,8 @@ export default function IslandNativeMap({pins=[],stops=[],selectedId=null,onSele
  const offsetX=Math.max(0,Math.min(1000-extent,center.x-extent/2));
  const offsetY=Math.max(0,Math.min(1000-extent,center.y-extent/2));
  const selected=pins.find(p=>p.id===selectedId);
- const wikiSites=useMemo(()=>showResources?visibleWikiSites(islandWikiResources,enabledResources,bounded):[],[showResources,enabledResources,bounded]);
- const publishedCount=islandWikiResources.filter(p=>enabledResources.includes(p.resource)).length;
+ const wikiSites=useMemo(()=>showResources?visibleWikiSites(resourcePoints,enabledResources,bounded):[],[showResources,resourcePoints,enabledResources,bounded]);
+ const publishedCount=resourcePoints.filter(p=>enabledResources.includes(p.resource)).length;
  const areaLine=areaPolygon.map(p=>`${p.lon*10},${p.lat*10}`).join(' ');
  const planPath=areaRoutePolyline(plannedStops,areaPolygon).map(p=>`${p.lon*10},${p.lat*10}`).join(' ');
  const routePath=stops.filter(p=>Number.isFinite(p.lat)&&Number.isFinite(p.lon))
@@ -120,7 +120,7 @@ export default function IslandNativeMap({pins=[],stops=[],selectedId=null,onSele
  const chooseSite=(event,p)=>{if(areaDrawing)return;event.stopPropagation();if(moved.current){moved.current=false;return;}setSelectedWiki(p);setInspected({lat:p.lat,lon:p.lon});};
  return <div className="island-native-map">
   <div className="island-map-toolbar">
-   <div><strong>The Island · ASA Resource Atlas</strong><small>{areaDrawing?'Draw area: tap map to add vertices (minimum 3)':'Scroll / pinch to zoom · drag to pan'} · {wikiSites.length.toLocaleString()} marker groups</small></div>
+   <div><strong>{mapName} · ASA Resource Atlas</strong><small>{areaDrawing?'Draw area: tap map to add vertices (minimum 3)':'Scroll / pinch to zoom · drag to pan'} · {wikiSites.length.toLocaleString()} marker groups</small></div>
    <div className="island-map-actions">
     <button type="button" onClick={()=>{setZoom(1);setCenter({x:500,y:500});}} aria-label="Reset map zoom and position"><RotateCcw size={16}/></button>
     <label><input type="checkbox" checked={showGrid} onChange={e=>setShowGrid(e.target.checked)}/> GPS grid</label>
@@ -130,7 +130,7 @@ export default function IslandNativeMap({pins=[],stops=[],selectedId=null,onSele
   <div className="island-map-frame">
    <svg ref={svgRef} viewBox={`${offsetX} ${offsetY} ${extent} ${extent}`} role="img" aria-label="The Island ASA map with GPS, wiki resource points and personal pins; use mouse wheel or pinch to zoom, drag to pan, tap to inspect" preserveAspectRatio="xMidYMid meet" onClick={inspectAt} onPointerDown={beginDrag} onPointerMove={duringDrag} onPointerUp={finishDrag} onPointerCancel={finishDrag}>
     <defs><pattern id="island-gps-grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="#7187a8" strokeOpacity=".38" strokeWidth="2"/></pattern></defs>
-    {terrainFailed?<IslandContourTerrain/>:<image href="/maps/the-island-asa.jpg" x="0" y="0" width="1000" height="1000" preserveAspectRatio="none" onError={()=>setTerrainFailed(true)}/>}
+    {terrainFailed?(mapName==='The Island'?<IslandContourTerrain/>:<rect width="1000" height="1000" fill="#121822"/>):<image href={terrainSrc} x="0" y="0" width="1000" height="1000" preserveAspectRatio="none" onError={()=>setTerrainFailed(true)}/>}
     {showGrid&&<rect width="1000" height="1000" fill="url(#island-gps-grid)" pointerEvents="none"/>}
     <rect x="2" y="2" width="996" height="996" fill="none" stroke="#7895ae" strokeOpacity=".5" strokeWidth="3" pointerEvents="none"/>
     {showGrid&&Array.from({length:9},(_,i)=><g key={i} pointerEvents="none"><text x={(i+1)*100} y="22" fill="#e1ecf6" stroke="#102331" strokeWidth="3" paintOrder="stroke" fontSize="17" textAnchor="middle">{(i+1)*10}</text><text x="12" y={(i+1)*100} fill="#e1ecf6" stroke="#102331" strokeWidth="3" paintOrder="stroke" fontSize="17">{(i+1)*10}</text></g>)}
@@ -154,11 +154,11 @@ export default function IslandNativeMap({pins=[],stops=[],selectedId=null,onSele
    <div><strong><MapPin size={16}/> Inspected location</strong>
     {areaDrawing?<small>Drawing region · {areaPolygon.length} corners selected · click the map to add more</small>:null}
     {inspected?<span>LAT <b>{inspected.lat.toFixed(1)}</b> · LON <b>{inspected.lon.toFixed(1)}</b></span>:<span>Click or tap any point on the map to inspect its GPS position.</span>}
-    {selectedWiki&&<small><b>{selectedWiki.resource}</b> · {selectedWiki.name||`${selectedWiki.count} mapped site(s)`} · Wiki ASA resource survey (rev. {islandWikiSource.revision})</small>}
+    {selectedWiki&&<small><b>{selectedWiki.resource}</b> · {selectedWiki.name||`${selectedWiki.count} mapped site(s)`} · Wiki ASA resource survey (rev. {resourceSource.revision})</small>}
    </div>
    <button type="button" className="island-map-create-pin" disabled={!inspected||areaDrawing} onClick={()=>inspected&&onSaveAt(inspected)}><Plus size={16}/> Add custom pin here</button>
   </div>
-  <div className="island-map-caption"><Info size={16}/><span>Terrain and resource coordinate source: <a href="https://ark.wiki.gg/wiki/Resource_Map/The_Island" target="_blank" rel="noopener noreferrer">ARK Official Community Wiki, ASA The Island</a>. Resource sites are published estimates rather than guaranteed live spawns; six sourced categories available, other filters are for personal observations. Wiki-derived resource data: CC BY-NC-SA 4.0; game artwork belongs to its rights holders. {islandWikiSource.omittedOutOfBoundsCount} source points outside the map bounds are not displayed. ARK ASA's full-screen map and minimap can disagree; compare GPS readouts against the minimap.</span></div>
+  <div className="island-map-caption"><Info size={16}/><span>Terrain and resource coordinate source: <a href={mapName==='The Island'?'https://ark.wiki.gg/wiki/Resource_Map/The_Island':'https://ark.wiki.gg/wiki/Resource_Map/Scorched_Earth'} target="_blank" rel="noopener noreferrer">ARK Official Community Wiki, ASA {mapName}</a>. Resource sites are published estimates rather than guaranteed live spawns; sourced categories are available for the selected map, other filters are for personal observations. Wiki-derived resource data: CC BY-NC-SA 4.0; game artwork belongs to its rights holders. {resourceSource.omittedOutOfBoundsCount} source points outside the map bounds are not displayed. ARK ASA's full-screen map and minimap can disagree; compare GPS readouts against the minimap.</span></div>
   {selected&&<div className="island-map-selection">Selected personal pin: <strong>{selected.title||selected.resource}</strong> — {selected.lat.toFixed(1)} LAT, {selected.lon.toFixed(1)} LON</div>}
  </div>;
 }

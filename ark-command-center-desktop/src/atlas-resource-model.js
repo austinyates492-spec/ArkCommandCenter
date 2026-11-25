@@ -24,7 +24,15 @@ export const islandResourceTypes=[
  * Specific coordinates still need map-by-map ASA verification. */
 export const mapsWithOilVeins=['Scorched Earth','Ragnarok','Valguero','Astraeos'];
 export const oilVeinResource={id:'Oil Vein / Oil Well',color:'#df98ff'};
+export const scorchedSpecificResources=[
+ {id:'Silk',color:'#f4d6a1'},
+ {id:'Salt',color:'#e1c1a9'},
+ {id:'Sulfur',color:'#e0de63'},
+ {id:'Plant Species Y',color:'#9ad67f'},
+ {id:'Water Vein',color:'#51baf4'}
+];
 export function resourcesForMap(map){
+ if(map==='Scorched Earth')return [...islandResourceTypes,...scorchedSpecificResources,oilVeinResource];
  return mapsWithOilVeins.includes(map)?[...islandResourceTypes,oilVeinResource]:islandResourceTypes;
 }
 export function checkAtlasPin(pin,map){

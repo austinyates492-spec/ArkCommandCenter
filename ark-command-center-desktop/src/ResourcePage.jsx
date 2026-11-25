@@ -5,6 +5,8 @@ import {resourcesForMap,mapsWithOilVeins,checkAtlasPin,CUSTOM_PIN_RESOURCE,atlas
 import EmbeddedMap from './EmbeddedMap';
 import IslandNativeMap from './IslandNativeMap';
 import {islandWikiResources,islandWikiAvailableResources} from './island-wiki-resource-overlay';
+import {scorchedWikiResources,scorchedWikiAvailableResources,scorchedWikiSource} from './scorched-asa-resource-overlay.js';
+import {islandWikiSource} from './island-wiki-resource-overlay';
 import {generateFarmingRoute,candidateFarmingSites,insideFarmingArea} from './island-area-route-planner.js';
 import './resource-atlas-native.css';
 import './atlas-production.css';
@@ -34,6 +36,10 @@ export default function ResourcePage(){
  const [error,setError]=useState('');
  const [savedMessage,setSavedMessage]=useState('');
  const resources=useMemo(()=>resourcesForMap(map),[map]);
+ const nativeAtlas=map==='The Island'||map==='Scorched Earth';
+ const wikiPoints=map==='Scorched Earth'?scorchedWikiResources:islandWikiResources;
+ const sourcedResources=map==='Scorched Earth'?scorchedWikiAvailableResources:islandWikiAvailableResources;
+ const wikiSource=map==='Scorched Earth'?scorchedWikiSource:islandWikiSource;
  const [filtersByMap,setFiltersByMap]=useState({});
  const enabled=filtersByMap[map]??resources.map(r=>r.id);
  const personalOnMap=pins.filter(p=>p.map===map);
@@ -41,19 +47,19 @@ export default function ResourcePage(){
  const selectedPin=personalOnMap.find(p=>p.id===selection);
  const routeIds=Array.isArray(routes[map])?routes[map]:[];
  const stops=routeIds.map(id=>personalOnMap.find(p=>p.id===id)).filter(Boolean);
- const insideSites=useMemo(()=>candidateFarmingSites(islandWikiResources,areaPolygon,routeTypes),[areaPolygon,routeTypes]);
+ const insideSites=useMemo(()=>candidateFarmingSites(wikiPoints,areaPolygon,routeTypes),[wikiPoints,areaPolygon,routeTypes]);
  const routeStartCoords=routeStart==='first'?areaPolygon[0]||null:routeStart.startsWith('pin:')?personalOnMap.find(p=>p.id===routeStart.slice(4))||null:null;
  const drawAreaPoint=point=>{if(areaPolygon.length>=24)return;setAreaPolygon(v=>[...v,{lat:Math.round(point.lat*100)/100,lon:Math.round(point.lon*100)/100}]);setGenerated(null);};
  const buildRoute=()=>{
   if(areaPolygon.length<3){setError('Draw an area using at least 3 points first.');return;}
   if(!routeTypes.length){setError('Select at least one mapped resource category.');return;}
-  const result=generateFarmingRoute({points:islandWikiResources,polygon:areaPolygon,types:routeTypes,maxStops:maxRouteStops,mode:routeMode,start:routeStartCoords});
+  const result=generateFarmingRoute({points:wikiPoints,polygon:areaPolygon,types:routeTypes,maxStops:maxRouteStops,mode:routeMode,start:routeStartCoords});
   if(result.reason){setGenerated(null);setError(result.reason);return;}
   setGenerated(result);setAreaDrawing(false);setError('');setSavedMessage('Generated a GPS-ordered resource run inside your selected area. Review and save it below.');
  };
  const saveGeneratedPlan=()=>{
   if(!generated?.stops?.length)return;
-  const entry={id:'farm-'+Date.now(),name:planName.trim().slice(0,60)||'Island resource run',map:'The Island',polygon:areaPolygon,
+  const entry={id:'farm-'+Date.now(),name:planName.trim().slice(0,60)||map+' resource run',map,polygon:areaPolygon,
    types:routeTypes,mode:routeMode,maxStops:maxRouteStops,routeStart,stops:generated.stops.map(p=>p.id),savedAt:new Date().toISOString()};
   const next=[entry,...savedPlans].slice(0,15);
   setSavedPlans(next);
@@ -61,8 +67,9 @@ export default function ResourcePage(){
   else setSavedMessage('Farming route saved in this browser.');
  };
  const loadGeneratedPlan=entry=>{
-  const nodes=entry.stops.map(id=>islandWikiResources.find(p=>p.id===id)).filter(Boolean);
+  const nodes=entry.stops.map(id=>wikiPoints.find(p=>p.id===id)).filter(Boolean);
   if(!nodes.length){setError('Saved route sites are no longer present in this source dataset.');return;}
+  if(entry.map!==map){setError('Select '+entry.map+' before loading this route.');return;}
   setAreaPolygon(entry.polygon);setRouteTypes(entry.types);setRouteMode(entry.mode);setMaxRouteStops(entry.maxStops);setRouteStart(entry.routeStart);
   setGenerated({stops:nodes,eligible:nodes.length});setPlanName(entry.name);setAreaDrawing(false);setTab('routes');
   setSavedMessage('Saved route loaded. You can edit stops or generate a new path.');
@@ -72,7 +79,7 @@ export default function ResourcePage(){
  const persistPins=next=>{setPins(next);if(!saveLocal(STORE,next))setError('Browser storage is blocked: these pins may not survive a reload.');};
  const persistRoutes=next=>{setRoutes(next);if(!saveLocal(ROUTE_STORE,next))setError('Browser storage is blocked: this route may not survive a reload.');};
  const setRouteIds=next=>persistRoutes({...routes,[map]:next});
- const changeMap=next=>{setAreaDrawing(false);setGenerated(null);setMap(next);setSelection(null);setError('');setSavedMessage('');setSearch('');setForm({resource:'Metal',title:'',lat:'',lon:'',note:''});};
+ const changeMap=next=>{setAreaDrawing(false);setAreaPolygon([]);setGenerated(null);setRouteStart('center');setRouteTypes(['Metal','Rich Metal','Crystal','Obsidian']);setMap(next);setSelection(null);setError('');setSavedMessage('');setSearch('');setForm({resource:'Metal',title:'',lat:'',lon:'',note:''});};
  const saveAtMapPoint=point=>{setForm({resource:CUSTOM_PIN_RESOURCE,title:'',lat:point.lat.toFixed(1),lon:point.lon.toFixed(1),note:''});setTab('pins');setError('');setSavedMessage('Coordinates selected from map. Name this custom pin, then save it.');};
  const addPin=event=>{
   event.preventDefault();setError('');setSavedMessage('');
@@ -92,7 +99,7 @@ export default function ResourcePage(){
  };
  const addStop=()=>{if(!selectedPin||routeIds.includes(selectedPin.id)||stops.length>=40)return;setRouteIds([...routeIds,selectedPin.id]);setSavedMessage('Pin added to this map’s route.');};
  const colors={...Object.fromEntries(resources.map(r=>[r.id,r.color])),[CUSTOM_PIN_RESOURCE]:'#ffad5a'};
- const sourcedCount=map==='The Island'?islandWikiResources.filter(p=>enabled.includes(p.resource)).length:0;
+ const sourcedCount=nativeAtlas?wikiPoints.filter(p=>enabled.includes(p.resource)).length:0;
  return <div className="resource-atlas-native atlas-v3">
   <div className="atlas-v3-top">
    <div><span className="eyebrow">EXPLORATION / RESOURCE ATLAS</span><h1>Resource Atlas <span className="atlas-native-tag">V3</span></h1><p>Genuine map sources with ARK Tribe HQ scouting, personal pins and farming routes.</p></div>
@@ -111,9 +118,9 @@ export default function ResourcePage(){
   </div>
   <div className="atlas-v3-grid">
    <section className="panel atlas-v3-main">
-    <div className="atlas-native-head"><h2><Map size={18}/> {map} <span className="atlas-v3-map-type">{map==='The Island'?'NATIVE ASA TERRAIN':'GENUINE SOURCE MAP'}</span></h2><span className="atlas-native-chip">ASA REFERENCE</span></div>
-    <div className="atlas-v3-source-explainer"><ShieldCheck size={17}/><span>{map==='The Island'?'The Island now uses the authentic ASA terrain from the ARK Official Community Wiki, downloaded and served directly by ARK Tribe HQ. No external terrain request or iframe. Wiki ASA resource sites are overlaid for six documented categories, and your own GPS pins remain separate.':'This map uses an external community provider. The provider controls terrain and published marker layers.'}</span></div>
-    {map==='The Island'?<IslandNativeMap pins={shownPersonal} stops={stops} selectedId={selection} onSelect={setSelection} colors={colors} enabledResources={enabled} onSaveAt={saveAtMapPoint} areaDrawing={areaDrawing} areaPolygon={areaPolygon} onAreaPoint={drawAreaPoint} plannedStops={generated?.stops||[]}/>:<EmbeddedMap key={map} url={resourceMapUrl(map)} alternativeUrl={wikiResourceMapUrl(map)} title={map+' Resources'} selection="Source-managed coordinates" kind="resource"/>}
+    <div className="atlas-native-head"><h2><Map size={18}/> {map} <span className="atlas-v3-map-type">{nativeAtlas?'NATIVE ASA TERRAIN':'GENUINE SOURCE MAP'}</span></h2><span className="atlas-native-chip">ASA REFERENCE</span></div>
+    <div className="atlas-v3-source-explainer"><ShieldCheck size={17}/><span>{nativeAtlas?'Authentic '+map+' ASA terrain and sourced GPS resource markers from ARK Official Community Wiki, served directly by ARK Tribe HQ. No remote image or iframe. Your GPS pins and routes remain separate from published sites.':'This map uses an external community provider. The provider controls terrain and published marker layers.'}</span></div>
+    {nativeAtlas?<IslandNativeMap key={map} mapName={map} terrainSrc={map==='Scorched Earth'?'/maps/scorched-earth-asa.jpg':'/maps/the-island-asa.jpg'} resourcePoints={wikiPoints} resourceSource={wikiSource} pins={shownPersonal} stops={stops} selectedId={selection} onSelect={setSelection} colors={colors} enabledResources={enabled} onSaveAt={saveAtMapPoint} areaDrawing={areaDrawing} areaPolygon={areaPolygon} onAreaPoint={drawAreaPoint} plannedStops={generated?.stops||[]}/>:<EmbeddedMap key={map} url={resourceMapUrl(map)} alternativeUrl={wikiResourceMapUrl(map)} title={map+' Resources'} selection="Source-managed coordinates" kind="resource"/>}
     <div className="atlas-v3-source-links"><a href={resourceMapUrl(map)} target="_blank" rel="noopener noreferrer"><ExternalLink size={14}/> Open detailed map</a><a href={wikiResourceMapUrl(map)} target="_blank" rel="noopener noreferrer"><ExternalLink size={14}/> Official community wiki map</a></div>
     {map==='The Island'&&<div className="atlas-v3-source-note"><Info size={16}/> This map has gatherable Oil nodes, not Oil Well sites. Oil veins are only offered for maps with documented pumpable deposits.</div>}
    </section>
@@ -122,21 +129,21 @@ export default function ResourcePage(){
      <div className="atlas-native-head"><h2><Layers size={18}/> Resource Filters</h2><span className="atlas-native-chip">{enabled.length} / {resources.length}</span></div>
      <div className="atlas-v3-selectrow"><button className="primary" type="button" onClick={()=>updateFilters(resources.map(r=>r.id))}><CheckCheck size={16}/> Select All</button><button className="ghost" type="button" onClick={()=>updateFilters([])}><X size={16}/> Deselect All</button></div>
      <label className="atlas-v3-find"><Search size={15}/><input aria-label="Search my resource filters" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search resources"/></label>
-     <div className="atlas-v3-filters">{resources.filter(r=>r.id.toLowerCase().includes(search.toLowerCase())).map(r=><button type="button" key={r.id} aria-pressed={enabled.includes(r.id)} className={enabled.includes(r.id)?'active':''} onClick={()=>updateFilters(enabled.includes(r.id)?enabled.filter(n=>n!==r.id):[...enabled,r.id])}><span className="atlas-v3-type-dot" style={{background:r.color}}/><span>{r.id}{map==='The Island'&&!islandWikiAvailableResources.includes(r.id)&&<small className="atlas-v3-personal-only">My pins only</small>}</span><span className="atlas-v3-checkbox">{enabled.includes(r.id)?'☑':'☐'}</span></button>)}</div>
-     <p className="atlas-v3-hint"><Info size={14}/> {map==='The Island'?'These filters change published Wiki ASA resource markers and your saved resource pins. Six resource categories have sourced points; other filters are for your own scouting notes.':'These filters control your personal pin list. Published resource nodes remain controlled by the source map’s own Resources layers.'}</p>
-     {mapsWithOilVeins.includes(map)&&<div className="atlas-v3-oil-note"><strong>Oil Vein / Oil Well</strong><span>Oil Pumps are built on oil veins. See the community provider for locations; we have not imported unverified coordinates.</span><a href={atlasSourceLinks.oilVein} target="_blank" rel="noopener noreferrer">Oil Vein reference <ExternalLink size={12}/></a></div>}
-     {map==='The Island'&&<p className="atlas-v3-hint"><Info size={14}/> {sourcedCount.toLocaleString()} sourced ASA wiki resource sites match your filters (grouped at low zoom), plus {shownPersonal.length} personal pin(s). Custom pins always appear.</p>}
+     <div className="atlas-v3-filters">{resources.filter(r=>r.id.toLowerCase().includes(search.toLowerCase())).map(r=><button type="button" key={r.id} aria-pressed={enabled.includes(r.id)} className={enabled.includes(r.id)?'active':''} onClick={()=>updateFilters(enabled.includes(r.id)?enabled.filter(n=>n!==r.id):[...enabled,r.id])}><span className="atlas-v3-type-dot" style={{background:r.color}}/><span>{r.id}{nativeAtlas&&!sourcedResources.includes(r.id)&&<small className="atlas-v3-personal-only">My pins only</small>}</span><span className="atlas-v3-checkbox">{enabled.includes(r.id)?'☑':'☐'}</span></button>)}</div>
+     <p className="atlas-v3-hint"><Info size={14}/> {nativeAtlas?'These filters change published Wiki ASA resource markers and your saved resource pins. Only categories with sourced points show public markers; other filters are for personal scouting notes.':'These filters control your personal pin list. Published resource nodes remain controlled by the source map’s own Resources layers.'}</p>
+     {mapsWithOilVeins.includes(map)&&<div className="atlas-v3-oil-note"><strong>Oil Vein / Oil Well</strong><span>{map==='Scorched Earth'?'Oil pump sites are sourced from the ASA wiki Oil Vein layer and displayed on the native map.':'Oil Pumps are built on oil veins. See the community provider for locations; we have not imported unverified coordinates.'}</span><a href={atlasSourceLinks.oilVein} target="_blank" rel="noopener noreferrer">Oil Vein reference <ExternalLink size={12}/></a></div>}
+     {nativeAtlas&&<p className="atlas-v3-hint"><Info size={14}/> {sourcedCount.toLocaleString()} sourced ASA wiki resource sites match your filters (grouped at low zoom), plus {shownPersonal.length} personal pin(s). Custom pins always appear.</p>}
      <div className="atlas-v3-personal-heading"><h3>My visible GPS pins</h3><small>{shownPersonal.length}</small></div>
-     {shownPersonal.length?<div className="atlas-v3-pinlist">{shownPersonal.map(p=><button key={p.id} type="button" className={selection===p.id?'active':''} onClick={()=>setSelection(p.id)}><span style={{background:colors[p.resource]}} className="atlas-v3-type-dot"/><span>{p.title||p.resource}<small>{p.lat.toFixed(1)} LAT · {p.lon.toFixed(1)} LON</small></span></button>)}</div>:<p className="atlas-v3-empty">No personal GPS pins match these filters. Published wiki resource markers appear directly on The Island map.</p>}
+     {shownPersonal.length?<div className="atlas-v3-pinlist">{shownPersonal.map(p=><button key={p.id} type="button" className={selection===p.id?'active':''} onClick={()=>setSelection(p.id)}><span style={{background:colors[p.resource]}} className="atlas-v3-type-dot"/><span>{p.title||p.resource}<small>{p.lat.toFixed(1)} LAT · {p.lon.toFixed(1)} LON</small></span></button>)}</div>:<p className="atlas-v3-empty">No personal GPS pins match these filters. Published wiki resource markers appear directly on the native ASA map.</p>}
     </section>}
-    {tab==='routes'&&map==='The Island'&&<section className="panel atlas-v3-panel atlas-v3-planner">
+    {tab==='routes'&&nativeAtlas&&<section className="panel atlas-v3-panel atlas-v3-planner">
      <div className="atlas-native-head"><h2><Route size={17}/> Area Farming Planner</h2><span className="atlas-native-chip">GPS ROUTING</span></div>
      <p className="atlas-v3-hint">Outline a region on the map using at least three clicks or taps. Select resource types, then generate an approximate straight-line GPS route between documented ASA sites within your boundary.</p>
      <div className="atlas-v3-selectrow"><button type="button" className={areaDrawing?'primary':'ghost'} onClick={()=>{setTab('routes');setAreaDrawing(v=>!v);setError('');}}>{areaDrawing?'Finish Drawing':'Draw Farming Area'}</button><button type="button" className="ghost" onClick={()=>{setAreaPolygon([]);setGenerated(null);setAreaDrawing(false);}}>Clear Area</button></div>
      <div className="atlas-v3-plan-progress">{areaPolygon.length} boundary corners · {insideSites.length.toLocaleString()} matching sourced sites</div>
      <div className="atlas-v3-plan-tools"><button type="button" className="ghost" disabled={!areaPolygon.length} onClick={()=>{setAreaPolygon(v=>v.slice(0,-1));setGenerated(null);}}>Undo last corner</button></div>
      <div className="atlas-v3-personal-heading"><h3>Resources to gather</h3><small>{routeTypes.length} selected</small></div>
-     <div className="atlas-v3-filters">{islandWikiAvailableResources.map(r=><button key={r} type="button" className={routeTypes.includes(r)?'active':''} aria-pressed={routeTypes.includes(r)} onClick={()=>{setRouteTypes(v=>v.includes(r)?v.filter(x=>x!==r):[...v,r]);setGenerated(null);}}><span className="atlas-v3-type-dot" style={{background:colors[r]}}/>{r}<span className="atlas-v3-checkbox">{routeTypes.includes(r)?'☑':'☐'}</span></button>)}</div>
+     <div className="atlas-v3-filters">{sourcedResources.map(r=><button key={r} type="button" className={routeTypes.includes(r)?'active':''} aria-pressed={routeTypes.includes(r)} onClick={()=>{setRouteTypes(v=>v.includes(r)?v.filter(x=>x!==r):[...v,r]);setGenerated(null);}}><span className="atlas-v3-type-dot" style={{background:colors[r]}}/>{r}<span className="atlas-v3-checkbox">{routeTypes.includes(r)?'☑':'☐'}</span></button>)}</div>
      <div className="atlas-v3-form">
       <label className="field"><span>OPTIMIZATION</span><select value={routeMode} onChange={e=>{setRouteMode(e.target.value);setGenerated(null);}}><option value="shortest">Shortest GPS path</option><option value="balanced">Balanced resources</option><option value="coverage">Area coverage</option></select></label>
       <label className="field"><span>START NEAR</span><select value={routeStart} onChange={e=>{setRouteStart(e.target.value);setGenerated(null);}}><option value="center">Area center</option><option value="first">First area corner</option>{personalOnMap.filter(p=>insideFarmingArea(p,areaPolygon)).map(p=><option key={p.id} value={'pin:'+p.id}>{p.title||p.resource} ({p.lat.toFixed(1)}, {p.lon.toFixed(1)})</option>)}</select></label>
@@ -150,7 +157,7 @@ export default function ResourcePage(){
       <label className="field"><span>ROUTE NAME</span><input type="text" maxLength="60" value={planName} onChange={e=>setPlanName(e.target.value)}/></label>
       <button type="button" className="primary atlas-v3-full" onClick={saveGeneratedPlan}>Save Farming Route</button>
      </>}
-     {savedPlans.filter(p=>p.map==='The Island').length>0&&<>
+     {savedPlans.filter(p=>p.map===map).length>0&&<>
       <div className="atlas-v3-personal-heading"><h3>Saved area routes</h3><small>THIS BROWSER</small></div>
       <div className="atlas-v3-pinlist">{savedPlans.filter(p=>p.map==='The Island').map(p=><div key={p.id} className="atlas-v3-saved-plan"><button type="button" onClick={()=>loadGeneratedPlan(p)}>{p.name}<small>{p.stops.length} stops · {p.mode}</small></button><button type="button" aria-label={'Delete '+p.name} onClick={()=>deleteGeneratedPlan(p.id)}><Trash2 size={16}/></button></div>)}</div>
      </>}
@@ -163,7 +170,7 @@ export default function ResourcePage(){
     </section>}
     {tab==='pins'&&<section className="panel atlas-v3-panel">
      <div className="atlas-native-head"><h2><MapPin size={17}/> My Pins</h2><span className="atlas-native-chip">BROWSER-LOCAL</span></div>
-     <p className="atlas-v3-hint">Choose Custom Pin and enter a name. Type latitude/longitude manually, or click The Island map and choose Add custom pin here. Personal pins are saved only in this browser.</p>
+     <p className="atlas-v3-hint">Choose Custom Pin and enter a name. Type latitude/longitude manually, or click the native ASA map and choose Add custom pin here. Personal pins are saved only in this browser.</p>
      <form className="atlas-v3-form" onSubmit={addPin}>
       <label className="field"><span>RESOURCE</span><select value={form.resource} onChange={e=>setForm(f=>({...f,resource:e.target.value}))}><option value={CUSTOM_PIN_RESOURCE}>Custom Pin</option>{resources.map(r=><option key={r.id}>{r.id}</option>)}</select></label>
       <label className="field"><span>{form.resource===CUSTOM_PIN_RESOURCE?'PIN NAME (REQUIRED)':'PIN LABEL (OPTIONAL)'}</span><input type="text" maxLength="60" required={form.resource===CUSTOM_PIN_RESOURCE} value={form.title||''} onChange={e=>setForm(f=>({...f,title:e.target.value}))} placeholder="E.g. Hidden base entrance"/></label>

@@ -5,12 +5,12 @@ const page=readFileSync(new URL('./ResourcePage.jsx',import.meta.url),'utf8');
 const native=readFileSync(new URL('./IslandNativeMap.jsx',import.meta.url),'utf8');
 const css=readFileSync(new URL('./island-native-map.css',import.meta.url),'utf8');
 test('The Island selects first-party map instead of provider iframe',()=>{
- assert.match(page,/map==='The Island'\?<IslandNativeMap/);
+ assert.ok(page.includes('nativeAtlas?<IslandNativeMap'));
  assert.match(page,/:<EmbeddedMap key=\{map\}/);
  assert.match(page,/onSelect=\{setSelection\}/);
  assert.ok(!native.includes('<iframe'));
  assert.ok(!native.includes('wikily.gg'));
- assert.ok(native.includes('href="/maps/the-island-asa.jpg"'));
+ assert.ok(page.includes("'/maps/the-island-asa.jpg'"));
 });
 test('native pins and routes use ARK GPS coordinate ordering',()=>{
  assert.ok(native.includes('p.lon*10'));
@@ -22,11 +22,11 @@ test('native pins and routes use ARK GPS coordinate ordering',()=>{
 });
 test('native map does not represent incomplete terrain or node coverage as verified',()=>{
  assert.ok(native.includes('ARK Official Community Wiki'));
- assert.ok(native.includes('<image href="/maps/the-island-asa.jpg"'));
+ assert.ok(native.includes('<image href={terrainSrc}'));
  assert.ok(native.includes('onError={()=>setTerrainFailed(true)}'));
  assert.ok(!native.includes('<iframe'));
  assert.ok(native.includes('Resource sites are published estimates'));
- assert.ok(native.includes('visibleWikiSites(islandWikiResources'));
+ assert.ok(native.includes('visibleWikiSites(resourcePoints'));
 });
 test('mobile layout has touch sized controls',()=>{
  assert.ok(css.includes('@media(max-width:750px)'));
