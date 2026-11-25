@@ -27,3 +27,8 @@ for title in ["Data:Maps/Creature Spawns/The Island/ASA","Data:Maps/Creature Spa
      else:print("SPAWN DETAIL",title,key,"TYPE",type(val).__name__,"COUNT",len(val) if isinstance(val,list) else "", "SAMPLE",str(val)[:1500],flush=True)
   except Exception as e:print("SPAWN NONJSON",title,raw[:1200],repr(e),flush=True)
  except Exception as e:print("SPAWN QUERY ERROR",title,repr(e),flush=True)
+
+for title in ["Data:Maps/Creature Spawns/The Island/ASA","Data:Maps/Creature Spawns/Aberration/ASA","Data:Maps/Creature Spawns/Genesis: Part 1/ASA","Data:Maps/Creature Spawns/Lost_Colony/ASA"]:
+ r=S.get(api,params={"action":"query","titles":title,"prop":"revisions","rvprop":"content|ids","rvslots":"main","format":"json"},timeout=25);r.raise_for_status()
+ p=list(r.json()["query"]["pages"].values())[0]
+ if "revisions" in p:print("SPAWN RAW",title,p["revisions"][0]["slots"]["main"]["*"],flush=True)
