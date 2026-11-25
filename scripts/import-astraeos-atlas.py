@@ -75,3 +75,21 @@ for explorer in ["Data:Maps/Explorer/Astraeos","Data:Maps/Explorer/Astraeos/ASA"
     "points":ep},separators=(",",":"))+"\\n")
   break
  except Exception as e: print("EXPLORER ERROR",explorer,str(e),flush=True)
+
+for page in ["Resource Map/Astraeos","Explorer Map/Astraeos","Resource_Map/Astraeos","Explorer_Map/Astraeos"]:
+ try:
+  r=S.get(API,params={"action":"query","titles":page,"prop":"revisions","rvprop":"content|ids","rvslots":"main","format":"json"},timeout=20);r.raise_for_status()
+  item=list(r.json()["query"]["pages"].values())[0]
+  rev=item.get("revisions",[None])[0]
+  if not rev:print("PUBLIC PAGE MISSING",page,flush=True);continue
+  raw=rev["slots"]["main"]["*"]
+  print("PUBLIC PAGE FOUND",page,"BODY",raw[:2500],flush=True)
+ except Exception as e:print("PUBLIC PAGE ERROR",page,str(e),flush=True)
+for query in ["https://arkstatus.com/resource-map/astraeos/","https://arkstatus.com/resource-map/astraeos/?lang=en"]:
+ try:
+  r=S.get(query,timeout=22)
+  print("HOTSPOT SOURCE",query,"STATUS",r.status_code,"LENGTH",len(r.content),flush=True)
+  from bs4 import BeautifulSoup
+  bs=BeautifulSoup(r.text,"html.parser")
+  print("HOTSPOT TEXT",bs.get_text(" ",strip=True)[-7500:],flush=True)
+ except Exception as e:print("HOTSPOT ERROR",str(e),flush=True)
