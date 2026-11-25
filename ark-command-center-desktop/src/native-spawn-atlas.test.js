@@ -110,3 +110,9 @@ test('Aberration reuses zone focus native source-backed terrain and exposes clic
  assert.doesNotMatch(page,/EmbeddedMap|<iframe/i);
  assert.doesNotMatch(linked,/EmbeddedMap|<iframe/i);
 });
+
+test('spawn colors remain prominent while unverified zones stay unfilled',()=>{
+ const viewer=readFileSync(new URL('./IslandNativeMap.jsx',import.meta.url),'utf8');
+ assert.ok(viewer.includes("fillOpacity={p.tier==='unverified'?0:.58}"));
+ assert.ok(viewer.includes('strokeOpacity=".9" strokeWidth="1.25"'));
+});
