@@ -35,11 +35,15 @@ for k,arr in markers.items():
 assert len(markers)>=5, "Unexpectedly few resource types"
 outfile=Path("ark-command-center-desktop/src/island-asa-wiki-resources.json")
 transformed=[]
+skipped=[]
 for category,points in markers.items():
  for i,node in enumerate(points):
   lat,lon=node.get("y"),node.get("x")
-  if not isinstance(lat,(int,float)) or not isinstance(lon,(int,float)) or not (0<=lat<=100 and 0<=lon<=100):
+  if not isinstance(lat,(int,float)) or not isinstance(lon,(int,float)):
    raise ValueError(f"Invalid resource location: {category} index {i}: {node}")
+  if not (0<=lat<=100 and 0<=lon<=100):
+   skipped.append((category,i,lat,lon))
+   continue
   transformed.append({
     "id":f"wiki-{category}-{i}",
     "category":category,
@@ -51,6 +55,7 @@ assert len(transformed)>=100, "Unexpectedly sparse dataset"
 outfile.write_text(json.dumps({
   "source":URL,"revision":REVISION,
   "coordinateSystem":"ASA wiki resource map / in-game minimap",
+  "omittedOutOfBoundsCount":len(skipped),
   "points":transformed
 },separators=(",",":"))+"\n")
-print("SUCCESS wiki points",len(transformed), "output",outfile)
+print("SUCCESS wiki points",len(transformed),"skipped out-of-bounds",len(skipped),"output",outfile)
