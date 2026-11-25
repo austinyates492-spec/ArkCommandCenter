@@ -39,5 +39,5 @@ test('GPS calibration inspection follows same 1000 square coordinate plane as pl
  assert.ok(native.includes('const y=offset+(event.clientY-rect.top)/rect.height*extent'));
  assert.ok(native.includes('inspected.lon*10'));
  assert.ok(native.includes('inspected.lat*10'));
- assert.ok(native.includes('Tap the map to inspect grid coordinates'));
+ assert.ok(native.includes('Tap the map to inspect GPS coordinates'));
 });
