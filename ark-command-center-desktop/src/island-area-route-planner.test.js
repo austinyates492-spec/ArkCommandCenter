@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {candidateFarmingSites,generateFarmingRoute,insideFarmingArea,gpsRouteDistance} from './island-area-route-planner.js';
+import {candidateFarmingSites,generateFarmingRoute,insideFarmingArea,gpsRouteDistance,areaRoutePolyline,gpsSegmentInsideArea} from './island-area-route-planner.js';
 import {islandWikiResources} from './island-wiki-resource-overlay.js';
 
 const square=[{lat:20,lon:20},{lat:20,lon:65},{lat:70,lon:65},{lat:70,lon:20}];
@@ -51,4 +51,20 @@ test('Island UI exposes polygon draw, route generation, route editing and mobile
  for(const s of ['Draw Farming Area','Generate Farming Route','Save Farming Route','Undo last corner','insideFarmingArea','onAreaPoint={drawAreaPoint}','plannedStops={generated?.stops||[]}','areaDrawing={areaDrawing}','generatedFarmingRoutes.v1'])assert.ok(page.includes(s),s);
  for(const s of ['areaPolygon.length>=3','<polygon points={areaLine}','plannedStops.map','onAreaPoint(position)','pointerEvents={areaDrawing'])assert.ok(map.includes(s),s);
  assert.ok(style.includes('.atlas-v3-planner'));
+});
+
+test('concave region routes use boundary waypoints instead of drawing through excluded terrain',()=>{
+ const concave=[
+  {lat:10,lon:10},{lat:10,lon:70},{lat:65,lon:70},
+  {lat:65,lon:55},{lat:30,lon:55},{lat:30,lon:25},
+  {lat:65,lon:25},{lat:65,lon:10}
+ ];
+ const left={lat:55,lon:16,resource:'Metal',id:'left'};
+ const right={lat:55,lon:64,resource:'Metal',id:'right'};
+ assert.equal(insideFarmingArea(left,concave),true);
+ assert.equal(insideFarmingArea(right,concave),true);
+ assert.equal(gpsSegmentInsideArea(left,right,concave),false);
+ const route=areaRoutePolyline([left,right],concave);
+ assert.ok(route.length>2, 'Expected intermediate polygon-boundary corners');
+ for(let i=1;i<route.length;i++)assert.ok(gpsSegmentInsideArea(route[i-1],route[i],concave),'Every visible line segment must stay in area');
 });
