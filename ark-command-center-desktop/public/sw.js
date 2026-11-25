@@ -1,19 +1,9 @@
-const CACHE='arktribehq-shell-crafting-v3';
-const PRECACHE=['/','/manifest.webmanifest','/icons/arktribehq-192.png'];
-self.addEventListener('install',event=>{
- event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(PRECACHE)).then(()=>self.skipWaiting()));
-});
+// Online-first ARK Tribe HQ: never serve a stale document pointing to deleted Vite assets.
+// Previous releases cached HTML; stale asset references could cause a blank mobile PWA.
+const OLD_CACHE_PREFIX='arktribehq-';
+self.addEventListener('install',event=>{event.waitUntil(self.skipWaiting());});
 self.addEventListener('activate',event=>{
- event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim()));
+ event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith(OLD_CACHE_PREFIX)).map(key=>caches.delete(key)))).then(()=>self.clients.claim()));
 });
-self.addEventListener('fetch',event=>{
- const request=event.request;
- if(request.method!=='GET'||new URL(request.url).origin!==self.location.origin)return;
- // Live accounts, timers, API calls and advertisements must never be cached.
- if(request.mode==='navigate'){
-  event.respondWith(fetch(request).then(response=>{
-   if(response.ok){const copy=response.clone();void caches.open(CACHE).then(cache=>cache.put('/',copy));}
-   return response;
-  }).catch(()=>caches.match('/')));
- }
-});
+// No fetch handler: browser performs normal network requests and HTTP caching.
+// Never cache /, /index.html, or JS/CSS bundles as an offline document fallback.
