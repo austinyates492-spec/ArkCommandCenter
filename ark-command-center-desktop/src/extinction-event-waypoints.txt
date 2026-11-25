@@ -1,0 +1,44 @@
+# Reference positions transcribed from ARKCademy Extinction OSD & Element Vein Waypoints.
+# Format: description|Latitude|Longitude. 'OSD + vein' is a shared
+# event spawn location, NOT a guarantee both events occur simultaneously.
+# Source https://arkcademy.com/blueprints/extinction-osd/
+Easy OSD + vein|22.7|54.9
+Hard OSD + vein|26.2|48.3
+Easy OSD + vein|27.1|41.1
+Easy OSD + vein|29.4|39.8
+Legendary OSD|18.2|35.7
+Legendary OSD|19.4|28.3
+Medium OSD|16.3|18.7
+Hard Element Node|17.0|12.7
+Hard OSD + vein|22.5|12.4
+Hard OSD + vein|34.9|13.8
+Legendary OSD|43.5|13.3
+Hard OSD + vein|54.2|15.1
+Hard OSD + vein|51.1|18.9
+Easy OSD|39.9|27.1
+Easy OSD + vein|39.5|32.7
+Hard Element Node|34.5|37.1
+Easy OSD + vein|34.5|40.4
+Easy OSD + vein|35.4|47.1
+Medium OSD + vein|33.6|52.3
+Medium OSD + vein|30.3|52.7
+Legendary OSD|28.9|58.1
+Legendary OSD|35.9|57.9
+Legendary OSD|39.3|69.7
+Easy OSD + vein|43.3|77.5
+Legendary OSD|46.0|85.5
+Medium OSD + vein|53.6|84.1
+Easy OSD + vein|58.5|90.5
+Hard OSD + vein|60.7|71.4
+Medium OSD + vein|65.7|59.9
+Easy OSD|78.7|57.3
+Medium OSD|68.6|56.3
+Easy OSD|66.7|49.4
+Easy OSD + vein|66.9|43.0
+Medium OSD + vein|71.9|43.5
+Legendary OSD|81.9|40.7
+Medium OSD + vein|70.6|37.9
+Medium OSD + vein|65.6|37.6
+Hard OSD + vein|67.8|31.1
+Medium OSD|85.2|28.2
+Easy Element Node|70.3|18.0
