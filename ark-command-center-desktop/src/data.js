@@ -63,7 +63,7 @@ const mainSpecies=Object.fromEntries(Object.entries(breedingRoster).map(([name,r
   }];
 }));
 export const species={...mainSpecies,...Object.fromEntries(Object.entries(breedingVariants).filter(([,base])=>mainSpecies[base]).map(([name,base])=>[name,{...mainSpecies[base],variantOf:base}]))};
-export const maps=['The Island','Scorched Earth','The Center','Aberration','Extinction','Ragnarok','Valguero','Astraeos','Lost Colony'];
+export const maps=['The Island','Scorched Earth','The Center','Aberration','Extinction','Ragnarok','Valguero','Astraeos','Lost Colony','Genesis: Part 1'];
 // Creature picker options, not a claim that every species has a built-in taming formula.
 const baseTameCreatures = [
   'Achatina','Allosaurus','Amargasaurus','Anglerfish','Ankylosaurus','Araneo','Archaeopteryx','Argentavis','Arthropluera','Baryonyx','Basilosaurus','Beelzebufo','Bloodstalker','Brontosaurus','Bulbdog','Carbonemys','Carnotaurus','Castoroides','Carcharodontosaurus','Chalicotherium','Compy','Daeodon','Deinonychus','Desmodus','Dilophosaur','Dimetrodon','Dimorphodon','Diplocaulus','Diplodocus','Direbear','Direwolf','Dodo','Doedicurus','Dung Beetle','Equus','Featherlight','Gallimimus','Gasbags','Giganotosaurus','Gigantopithecus','Griffin','Hyaenodon','Ichthyosaurus','Iguanodon','Kairuku','Kaprosuchus','Karkinos','Kentrosaurus','Lymantria','Mammoth','Managarmr','Mantis','Megalania','Megaloceros','Megalodon','Megalosaurus','Megatherium','Mesopithecus','Microraptor','Morellatops','Moschops','Mosasaurus','Oviraptor','Ovis','Pachy','Pachyrhinosaurus','Paraceratherium','Parasaur','Pegomastax','Pelagornis','Phiomia','Plesiosaur','Procoptodon','Pteranodon','Pulmonoscorpius','Purlovia','Quetzal','Raptor','Ravager','Rex','Rock Drake','Rock Elemental','Roll Rat','Sabertooth','Sarcosuchus','Shadowmane','Shinehorn','Snow Owl','Spinosaurus','Stegosaurus','Tapejara','Terror Bird','Therizinosaurus','Thorny Dragon','Thylacoleo','Titanoboa','Triceratops','Troodon','Tusoteuthis','Velonasaur','Woolly Rhino','Wyvern','Yutyrannus'
@@ -86,7 +86,7 @@ export const durationText=(seconds)=>{
 export const wikiSpawn=(map)=>`https://ark.wiki.gg/wiki/Spawn_Map_(${encodeURIComponent(map.replaceAll(' ','_'))})`;
 export const creatureSpawnUrl=(map,creature)=>`${wikiSpawn(map)}#${encodeURIComponent(({Rex:'T-Rex',Triceratops:'Trike'}[creature]||creature))}`;
 export const resources=['Metal','Rich Metal','Crystal','Obsidian','Oil','Silica Pearls','Black Pearls','Rare Flowers','Rare Mushrooms','Sulfur','Salt','Cactus Sap','Red Gems','Blue Gems','Green Gems','Element'];
-const mapSlugs={'The Island':'the-island','Scorched Earth':'scorched-earth','The Center':'the-center','Aberration':'aberration','Extinction':'extinction','Ragnarok':'ragnarok','Valguero':'valguero','Astraeos':'astraeos','Lost Colony':'lost-colony'};
+const mapSlugs={'The Island':'the-island','Scorched Earth':'scorched-earth','The Center':'the-center','Aberration':'aberration','Extinction':'extinction','Ragnarok':'ragnarok','Valguero':'valguero','Astraeos':'astraeos','Lost Colony':'lost-colony','Genesis: Part 1':'genesis-part-1'};
 // The map provider does not document a stable resource query-string filter.
 export const resourceMapUrl=(map)=>`https://wikily.gg/ark-survival-ascended/maps/${mapSlugs[map]||'the-island'}`;
 export const wikiResourceMapUrl=(map)=>`https://ark.wiki.gg/wiki/Resource_Map/${encodeURIComponent(map.replaceAll(' ','_'))}`;
