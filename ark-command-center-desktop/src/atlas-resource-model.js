@@ -24,6 +24,14 @@ export const islandResourceTypes=[
  * Specific coordinates still need map-by-map ASA verification. */
 export const mapsWithOilVeins=['Scorched Earth','Ragnarok','Valguero','Astraeos'];
 export const oilVeinResource={id:'Oil Vein / Oil Well',color:'#df98ff'};
+export const centerCaveResources=[
+ {id:'Crystal (Cave)',color:'#d4b6ff'},
+ {id:'Metal (Cave)',color:'#dce4ee'},
+ {id:'Rich Metal (Cave)',color:'#ffdf9d'},
+ {id:'Obsidian (Cave)',color:'#a3a0e1'},
+ {id:'Oil (Cave)',color:'#a3e6f0'},
+ {id:'Silica Pearls (Cave)',color:'#efffff'}
+];
 export const scorchedSpecificResources=[
  {id:'Silk',color:'#f4d6a1'},
  {id:'Salt',color:'#e1c1a9'},
@@ -32,6 +40,7 @@ export const scorchedSpecificResources=[
  {id:'Water Vein',color:'#51baf4'}
 ];
 export function resourcesForMap(map){
+ if(map==='The Center')return [...islandResourceTypes,...centerCaveResources];
  if(map==='Scorched Earth')return [...islandResourceTypes,...scorchedSpecificResources,oilVeinResource];
  return mapsWithOilVeins.includes(map)?[...islandResourceTypes,oilVeinResource]:islandResourceTypes;
 }
