@@ -32,6 +32,29 @@ export const centerCaveResources=[
  {id:'Oil (Cave)',color:'#a3e6f0'},
  {id:'Silica Pearls (Cave)',color:'#efffff'}
 ];
+export const valgueroSpecificResources=[
+ {id:'Black Pearls',color:'#323b53'},
+ {id:'Cactus Sap',color:'#b3d38b'},
+ {id:'Clay',color:'#cfa58c'},
+ {id:'Crystal (Cave)',color:'#d8baff'},
+ {id:'Gas Vein',color:'#e8a5e9'},
+ {id:'Blue Gems',color:'#579bff'},
+ {id:'Green Gems',color:'#66dfac'},
+ {id:'Red Gems',color:'#f07b88'},
+ {id:'Keratin',color:'#c6bba2'},
+ {id:'Metal (Cave)',color:'#c8d0dd'},
+ {id:'Rich Metal (Cave)',color:'#fce1a2'},
+ {id:'Obsidian (Cave)',color:'#afa9d8'},
+ {id:'Oil (Cave)',color:'#7acadd'},
+ {id:'Organic Polymer',color:'#f6b9dc'},
+ {id:'Rockarrot',color:'#eeb17f'},
+ {id:'Salt',color:'#e5d4b5'},
+ {id:'Savoroot',color:'#b1d79c'},
+ {id:'Silica Pearls (Cave)',color:'#e8faff'},
+ {id:'Sulfur',color:'#d8d67a'},
+ {id:'Sulfur (Cave)',color:'#eff0ad'},
+ {id:'Water Vein',color:'#65cafa'}
+];
 export const ragnarokSpecificResources=[
  {id:'Black Pearls',color:'#33384a'},
  {id:'Cactus Sap',color:'#b5d48b'},
@@ -86,6 +109,7 @@ export const scorchedSpecificResources=[
  {id:'Water Vein',color:'#51baf4'}
 ];
 export function resourcesForMap(map){
+ if(map==='Valguero')return [...islandResourceTypes,...valgueroSpecificResources,oilVeinResource];
  if(map==='Ragnarok')return [...islandResourceTypes,...ragnarokSpecificResources,oilVeinResource];
  if(map==='Extinction')return [...islandResourceTypes,...extinctionSpecificResources];
  if(map==='Aberration')return [...islandResourceTypes,...aberrationSpecificResources];
