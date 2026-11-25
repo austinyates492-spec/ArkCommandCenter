@@ -2,6 +2,7 @@ import React,{useEffect,useMemo,useRef,useState} from 'react';
 import {RotateCcw,MapPin,Info,Plus} from 'lucide-react';
 import IslandContourTerrain from './IslandContourTerrain';
 import {islandWikiResources,islandWikiSource,visibleWikiSites} from './island-wiki-resource-overlay';
+import {areaRoutePolyline} from './island-area-route-planner.js';
 import './island-native-map.css';
 
 /** Native interactive terrain, GPS overlay, wiki ASA resource survey and personal pins.
@@ -29,7 +30,7 @@ export default function IslandNativeMap({pins=[],stops=[],selectedId=null,onSele
  const wikiSites=useMemo(()=>showResources?visibleWikiSites(islandWikiResources,enabledResources,bounded):[],[showResources,enabledResources,bounded]);
  const publishedCount=islandWikiResources.filter(p=>enabledResources.includes(p.resource)).length;
  const areaLine=areaPolygon.map(p=>`${p.lon*10},${p.lat*10}`).join(' ');
- const planPath=plannedStops.map(p=>`${p.lon*10},${p.lat*10}`).join(' ');
+ const planPath=areaRoutePolyline(plannedStops,areaPolygon).map(p=>`${p.lon*10},${p.lat*10}`).join(' ');
  const routePath=stops.filter(p=>Number.isFinite(p.lat)&&Number.isFinite(p.lon))
    .map(p=>`${p.lon*10},${p.lat*10}`).join(' ');
  const pointerCoords=event=>{
