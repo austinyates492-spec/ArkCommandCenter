@@ -32,6 +32,13 @@ export const centerCaveResources=[
  {id:'Oil (Cave)',color:'#a3e6f0'},
  {id:'Silica Pearls (Cave)',color:'#efffff'}
 ];
+export const lostColonySpecificResources=[
+ {id:'Black Pearls',color:'#363a52'},
+ {id:'Plant Species R',color:'#8bdc88'},
+ {id:'Organic Polymer',color:'#d7a9ec'},
+ {id:'Sulfur',color:'#e7d86a'},
+ {id:'Resource Outpost',color:'#ffad65'}
+];
 export const astraeosSpecificResources=[
  {id:'Black Pearls',color:'#252b42'},
  {id:'Rich Metal',color:'#f1c05c'},
@@ -117,6 +124,7 @@ export const scorchedSpecificResources=[
  {id:'Water Vein',color:'#51baf4'}
 ];
 export function resourcesForMap(map){
+ if(map==='Lost Colony')return [...islandResourceTypes,...lostColonySpecificResources];
  if(map==='Astraeos')return [...islandResourceTypes.filter(r=>r.id!=='Rich Metal'),...astraeosSpecificResources,oilVeinResource];
  if(map==='Valguero')return [...islandResourceTypes,...valgueroSpecificResources,oilVeinResource];
  if(map==='Ragnarok')return [...islandResourceTypes,...ragnarokSpecificResources,oilVeinResource];
