@@ -1,0 +1,27 @@
+/* Native creature spawn overlay: same terrain viewer as Resource Atlas, no third-party iframe. */
+.native-spawn-atlas{display:grid;gap:12px;min-width:0}
+.native-spawn-heading{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;border:1px solid var(--ark-border);border-radius:10px;background:var(--ark-deep);padding:12px}
+.native-spawn-heading>div:first-child{display:grid;gap:4px;min-width:0}
+.native-spawn-heading small{font-size:10px;color:var(--ark-muted);font-weight:800;letter-spacing:.09em}
+.native-spawn-heading strong{font-size:20px;color:var(--ark-heading)}
+.native-spawn-heading span{font-size:12px;color:var(--ark-muted)}
+.native-spawn-status{border:1px solid var(--ark-border);border-radius:8px;padding:7px 10px;font-size:11px;color:var(--ark-bright);font-weight:750}
+.native-spawn-filter,.native-spawn-biome{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:10px 12px;border:1px solid var(--ark-border);border-radius:9px;background:var(--ark-deep)}
+.native-spawn-filter>label:first-child,.native-spawn-biome>span{display:flex;align-items:center;gap:8px;color:var(--ark-heading);font-size:12px;font-weight:800}
+.native-spawn-filter select{background:var(--ark-surface);color:var(--ark-heading);border:1px solid var(--ark-border);border-radius:8px;padding:9px 12px;min-height:44px;flex:1;max-width:280px;font-size:12px}
+.native-spawn-filter .native-spawn-legend-toggle{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--ark-muted)}
+.native-spawn-tabs{display:flex;gap:6px;flex-wrap:wrap}
+.native-spawn-tabs button{border:1px solid var(--ark-border);background:var(--ark-surface);color:var(--ark-heading);font-size:12px;padding:10px 12px;border-radius:8px;min-height:44px;font-weight:750}
+.native-spawn-tabs button.active{border-color:var(--ark-accent);color:var(--ark-bright);background:color-mix(in srgb,var(--ark-accent) 12%,var(--ark-deep))}
+.native-spawn-legend{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.native-spawn-legend>div{display:flex;align-items:center;gap:8px;border:1px solid var(--ark-border);padding:8px 10px;border-radius:8px;background:var(--ark-deep);color:var(--ark-heading);font-size:11px}
+.native-spawn-swatch{width:12px;height:12px;min-width:12px;border-radius:3px}
+.native-spawn-summary,.native-spawn-message{display:flex;align-items:flex-start;gap:9px;padding:10px 12px;background:var(--ark-deep);border:1px solid var(--ark-border);border-radius:9px;color:var(--ark-heading);line-height:1.5;font-size:12px}
+.native-spawn-summary svg,.native-spawn-message svg{flex-shrink:0;color:var(--ark-accent)}
+.native-spawn-hint,.native-spawn-provenance{display:flex;align-items:flex-start;gap:8px;margin:0;color:var(--ark-muted);font-size:11px;line-height:1.6}
+.native-spawn-hint svg{flex-shrink:0;margin-top:2px}
+.native-spawn-provenance{display:block}
+.native-spawn-provenance a{color:var(--ark-bright)}
+@media(max-width:850px){.native-spawn-legend{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.native-spawn-filter select{width:100%;max-width:none;flex-basis:100%}.native-spawn-legend{grid-template-columns:1fr 1fr}.native-spawn-tabs{width:100%}.native-spawn-tabs button{flex:1}.native-spawn-heading strong{font-size:17px}}
+@media(max-width:400px){.native-spawn-legend{grid-template-columns:1fr}}
