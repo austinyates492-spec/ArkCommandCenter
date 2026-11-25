@@ -7,6 +7,7 @@ export function useTribeLive(token,setServers){
  const [timerSounds,setTimerSounds]=useState({});
  const [timerSoundsReady,setTimerSoundsReady]=useState(false);
  const [crafting,setCrafting]=useState([]);
+ const [timerDataToken,setTimerDataToken]=useState(null),[craftDataToken,setCraftDataToken]=useState(null);
  const [clockOffsetMs,setClockOffsetMs]=useState(0);
  const [status,setStatus]=useState('signed-out');
  const [error,setError]=useState('');
@@ -22,11 +23,11 @@ export function useTribeLive(token,setServers){
    }
    if(topic==='timers'||topic==='all'){
     const data=await request('/tribe/timers',token);
-    if(tokenRef.current===token){setTimers(data.timers||[]);if(Number.isFinite(data.serverTime))setClockOffsetMs(Date.now()-data.serverTime);}
+    if(tokenRef.current===token){setTimers(data.timers||[]);setTimerDataToken(token);if(Number.isFinite(data.serverTime))setClockOffsetMs(Date.now()-data.serverTime);}
    }
    if(topic==='crafting'||topic==='all'){
     const data=await request('/tribe/crafting',token);
-    if(tokenRef.current===token)setCrafting(data.items||[]);
+    if(tokenRef.current===token){setCrafting(data.items||[]);setCraftDataToken(token);}
    }
    if(topic==='servers'||topic==='all'){
     const data=await request('/tribe/servers/live',token);
@@ -37,6 +38,7 @@ export function useTribeLive(token,setServers){
  },[token,setServers]);
 
  useEffect(()=>{
+  setTimerDataToken(null);setCraftDataToken(null);
   if(!token){setTimers([]);setTimerSounds({});setTimerSoundsReady(false);setCrafting([]);setServers([]);setStatus('signed-out');setError('');return;}
   setTimers([]);setTimerSounds({});setTimerSoundsReady(false);setCrafting([]);setServers([]);
   let closed=false;const controller=new AbortController();
@@ -78,7 +80,7 @@ export function useTribeLive(token,setServers){
   }catch(e){setError(e.message);throw e;}
  },[token,refresh]);
 
- return {timers,timerSounds,timerSoundsReady,crafting,clockOffsetMs,status,error,refresh,
+ return {timers,timerSounds,timerSoundsReady,crafting,searchTimersReady:!!token&&timerDataToken===token,searchCraftingReady:!!token&&craftDataToken===token,clockOffsetMs,status,error,refresh,
   addTimer:(name,minutes,type='Custom',soundEnabledForCreator=true)=>perform('/tribe/timers','POST',{name,minutes,type,soundEnabledForCreator},'all'),
   setTimerSound:(id,enabled)=>perform(`/tribe/timers/${encodeURIComponent(id)}/sound`,'PUT',{enabled},'timer-sounds'),
   adjustTimer:(id,remainingMinutes,expectedEnd)=>perform(`/tribe/timers/${encodeURIComponent(id)}`,'PUT',{remainingMinutes,expectedEnd},'timers'),

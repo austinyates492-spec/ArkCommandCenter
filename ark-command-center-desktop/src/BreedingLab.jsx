@@ -23,8 +23,8 @@ function Metric({icon:Icon,title,value,note,primary=false}){
   <small>{note}</small>
  </div>;
 }
-export default function BreedingLab({rates,onTimer}){
- const [selected,setSelected]=useState('Rex');
+export default function BreedingLab({rates,onTimer,initialCreature}){
+ const [selected,setSelected]=useState(initialCreature&&species[initialCreature]?initialCreature:'Rex');
  const [filter,setFilter]=useState('');
  const names=useMemo(()=>Object.keys(species).sort(),[]);
  const visible=names.filter(x=>x.toLowerCase().includes(filter.toLowerCase()));

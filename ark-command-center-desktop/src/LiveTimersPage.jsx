@@ -110,7 +110,7 @@ function TimerAdjustment({timer,now,live}){
   {!open&&error&&<div className="notice" role="alert">{error}</div>}
  </div>;
 }
-function TimerCard({timer,live,now,completed=false}){
+function TimerCard({timer,live,now,completed=false,targetId}){
  const duration=Math.max(1000,timer.end-timer.created),progress=Math.max(0,Math.min(100,(now-timer.created)/duration*100));
  const tone=category(timer.type),enabled=live.timerSounds[timer.id]!==false;
  // Raising/maturation uses ARK's overall 10% and 50% growth milestones.
@@ -118,7 +118,7 @@ function TimerCard({timer,live,now,completed=false}){
  const maturation=timer.type==='Maturation'||(tone==='breeding'&&/matur|raising|baby growth/i.test(timer.name)&&!/incubat|hatch|gestat|mating|cooldown/i.test(timer.name+' '+timer.type));
  const phase=progress<10?'Baby':progress<50?'Juvenile':progress<100?'Adolescent':'Adult';
  const Icon=tone==='breeding'?Egg:tone==='taming'?Crosshair:tone==='crafting'?Anvil:Clock3;
- return <article className={'timer-operation timer-tone-'+tone+(completed?' timer-completed':'')}>
+ return <article id={'hq-timer-'+timer.id} className={'timer-operation timer-tone-'+tone+(completed?' timer-completed':'')+(String(timer.id)===targetId?' hq-search-target':'')}>
   <div className="timer-operation-main"><div className="timer-operation-icon"><Icon size={22}/></div>
    <div className="timer-operation-name"><strong>{timer.name}</strong><small>{timer.type} · {timer.createdBy||'Tribe'}</small></div>
    <div className="timer-operation-countdown"><strong>{clock(timer.end-now)}</strong><small>{completed?'Completed':'Remaining'}</small></div>
@@ -139,11 +139,12 @@ function TimerCard({timer,live,now,completed=false}){
   </div>
  </article>;
 }
-export default function LiveTimersPage({live,user,now,onAdd,onOpenAccount,onTestSound}){
+export default function LiveTimersPage({live,user,now,onAdd,onOpenAccount,onTestSound,targetId}){
  const [filter,setFilter]=useState('all'),[importing,setImporting]=useState(false);
  const [imported,setImported]=useState(()=>localStorage.getItem('ark.timersImportedV08')==='true');
  const active=live.timers.filter(t=>t.end>now),finished=live.timers.filter(t=>t.end<=now);
  const filtered=active.filter(t=>filter==='all'||category(t.type)===filter);
+ useEffect(()=>{if(targetId)document.getElementById('hq-timer-'+targetId)?.scrollIntoView({block:'center'});},[targetId,live.timers]);
  const old=legacy().filter(t=>Number(t.end)>now&&t.name);
  const importOld=()=>{setImporting(true);void(async()=>{for(const timer of old)await live.addTimer(timer.name,(timer.end-Date.now())/60000,timer.type||'Imported');localStorage.setItem('ark.timersImportedV08','true');setImported(true);})().catch(()=>{}).finally(()=>setImporting(false));};
  return <><div className="pagetitle"><span className="eyebrow">OPERATIONS / SHARED COUNTDOWNS</span><h1>Tribe Live Timers</h1><p>Create and edit shared countdowns using a slider or exact hours, minutes and seconds. Each activity has its own color.</p></div>
@@ -153,8 +154,8 @@ export default function LiveTimersPage({live,user,now,onAdd,onOpenAccount,onTest
  <div className="timer-page-grid">
   <section className="panel timer-operations-panel"><div className="panelhead"><h2>Active Tribe Countdowns</h2><span className="badge green">{active.length} RUNNING</span></div>
    <div className="timer-filters" role="group" aria-label="Filter timers">{[{value:'all',label:'All'},...choices.map(c=>({value:category(c[0]),label:c[1]}))].map(item=><button type="button" key={item.value} className={filter===item.value?'selected':''} aria-pressed={filter===item.value} onClick={()=>setFilter(item.value)}>{item.label}</button>)}</div>
-   <div className="timer-operation-list">{filtered.length?filtered.map(t=><TimerCard key={t.id} timer={t} live={live} now={now}/>):<div className="empty">No active timers in this category. Add one or start a tame/breeding timer.</div>}</div>
-   {finished.length>0&&<><h3 className="sectioncap">COMPLETED</h3><div className="timer-operation-list">{finished.slice(0,20).map(t=><TimerCard key={t.id} timer={t} live={live} now={now} completed/>)}</div></>}
+   <div className="timer-operation-list">{filtered.length?filtered.map(t=><TimerCard key={t.id} timer={t} live={live} now={now} targetId={targetId}/>):<div className="empty">No active timers in this category. Add one or start a tame/breeding timer.</div>}</div>
+   {finished.length>0&&<><h3 className="sectioncap">COMPLETED</h3><div className="timer-operation-list">{finished.slice(0,20).map(t=><TimerCard key={t.id} timer={t} live={live} now={now} targetId={targetId} completed/>)}</div></>}
    <button className="ghost" onClick={()=>void live.refresh('timers').catch(()=>{})}><RefreshCcw size={16}/> Refresh Timers</button>
   </section>
   <CreateTimer live={live} onTestSound={onTestSound}/>

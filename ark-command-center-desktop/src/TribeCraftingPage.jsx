@@ -1,4 +1,4 @@
-import React,{useMemo,useState} from 'react';
+import React,{useEffect,useMemo,useState} from 'react';
 import {Layers,Plus,Trash2,Search,ChevronRight,Cloud,RefreshCcw,Package,Users,GitBranch,ClipboardList,CheckCircle2} from 'lucide-react';
 import {starterRecipes} from './crafting-recipes';
 import wikiRecipes from './wiki-crafting-recipes.json' with {type:'json'};
@@ -17,7 +17,7 @@ function Quantity({item,onSave}){
  return <div className="tribe-quantity"><input aria-label={`${item.name} quantity`} type="number" min="1" max="1000000" value={value} onChange={e=>setValue(e.target.value)} onBlur={()=>{const n=Number(value);if(Number.isSafeInteger(n)&&n>0&&n<=1000000&&n!==item.quantity)onSave(n);else setValue(String(item.quantity));}} onKeyDown={e=>{if(e.key==='Enter')e.currentTarget.blur();}}/></div>;
 }
 
-export default function TribeCraftingPage({live,user,onOpenAccount,liveRecipes={}}){
+export default function TribeCraftingPage({live,user,onOpenAccount,liveRecipes={},targetProject}){
  const catalog=useMemo(()=>({...wikiRecipes,...liveRecipes,...starterRecipes}),[liveRecipes]);
  const names=useMemo(()=>Object.keys(catalog).sort(),[catalog]);
  const [query,setQuery]=useState('');
@@ -29,6 +29,7 @@ export default function TribeCraftingPage({live,user,onOpenAccount,liveRecipes={
  const selectedName=matches.includes(selected)?selected:matches[0]||'';
  const selectedRecipe=catalog[selectedName];
  const queue=live.crafting||[];
+ useEffect(()=>{if(targetProject)document.getElementById('hq-craft-'+targetProject)?.scrollIntoView({block:'center'});},[targetProject,queue]);
  let plan=null,planError='';
  try{plan=calculateCraftingCart(queue,catalog);}catch(e){planError=e.message;}
  const totals=Object.entries(plan?.materials||{}).sort((a,b)=>b[1]-a[1]);
@@ -90,7 +91,7 @@ export default function TribeCraftingPage({live,user,onOpenAccount,liveRecipes={
    </section>
    <section className="panel tribe-v3-queue-panel" aria-label="Live tribe production queue">
     <div className="tribe-v3-head"><h2>Production Queue</h2><span className="tribe-v3-pill">{queue.length} PROJECTS</span></div>
-    {queue.length?<div className="tribe-v3-queue-list">{queue.map(item=><div className="tribe-v3-project" key={item.name}><div className="tribe-v3-project-name"><strong>{item.name}</strong><small>{catalog[item.name]?.station||'Unknown station'}{item.updatedBy?' · Updated by '+item.updatedBy:''}</small></div><Quantity key={item.name+'-'+item.quantity} item={item} onSave={n=>act(()=>live.setCraft(item.name,n,item.quantity),'Updated '+item.name+' for the tribe.')}/><button className="iconbtn" disabled={busy} title={'Remove '+item.name} onClick={()=>act(()=>live.removeCraft(item.name),'Removed '+item.name+' from the tribe queue.')}><Trash2 size={17}/></button></div>)}</div>:<div className="empty">No shared crafting requests yet. Add a recipe to start production planning.</div>}
+    {queue.length?<div className="tribe-v3-queue-list">{queue.map(item=><div id={'hq-craft-'+item.name} className={'tribe-v3-project'+(item.name===targetProject?' hq-search-target':'')} key={item.name}><div className="tribe-v3-project-name"><strong>{item.name}</strong><small>{catalog[item.name]?.station||'Unknown station'}{item.updatedBy?' · Updated by '+item.updatedBy:''}</small></div><Quantity key={item.name+'-'+item.quantity} item={item} onSave={n=>act(()=>live.setCraft(item.name,n,item.quantity),'Updated '+item.name+' for the tribe.')}/><button className="iconbtn" disabled={busy} title={'Remove '+item.name} onClick={()=>act(()=>live.removeCraft(item.name),'Removed '+item.name+' from the tribe queue.')}><Trash2 size={17}/></button></div>)}</div>:<div className="empty">No shared crafting requests yet. Add a recipe to start production planning.</div>}
     <div className="tribe-v3-queue-actions"><button className="ghost" disabled={busy} onClick={()=>act(()=>live.refresh('crafting'),'Shared crafting information refreshed.')}><RefreshCcw size={15}/> Refresh</button>{queue.length>0&&<button className="ghost" disabled={busy} onClick={()=>{if(window.confirm('Clear every tribe crafting project for all members?'))void act(()=>live.clearCraft(),'Cleared the shared crafting queue.');}}><Trash2 size={15}/> Clear Tribe Queue</button>}</div>
     {feedback&&<div className="notice" role="status">{feedback}</div>}
     {live.error&&<div className="notice" role="alert">{live.error}</div>}

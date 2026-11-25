@@ -24,9 +24,9 @@ function readLocal(key,fallback){try{const value=JSON.parse(localStorage.getItem
 function saveLocal(key,data){try{localStorage.setItem(key,JSON.stringify(data));return true}catch{return false}}
 function localPins(){const a=readLocal(STORE,[]);return Array.isArray(a)?a.filter(p=>p&&typeof p.id==='string'&&typeof p.map==='string'&&Number.isFinite(p.lat)&&Number.isFinite(p.lon)&&p.lat>=0&&p.lat<=100&&p.lon>=0&&p.lon<=100).slice(0,300):[];}
 function localRoutes(){const o=readLocal(ROUTE_STORE,{});return o&&typeof o==='object'&&!Array.isArray(o)?o:{};}
-export default function ResourcePage(){
- const [map,setMap]=useState('The Island');
- const [tab,setTab]=useState('resources');
+export default function ResourcePage({initialTarget}={}){
+ const [map,setMap]=useState(maps.includes(initialTarget?.map)?initialTarget.map:'The Island');
+ const [tab,setTab]=useState(initialTarget?.pinId?'pins':'resources');
  const [pins,setPins]=useState(localPins);
  const [routes,setRoutes]=useState(localRoutes);
  const [areaDrawing,setAreaDrawing]=useState(false);
@@ -39,7 +39,7 @@ export default function ResourcePage(){
  const [savedPlans,setSavedPlans]=useState(()=>{const value=readLocal(PLAN_STORE,[]);return Array.isArray(value)?value.slice(0,15):[];});
  const [planName,setPlanName]=useState('Island resource run');
  const [search,setSearch]=useState('');
- const [selection,setSelection]=useState(null);
+ const [selection,setSelection]=useState(initialTarget?.pinId||null);
  const [form,setForm]=useState({resource:'Metal',title:'',lat:'',lon:'',note:''});
  const [error,setError]=useState('');
  const [savedMessage,setSavedMessage]=useState('');
@@ -48,7 +48,7 @@ export default function ResourcePage(){
  const wikiPoints=map==='Scorched Earth'?scorchedWikiResources:map==='The Center'?centerWikiResources:map==='Aberration'?aberrationWikiResources:map==='Extinction'?extinctionAtlasPoints:map==='Ragnarok'?ragnarokWikiResources:map==='Valguero'?valgueroWikiResources:map==='Astraeos'?astraeosAtlasPoints:map==='Lost Colony'?lostColonyAtlasPoints:map==='Genesis: Part 1'?genesisPart1WikiResources:islandWikiResources;
  const sourcedResources=map==='Scorched Earth'?scorchedWikiAvailableResources:map==='The Center'?centerWikiAvailableResources:map==='Aberration'?aberrationWikiAvailableResources:map==='Extinction'?extinctionAtlasAvailableResources:map==='Ragnarok'?ragnarokWikiAvailableResources:map==='Valguero'?valgueroWikiAvailableResources:map==='Astraeos'?astraeosAtlasAvailableResources:map==='Lost Colony'?lostColonyAtlasAvailableResources:map==='Genesis: Part 1'?genesisPart1WikiAvailableResources:islandWikiAvailableResources;
  const wikiSource=map==='Scorched Earth'?scorchedWikiSource:map==='The Center'?centerWikiSource:map==='Aberration'?aberrationWikiSource:map==='Extinction'?extinctionWikiSource:map==='Ragnarok'?ragnarokWikiSource:map==='Valguero'?valgueroWikiSource:map==='Astraeos'?astraeosAtlasSource:map==='Lost Colony'?lostColonyWikiSource:map==='Genesis: Part 1'?genesisPart1WikiSource:islandWikiSource;
- const [filtersByMap,setFiltersByMap]=useState({});
+ const [filtersByMap,setFiltersByMap]=useState(()=>initialTarget?.resource&&resourcesForMap(map).some(r=>r.id===initialTarget.resource)?{[map]:[initialTarget.resource]}:{});
  const enabled=filtersByMap[map]??resources.map(r=>r.id);
  const personalOnMap=pins.filter(p=>p.map===map);
  const shownPersonal=personalOnMap.filter(p=>(p.resource===CUSTOM_PIN_RESOURCE||enabled.includes(p.resource))&&(p.resource.toLowerCase().includes(search.toLowerCase())||String(p.title||'').toLowerCase().includes(search.toLowerCase())));

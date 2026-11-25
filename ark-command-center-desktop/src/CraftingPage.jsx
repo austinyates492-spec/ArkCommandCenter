@@ -13,14 +13,14 @@ function RecipeNode({node,depth=0}){
  if(node.raw)return <div className="craftleaf" style={{paddingLeft:`${Math.min(depth,7)*14}px`}}><span className="craftnode-dot"/> <strong>{fmt.format(node.quantity)}</strong> {node.name} <small>RAW</small></div>;
  return <details className="craftbranch" open={depth<2}><summary style={{paddingLeft:`${Math.min(depth,7)*14}px`}}><ChevronRight size={16}/><strong>{fmt.format(node.quantity)} × {node.name}</strong><span>{fmt.format(node.batches)} craft{node.batches===1?'':'s'}{node.output>1?` · produces ${fmt.format(node.produced)}`:''}</span></summary><div>{node.children.map((child,i)=><RecipeNode key={`${child.name}-${i}`} node={child} depth={depth+1}/>)}</div></details>;
 }
-export default function CraftingPage({liveRecipes={},live,user,onOpenAccount,onOpenTribeCrafting}){
+export default function CraftingPage({liveRecipes={},live,user,onOpenAccount,onOpenTribeCrafting,initialRecipe}){
  const [extra,setExtra]=useLocal('ark.crafting.recipes',{});
  const [includeCommunity,setIncludeCommunity]=useLocal('ark.crafting.community',false);
  const [cart,setCart]=useLocal('ark.crafting.cart',[]);
  const [gathered,setGathered]=useLocal('ark.crafting.gathered.local',{});
  const [sending,setSending]=useState(false);
  const [search,setSearch]=useState('');
- const [selected,setSelected]=useState('Sloped Wooden Roof');
+ const [selected,setSelected]=useState(initialRecipe||'Sloped Wooden Roof');
  const [quantity,setQuantity]=useState(1);
  const [error,setError]=useState('');
  const [form,setForm]=useState({name:'',output:1,category:'Custom',station:'Inventory',ingredients:'Wood: 60\nThatch: 15\nFiber: 10'});
