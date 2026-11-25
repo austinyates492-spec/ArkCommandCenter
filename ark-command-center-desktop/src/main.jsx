@@ -1,21 +1,21 @@
-import React,{useEffect,useRef,useState} from 'react';
+import React,{lazy,Suspense,useEffect,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {LayoutDashboard,Timer,Settings,Shield,Search,Plus,Trash2,ExternalLink,ChevronRight,Server,Activity,Egg,Calculator,CheckCircle2,Clock3,MapPin,Bell,Save,Layers,Cloud,Menu,X,Crosshair,Hand,Wrench} from 'lucide-react';
-import ResourcePage from './ResourcePage';
-import TamingLab from './TamingLab';
-import SpecialtyLab from './SpecialtyLab';
-import BreedingLab from './BreedingLab';
-import PassiveLab from './PassiveLab';
-import CoveragePanel from './CoveragePanel';
-import CraftingPage from './CraftingPage';
+const ResourcePage=lazy(()=>import('./ResourcePage.jsx'));
+const TamingLab=lazy(()=>import('./TamingLab.jsx'));
+const SpecialtyLab=lazy(()=>import('./SpecialtyLab.jsx'));
+const BreedingLab=lazy(()=>import('./BreedingLab.jsx'));
+const PassiveLab=lazy(()=>import('./PassiveLab.jsx'));
+const CoveragePanel=lazy(()=>import('./CoveragePanel.jsx'));
+const CraftingPage=lazy(()=>import('./CraftingPage.jsx'));
 import ThemePicker,{themeIds} from './ThemePicker';
 import ClusterSettings from './ClusterSettings';
 import CloudAccount from './CloudAccount';
 import {useCloudSync} from './cloud-sync';
 import {useTribeLive} from './tribe-live';
-import TribeCraftingPage from './TribeCraftingPage';
-import ServerIntelPage from './ServerIntelPage';
-import LiveTimersPage from './LiveTimersPage';
+const TribeCraftingPage=lazy(()=>import('./TribeCraftingPage.jsx'));
+const ServerIntelPage=lazy(()=>import('./ServerIntelPage.jsx'));
+const LiveTimersPage=lazy(()=>import('./LiveTimersPage.jsx'));
 import OverviewDashboard from './OverviewDashboard';
 import {createTimerAlarmTracker,collectDueTimerAlarms} from './timer-alarms.js';
 import {unlockTimerAudio,playTimerAlarm} from './timer-audio.js';
@@ -23,11 +23,11 @@ import {migrateOldRatePreset} from './nomadark-profile.js';
 import {clusterPresets,ratesForPreset,DEFAULT_CLUSTER_ID} from './cluster-presets.js';
 import {resetLocalWorkspaceOnce} from './launch-reset.js';
 import {useLiveCatalog} from './live-catalog.js';
-import CatalogUpdatesPage from './CatalogUpdatesPage.jsx';
+const CatalogUpdatesPage=lazy(()=>import('./CatalogUpdatesPage.jsx'));
 import AppUpdater from './AppUpdater.jsx';
 import MobileInstall from './MobileInstall.jsx';
 import AdPlacement from './AdPlacement.jsx';
-import UniversalSearch from './UniversalSearch.jsx';
+const UniversalSearch=lazy(()=>import('./UniversalSearch.jsx'));
 import {species,maps,tameCreatures,defaults,hoursText} from './data';
 import './style.css';
 import './maps.css';
@@ -42,7 +42,7 @@ const nav=[['overview','Overview',LayoutDashboard],['taming','Taming Lab',Calcul
 const tamingModes=[['taming','Knockout Tames',Crosshair],['passive','Passive Tames',Hand],['specialty','Specialty Taming',Wrench]];
 const isTamingPage=page=>tamingModes.some(([key])=>key===page);
 const statusColors={'Available':'green','Contested':'gold','Locked Down':'red','Unscouted':'muted'};
-function useStored(key,initial){const [value,setValue]=useState(()=>{try{return JSON.parse(localStorage.getItem(key))??initial}catch{return initial}});useEffect(()=>localStorage.setItem(key,JSON.stringify(value)),[key,value]);return [value,setValue]}
+function useStored(key,initial){const [value,setValue]=useState(()=>{try{return JSON.parse(localStorage.getItem(key))??initial}catch{return initial}});useEffect(()=>{try{localStorage.setItem(key,JSON.stringify(value));}catch{/* Private browsing or full storage must not crash the app. */}},[key,value]);return [value,setValue]}
 function Badge({children,tone='green'}){return <span className={'badge '+tone}>{children}</span>}
 function Panel({title,aside,children,className=''}){return <section className={'panel '+className}><div className="panelhead"><h2>{title}</h2>{aside}</div>{children}</section>}
 function Field({label,children}){return <label className="field"><span>{label}</span>{children}</label>}
@@ -156,8 +156,8 @@ function App(){
   <div className="sidegroup" title={cloud.user?.tribeName||'Choose a tribe'}>TRIBE: {cloud.user?.tribeName||'NOT CONNECTED'}</div>
   <div className="sidegroup">WORKSPACE</div><nav>{nav.map(([key,label,Icon])=><button key={key} className={'navitem '+((key==='taming'?isTamingPage(page):page===key)?'selected':'')} aria-current={(key==='taming'?isTamingPage(page):page===key)?'page':undefined} onClick={()=>{setPage(key==='taming'?lastTamingMode:key);setMobileNavOpen(false)}}><Icon size={18}/><span>{label}</span>{key==='timers'&&active.length>0?<b className="counter">{active.length}</b>:null}</button>)}</nav>
   <div className="sidebottom"><div className="live-dot"/><span>{live.status==='live'?'TRIBE FEED LIVE':cloud.status==='connected'?'CLOUD CONNECTED':'LOCAL WORKSPACE'}<br/><small>{cloud.user?cloud.user.displayName:'Sign in to share'}</small></span></div></aside>
-  <main className="main"><header className="topbar"><button type="button" className="mobile-nav-toggle" aria-label="Open navigation menu" aria-expanded={mobileNavOpen} aria-controls="ark-primary-nav" onClick={()=>setMobileNavOpen(true)}><Menu size={23}/></button><div className="breadcrumbs">COMMAND CENTER <ChevronRight size={15}/> <strong>{pageName.toUpperCase()}</strong></div><div className="topright"><UniversalSearch live={live} user={cloud.user} liveRecipes={catalog.recipes} now={now-live.clockOffsetMs} onSelect={chooseSearchResult}/><span className="hq-sync"><span className="hq-sync-dot"/>{live.status==='live'?'Live tribe sync':cloud.user?'Connecting':'Guest workspace'}</span><AppUpdater/><label className="header-cluster"><span className="sr-only">Active cluster profile</span><select aria-label="Active cluster profile" value={clusterId} onChange={event=>onClusterChange(event.target.value)}>{clusterPresets.map(item=><option key={item.id} value={item.id}>{item.label}</option>)}</select><small>{rates.taming}× TAME</small></label><div className="avatar">{cloud.user?.displayName?.slice(0,2).toUpperCase()||'HQ'}</div></div></header>
-  <div className="content">
+  <main className="main"><header className="topbar"><button type="button" className="mobile-nav-toggle" aria-label="Open navigation menu" aria-expanded={mobileNavOpen} aria-controls="ark-primary-nav" onClick={()=>setMobileNavOpen(true)}><Menu size={23}/></button><div className="breadcrumbs">COMMAND CENTER <ChevronRight size={15}/> <strong>{pageName.toUpperCase()}</strong></div><div className="topright"><Suspense fallback={null}><UniversalSearch live={live} user={cloud.user} liveRecipes={catalog.recipes} now={now-live.clockOffsetMs} onSelect={chooseSearchResult}/></Suspense><span className="hq-sync"><span className="hq-sync-dot"/>{live.status==='live'?'Live tribe sync':cloud.user?'Connecting':'Guest workspace'}</span><AppUpdater/><label className="header-cluster"><span className="sr-only">Active cluster profile</span><select aria-label="Active cluster profile" value={clusterId} onChange={event=>onClusterChange(event.target.value)}>{clusterPresets.map(item=><option key={item.id} value={item.id}>{item.label}</option>)}</select><small>{rates.taming}× TAME</small></label><div className="avatar">{cloud.user?.displayName?.slice(0,2).toUpperCase()||'HQ'}</div></div></header>
+  <div className="content"><Suspense fallback={<p role="status" style={{padding:20}}>Loading workspace…</p>}>
   {!isDesktopApp&&<MobileInstall/>}
   {page==='overview'&&<OverviewDashboard user={cloud.user} live={live} servers={servers} rates={rates} clusterLabel={clusterPresets.find(item=>item.id===clusterId)?.label||clusterId} now={now-live.clockOffsetMs} onNavigate={key=>setPage(key)} onOpenTimer={()=>setPage(cloud.user?'timers':'cloud')} onOpenTaming={()=>setPage(lastTamingMode)} isDesktopApp={isDesktopApp} adPlacement={!isDesktopApp?<AdPlacement placement="overview"/>:null}/>}
   {isTamingPage(page)&&<section className="taming-hub" aria-label="Taming Lab"><nav className="taming-mode-tabs" role="tablist" aria-label="Choose taming method">{tamingModes.map(([key,label,Icon],index)=><button key={key} type="button" role="tab" id={'taming-mode-tab-'+key} aria-controls="taming-mode-panel" aria-selected={page===key} tabIndex={page===key?0:-1} className={'taming-mode-tab'+(page===key?' active':'')} onClick={()=>setPage(key)} onKeyDown={event=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;event.preventDefault();const next=event.key==='Home'?0:event.key==='End'?tamingModes.length-1:(index+(event.key==='ArrowRight'?1:-1)+tamingModes.length)%tamingModes.length;setPage(tamingModes[next][0]);event.currentTarget.parentElement?.querySelectorAll('[role="tab"]')?.[next]?.focus();}}><Icon size={20} aria-hidden="true"/><span>{label}</span></button>)}</nav><div className="taming-mode-panel" id="taming-mode-panel" role="tabpanel" aria-labelledby={'taming-mode-tab-'+page}>
@@ -177,7 +177,7 @@ function App(){
   {page==='crafting'&&<CraftingPage liveRecipes={catalog.recipes} key={targetFor('crafting')?.sequence||'crafting'} initialRecipe={targetFor('crafting')?.recipe} live={live} user={cloud.user} onOpenAccount={()=>setPage('cloud')} onOpenTribeCrafting={()=>setPage('tribe-crafting')}/>}
   {page==='tribe-crafting'&&<TribeCraftingPage live={live} key={targetFor('tribe-crafting')?.sequence||'tribe-crafting'} targetProject={targetFor('tribe-crafting')?.project} user={cloud.user} liveRecipes={catalog.recipes} onOpenAccount={()=>setPage('cloud')}/>}
   {page==='catalog'&&<CatalogUpdatesPage catalog={catalog}/>}
-  </div></main>
+  </Suspense></div></main>
   {alarmAlerts.length>0&&<div className="timer-alerts" role="status" aria-live="polite">{alarmAlerts.map(item=><div key={item.id} className="timer-alert"><Bell size={20}/><div><strong>Tribe timer complete</strong><span>{item.name}</span></div><button type="button" className="iconbtn" title="Dismiss timer notification" onClick={()=>setAlarmAlerts(previous=>previous.filter(x=>x.id!==item.id))}><span aria-hidden="true">×</span></button></div>)}</div>}
  </div>;
 }

@@ -4,6 +4,8 @@ import {readFileSync} from 'node:fs';
 const mobile=readFileSync(new URL('./MobileInstall.jsx',import.meta.url),'utf8');
 const main=readFileSync(new URL('./main.jsx',import.meta.url),'utf8');
 const page=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+const recovery=readFileSync(new URL('../public/startup-recovery-v839.js',import.meta.url),'utf8');
+const server=readFileSync(new URL('../web-server.js',import.meta.url),'utf8');
 const sw=readFileSync(new URL('../public/sw.js',import.meta.url),'utf8');
 test('mobile install banner never crashes when Safari blocks session storage',()=>{
  assert.ok(mobile.includes("try{return sessionStorage.getItem('ark.mobileInstallDismissed')"));
@@ -18,7 +20,10 @@ test('React renders a recoverable error rather than an empty root',()=>{
  assert.ok(main.includes("couldn't load"));
 });
 test('independent startup watchdog explains blank screen and allows cache repair',()=>{
- for(const part of ['renderRecovery','ARK Tribe HQ could not start','Refresh App Files','getRegistrations','caches.keys()','location.replace','root.replaceChildren(wrapper)','window.setTimeout(renderRecovery,12000)'])assert.ok(page.includes(part),part);
+ for(const part of ['renderRecovery','ARK Tribe HQ could not start','Refresh App Files','getRegistrations','caches.keys()','location.replace','root.replaceChildren(wrapper)','window.setTimeout(renderRecovery,12000)'])assert.ok(recovery.includes(part),part);
+ assert.ok(page.includes('src="/startup-recovery-v839.js"'));
+ assert.ok(page.includes('Loading ARK Tribe HQ'));
+ assert.ok(server.includes("script-src 'self'"));
 });
 test('service worker cannot serve obsolete cached HTML after a release',()=>{
  assert.ok(sw.includes("OLD_CACHE_PREFIX='arktribehq-'"));

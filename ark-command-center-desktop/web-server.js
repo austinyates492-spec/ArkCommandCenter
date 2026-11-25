@@ -30,7 +30,7 @@ const server=http.createServer(async(req,res)=>{
  const type=mime[extname(file)]||'application/octet-stream';
  res.writeHead(200,{
   'Content-Type':type,'Content-Length':info.size,
-  'Cache-Control':file.endsWith('index.html')||file.endsWith('sw.js')||file.endsWith('manifest.webmanifest')||file.endsWith('robots.txt')||file.endsWith('sitemap.xml')?'no-cache':'public, max-age=31536000, immutable',
+  'Cache-Control':file.endsWith('index.html')||file.includes('startup-recovery-')||file.includes('boot-intro-')||file.endsWith('sw.js')||file.endsWith('manifest.webmanifest')||file.endsWith('robots.txt')||file.endsWith('sitemap.xml')?'no-cache':'public, max-age=31536000, immutable',
   'X-Content-Type-Options':'nosniff',
   'Referrer-Policy':'strict-origin-when-cross-origin',
   'X-Frame-Options':'DENY',

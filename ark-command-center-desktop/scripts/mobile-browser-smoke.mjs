@@ -3,7 +3,7 @@ import {spawn} from 'node:child_process';
 import {chromium,webkit,devices} from 'playwright';
 
 const origin='http://127.0.0.1:4173';
-const server=spawn(process.execPath,['node_modules/vite/bin/vite.js','preview','--host','127.0.0.1','--port','4173','--strictPort'],{stdio:'inherit'});
+const server=spawn(process.execPath,['web-server.js'],{stdio:'inherit',env:{...process.env,PORT:'4173'}});
 async function waitServer(){
  for(let i=0;i<60;i++){try{if((await fetch(origin)).ok)return;}catch{}await new Promise(r=>setTimeout(r,500));}
  throw Error('Preview server failed to start');
