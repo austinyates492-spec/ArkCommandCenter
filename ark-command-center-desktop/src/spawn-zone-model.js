@@ -51,7 +51,7 @@ export const spawnLoaders={
 };
 const aliasNames={
  Rex:['T-Rex'],Triceratops:['Trike'],Plesiosaur:['Plesiosaurus'],
- Pulmonoscorpius:['Scorpion'],Dung Beetle:['Dungbeetle'],
+ Pulmonoscorpius:['Scorpion'],'Dung Beetle':['Dungbeetle'],
  Anglerfish:['Angler'],Sarcosuchus:['Sarco'],Megalosaurus:['Megalo'],
  'Arthropluera':['Arthropleura']
 };
