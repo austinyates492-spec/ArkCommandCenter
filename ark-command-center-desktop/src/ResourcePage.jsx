@@ -44,7 +44,7 @@ export default function ResourcePage(){
    if(pins.length>=300)throw Error('Local marker limit reached (300).');
    const pin={id:'pin-'+Date.now()+'-'+Math.random().toString(36).slice(2,8),map,...validated,source:'Your GPS entry'};
    persistPins([...pins,pin]);setSelection(pin.id);setSavedMessage('Personal GPS pin saved in this browser.');
-   setForm({...form,lat:'',lon:'',note:''});
+   setForm({...form,title:'',lat:'',lon:'',note:''});
   }catch(e){setError(e.message);}
  };
  const deletePin=pin=>{
