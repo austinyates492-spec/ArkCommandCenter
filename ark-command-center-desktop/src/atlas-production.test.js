@@ -39,7 +39,9 @@ test('custom user labels and manual GPS coordinates validate without fabricating
  assert.ok(page.includes('saveAtMapPoint'));
 });
 
-test('resource checklist and farming guide share a compact left rail without narrowing phone maps',()=>{
+test('resource checklist and farming guide flank the map on wide desktop and preserve phone maps',()=>{
  assert.ok(page.indexOf('aria-label="Resource checklist"')<page.indexOf('<FarmingRecommendations resource='));
- for(const fragment of ["grid-template-areas:'controls map'","grid-template-columns:clamp(216px,16vw,260px) minmax(0,1fr)","grid-area:map","grid-area:controls","max-height:350px","@media(max-width:1099px)"])assert.ok(css.includes(fragment),fragment);
+ for(const fragment of ["grid-template-areas:'controls map guide'","grid-template-columns:clamp(180px,13vw,220px) minmax(0,1fr) clamp(210px,15vw,250px)","grid-area:map","grid-area:controls","grid-area:guide","@media(min-width:1250px)","max-height:350px","@media(max-width:1099px)"])assert.ok(css.includes(fragment),fragment);
 });
+
+test('farming guide is a separate grid child after the checklist rail',()=>{assert.ok(page.includes('   </div>\n'+page.split('\n').find(x=>x.includes('<FarmingRecommendations resource=')));});
