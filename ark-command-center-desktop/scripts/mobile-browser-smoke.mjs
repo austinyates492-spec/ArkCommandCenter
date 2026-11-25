@@ -1,0 +1,85 @@
+import assert from 'node:assert/strict';
+import {spawn} from 'node:child_process';
+import {chromium,webkit,devices} from 'playwright';
+
+const origin='http://127.0.0.1:4173';
+const server=spawn(process.execPath,['node_modules/vite/bin/vite.js','preview','--host','127.0.0.1','--port','4173','--strictPort'],{stdio:'inherit'});
+async function waitServer(){
+ for(let i=0;i<60;i++){try{if((await fetch(origin)).ok)return;}catch{}await new Promise(r=>setTimeout(r,500));}
+ throw Error('Preview server failed to start');
+}
+async function noOverflow(page,label){
+ const dims=await page.evaluate(()=>({viewport:document.documentElement.clientWidth,scroll:document.documentElement.scrollWidth}));
+ assert.ok(dims.scroll<=dims.viewport+2,label+': horizontal overflow '+JSON.stringify(dims));
+}
+async function openSearch(page,query){
+ await page.getByRole('button',{name:'Search ARK Tribe HQ',exact:true}).tap();
+ await page.getByRole('dialog',{name:'Search ARK Tribe HQ',exact:true}).waitFor();
+ await page.getByRole('combobox',{name:'Search query'}).fill(query);
+}
+async function pick(page,group,title){
+ await page.getByRole('group',{name:group,exact:true}).getByRole('option').filter({has:page.getByText(title,{exact:true})}).first().tap();
+ await page.getByRole('dialog',{name:'Search ARK Tribe HQ',exact:true}).waitFor({state:'hidden'});
+}
+try{
+ await waitServer();
+ for(const [engine,kind,device,widths] of [[chromium,'Chromium','Pixel 7',[375,390,430]],[webkit,'WebKit','iPhone 13',[390]]]){
+  const browser=await engine.launch({headless:true});
+  try{
+   for(const width of widths){
+    const {defaultBrowserType,...profile}=devices[device];
+    const ctx=await browser.newContext({...profile,viewport:{width,height:844}});
+    try{
+     const page=await ctx.newPage(),errors=[];
+     page.on('pageerror',e=>errors.push(String(e)));
+     await page.goto(origin,{waitUntil:'domcontentloaded'});
+     await page.locator('.shell').waitFor({timeout:25000});
+     const skip=page.getByRole('button',{name:'Skip intro',exact:true});
+     if(await skip.isVisible())await skip.tap();
+     await page.locator('#ark-boot-intro').waitFor({state:'hidden',timeout:15000});
+     await noOverflow(page,kind+' '+width+' startup');
+     const search=page.getByRole('button',{name:'Search ARK Tribe HQ',exact:true});
+     const rect=await search.boundingBox();assert.ok(rect&&rect.width>=44&&rect.height>=44,'Search touch target');
+     await page.getByRole('button',{name:'Open navigation menu'}).tap();
+     await page.locator('.sidebar.mobile-open').waitFor();
+     assert.equal(await page.locator('.sidebar').getByRole('button',{name:'Spawn Maps',exact:true}).count(),0);
+     await page.locator('.sidebar').getByRole('button',{name:'Taming Lab',exact:true}).tap();
+     await page.getByRole('tab',{name:'Knockout Tames'}).waitFor();
+     await page.getByRole('tab',{name:'Passive Tames'}).tap();
+     await page.getByRole('region',{name:'Creature spawn locations'}).waitFor();
+     await page.getByRole('tab',{name:'Specialty Taming'}).tap();
+     await page.getByRole('region',{name:'Creature spawn locations'}).waitFor();
+     await openSearch(page,'Rex');
+     assert.equal(await page.getByRole('group',{name:'Active timers',exact:true}).count(),0,'Guest must not see timers');
+     assert.equal(await page.getByRole('group',{name:'Tribe crafting',exact:true}).count(),0,'Guest must not see projects');
+     await noOverflow(page,kind+' '+width+' search');
+     await pick(page,'Creatures','Rex');
+     assert.equal(await page.locator('.taming-creature-field select').inputValue(),'Rex');
+     await page.getByRole('region',{name:'Creature spawn locations'}).getByRole('img',{name:/ASA map with GPS/}).waitFor();
+     await page.getByLabel('Map',{exact:true}).selectOption('Aberration');
+     await page.getByLabel('Aberration Zone Focus').waitFor();
+     const zones=page.getByLabel('Aberration Zone Focus');await zones.selectOption({index:1});
+     await page.getByRole('button',{name:'Reset map zoom and position'}).tap();
+     await noOverflow(page,kind+' '+width+' tame');
+     await openSearch(page,'Rex Saddle');
+     await pick(page,'Recipes','Rex Saddle');
+     assert.equal(await page.getByLabel('Choose recipe').inputValue(),'Rex Saddle');
+     await noOverflow(page,kind+' '+width+' crafting');
+     await openSearch(page,'Rex breeding');
+     await pick(page,'Breeding','Rex breeding');
+     assert.equal(await page.getByLabel('Select creature').inputValue(),'Rex');
+     await noOverflow(page,kind+' '+width+' breeding');
+     await openSearch(page,'The Island');
+     await pick(page,'Maps','The Island');
+     assert.equal(await page.getByLabel('Select map').inputValue(),'The Island');
+     await page.getByRole('img',{name:/ASA map with GPS/}).waitFor();
+     await noOverflow(page,kind+' '+width+' atlas');
+     await openSearch(page,'Rex');await page.getByRole('button',{name:'Close search'}).tap();
+     await page.getByRole('dialog',{name:'Search ARK Tribe HQ',exact:true}).waitFor({state:'hidden'});
+     assert.deepEqual(errors,[],kind+' '+width+' unhandled browser errors');
+     console.log('PASS '+kind+' '+width+'px: startup, mobile menu, all taming tabs, search, Rex, Aberration zones, crafting, breeding, atlas');
+    }finally{await ctx.close();}
+   }
+  }finally{await browser.close();}
+ }
+}finally{server.kill();}

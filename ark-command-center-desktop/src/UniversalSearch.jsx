@@ -20,6 +20,7 @@ export default function UniversalSearch({live,user,liveRecipes,now,onSelect}){
  const close=()=>setOpen(false);
  useEffect(()=>{const key=e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();if(open)close();else show();}};window.addEventListener('keydown',key);return()=>window.removeEventListener('keydown',key);},[open]);
  useEffect(()=>{const d=dialog.current;if(!d)return;if(open&&!d.open){d.showModal();input.current?.focus();}else if(!open&&d.open)d.close();},[open]);
+ useEffect(()=>{if(!open)return;const viewport=window.visualViewport;const update=()=>{if(viewport&&dialog.current)dialog.current.style.setProperty('--hq-search-available-height',Math.max(120,Math.floor(viewport.height-32))+'px');};update();viewport?.addEventListener('resize',update);return()=>{viewport?.removeEventListener('resize',update);dialog.current?.style.removeProperty('--hq-search-available-height');};},[open]);
  const index=useMemo(()=>buildSearchIndex({creatures,breeding:Object.keys(species),recipes:{...wikiRecipes,...liveRecipes,...starterRecipes,...local.recipes},mapResources,timers:user&&live.searchTimersReady?live.timers:[],crafting:user&&live.searchCraftingReady?live.crafting:[],pins:local.pins,tools,now}),[liveRecipes,local,live.timers,live.crafting,live.searchTimersReady,live.searchCraftingReady,user,now]);
  const groups=useMemo(()=>searchWorkspace(index,query),[index,query]);const flat=groups.flatMap(g=>g.results),selected=Math.min(cursor,Math.max(0,flat.length-1));
  const choose=r=>{if(!r)return;close();onSelect(r);};
