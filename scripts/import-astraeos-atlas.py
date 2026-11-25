@@ -72,7 +72,7 @@ for explorer in ["Data:Maps/Explorer/Astraeos","Data:Maps/Explorer/Astraeos/ASA"
    Path("ark-command-center-desktop/src/astraeos-wiki-explorer-veins.json").write_text(json.dumps({
     "source":"https://ark.wiki.gg/wiki/"+explorer.replace(" ","_"),
     "revision":rv["revid"],"verifiedASA":True,"omittedOutOfBoundsCount":len(skip),
-    "points":ep},separators=(",",":"))+"\\n")
+    "points":ep},separators=(",",":"))+"\n")
   break
  except Exception as e: print("EXPLORER ERROR",explorer,str(e),flush=True)
 
