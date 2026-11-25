@@ -32,3 +32,15 @@ for title in ["Data:Maps/Creature Spawns/The Island/ASA","Data:Maps/Creature Spa
  r=S.get(api,params={"action":"query","titles":title,"prop":"revisions","rvprop":"content|ids","rvslots":"main","format":"json"},timeout=25);r.raise_for_status()
  p=list(r.json()["query"]["pages"].values())[0]
  if "revisions" in p:print("SPAWN RAW",title,p["revisions"][0]["slots"]["main"]["*"],flush=True)
+
+for title in ["Data:Spawn Map/The Island/ASA","Data:Spawn Map/Aberration/ASA","Data:Spawn Map/Genesis: Part 1/ASA","Data:Spawn Map/Genesis: Part 1 Ocean/ASA","Data:Spawn Map/The Center/ASA","Data:Spawn Map/Lost Colony/ASA","Data:Spawn Map/Astraeos/ASA"]:
+ try:
+  r=S.get(api,params={"action":"query","titles":title,"prop":"revisions","rvprop":"content|ids","rvslots":"main","format":"json"},timeout=25);r.raise_for_status()
+  page=list(r.json()["query"]["pages"].values())[0]
+  if "revisions" not in page:print("ACTUAL SPAWN MISSING",title,flush=True);continue
+  rev=page["revisions"][0];raw=rev["slots"]["main"]["*"]
+  print("ACTUAL SPAWN FOUND",title,"REV",rev["revid"],"LENGTH",len(raw),"HEAD",raw[:2500].replace("\\n"," "),flush=True)
+  try:
+   d=json.loads(raw);print("ACTUAL SPAWN JSON",title,"FIELDS",list(d)[:20],"SAMPLE",str(list(d.items())[:2])[:3000],flush=True)
+  except Exception as e:print("ACTUAL SPAWN NONJSON",repr(e),flush=True)
+ except Exception as e:print("ACTUAL SPAWN ERROR",title,repr(e),flush=True)
