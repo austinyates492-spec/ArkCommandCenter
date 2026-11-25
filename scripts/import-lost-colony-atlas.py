@@ -15,6 +15,20 @@ for title in ["Data:Maps/Resources/Lost Colony/ASA","Data:Maps/Resources/Lost Co
   rev=p["revisions"][0];obj=json.loads(rev["slots"]["main"]["*"])
   print("FOUND DATASET",title,"REV",rev["revid"],"KEYS",list(obj),"BACKGROUND",obj.get("background",obj.get("backgrounds")),flush=True)
   print("CATEGORIES",[(k,len(v)) for k,v in obj.get("markers",{}).items()],flush=True)
+  if "Exploration" in title:
+   outposts=[];invalid=[]
+   for cat,markers in obj.get("markers",{}).items():
+    if cat!="ressource-outpost":continue
+    for i,item in enumerate(markers):
+     print("OUTPOST ITEM",i,json.dumps(item)[:900],flush=True)
+     lat=item.get("lat",item.get("y"));lon=item.get("lon",item.get("x"))
+     if not isinstance(lat,(int,float)) or not isinstance(lon,(int,float)) or not(0<=lat<=100 and 0<=lon<=100):
+      invalid.append(i);continue
+     outposts.append({"id":f"outpost-{i}","category":"resource-outpost","lat":round(lat,3),"lon":round(lon,3),"name":str(item.get("name","Resource Outpost"))[:90]})
+   if outposts:
+    dest=Path("ark-command-center-desktop/src/lost-colony-explorer-outposts.json")
+    dest.write_text(json.dumps({"source":"https://ark.wiki.gg/wiki/"+title.replace(" ","_"),"revision":rev["revid"],"verifiedASA":True,"omittedOutOfBoundsCount":len(invalid),"points":outposts},separators=(",",":"))+"\\n")
+   print("ASA RESOURCE OUTPOSTS",len(outposts),"OMITTED",len(invalid),flush=True)
   if "Resources" not in title:continue
   points=[];omitted=[]
   for cat,entries in obj.get("markers",{}).items():
