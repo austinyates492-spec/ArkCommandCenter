@@ -1,4 +1,4 @@
-import wiki from './island-asa-wiki-resources.json';
+import wiki from './island-asa-wiki-resources.json' with {type:'json'};
 
 /** Wiki DataMaps ASA dataset, revision 548223. Values are wiki GPS coordinates.
  * Entries represent reported resource sites/groups, NOT individual ore node totals.
