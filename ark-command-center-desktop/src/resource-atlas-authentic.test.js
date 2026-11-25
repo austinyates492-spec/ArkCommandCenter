@@ -8,7 +8,7 @@ const embedded=readFileSync(new URL('./EmbeddedMap.jsx',import.meta.url),'utf8')
 test('resource atlas uses authentic provider maps and no fictional terrain or fabricated pins',()=>{
  assert.ok(page.includes('resourceMapUrl(map)'));
  assert.ok(page.includes('wikiResourceMapUrl(map)'));
- assert.ok(page.includes("map==='The Island'?<IslandNativeMap"));
+ assert.ok(page.includes('nativeAtlas?<IslandNativeMap'));
  assert.ok(page.includes(":<EmbeddedMap key={map}"));
  assert.ok(data.includes('https://wikily.gg/ark-survival-ascended/maps/'));
  assert.ok(data.includes('https://ark.wiki.gg/wiki/Resource_Map/'));
@@ -17,8 +17,8 @@ test('resource atlas uses authentic provider maps and no fictional terrain or fa
  assert.ok(!page.includes('<image href='));
 });
 test('provider resource overlays remain separate from the local filter controls',()=>{
- assert.ok(page.includes('authentic ASA terrain from the ARK Official Community Wiki'));
- assert.ok(page.includes('Wiki ASA resource sites are overlaid'));
+ assert.ok(page.includes('sourced GPS resource markers from ARK Official Community Wiki'));
+ assert.ok(page.includes('sourced GPS resource markers from ARK Official Community Wiki'));
  assert.ok(page.includes('These filters change published Wiki ASA resource markers'));
  assert.ok(page.includes('Open detailed map'));
  assert.ok(page.includes('Official community wiki map'));
