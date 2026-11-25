@@ -6,6 +6,7 @@ import EmbeddedMap from './EmbeddedMap';
 import IslandNativeMap from './IslandNativeMap';
 import {islandWikiResources,islandWikiAvailableResources} from './island-wiki-resource-overlay';
 import {scorchedWikiResources,scorchedWikiAvailableResources,scorchedWikiSource} from './scorched-asa-resource-overlay.js';
+import {centerWikiResources,centerWikiAvailableResources,centerWikiSource} from './center-asa-resource-overlay.js';
 import {islandWikiSource} from './island-wiki-resource-overlay';
 import {generateFarmingRoute,candidateFarmingSites,insideFarmingArea} from './island-area-route-planner.js';
 import './resource-atlas-native.css';
@@ -36,10 +37,10 @@ export default function ResourcePage(){
  const [error,setError]=useState('');
  const [savedMessage,setSavedMessage]=useState('');
  const resources=useMemo(()=>resourcesForMap(map),[map]);
- const nativeAtlas=map==='The Island'||map==='Scorched Earth';
- const wikiPoints=map==='Scorched Earth'?scorchedWikiResources:islandWikiResources;
- const sourcedResources=map==='Scorched Earth'?scorchedWikiAvailableResources:islandWikiAvailableResources;
- const wikiSource=map==='Scorched Earth'?scorchedWikiSource:islandWikiSource;
+ const nativeAtlas=map==='The Island'||map==='Scorched Earth'||map==='The Center';
+ const wikiPoints=map==='Scorched Earth'?scorchedWikiResources:map==='The Center'?centerWikiResources:islandWikiResources;
+ const sourcedResources=map==='Scorched Earth'?scorchedWikiAvailableResources:map==='The Center'?centerWikiAvailableResources:islandWikiAvailableResources;
+ const wikiSource=map==='Scorched Earth'?scorchedWikiSource:map==='The Center'?centerWikiSource:islandWikiSource;
  const [filtersByMap,setFiltersByMap]=useState({});
  const enabled=filtersByMap[map]??resources.map(r=>r.id);
  const personalOnMap=pins.filter(p=>p.map===map);
@@ -119,8 +120,8 @@ export default function ResourcePage(){
   <div className="atlas-v3-grid">
    <section className="panel atlas-v3-main">
     <div className="atlas-native-head"><h2><Map size={18}/> {map} <span className="atlas-v3-map-type">{nativeAtlas?'NATIVE ASA TERRAIN':'GENUINE SOURCE MAP'}</span></h2><span className="atlas-native-chip">ASA REFERENCE</span></div>
-    <div className="atlas-v3-source-explainer"><ShieldCheck size={17}/><span>{nativeAtlas?'Authentic '+map+' ASA terrain and sourced GPS resource markers from ARK Official Community Wiki, served directly by ARK Tribe HQ. No remote image or iframe. Your GPS pins and routes remain separate from published sites.':'This map uses an external community provider. The provider controls terrain and published marker layers.'}</span></div>
-    {nativeAtlas?<IslandNativeMap key={map} mapName={map} terrainSrc={map==='Scorched Earth'?'/maps/scorched-earth-asa.jpg':'/maps/the-island-asa.jpg'} resourcePoints={wikiPoints} resourceSource={wikiSource} pins={shownPersonal} stops={stops} selectedId={selection} onSelect={setSelection} colors={colors} enabledResources={enabled} onSaveAt={saveAtMapPoint} areaDrawing={areaDrawing} areaPolygon={areaPolygon} onAreaPoint={drawAreaPoint} plannedStops={generated?.stops||[]}/>:<EmbeddedMap key={map} url={resourceMapUrl(map)} alternativeUrl={wikiResourceMapUrl(map)} title={map+' Resources'} selection="Source-managed coordinates" kind="resource"/>}
+    <div className="atlas-v3-source-explainer"><ShieldCheck size={17}/><span>{nativeAtlas?map==='The Center'?'Authentic The Center ASA terrain with historical community resource GPS references from the official wiki. These source markers have NOT been verified against ASA; cave and surface sites are separate. Map and overlays load locally, without external iframes.':'Authentic '+map+' ASA terrain and sourced GPS resource markers from ARK Official Community Wiki, served directly by ARK Tribe HQ. No remote image or iframe. Your GPS pins and routes remain separate from published sites.':'This map uses an external community provider. The provider controls terrain and published marker layers.'}</span></div>
+    {nativeAtlas?<IslandNativeMap key={map} mapName={map} terrainSrc={map==='Scorched Earth'?'/maps/scorched-earth-asa.jpg':map==='The Center'?'/maps/the-center-asa.jpg':'/maps/the-island-asa.jpg'} resourcePoints={wikiPoints} resourceSource={wikiSource} pins={shownPersonal} stops={stops} selectedId={selection} onSelect={setSelection} colors={colors} enabledResources={enabled} onSaveAt={saveAtMapPoint} areaDrawing={areaDrawing} areaPolygon={areaPolygon} onAreaPoint={drawAreaPoint} plannedStops={generated?.stops||[]}/>:<EmbeddedMap key={map} url={resourceMapUrl(map)} alternativeUrl={wikiResourceMapUrl(map)} title={map+' Resources'} selection="Source-managed coordinates" kind="resource"/>}
     <div className="atlas-v3-source-links"><a href={resourceMapUrl(map)} target="_blank" rel="noopener noreferrer"><ExternalLink size={14}/> Open detailed map</a><a href={wikiResourceMapUrl(map)} target="_blank" rel="noopener noreferrer"><ExternalLink size={14}/> Official community wiki map</a></div>
     {map==='The Island'&&<div className="atlas-v3-source-note"><Info size={16}/> This map has gatherable Oil nodes, not Oil Well sites. Oil veins are only offered for maps with documented pumpable deposits.</div>}
    </section>
@@ -130,9 +131,9 @@ export default function ResourcePage(){
      <div className="atlas-v3-selectrow"><button className="primary" type="button" onClick={()=>updateFilters(resources.map(r=>r.id))}><CheckCheck size={16}/> Select All</button><button className="ghost" type="button" onClick={()=>updateFilters([])}><X size={16}/> Deselect All</button></div>
      <label className="atlas-v3-find"><Search size={15}/><input aria-label="Search my resource filters" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search resources"/></label>
      <div className="atlas-v3-filters">{resources.filter(r=>r.id.toLowerCase().includes(search.toLowerCase())).map(r=><button type="button" key={r.id} aria-pressed={enabled.includes(r.id)} className={enabled.includes(r.id)?'active':''} onClick={()=>updateFilters(enabled.includes(r.id)?enabled.filter(n=>n!==r.id):[...enabled,r.id])}><span className="atlas-v3-type-dot" style={{background:r.color}}/><span>{r.id}{nativeAtlas&&!sourcedResources.includes(r.id)&&<small className="atlas-v3-personal-only">My pins only</small>}</span><span className="atlas-v3-checkbox">{enabled.includes(r.id)?'☑':'☐'}</span></button>)}</div>
-     <p className="atlas-v3-hint"><Info size={14}/> {nativeAtlas?'These filters change published Wiki ASA resource markers and your saved resource pins. Only categories with sourced points show public markers; other filters are for personal scouting notes.':'These filters control your personal pin list. Published resource nodes remain controlled by the source map’s own Resources layers.'}</p>
+     <p className="atlas-v3-hint"><Info size={14}/> {nativeAtlas?map==='The Center'?'These filters display historical Center community resource locations on ASA terrain; exact ASA node accuracy is unverified. Cave markers are distinct from surface markers.':'These filters change published Wiki ASA resource markers and your saved resource pins. Only categories with sourced points show public markers; other filters are for personal scouting notes.':'These filters control your personal pin list. Published resource nodes remain controlled by the source map’s own Resources layers.'}</p>
      {mapsWithOilVeins.includes(map)&&<div className="atlas-v3-oil-note"><strong>Oil Vein / Oil Well</strong><span>{map==='Scorched Earth'?'Oil pump sites are sourced from the ASA wiki Oil Vein layer and displayed on the native map.':'Oil Pumps are built on oil veins. See the community provider for locations; we have not imported unverified coordinates.'}</span><a href={atlasSourceLinks.oilVein} target="_blank" rel="noopener noreferrer">Oil Vein reference <ExternalLink size={12}/></a></div>}
-     {nativeAtlas&&<p className="atlas-v3-hint"><Info size={14}/> {sourcedCount.toLocaleString()} sourced ASA wiki resource sites match your filters (grouped at low zoom), plus {shownPersonal.length} personal pin(s). Custom pins always appear.</p>}
+     {nativeAtlas&&<p className="atlas-v3-hint"><Info size={14}/> {sourcedCount.toLocaleString()} {map==='The Center'?'community reference':'sourced ASA wiki'} resource sites match your filters (grouped at low zoom), plus {shownPersonal.length} personal pin(s). Custom pins always appear.</p>}
      <div className="atlas-v3-personal-heading"><h3>My visible GPS pins</h3><small>{shownPersonal.length}</small></div>
      {shownPersonal.length?<div className="atlas-v3-pinlist">{shownPersonal.map(p=><button key={p.id} type="button" className={selection===p.id?'active':''} onClick={()=>setSelection(p.id)}><span style={{background:colors[p.resource]}} className="atlas-v3-type-dot"/><span>{p.title||p.resource}<small>{p.lat.toFixed(1)} LAT · {p.lon.toFixed(1)} LON</small></span></button>)}</div>:<p className="atlas-v3-empty">No personal GPS pins match these filters. Published wiki resource markers appear directly on the native ASA map.</p>}
     </section>}
@@ -159,7 +160,7 @@ export default function ResourcePage(){
      </>}
      {savedPlans.filter(p=>p.map===map).length>0&&<>
       <div className="atlas-v3-personal-heading"><h3>Saved area routes</h3><small>THIS BROWSER</small></div>
-      <div className="atlas-v3-pinlist">{savedPlans.filter(p=>p.map==='The Island').map(p=><div key={p.id} className="atlas-v3-saved-plan"><button type="button" onClick={()=>loadGeneratedPlan(p)}>{p.name}<small>{p.stops.length} stops · {p.mode}</small></button><button type="button" aria-label={'Delete '+p.name} onClick={()=>deleteGeneratedPlan(p.id)}><Trash2 size={16}/></button></div>)}</div>
+      <div className="atlas-v3-pinlist">{savedPlans.filter(p=>p.map===map).map(p=><div key={p.id} className="atlas-v3-saved-plan"><button type="button" onClick={()=>loadGeneratedPlan(p)}>{p.name}<small>{p.stops.length} stops · {p.mode}</small></button><button type="button" aria-label={'Delete '+p.name} onClick={()=>deleteGeneratedPlan(p.id)}><Trash2 size={16}/></button></div>)}</div>
      </>}
     </section>}
     {tab==='routes'&&<section className="panel atlas-v3-panel">
@@ -188,6 +189,6 @@ export default function ResourcePage(){
    </div>
   </div>
   {(error||savedMessage)&&<div className="notice" role="status">{error||savedMessage}</div>}
-  <div className="atlas-v3-foot"><Compass size={16}/><span><strong>Atlas integrity:</strong> No invented terrain images, node positions, resource totals or oil-well counts. The Island terrain is an authentic ASA map image from the ARK Official Community Wiki, hosted locally. The Island includes source-backed wiki ASA resource sites in six categories and separate browser-local personal markers; coordinates follow the wiki minimap convention.</span></div>
+  <div className="atlas-v3-foot"><Compass size={16}/><span><strong>Atlas integrity:</strong> No invented terrain images, node positions, resource totals or oil-well counts. The Island terrain is an authentic ASA map image from the ARK Official Community Wiki, hosted locally. The Island and Scorched Earth include ASA wiki datasets. The Center currently uses historical wiki community resource coordinates projected on genuine ASA terrain, clearly identified as unverified in ASA. Custom markers and saved routes are browser-local.</span></div>
  </div>;
 }
