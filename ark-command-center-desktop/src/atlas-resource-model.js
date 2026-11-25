@@ -32,6 +32,20 @@ export const centerCaveResources=[
  {id:'Oil (Cave)',color:'#a3e6f0'},
  {id:'Silica Pearls (Cave)',color:'#efffff'}
 ];
+export const extinctionSpecificResources=[
+ {id:'Cactus Sap',color:'#b6d388'},
+ {id:'Crystal (Cave)',color:'#d2b8ff'},
+ {id:'Element Dust',color:'#c9a3e6'},
+ {id:'Green Gems',color:'#5ddf9b'},
+ {id:'Green Gems (Cave)',color:'#8ae9b4'},
+ {id:'Rich Metal (Cave)',color:'#ffd89a'},
+ {id:'Obsidian (Cave)',color:'#a8a4d6'},
+ {id:'Silk',color:'#f3d9aa'},
+ {id:'Silk (Cave)',color:'#ffe4c4'},
+ {id:'Sulfur',color:'#e5de79'},
+ {id:'OSD (Orbital Supply Drop)',color:'#89baff'},
+ {id:'Element Vein',color:'#df8cff'}
+];
 export const aberrationSpecificResources=[
  {id:'Black Pearls',color:'#2b3048'},
  {id:'Crystal (Cave)',color:'#d4b6ff'},
@@ -57,6 +71,7 @@ export const scorchedSpecificResources=[
  {id:'Water Vein',color:'#51baf4'}
 ];
 export function resourcesForMap(map){
+ if(map==='Extinction')return [...islandResourceTypes,...extinctionSpecificResources];
  if(map==='Aberration')return [...islandResourceTypes,...aberrationSpecificResources];
  if(map==='The Center')return [...islandResourceTypes,...centerCaveResources];
  if(map==='Scorched Earth')return [...islandResourceTypes,...scorchedSpecificResources,oilVeinResource];
