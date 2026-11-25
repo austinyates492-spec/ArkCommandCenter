@@ -93,3 +93,16 @@ for query in ["https://arkstatus.com/resource-map/astraeos/","https://arkstatus.
   bs=BeautifulSoup(r.text,"html.parser")
   print("HOTSPOT TEXT",bs.get_text(" ",strip=True)[-7500:],flush=True)
  except Exception as e:print("HOTSPOT ERROR",str(e),flush=True)
+
+# A secondary independent guide lists published resource-cluster centers.
+# Inspect its structured tables for manual validation before selecting hotspots.
+try:
+ from bs4 import BeautifulSoup
+ r=S.get("https://arkstatus.com/resource-map/astraeos/",timeout=25)
+ r.raise_for_status()
+ bs=BeautifulSoup(r.text,"html.parser")
+ for i,table in enumerate(bs.find_all("table")):
+  rows=[[cell.get_text(" ",strip=True) for cell in tr.find_all(["th","td"])] for tr in table.find_all("tr")]
+  rows=[row for row in rows if row]
+  print("HOTSPOT TABLE",i,"ROWS",len(rows),"EXCERPT",rows[:12],flush=True)
+except Exception as e:print("HOTSPOT TABLE ERROR",repr(e),flush=True)
