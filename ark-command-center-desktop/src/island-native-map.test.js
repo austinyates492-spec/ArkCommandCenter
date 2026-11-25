@@ -10,7 +10,7 @@ test('The Island selects first-party map instead of provider iframe',()=>{
  assert.match(page,/onSelect=\{setSelection\}/);
  assert.ok(!native.includes('<iframe'));
  assert.ok(!native.includes('wikily.gg'));
- assert.ok(native.includes('href="/maps/the-island-asa.jpg"'));
+ assert.ok(page.includes("'/maps/the-island-asa.jpg'"));
 });
 test('native pins and routes use ARK GPS coordinate ordering',()=>{
  assert.ok(native.includes('p.lon*10'));
@@ -22,11 +22,11 @@ test('native pins and routes use ARK GPS coordinate ordering',()=>{
 });
 test('native map does not represent incomplete terrain or node coverage as verified',()=>{
  assert.ok(native.includes('ARK Official Community Wiki'));
- assert.ok(native.includes('<image href="/maps/the-island-asa.jpg"'));
+ assert.ok(native.includes('<image href={terrainSrc}'));
  assert.ok(native.includes('onError={()=>setTerrainFailed(true)}'));
  assert.ok(!native.includes('<iframe'));
  assert.ok(native.includes('Resource sites are published estimates'));
- assert.ok(native.includes('visibleWikiSites(islandWikiResources'));
+ assert.ok(native.includes('visibleWikiSites(resourcePoints'));
 });
 test('mobile layout has touch sized controls',()=>{
  assert.ok(css.includes('@media(max-width:750px)'));
