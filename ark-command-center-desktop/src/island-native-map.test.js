@@ -21,8 +21,11 @@ test('native pins and routes use ARK GPS coordinate ordering',()=>{
  assert.ok(native.includes('onSelect(p.id)'));
 });
 test('native map does not represent incomplete terrain or node coverage as verified',()=>{
- assert.ok(native.includes('terrain asset not yet licensed'));
- assert.ok(native.includes('verified, authorized ASA terrain layer'));
+ assert.ok(native.includes('The_Island_map_ASA.jpg'));
+ assert.ok(native.includes('<image href={ISLAND_ASA_TERRAIN}'));
+ assert.ok(native.includes('onError={()=>setTerrainFailed(true)}'));
+ assert.ok(!native.includes('<iframe'));
+ assert.ok(native.includes('ARK Official Community Wiki'));
  assert.ok(native.includes('Only your own saved GPS locations'));
 });
 test('mobile layout has touch sized controls',()=>{
