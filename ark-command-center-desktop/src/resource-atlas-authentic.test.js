@@ -17,7 +17,7 @@ test('resource atlas uses authentic provider maps and no fictional terrain or fa
  assert.ok(!page.includes('<image href='));
 });
 test('provider resource overlays remain separate from the local filter controls',()=>{
- assert.ok(page.includes('original ARK Tribe HQ dark-contour illustration'));
+ assert.ok(page.includes('authentic ASA terrain from the ARK Official Community Wiki'));
  assert.ok(page.includes('Published resource nodes are not imported yet.'));
  assert.ok(page.includes('These filters immediately change which of your saved GPS markers'));
  assert.ok(page.includes('Open detailed map'));

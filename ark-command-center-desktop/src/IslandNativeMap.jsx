@@ -4,14 +4,16 @@ import './island-native-map.css';
 import IslandContourTerrain from './IslandContourTerrain';
 
 /**
- * First-party original contour artwork, no external network or iframe required.
- * The cartographic outline is approximate and not GPS calibrated.
- * Personal pins use a 0–100 workspace, published resource nodes are not imported.
+ * Local, verified 2048x2048 ASA The Island image from ARK Official Community Wiki.
+ * No iframe or external image requests. The GPS grid is a coordinate reference,
+ * but individual nodes and the ASA map-screen coordinate discrepancy require validation.
+ * Source: https://ark.wiki.gg/wiki/File:The_Island_map_ASA.jpg
  */
 export default function IslandNativeMap({pins=[],stops=[],selectedId=null,onSelect=()=>{},colors={}}){
  const [zoom,setZoom]=useState(1);
  const [showGrid,setShowGrid]=useState(true);
  const [inspected,setInspected]=useState(null);
+ const [terrainFailed,setTerrainFailed]=useState(false);
  const bounded=Number.isFinite(zoom)?Math.min(4,Math.max(1,zoom)):1;
  const extent=1000/bounded,offset=(1000-extent)/2;
  const selected=pins.find(p=>p.id===selectedId);
@@ -20,7 +22,7 @@ export default function IslandNativeMap({pins=[],stops=[],selectedId=null,onSele
    .map(p=>`${p.lon*10},${p.lat*10}`).join(' ');
  return <div className="island-native-map">
   <div className="island-map-toolbar">
-   <div><strong>The Island · Contour Atlas</strong><small>Original ARK Tribe HQ cartography · preview terrain</small></div>
+   <div><strong>The Island · ASA Terrain Atlas</strong><small>Authentic terrain · locally hosted image · native overlays</small></div>
    <div className="island-map-actions">
     <button type="button" onClick={()=>setZoom(v=>Math.min(4,+(v+.5).toFixed(1)))} aria-label="Zoom in"><ZoomIn size={17}/></button>
     <button type="button" onClick={()=>setZoom(v=>Math.max(1,+(v-.5).toFixed(1)))} aria-label="Zoom out"><ZoomOut size={17}/></button>
@@ -31,7 +33,7 @@ export default function IslandNativeMap({pins=[],stops=[],selectedId=null,onSele
   <div className="island-map-frame">
    <svg viewBox={`${offset} ${offset} ${extent} ${extent}`} role="img" aria-label="Native 0 to 100 Island GPS plotting grid with user-entered markers; tap map to inspect grid coordinates" preserveAspectRatio="xMidYMid meet" onClick={inspectAt}>
     <defs><pattern id="island-gps-grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="#7187a8" strokeOpacity=".3" strokeWidth="2"/></pattern></defs>
-    <IslandContourTerrain/>
+    {terrainFailed?<IslandContourTerrain/>:<image href="/maps/the-island-asa.jpg" x="0" y="0" width="1000" height="1000" preserveAspectRatio="none" onError={()=>setTerrainFailed(true)}/>}
     {showGrid&&<rect width="1000" height="1000" fill="url(#island-gps-grid)"/>}
     <rect x="2" y="2" width="996" height="996" fill="none" stroke="#7895ae" strokeOpacity=".5" strokeWidth="3"/>
     {Array.from({length:9},(_,i)=><g key={i}><text x={(i+1)*100} y="22" fill="#9fb5cc" fontSize="17" textAnchor="middle">{(i+1)*10}</text><text x="10" y={(i+1)*100} fill="#9fb5cc" fontSize="17">{(i+1)*10}</text></g>)}
@@ -41,9 +43,9 @@ export default function IslandNativeMap({pins=[],stops=[],selectedId=null,onSele
      <circle cx={p.lon*10} cy={p.lat*10} r={selectedId===p.id?17:12} fill={colors[p.resource]||'#c6a0fb'} stroke={selectedId===p.id?'#fff':'#09101b'} strokeWidth="5" vectorEffect="non-scaling-stroke"/>
     </g>)}
    </svg>
-   <div className="island-map-watermark"><MapPin size={16}/>{inspected?`Inspected LAT ${inspected.lat.toFixed(1)} · LON ${inspected.lon.toFixed(1)}`:"Tap map to inspect GPS · terrain alignment preliminary"}</div>
+   <div className="island-map-watermark"><MapPin size={16}/>{inspected?`Inspected LAT ${inspected.lat.toFixed(1)} · LON ${inspected.lon.toFixed(1)}`:"Tap map to inspect GPS · image hosted by ARK Tribe HQ"}</div>
   </div>
-  <div className="island-map-caption"><Info size={16}/><span>This is an original stylized Island-inspired terrain illustration, not a tracing or a GPS-calibrated coastline. Only your saved GPS pins and routes are shown. Tap the map to inspect grid coordinates. Grid mathematics follow 0–100 latitude/longitude, but the illustrated coastline still requires landmark calibration against the ASA wiki reference. Published resource-node coverage has not been integrated. No third-party image or iframe is loaded.</span></div>
+  <div className="island-map-caption"><Info size={16}/><span>Terrain source: <a href="https://ark.wiki.gg/wiki/File:The_Island_map_ASA.jpg" target="_blank" rel="noopener noreferrer">ARK Official Community Wiki — The Island map ASA.jpg</a> (game artwork © Studio Wildcard and respective rights holders). Locally hosted image; no iframe. Only your saved GPS pins and routes are shown. Tap the map to inspect GPS coordinates. Published resource-node coverage has not yet been imported, and ASA in-game map display coordinates may differ from wiki resource map coordinates.</span></div>
   {selected&&<div className="island-map-selection">Selected: <strong>{selected.resource}</strong> — {selected.lat.toFixed(1)} LAT, {selected.lon.toFixed(1)} LON</div>}
  </div>;
 }
