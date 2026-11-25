@@ -46,9 +46,9 @@ test('original eighteen study crops are rebuilt and isolated with padded SVG mas
 });
 test('all three taming pages share the bottom spawn atlas, driven by current selection',()=>{
  const atlas=source('TameSpawnAtlas.jsx');
- assert.match(atlas,/creatureSpawnUrl\(selectedMap,selectedCreature\)/);
- assert.match(atlas,/key=\{selectedMap\+':'\+selectedCreature\}/);
- assert.match(atlas,/alternativeUrl=\{wikiSpawn\(selectedMap\)\}/);
+ assert.match(atlas,/NativeSpawnAtlas/);
+ assert.match(atlas,/key=\\{selectedMap\\}/);
+ assert.doesNotMatch(atlas,/EmbeddedMap|iframe/);
  assert.match(atlas,/Changing the creature or map above updates the native spawn overlay automatically/);
  for(const file of ['TamingLab.jsx','PassiveLab.jsx','SpecialtyLab.jsx']){
   const code=source(file);
