@@ -1,8 +1,8 @@
 import React,{useEffect,useMemo,useRef,useState} from 'react';
-import {RotateCcw,MapPin,Info,Plus} from 'lucide-react';
+import {RotateCcw,MapPin,Info,Plus,Maximize2} from 'lucide-react';
 import IslandContourTerrain from './IslandContourTerrain';
 import {islandWikiResources,islandWikiSource,visibleWikiSites} from './island-wiki-resource-overlay';
-import {screenToMap,mapFraction,gpsAtScreen,centeredMapViewport} from './map-pointer-geometry.js';
+import {screenToMap,mapFraction,gpsAtScreen,centeredMapViewport,fitMapPoints} from './map-pointer-geometry.js';
 import {areaRoutePolyline} from './island-area-route-planner.js';
 import {aberrationZoneOptions,aberrationZoneNote,aberrationZoneOpacity,zoneById,zoneContains} from './aberration-zone-focus.js';
 import {spawnTierColors,spawnTierNames} from './spawn-zone-model.js';
@@ -12,7 +12,7 @@ import './island-native-map.css';
  * The wiki revision and exact coordinates are retained; published wiki points
  * are never presented as user markers or altered to fit the terrain.
  */
-export default function IslandNativeMap({pins=[],stops=[],selectedId=null,onSelect=()=>{},colors={},enabledResources=[],routeModeActive=false,onSaveAt=()=>{},areaDrawing=false,areaPolygon=[],onAreaPoint=()=>{},plannedStops=[],mapName='The Island',terrainSrc='/maps/the-island-asa.jpg',resourcePoints=islandWikiResources,resourceSource=islandWikiSource,spawnMode=false,spawnRegions=[],spawnCreature='',spawnSource=null}){
+export default function IslandNativeMap({pins=[],stops=[],selectedId=null,onSelect=()=>{},colors={},enabledResources=[],routeModeActive=false,onSaveAt=()=>{},areaDrawing=false,areaPolygon=[],onAreaPoint=()=>{},plannedStops=[],routeFocusVersion=0,mapName='The Island',terrainSrc='/maps/the-island-asa.jpg',resourcePoints=islandWikiResources,resourceSource=islandWikiSource,spawnMode=false,spawnRegions=[],spawnCreature='',spawnSource=null}){
  const [zoom,setZoom]=useState(1);
  const [center,setCenter]=useState({x:500,y:500});
  const [showGrid,setShowGrid]=useState(true);
@@ -40,6 +40,11 @@ export default function IslandNativeMap({pins=[],stops=[],selectedId=null,onSele
  const wikiSites=useMemo(()=>spawnMode?[]:showResources?visibleWikiSites(resourcePoints,enabledResources,bounded):[],[showResources,spawnMode,resourcePoints,enabledResources,bounded]);
  const publishedCount=resourcePoints.filter(p=>enabledResources.includes(p.resource)).length;
  const areaLine=areaPolygon.map(p=>`${p.lon*10},${p.lat*10}`).join(' ');
+ const routeCloseup=routeModeActive&&plannedStops.length>0&&!areaDrawing;
+ const routeFit=useMemo(()=>fitMapPoints([...areaPolygon,...plannedStops]),[areaPolygon,plannedStops]);
+ const lastRouteFocus=useRef(null);
+ const fitRoute=()=>{if(routeFit){setZoom(routeFit.zoom);setCenter(routeFit.center);}};
+ useEffect(()=>{if(!routeCloseup){lastRouteFocus.current=null;return;}if(lastRouteFocus.current===routeFocusVersion)return;lastRouteFocus.current=routeFocusVersion;fitRoute();},[routeCloseup,routeFocusVersion,routeFit]);
  const planPath=areaRoutePolyline(plannedStops,areaPolygon).map(p=>`${p.lon*10},${p.lat*10}`).join(' ');
  const routePath=stops.filter(p=>Number.isFinite(p.lat)&&Number.isFinite(p.lon))
    .map(p=>`${p.lon*10},${p.lat*10}`).join(' ');
@@ -127,6 +132,7 @@ export default function IslandNativeMap({pins=[],stops=[],selectedId=null,onSele
   <div className="island-map-toolbar">
    <div><strong>{mapName} · ASA {spawnMode?'Creature Spawn Atlas':'Resource Atlas'}</strong><small>{areaDrawing?'Draw area: tap map to add vertices (minimum 3)':'Scroll / pinch to zoom · drag to pan'} · {spawnMode?spawnRegions.length.toLocaleString()+' documented spawn areas':wikiSites.length.toLocaleString()+' marker groups'}</small></div>
    <div className="island-map-actions">
+    {routeCloseup&&<button type="button" className="island-route-fit" onClick={fitRoute} aria-label="Fit farming route to map"><Maximize2 size={16}/> Fit Route</button>}
     <button type="button" onClick={()=>{setZoom(1);setCenter({x:500,y:500});}} aria-label="Reset map zoom and position"><RotateCcw size={16}/></button>
     {mapName==='Aberration'&&<label className="island-zone-select"><span>ZONE FOCUS</span><select aria-label="Aberration Zone Focus" value={zoneFocus} onChange={e=>setZoneFocus(e.target.value)}>{aberrationZoneOptions.map(z=><option key={z.id} value={z.id}>{z.label}</option>)}</select></label>}
     <label><input type="checkbox" checked={showGrid} onChange={e=>setShowGrid(e.target.checked)}/> GPS grid</label>
@@ -141,15 +147,15 @@ export default function IslandNativeMap({pins=[],stops=[],selectedId=null,onSele
     <rect x="2" y="2" width="996" height="996" fill="none" stroke="#7895ae" strokeOpacity=".5" strokeWidth="3" pointerEvents="none"/>
     {showGrid&&Array.from({length:9},(_,i)=><g key={i} pointerEvents="none"><text x={(i+1)*100} y="22" fill="#e1ecf6" stroke="#102331" strokeWidth="3" paintOrder="stroke" fontSize="17" textAnchor="middle">{(i+1)*10}</text><text x="12" y={(i+1)*100} fill="#e1ecf6" stroke="#102331" strokeWidth="3" paintOrder="stroke" fontSize="17">{(i+1)*10}</text></g>)}
     {spawnMode&&showResources&&<g className="island-spawn-areas" pointerEvents="none">{spawnRegions.map((p,i)=>{const fill=spawnTierColors[p.tier]||spawnTierColors.unverified;const pos=p.pos;const location=pos.length===4?{lat:(pos[0]+pos[2])/2,lon:(pos[1]+pos[3])/2}:{lat:pos[0],lon:pos[1]};return <g key={'spawn-'+i} opacity={nodeOpacity(location)}>{pos.length===4?<rect x={pos[1]*10} y={pos[0]*10} width={Math.max(0.5,(pos[3]-pos[1])*10)} height={Math.max(0.5,(pos[2]-pos[0])*10)} fill={fill} fillOpacity={p.tier==='unverified'?0:.58} stroke={fill} strokeDasharray={p.tier==='unverified'?'4 3':undefined} strokeOpacity=".9" strokeWidth="1.25" vectorEffect="non-scaling-stroke"/>:<circle cx={pos[1]*10} cy={pos[0]*10} r="5" fill={fill} stroke="#121b21" strokeWidth="1.3" vectorEffect="non-scaling-stroke"/>}</g>;})}</g>}
-    {wikiSites.map(p=><g opacity={nodeOpacity(p)} pointerEvents={areaDrawing?'none':'auto'} key={p.id} role="button" tabIndex={0} aria-label={`${p.resource} at latitude ${p.lat.toFixed(1)}, longitude ${p.lon.toFixed(1)}; ${p.count} mapped site${p.count===1?'':'s'}`} onClick={e=>chooseSite(e,p)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setSelectedWiki(p);setInspected({lat:p.lat,lon:p.lon});}}} style={{cursor:'pointer'}}>
+    {wikiSites.map(p=><g opacity={nodeOpacity(p)*(routeCloseup ? .28 : 1)} pointerEvents={areaDrawing?'none':'auto'} key={p.id} role="button" tabIndex={0} aria-label={`${p.resource} at latitude ${p.lat.toFixed(1)}, longitude ${p.lon.toFixed(1)}; ${p.count} mapped site${p.count===1?'':'s'}`} onClick={e=>chooseSite(e,p)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setSelectedWiki(p);setInspected({lat:p.lat,lon:p.lon});}}} style={{cursor:'pointer'}}>
       <circle cx={p.lon*10} cy={p.lat*10} r={selectedWiki?.id===p.id?11:7} stroke={selectedWiki?.id===p.id?'#fff':'#061522'} strokeWidth="2.7" vectorEffect="non-scaling-stroke" fill={colors[p.resource]||'#dfcef8'} fillOpacity=".92"/>
       {p.count>1&&bounded<3&&<text x={p.lon*10} y={p.lat*10+3.5} textAnchor="middle" pointerEvents="none" fontSize="10" fontWeight="800" fill="#101323">{p.count}</text>}
     </g>)}
-    {areaPolygon.length>1&&<polyline points={areaLine} fill="none" stroke="#dda2ff" strokeWidth="3" strokeDasharray="8 6" vectorEffect="non-scaling-stroke" pointerEvents="none"/>}
-    {areaPolygon.length>=3&&<polygon points={areaLine} fill="#b38af0" fillOpacity=".17" stroke="#d9b1ff" strokeWidth="3" strokeDasharray="8 6" vectorEffect="non-scaling-stroke" pointerEvents="none"/>}
-    {areaPolygon.map((p,i)=><g key={'area-'+i} data-area-corner={i+1} pointerEvents="none"><circle cx={p.lon*10} cy={p.lat*10} r="7" fill="#dfb3ff" stroke="#190b24" strokeWidth="2"/><text x={p.lon*10} y={p.lat*10+3} textAnchor="middle" fontSize="8" fontWeight="700" fill="#180c20">{i+1}</text></g>)}
-    {plannedStops.length>1&&<polyline points={planPath} fill="none" stroke="#ffe08c" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" opacity=".95" pointerEvents="none"/>}
-    {plannedStops.map((p,i)=><g key={'route-'+p.id} pointerEvents="none"><circle cx={p.lon*10} cy={p.lat*10} r="11" fill="#ffe08c" stroke="#1a2534" strokeWidth="3" vectorEffect="non-scaling-stroke"/><text x={p.lon*10} y={p.lat*10+3.7} fontSize="11" textAnchor="middle" fontWeight="800" fill="#172434">{i+1}</text></g>)}
+    {areaPolygon.length>1&&<polyline points={areaLine} fill="none" stroke="#dda2ff" opacity={routeCloseup ? .45 : 1} strokeWidth="3" strokeDasharray="8 6" vectorEffect="non-scaling-stroke" pointerEvents="none"/>}
+    {areaPolygon.length>=3&&<polygon points={areaLine} fill="#b38af0" fillOpacity={routeCloseup ? .045 : .17} stroke="#d9b1ff" strokeWidth="3" strokeDasharray="8 6" vectorEffect="non-scaling-stroke" pointerEvents="none"/>}
+    {!routeCloseup&&areaPolygon.map((p,i)=><g key={'area-'+i} data-area-corner={i+1} pointerEvents="none"><circle cx={p.lon*10} cy={p.lat*10} r="7" fill="#dfb3ff" stroke="#190b24" strokeWidth="2"/><text x={p.lon*10} y={p.lat*10+3} textAnchor="middle" fontSize="8" fontWeight="700" fill="#180c20">{i+1}</text></g>)}
+    {plannedStops.length>1&&<g pointerEvents="none" className="island-generated-route"><polyline points={planPath} fill="none" stroke="#101820" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke"/><polyline data-farming-route-line="true" points={planPath} fill="none" stroke="#ffe08c" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke"/></g>}
+    {plannedStops.map((p,i)=>{if(i!==0&&i!==plannedStops.length-1)return null;const label=plannedStops.length===1?'STOP':i===0?'START':'FINISH';const size=16/bounded;return <g key={'route-'+p.id} pointerEvents="none"><path d={`M ${p.lon*10-size*.28} ${p.lat*10-size*.28} L ${p.lon*10+size*.28} ${p.lat*10+size*.28} M ${p.lon*10-size*.28} ${p.lat*10+size*.28} L ${p.lon*10+size*.28} ${p.lat*10-size*.28}`} stroke="#ffe08c" strokeWidth="2.5" vectorEffect="non-scaling-stroke"/><text x={p.lon*10+size*.55} y={p.lat*10-size*.55} fontSize={size} fontWeight="800" fill="#ffe08c" stroke="#101820" strokeWidth={2.5/bounded} paintOrder="stroke" textAnchor={p.lon*10>offsetX+extent*.8?'end':'start'}>{label}</text></g>;})}
     {stops.length>1&&<polyline points={routePath} fill="none" stroke="#f5c25b" strokeWidth="6" strokeLinejoin="round" strokeLinecap="round" vectorEffect="non-scaling-stroke" opacity=".9" pointerEvents="none"/>}
     {pins.filter(p=>Number.isFinite(p.lat)&&Number.isFinite(p.lon)&&p.lat>=0&&p.lat<=100&&p.lon>=0&&p.lon<=100).map(p=><g pointerEvents={areaDrawing?'none':'auto'} key={p.id} tabIndex="0" role="button" aria-label={`${p.title||p.resource} at latitude ${p.lat}, longitude ${p.lon}`} onClick={e=>{e.stopPropagation();if(moved.current){moved.current=false;return;}onSelect(p.id);setInspected({lat:p.lat,lon:p.lon});setSelectedWiki(null);}} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelect(p.id);setInspected({lat:p.lat,lon:p.lon});}}} style={{cursor:'pointer'}}>
      <circle cx={p.lon*10} cy={p.lat*10} r={selectedId===p.id?17:12} fill={colors[p.resource]||'#ffaf63'} stroke={selectedId===p.id?'#fff':'#09101b'} strokeWidth="5" vectorEffect="non-scaling-stroke"/>

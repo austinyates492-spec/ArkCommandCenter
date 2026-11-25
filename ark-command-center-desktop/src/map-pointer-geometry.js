@@ -23,3 +23,14 @@ export function gpsAtScreen(svg,x,y,viewport){
 export function centeredMapViewport(x,y,extent){
  return {x:Math.max(0,Math.min(1000-extent,x-extent/2)),y:Math.max(0,Math.min(1000-extent,y-extent/2)),extent};
 }
+
+/** Square map viewport for a farming area, with padding for route labels. */
+export function fitMapPoints(points){
+ const valid=(points||[]).filter(p=>Number.isFinite(p.lat)&&Number.isFinite(p.lon)&&p.lat>=0&&p.lat<=100&&p.lon>=0&&p.lon<=100);
+ if(!valid.length)return null;
+ const xs=valid.map(p=>p.lon*10),ys=valid.map(p=>p.lat*10);
+ const minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
+ const extent=Math.min(1000,Math.max(125,Math.max(maxX-minX,maxY-minY)*1.24));
+ const v=centeredMapViewport((minX+maxX)/2,(minY+maxY)/2,extent);
+ return {zoom:1000/extent,center:{x:v.x+extent/2,y:v.y+extent/2}};
+}

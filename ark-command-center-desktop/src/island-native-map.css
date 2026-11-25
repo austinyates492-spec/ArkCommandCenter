@@ -36,3 +36,5 @@
 @media(max-width:750px){.shell .island-map-actions .island-zone-select{justify-content:space-between;width:100%}.shell .island-zone-select select{max-width:72%;flex:1}}
 
 .shell .island-map-frame.island-map-drawing svg,.shell .island-map-frame.island-map-drawing svg:active{cursor:crosshair}
+
+.shell .island-map-actions button.island-route-fit{display:flex;width:auto;min-width:44px;padding:0 10px;gap:6px;font-size:11px;font-weight:750;white-space:nowrap}
