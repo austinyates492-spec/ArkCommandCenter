@@ -32,7 +32,7 @@ export default function NativeSpawnAtlas({map='The Island',creature='Rex'}){
   });
   return()=>{alive=false;};
  },[effectiveMap]);
- const selection=useMemo(()=>bundle?spawnZonesForCreature(bundle,creature,effectiveMap,'all','weight'):{zones:EMPTY,matched:EMPTY,count:0},[bundle,creature,effectiveMap]);
+ const selection=useMemo(()=>bundle?spawnZonesForCreature(bundle,creature,effectiveMap):{zones:EMPTY,matched:EMPTY,count:0},[bundle,creature,effectiveMap]);
  const coverage=useMemo(()=>bundle?spawnLocationCoverage(bundle,creature,effectiveMap):{matched:[],documented:false},[bundle,creature,effectiveMap]);
  const allCount=useMemo(()=>bundle?spawnZonesForCreature(bundle,creature,effectiveMap).count:0,[bundle,creature,effectiveMap]);
  const versions=bundle?Object.keys(bundle.species).length:0;
@@ -49,21 +49,22 @@ export default function NativeSpawnAtlas({map='The Island',creature='Rex'}){
    <div><small>CREATURE SPAWN OVERLAY</small><strong>{creature||'Choose a creature'}</strong><span>{effectiveMap}</span></div>
    <div className="native-spawn-status">{loading?'Loading source data…':failure?'Source unavailable':coverage.documented?'Source-backed spawn zones':'No documented zone for this selection'}</div>
   </div>
-  <div className="native-spawn-legend" aria-label="Relative spawn weighting legend">
-   {spawnTierOptions.filter(item=>item.value!=='all').map(({value})=><div key={value}><span className="native-spawn-swatch" style={{background:spawnTierColors[value]}}/>{spawnTierNames[value]}</div>)}
+  <div className="native-spawn-legend" aria-label="Regional rarity legend">
+   {Object.keys(spawnTierColors).map(value=><div key={value}><span className="native-spawn-swatch" style={{background:spawnTierColors[value]}}/>{spawnTierNames[value]}</div>)}
   </div>
-  <p className="native-spawn-hint"><Info size={15}/> Preview: colors show relative spawn-entry weight, not measured encounter likelihood.</p>
+  <p className="native-spawn-hint"><Info size={15}/> Estimated regional rarity. Gray means documented habitat without sufficient rarity evidence.</p>
   {loading&&<div className="native-spawn-message" role="status">Loading published {effectiveMap} creature spawn tables and source geometry.</div>}
   {failure&&<div className="native-spawn-message" role="alert"><AlertTriangle size={17}/>{failure}</div>}
   {!loading&&!failure&&<div className="native-spawn-summary">
-   {coverage.documented?<><CheckCircle2 size={17}/><span>{allCount.toLocaleString()} published habitat rectangle/point entries across {coverage.matched.join(', ')}. All documented regions shown.</span></>
+   {coverage.documented?<><CheckCircle2 size={17}/><span>{allCount.toLocaleString()} natural habitat entries across {coverage.matched.join(', ')}. {selection.zones.filter(z=>z.tier!=='unverified').length} have modeled rarity evidence.</span></>
     :<><Info size={17}/><span>The published {effectiveMap} spawn tables do not document a region for <strong>{creature||'this creature'}</strong>. This is <b>unverified, not proof of absence</b>. No fake colored zones are drawn.</span></>}
   </div>}
   <IslandNativeMap key={effectiveMap} mapName={effectiveMap==='Genesis: Part 1 Ocean'?'Genesis: Part 1 Ocean':effectiveMap}
    terrainSrc={terrain} resourcePoints={EMPTY} resourceSource={EMPTY_SOURCE} enabledResources={EMPTY}
    spawnMode spawnRegions={selection.zones} spawnCreature={creature} spawnSource={bundle}/>
   {map==='Aberration'&&<p className="native-spawn-hint"><Layers3 size={15}/> Use <strong>Zone Focus</strong> on the map for All Zones, Green, Blue, or Red. Aberration biome boundaries are approximations because the world has overlapping vertical layers.</p>}
-  <p className="native-spawn-hint"><Info size={15}/> This automatic preview compares source-derived spawn-entry weights within a spawn container only. <strong>They are not percentages for encountering a creature or a global population heatmap.</strong> Actual spawns depend on container selection, server settings, mods, population limits and map updates. Every selectable tame is supported by the lookup; unsupported creature/map pairs are explicitly identified. {bundle&&<>Data revision: {bundle.revision}. {versions} documented species names on this map.</>}</p>
+  <p className="native-spawn-hint"><Info size={15}/> Colors use reviewed ASA DevKit population targets, spawn composition and caps when available. <strong>These are modeled rarity categories, not measured encounter probabilities.</strong> Unreviewed containers remain gray. Actual spawns depend on container selection, server settings, mods, population limits and map updates. Every selectable tame is supported by the lookup; unsupported creature/map pairs are explicitly identified. {bundle&&<>Data revision: {bundle.revision}. {versions} documented species names on this map.</>}</p>
+  <p className="native-spawn-provenance">Rarity evidence: <a href="https://hypernatrema.com/ark/data/db/spawns" target="_blank" rel="noopener noreferrer">ASA DevKit extraction and cooked map survey</a>.</p>
   {bundle?.source&&<p className="native-spawn-provenance">Spawn record source: <a href={bundle.source} target="_blank" rel="noopener noreferrer">ARK Official Community Wiki — {effectiveMap}</a> · {bundle.verifiedASA?'ASA-specific records':'Shared wiki records (ASA version not independently verified)'}</p>}
  </section>;
 }

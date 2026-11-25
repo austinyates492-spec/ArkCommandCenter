@@ -61,7 +61,11 @@ test('relative tiers never claim a real per-creature encounter probability',()=>
  assert.ok(castor.zones.every(p=>p.tier==='unverified'));
  const quetzal=spawnZonesForCreature(source,'Quetzal','The Island');
  assert.ok(quetzal.count>0);
- assert.ok(quetzal.zones.every(p=>p.tier==='unverified'));
+ assert.ok(quetzal.zones.every(p=>p.tier==='rare'));
+ const dodo=spawnZonesForCreature(source,'Dodo','The Island');
+ assert.ok(dodo.zones.some(p=>p.container==='DinoSpawnEntriesBeach'&&p.tier==='veryHigh'));
+ assert.ok(dodo.zones.some(p=>p.container==='DinoSpawnEntriesJungle'&&p.tier==='moderate'));
+ assert.ok(spawnZonesForCreature(source,'Giganotosaurus','The Island').zones.every(p=>! /CaveTek|TekCave/.test(p.container)));
  assert.ok(spawnZonesForCreature(source,'Castoroides','The Island','all','weight').zones.every(p=>p.tier!=='unverified'));
  assert.ok(castor.zones.every(p=>p.weight>0&&p.weight<=1));
  assert.equal(spawnLocationCoverage(source,'Nonexistent Creature','The Island').documented,false);
@@ -85,7 +89,7 @@ test('Aberration reuses zone focus native source-backed terrain and exposes clic
  const viewer=readFileSync(new URL('./IslandNativeMap.jsx',import.meta.url),'utf8');
  const page=readFileSync(new URL('./SpawnPage.jsx',import.meta.url),'utf8');
  const linked=readFileSync(new URL('./TameSpawnAtlas.jsx',import.meta.url),'utf8');
- assert.ok(spawn.includes('spawnTierOptions.map'));
+ assert.ok(spawn.includes('Object.keys(spawnTierColors).map'));
  assert.ok(spawn.includes('map===\'Aberration\''));
  assert.ok(spawn.includes('Ocean simulation'));
  assert.ok(spawn.includes('<IslandNativeMap'));

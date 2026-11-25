@@ -4,7 +4,7 @@
  * Relative share is NOT the probability of a living creature at this point.
  */
 export const spawnTierColors={veryHigh:'#22c55e',higher:'#84cc16',moderate:'#eab308',lower:'#f97316',rare:'#ef4444',unverified:'#737373'};
-export const spawnTierNames={veryHigh:'Very high',higher:'High',moderate:'Moderate',lower:'Low',rare:'Very low',unverified:'Unverified likelihood'};
+export const spawnTierNames={veryHigh:'Very common',higher:'Common',moderate:'Uncommon',lower:'Rare',rare:'Very rare',unverified:'Unverified rarity'};
 export const spawnTierOptions=[{value:'all',label:'All documented regions'},...Object.entries(spawnTierNames).filter(([key])=>key!=='unverified').map(([value,label])=>({value,label:label+' relative weight'}))];
 export const terrainForSpawnMap={
  'The Island':'/maps/the-island-asa.jpg',
@@ -62,16 +62,37 @@ export function relativeSpawnTier(weight){
  if(weight>=.04)return 'lower';
  return 'rare';
 }
-export function spawnZonesForCreature(dataset,creature,map,layer='all',mode='documented'){
+// Reviewed ASA DevKit extraction (2026-11-04) and cooked zone survey (2026-10-09).
+// Shares and caps are percentages of container populations, not encounter probabilities.
+const beach={Dodo:[32.602,60],Dilophosaur:[11.162,10],Carbonemys:[9.203,30],Ichthyornis:[9.061,12.5],Lystrosaurus:[8.372,25],Pteranodon:[6.277,25],Compy:[5.619,14],Parasaur:[5.229,20],Triceratops:[4.182,20],Moschops:[3.414,10],Pegomastax:[2.049,12],Oviraptor:[1.396,10],Deinotherium:[.735,2],Brontosaurus:[.698,5]};
+const jungle={Meganeura:[24.837,null],'Titanomyrma Drone':[9.314,30],Dilophosaur:[7.762,25],Parasaur:[7.376,25],Compy:[6.495,16],'Titanomyrma Soldier':[6.209,30],Dodo:[4.663,15],Carbonemys:[4.657,12],Dimorphodon:[3.109,10],Triceratops:[3.109,15],Raptor:[3.029,20],Lystrosaurus:[2.915,20],Troodon:[2.439,10],Iguanodon:[2.175,10],Mesopithecus:[1.9,13.5],Phiomia:[1.749,20],Pachy:[1.737,15],Therizinosaur:[1.554,10],Moschops:[1.36,10],Oviraptor:[.853,10],Stegosaurus:[.583,10],Tapejara:[.545,3],Chalicotherium:[.465,5],Diplodocus:[.465,8.5],Carnotaurus:[.389,5],Gigantoraptor:[.313,2]};
+const sparseMaps=new Set(['The Island','The Center','Astraeos','Ragnarok','Valguero']);
+export function regionalRarity(species,container,map){
+ const source='https://hypernatrema.com/ark/browse/spawns/';
+ // Dedicated containers aim for only 2–7 creatures across entire surveyed maps.
+ if(sparseMaps.has(map)&&((container==='DinoSpawnEntriesQuetz'&&species==='Quetzal')||(container==='DinoSpawnEntriesGigant'&&species==='Giganotosaurus')))return {tier:'rare',basis:'Sparse dedicated population target',source:source+container.toLowerCase()};
+ const table=map==='The Island'?(container==='DinoSpawnEntriesBeach'?beach:container==='DinoSpawnEntriesJungle'?jungle:null):null;
+ const row=table&&Object.hasOwn(table,species)?table[species]:null;
+ if(!row)return {tier:'unverified',basis:'Regional abundance evidence unavailable'};
+ const [share,cap]=row;
+ const score=Math.min(share,cap??share);
+ // Fixed modeled population-share bands, not measured presence/encounter percentages.
+ const tier=score>=25?'veryHigh':score>=10?'higher':score>=3?'moderate':score>=1?'lower':'rare';
+ return {tier,basis:'Modeled spawn composition and cap',source:source+container.toLowerCase()};
+}
+
+export function spawnZonesForCreature(dataset,creature,map,layer='all',mode='rarity'){
  const matched=findSpawnSpecies(dataset,creature,map);
  const zones=[];
  for(const species of matched){
   for(const row of dataset.species[species]||[]){
    const [pos,weight,container,flags]=row;
    if(!Array.isArray(pos)||(pos.length!==2&&pos.length!==4)||!Number.isFinite(weight))continue;
-   const tier=mode==='weight'?relativeSpawnTier(weight):'unverified';
+   if(/CaveTek|TekCave|Mission|Gauntlet/i.test(container))continue;
+   const classification=regionalRarity(species,container,map);
+   const tier=mode==='weight'?relativeSpawnTier(weight):mode==='documented'?'unverified':classification.tier;
    if(layer!=='all'&&tier!==layer)continue;
-   zones.push({pos,weight,tier,species,container,flags});
+   zones.push({pos,weight,tier,species,container,flags,basis:classification.basis,source:classification.source});
   }
  }
  return {matched,zones,count:zones.length,verifiedASA:dataset?.verifiedASA===true};
