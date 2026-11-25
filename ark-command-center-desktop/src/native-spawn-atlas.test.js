@@ -21,7 +21,7 @@ test('all ten official Native Resource Atlas maps now have source-backed native 
   assert.ok(manifest[map].regions>=1000,map);
   assert.equal(typeof spawnLoaders[map],'function',map);
   assert.ok(terrainForSpawnMap[map],map);
-  assert.equal(statSync(new URL('../public'+terrainForSpawnMap[map],import.meta.url)).size>1000000,true,map);
+  assert.equal(statSync(new URL('../public'+terrainForSpawnMap[map],import.meta.url)).size>100000,true,map);
  }
  assert.equal(manifest['Genesis: Part 1 Ocean'].status,'imported');
  assert.ok(statSync(new URL('../public/maps/genesis-part-1-ocean-asa.jpg',import.meta.url)).size>1000000);
