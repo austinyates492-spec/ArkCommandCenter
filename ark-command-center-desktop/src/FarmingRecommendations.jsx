@@ -6,7 +6,7 @@ import './farming-recommendations.css';
 function creaturePage(name){if(vanillaTamesByMethod.specialty.includes(name))return 'specialty';if(vanillaTamesByMethod.passive.includes(name))return 'passive';if(vanillaKnockoutRoster.includes(name))return 'taming';return null;}
 export default function FarmingRecommendations({resource,onResource,map,coverage,onMap,onCreature,onRoute}){
  const guide=farmingGuide(resource),options=farmingMapOptions(resource,coverage);
- const names=[...new Set([...farmingResourceNames,...Object.values(coverage).flat()])].sort();
+ const names=[...new Set([...farmingResourceNames,...Object.values(coverage).flat(),resource])].sort();
  const current=options.find(x=>x.map===map);
  return <section className="panel farming-guide" aria-label="Farming recommendations">
  <div className="atlas-native-head"><h2><Pickaxe size={18}/> Farming Recommendations</h2><span className="atlas-native-chip">GATHERING GUIDE</span></div>

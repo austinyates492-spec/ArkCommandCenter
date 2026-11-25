@@ -3,6 +3,7 @@ import {Map,MapPin,Layers,Route,Plus,Trash2,CheckCheck,X,ExternalLink,Info,Searc
 import {maps,resourceMapUrl,wikiResourceMapUrl} from './data';
 import {resourcesForMap,mapsWithOilVeins,checkAtlasPin,CUSTOM_PIN_RESOURCE,atlasSourceLinks} from './atlas-resource-model.js';
 import FarmingRecommendations from './FarmingRecommendations.jsx';
+import {farmingMapOptions} from './farming-recommendations.js';
 import EmbeddedMap from './EmbeddedMap';
 import IslandNativeMap from './IslandNativeMap';
 import {islandWikiResources,islandWikiAvailableResources} from './island-wiki-resource-overlay';
@@ -92,8 +93,8 @@ export default function ResourcePage({initialTarget,onCreature}={}){
  const setRouteIds=next=>persistRoutes({...routes,[map]:next});
  const changeMap=next=>{setAreaDrawing(false);setAreaPolygon([]);setGenerated(null);setRouteStart('center');setRouteTypes(['Metal','Rich Metal','Crystal','Obsidian']);setMap(next);setSelection(null);setError('');setSavedMessage('');setSearch('');setForm({resource:'Metal',title:'',lat:'',lon:'',note:''});};
  const focusFarmMap=(next,layers)=>{if(next!==map)changeMap(next);setFiltersByMap(v=>({...v,[next]:layers}));setTab('resources');};
- const focusFarmResource=value=>{setFarmResource(value);const layers=farmingCoverage[map].filter(x=>x===value||x===value+' (Cave)'||(value==='Metal'&&/^Rich Metal/.test(x)));if(layers.length)focusFarmMap(map,layers);};
- const planFarmRoute=layers=>{setRouteTypes(layers);setGenerated(null);setTab('routes');setAreaDrawing(true);};
+ const focusFarmResource=value=>{setFarmResource(value);const layers=farmingMapOptions(value,farmingCoverage).find(x=>x.map===map)?.layers||[];if(layers.length)focusFarmMap(map,layers);};
+ const planFarmRoute=layers=>{setRouteTypes(layers);setAreaPolygon([]);setGenerated(null);setTab('routes');setAreaDrawing(true);};
  const saveAtMapPoint=point=>{setForm({resource:CUSTOM_PIN_RESOURCE,title:'',lat:point.lat.toFixed(1),lon:point.lon.toFixed(1),note:''});setTab('pins');setError('');setSavedMessage('Coordinates selected from map. Name this custom pin, then save it.');};
  const addPin=event=>{
   event.preventDefault();setError('');setSavedMessage('');
