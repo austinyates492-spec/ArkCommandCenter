@@ -44,3 +44,9 @@ for title in ["Data:Spawn Map/The Island/ASA","Data:Spawn Map/Aberration/ASA","D
    d=json.loads(raw);print("ACTUAL SPAWN JSON",title,"FIELDS",list(d)[:20],"SAMPLE",str(list(d.items())[:2])[:3000],flush=True)
   except Exception as e:print("ACTUAL SPAWN NONJSON",repr(e),flush=True)
  except Exception as e:print("ACTUAL SPAWN ERROR",title,repr(e),flush=True)
+
+for title in ["Data:Spawn Map/The Island/ASA","Data:Spawn Map/Aberration/ASA","Data:Spawn Map/Genesis: Part 1/ASA","Data:Spawn Map/Genesis: Part 1 Ocean/ASA"]:
+ r=S.get(api,params={"action":"query","titles":title,"prop":"revisions","rvprop":"content|ids","rvslots":"main","format":"json"},timeout=25);r.raise_for_status()
+ page=list(r.json()["query"]["pages"].values())[0]
+ arr=json.loads(page["revisions"][0]["slots"]["main"]["*"])
+ print("SPAWN STRUCTURE",title,"RECORDS",len(arr),"FIRST 3",json.dumps(arr[:3])[:11000],flush=True)
