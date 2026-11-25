@@ -21,5 +21,6 @@ jobs:
           git add ark-command-center-desktop/src/island-asa-wiki-resources.json
           if ! git diff --cached --quiet; then
             git commit -m "Import verified ASA Island Wiki resource coordinates"
+            git pull --rebase origin feature/island-resource-overlay-custom-pin-20261125
             git push
           fi
