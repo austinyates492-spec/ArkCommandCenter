@@ -38,3 +38,20 @@ with Image.open(io.BytesIO(r.content)) as img:
  img.load();assert img.format=="JPEG" and img.size==(2048,2048)
 out=Path("ark-command-center-desktop/public/maps/extinction-asa.jpg");out.parent.mkdir(parents=True,exist_ok=True);out.write_bytes(r.content)
 print("TERRAIN SAVED",len(r.content),flush=True)
+
+# Review separately published OSD/Element Vein coordinate sources; never
+# merge third-party candidates into wiki resource markers without provenance.
+for url in [
+ "https://wikily.gg/ark-survival-ascended/maps/extinction/",
+ "https://www.dinoindex.com/maps/extinction",
+]:
+ try:
+  response=S.get(url,timeout=25)
+  body=response.text
+  print("EVENT SOURCE",url,"STATUS",response.status_code,"HTML LENGTH",len(body),flush=True)
+  for keyword in ["Orbital supply drops","element-vein","osd-spawn","Element Node Sites","orbital_supply_drop"]:
+   i=body.lower().find(keyword.lower())
+   if i>=0:print("EVENT KEY",keyword,"POS",i,"EXCERPT",body[max(0,i-120):i+420].replace("\\n"," ")[:540],flush=True)
+  for raw in ["__NEXT_DATA__","application/ld+json","__next_f.push","osdLocations"]:
+   print("EVENT SCRIPT MARKER",raw,body.find(raw),flush=True)
+ except Exception as e:print("EVENT SOURCE ERROR",repr(e),flush=True)
