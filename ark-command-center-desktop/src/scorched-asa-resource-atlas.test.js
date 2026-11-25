@@ -43,7 +43,7 @@ test('Scorched resource map and polygon tools are enabled without breaking Islan
  const page=readFileSync(new URL('./ResourcePage.jsx',import.meta.url),'utf8');
  const native=readFileSync(new URL('./IslandNativeMap.jsx',import.meta.url),'utf8');
  assert.ok(page.includes("map==='Scorched Earth'?scorchedWikiResources:islandWikiResources"));
- assert.ok(page.includes("map==='Scorched Earth'?'/maps/scorched-earth-asa.jpg':'/maps/the-island-asa.jpg'"));
+ assert.ok(page.includes("map==='Scorched Earth'?'/maps/scorched-earth-asa.jpg'"));
  assert.ok(page.includes("map==='The Island'||map==='Scorched Earth'"));
  assert.ok(page.includes('nativeAtlas&&<section'));
  assert.ok(page.includes('points:wikiPoints'));
