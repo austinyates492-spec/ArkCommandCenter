@@ -10,7 +10,7 @@ test('The Island selects first-party map instead of provider iframe',()=>{
  assert.match(page,/onSelect=\{setSelection\}/);
  assert.ok(!native.includes('<iframe'));
  assert.ok(!native.includes('wikily.gg'));
- assert.ok(native.includes('IslandContourTerrain'));
+ assert.ok(native.includes('href="/maps/the-island-asa.jpg"'));
 });
 test('native pins and routes use ARK GPS coordinate ordering',()=>{
  assert.ok(native.includes('p.lon*10'));
@@ -21,11 +21,11 @@ test('native pins and routes use ARK GPS coordinate ordering',()=>{
  assert.ok(native.includes('onSelect(p.id)'));
 });
 test('native map does not represent incomplete terrain or node coverage as verified',()=>{
- assert.ok(native.includes('original stylized Island-inspired terrain'));
- assert.ok(native.includes('<IslandContourTerrain/>'));
- assert.ok(!native.includes('terrainFailed'));
+ assert.ok(native.includes('ARK Official Community Wiki'));
+ assert.ok(native.includes('<image href="/maps/the-island-asa.jpg"'));
+ assert.ok(native.includes('onError={()=>setTerrainFailed(true)}'));
  assert.ok(!native.includes('<iframe'));
- assert.ok(native.includes('No third-party image or iframe'));
+ assert.ok(native.includes('Locally hosted image; no iframe'));
  assert.ok(native.includes('Only your saved GPS pins and routes are shown'));
 });
 test('mobile layout has touch sized controls',()=>{
