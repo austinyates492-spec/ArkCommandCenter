@@ -22,7 +22,7 @@ export const islandResourceTypes=[
 /** These maps have published references for pumpable oil veins; unlike Oil
  * nodes, an oil vein is a structure placement point for an Oil Pump.
  * Specific coordinates still need map-by-map ASA verification. */
-export const mapsWithOilVeins=['Scorched Earth','Ragnarok','Valguero','Astraeos'];
+export const mapsWithOilVeins=['Scorched Earth','Ragnarok','Valguero','Astraeos','Genesis: Part 1'];
 export const oilVeinResource={id:'Oil Vein / Oil Well',color:'#df98ff'};
 export const centerCaveResources=[
  {id:'Crystal (Cave)',color:'#d4b6ff'},
@@ -31,6 +31,24 @@ export const centerCaveResources=[
  {id:'Obsidian (Cave)',color:'#a3a0e1'},
  {id:'Oil (Cave)',color:'#a3e6f0'},
  {id:'Silica Pearls (Cave)',color:'#efffff'}
+];
+export const genesisPart1SpecificResources=[
+ {id:'Ambergris',color:'#e6c79b'},
+ {id:'Black Pearls (Cave)',color:'#6a7193'},
+ {id:'Cactus Sap',color:'#b6d58c'},
+ {id:'Crystal (Cave)',color:'#dbbdff'},
+ {id:'Element Shards',color:'#b7a1ff'},
+ {id:'Element Shards (Cave)',color:'#d4bfff'},
+ {id:'Gas Vein',color:'#8ce1bf'},
+ {id:'Gas',color:'#a6deb7'},
+ {id:'Blue Gems',color:'#70afff'},
+ {id:'Green Gems',color:'#6be2a8'},
+ {id:'Red Gems',color:'#f58aa6'},
+ {id:'Rich Metal (Cave)',color:'#f8de9c'},
+ {id:'Obsidian (Cave)',color:'#a9a7d5'},
+ {id:'Salt',color:'#e6d5be'},
+ {id:'Sulfur',color:'#e0d477'},
+ {id:'Sulfur (Cave)',color:'#f5eca2'}
 ];
 export const lostColonySpecificResources=[
  {id:'Black Pearls',color:'#363a52'},
@@ -124,6 +142,7 @@ export const scorchedSpecificResources=[
  {id:'Water Vein',color:'#51baf4'}
 ];
 export function resourcesForMap(map){
+ if(map==='Genesis: Part 1')return [...islandResourceTypes,...genesisPart1SpecificResources,oilVeinResource];
  if(map==='Lost Colony')return [...islandResourceTypes,...lostColonySpecificResources];
  if(map==='Astraeos')return [...islandResourceTypes.filter(r=>r.id!=='Rich Metal'),...astraeosSpecificResources,oilVeinResource];
  if(map==='Valguero')return [...islandResourceTypes,...valgueroSpecificResources,oilVeinResource];
