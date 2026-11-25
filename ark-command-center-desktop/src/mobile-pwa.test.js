@@ -17,7 +17,7 @@ test('mobile site and installable app use a collapsible accessible navigation dr
  assert.match(css,/\.shell:not\(\.tauri-desktop\)/);
 });
 
-test('web app has standalone install manifest, icons, and a network-first offline shell',()=>{
+test('web app has standalone install manifest, icons, and an online-first cache-safe shell',()=>{
  const manifest=JSON.parse(read('public/manifest.webmanifest'));
  assert.equal(manifest.display,'standalone');
  assert.equal(manifest.orientation,'any');
@@ -27,9 +27,10 @@ test('web app has standalone install manifest, icons, and a network-first offlin
   assert.ok(existsSync(new URL(`public/icons/arktribehq-${size}.png`,root)));
  }
  const sw=read('public/sw.js');
- assert.match(sw,/request\.mode==='navigate'/);
- assert.match(sw,/fetch\(request\)/);
- assert.match(sw,/caches\.match\('\/'\)/);
+ assert.match(sw,/self\.clients\.claim\(\)/);
+ assert.match(sw,/caches\.delete/);
+ assert.doesNotMatch(sw,/addEventListener\('fetch'/);
+ assert.doesNotMatch(sw,/caches\.match\('\/'\)/);
 });
 
 test('ads stay inactive without approval, account details, and explicit enablement',()=>{
