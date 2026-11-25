@@ -92,3 +92,26 @@
 .shell .atlas-v3-planner .atlas-v3-saved-plan button:first-child{display:grid;gap:3px;min-width:0;flex:1;text-align:left;padding:8px 10px}
 .shell .atlas-v3-planner .atlas-v3-saved-plan button:last-child{flex:0 0 44px;display:grid;place-items:center;min-height:44px}
 .shell .atlas-v3-planner .atlas-v3-saved-plan small{font-size:10px;color:var(--ark-muted)}
+
+/* Resource workspace: give map priority, keeping its tools in a compact left rail. */
+.shell .atlas-v3-resource-layout .atlas-v3-resource-checklist .atlas-v3-filters{grid-template-columns:minmax(0,1fr);gap:4px;max-height:350px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;padding:1px 3px 1px 1px}
+.shell .atlas-v3-resource-layout .atlas-v3-resource-checklist .atlas-v3-filters button{min-height:34px;padding:5px 7px;gap:7px;font-size:12px}
+.shell .atlas-v3-resource-layout .atlas-v3-resource-checklist .atlas-v3-selectrow{gap:5px;margin:8px 0}
+.shell .atlas-v3-resource-layout .atlas-v3-resource-checklist .atlas-v3-selectrow button{padding:6px 4px;min-height:36px;font-size:10px;white-space:normal}
+.shell .atlas-v3-resource-layout .atlas-v3-resource-checklist .atlas-v3-find{margin-bottom:7px}
+@media(min-width:1100px){
+ .shell .atlas-v3-grid.atlas-v3-resource-layout{grid-template-columns:clamp(216px,16vw,260px) minmax(0,1fr);grid-template-areas:'controls map';gap:10px}
+ .shell .atlas-v3-resource-layout>.atlas-v3-main{grid-area:map}
+ .shell .atlas-v3-resource-layout>.atlas-v3-side{grid-area:controls;grid-template-columns:minmax(0,1fr);gap:10px;align-content:start}
+ .shell .atlas-v3-resource-layout>.atlas-v3-side>.panel{padding:11px;border-radius:11px}
+ .shell .atlas-v3-resource-layout .atlas-v3-side .atlas-native-head{flex-wrap:wrap;gap:5px;margin-bottom:6px}
+ .shell .atlas-v3-resource-layout .atlas-v3-side .atlas-native-head h2{font-size:14px}
+ .shell .atlas-v3-resource-layout .farming-guide{gap:8px}
+ .shell .atlas-v3-resource-layout .farm-guide-tool,.shell .atlas-v3-resource-layout .farm-guide-creature{padding:7px 8px}
+ .shell .atlas-v3-resource-layout .farm-guide-creature .ghost{min-width:30px;min-height:30px;padding:4px}
+ .shell .atlas-v3-resource-layout .farm-guide-maplist{display:grid;grid-template-columns:minmax(0,1fr);gap:4px}
+ .shell .atlas-v3-resource-layout .farm-guide-maplist .ghost{min-height:30px;justify-content:flex-start;padding:5px 7px}
+ .shell .atlas-v3-resource-layout .farming-guide .field{margin:0;min-width:0}
+ .shell .atlas-v3-resource-layout .farming-guide select{width:100%;min-width:0}
+}
+@media(max-width:1099px){.shell .atlas-v3-resource-layout .atlas-v3-resource-checklist .atlas-v3-filters{grid-template-columns:repeat(2,minmax(0,1fr));max-height:none;overflow:visible}.shell .atlas-v3-resource-layout .atlas-v3-resource-checklist .atlas-v3-filters button,.shell .atlas-v3-resource-layout .atlas-v3-resource-checklist .atlas-v3-selectrow button{min-height:44px}}

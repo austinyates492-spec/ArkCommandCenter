@@ -38,3 +38,8 @@ test('custom user labels and manual GPS coordinates validate without fabricating
  assert.throws(()=>checkAtlasPin({resource:'Custom',title:'',lat:33,lon:51},'The Island'),/name/);
  assert.ok(page.includes('saveAtMapPoint'));
 });
+
+test('resource checklist and farming guide share a compact left rail without narrowing phone maps',()=>{
+ assert.ok(page.indexOf('aria-label="Resource checklist"')<page.indexOf('<FarmingRecommendations resource='));
+ for(const fragment of ["grid-template-areas:'controls map'","grid-template-columns:clamp(216px,16vw,260px) minmax(0,1fr)","grid-area:map","grid-area:controls","max-height:350px","@media(max-width:1099px)"])assert.ok(css.includes(fragment),fragment);
+});
