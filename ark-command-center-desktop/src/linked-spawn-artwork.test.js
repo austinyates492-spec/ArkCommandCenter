@@ -49,7 +49,7 @@ test('all three taming pages share the bottom spawn atlas, driven by current sel
  assert.match(atlas,/creatureSpawnUrl\(selectedMap,selectedCreature\)/);
  assert.match(atlas,/key=\{selectedMap\+':'\+selectedCreature\}/);
  assert.match(atlas,/alternativeUrl=\{wikiSpawn\(selectedMap\)\}/);
- assert.match(atlas,/supports creature selection via URL fragment/);
+ assert.match(atlas,/Changing the creature or map above updates the native spawn overlay automatically/);
  for(const file of ['TamingLab.jsx','PassiveLab.jsx','SpecialtyLab.jsx']){
   const code=source(file);
   assert.match(code,/import TameSpawnAtlas from '\.\/TameSpawnAtlas\.jsx'/,file+' atlas import missing');
