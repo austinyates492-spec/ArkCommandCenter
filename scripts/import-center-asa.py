@@ -16,6 +16,7 @@ revision=page["revisions"][0]
 data=json.loads(revision["slots"]["main"]["*"])
 print("WIKI SOURCE",page["title"],"REVISION",revision["revid"],"BACKGROUND",data.get("background"),flush=True)
 filename=data.get("background",{}).get("image")
+print("CENTER SOURCE TOP LEVEL",list(data.keys()),str(data)[:1400],flush=True)
 print("CENTER RESOURCE DATA BACKGROUND:",filename,flush=True)
 assert filename and "Center" in filename, f"Unexpected map: {filename}"
 markers=data["markers"]
