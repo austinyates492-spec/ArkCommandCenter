@@ -2,6 +2,7 @@ import React,{useEffect,useMemo,useRef,useState} from 'react';
 import {RotateCcw,MapPin,Info,Plus} from 'lucide-react';
 import IslandContourTerrain from './IslandContourTerrain';
 import {islandWikiResources,islandWikiSource,visibleWikiSites} from './island-wiki-resource-overlay';
+import {screenToMap,mapFraction,gpsAtScreen,centeredMapViewport} from './map-pointer-geometry.js';
 import {areaRoutePolyline} from './island-area-route-planner.js';
 import {aberrationZoneOptions,aberrationZoneNote,aberrationZoneOpacity,zoneById,zoneContains} from './aberration-zone-focus.js';
 import {spawnTierColors,spawnTierNames} from './spawn-zone-model.js';
@@ -11,7 +12,7 @@ import './island-native-map.css';
  * The wiki revision and exact coordinates are retained; published wiki points
  * are never presented as user markers or altered to fit the terrain.
  */
-export default function IslandNativeMap({pins=[],stops=[],selectedId=null,onSelect=()=>{},colors={},enabledResources=[],onSaveAt=()=>{},areaDrawing=false,areaPolygon=[],onAreaPoint=()=>{},plannedStops=[],mapName='The Island',terrainSrc='/maps/the-island-asa.jpg',resourcePoints=islandWikiResources,resourceSource=islandWikiSource,spawnMode=false,spawnRegions=[],spawnCreature='',spawnSource=null}){
+export default function IslandNativeMap({pins=[],stops=[],selectedId=null,onSelect=()=>{},colors={},enabledResources=[],routeModeActive=false,onSaveAt=()=>{},areaDrawing=false,areaPolygon=[],onAreaPoint=()=>{},plannedStops=[],mapName='The Island',terrainSrc='/maps/the-island-asa.jpg',resourcePoints=islandWikiResources,resourceSource=islandWikiSource,spawnMode=false,spawnRegions=[],spawnCreature='',spawnSource=null}){
  const [zoom,setZoom]=useState(1);
  const [center,setCenter]=useState({x:500,y:500});
  const [showGrid,setShowGrid]=useState(true);
@@ -27,8 +28,9 @@ export default function IslandNativeMap({pins=[],stops=[],selectedId=null,onSele
  const moved=useRef(false);
  const bounded=Number.isFinite(zoom)?Math.min(8,Math.max(1,zoom)):1;
  const extent=1000/bounded;
- const offsetX=Math.max(0,Math.min(1000-extent,center.x-extent/2));
- const offsetY=Math.max(0,Math.min(1000-extent,center.y-extent/2));
+ const viewport=centeredMapViewport(center.x,center.y,extent);
+ const offsetX=viewport.x,offsetY=viewport.y;
+ useEffect(()=>{if(routeModeActive)setShowResources(true);},[routeModeActive,enabledResources]);
  const selected=pins.find(p=>p.id===selectedId);
  const inspectedSpawnRegions=inspected&&spawnMode?spawnRegions.filter(p=>p.pos.length===4?inspected.lat>=p.pos[0]&&inspected.lat<=p.pos[2]&&inspected.lon>=p.pos[1]&&inspected.lon<=p.pos[3]:Math.hypot(inspected.lat-p.pos[0],inspected.lon-p.pos[1])<.5):[];
  const bestSpawnRegion=inspectedSpawnRegions.reduce((best,r)=>!best||r.weight>best.weight?r:best,null);
@@ -41,17 +43,11 @@ export default function IslandNativeMap({pins=[],stops=[],selectedId=null,onSele
  const planPath=areaRoutePolyline(plannedStops,areaPolygon).map(p=>`${p.lon*10},${p.lat*10}`).join(' ');
  const routePath=stops.filter(p=>Number.isFinite(p.lat)&&Number.isFinite(p.lon))
    .map(p=>`${p.lon*10},${p.lat*10}`).join(' ');
- const pointerCoords=event=>{
-  const box=event.currentTarget.getBoundingClientRect();
-  if(!box.width||!box.height)return null;
-  const px=(event.clientX-box.left)/box.width,py=(event.clientY-box.top)/box.height;
-  return {lat:Math.max(0,Math.min(100,(offsetY+py*extent)/10)),
-          lon:Math.max(0,Math.min(100,(offsetX+px*extent)/10))};
- };
+ const pointerCoords=event=>gpsAtScreen(event.currentTarget,event.clientX,event.clientY,viewport);
  const inspectAt=event=>{
   if(moved.current){moved.current=false;return;}
   const position=pointerCoords(event);
-  if(position){if(areaDrawing){onAreaPoint(position);return;}setInspected(position);setSelectedWiki(null);}
+  if(position){if(areaDrawing){setInspected(position);onAreaPoint(position);return;}setInspected(position);setSelectedWiki(null);}
  };
  const beginDrag=event=>{
   if(event.pointerType==='mouse'&&event.button!==0)return;
@@ -59,45 +55,47 @@ export default function IslandNativeMap({pins=[],stops=[],selectedId=null,onSele
   if(event.currentTarget.setPointerCapture)event.currentTarget.setPointerCapture(event.pointerId);
   if(pointers.current.size===2){
    const [a,b]=[...pointers.current.values()];
-   const box=event.currentTarget.getBoundingClientRect();
    const midX=(a.x+b.x)/2,midY=(a.y+b.y)/2;
+   const anchor=screenToMap(event.currentTarget,midX,midY);
+   if(!anchor){drag.current=null;moved.current=true;return;}
    pinch.current={
     distance:Math.hypot(a.x-b.x,a.y-b.y),
     startZoom:bounded,
-    anchorX:offsetX+((midX-box.left)/box.width)*extent,
-    anchorY:offsetY+((midY-box.top)/box.height)*extent,
-    initialX:(midX-box.left)/box.width,
-    initialY:(midY-box.top)/box.height
+    anchorX:anchor.x,anchorY:anchor.y
    };
    drag.current=null;moved.current=true;
   }else if(pointers.current.size===1){
-   drag.current={x:event.clientX,y:event.clientY,originX:center.x,originY:center.y};
+   const matrix=event.currentTarget.getScreenCTM();
+   drag.current={x:event.clientX,y:event.clientY,originX:offsetX+extent/2,originY:offsetY+extent/2,scaleX:matrix?Math.hypot(matrix.a,matrix.b):0,scaleY:matrix?Math.hypot(matrix.c,matrix.d):0};
    moved.current=false;
   }
  };
  const duringDrag=event=>{
   if(!pointers.current.has(event.pointerId))return;
   pointers.current.set(event.pointerId,{x:event.clientX,y:event.clientY});
-  const box=event.currentTarget.getBoundingClientRect();
-  if(!box.width||!box.height)return;
   if(pointers.current.size===2&&pinch.current){
    const [a,b]=[...pointers.current.values()];
    const distance=Math.hypot(a.x-b.x,a.y-b.y);
    const nextZoom=Math.max(1,Math.min(8,pinch.current.startZoom*distance/Math.max(1,pinch.current.distance)));
    const nextExtent=1000/nextZoom;
-   const fx=((a.x+b.x)/2-box.left)/box.width,fy=((a.y+b.y)/2-box.top)/box.height;
+   const fraction=mapFraction(event.currentTarget,(a.x+b.x)/2,(a.y+b.y)/2,viewport);
+   if(!fraction)return;
+   const fx=fraction.x,fy=fraction.y;
    const ox=Math.max(0,Math.min(1000-nextExtent,pinch.current.anchorX-fx*nextExtent));
    const oy=Math.max(0,Math.min(1000-nextExtent,pinch.current.anchorY-fy*nextExtent));
    setZoom(nextZoom);
    setCenter({x:ox+nextExtent/2,y:oy+nextExtent/2});
    moved.current=true;
-  }else if(drag.current&&bounded>1){
+  }else if(drag.current){
    const dx=event.clientX-drag.current.x,dy=event.clientY-drag.current.y;
-   if(Math.abs(dx)+Math.abs(dy)>5)moved.current=true;
-   setCenter({x:drag.current.originX-dx/box.width*extent,y:drag.current.originY-dy/box.height*extent});
+   if(Math.hypot(dx,dy)>5)moved.current=true;
+   if(!moved.current||bounded<=1||!drag.current.scaleX||!drag.current.scaleY)return;
+   const next=centeredMapViewport(drag.current.originX-dx/drag.current.scaleX,drag.current.originY-dy/drag.current.scaleY,extent);
+   setCenter({x:next.x+extent/2,y:next.y+extent/2});
   }
  };
  const finishDrag=event=>{
+  if(event.type==='pointercancel')moved.current=true;
   pointers.current.delete(event.pointerId);
   if(pointers.current.size<2)pinch.current=null;
   drag.current=null;
@@ -109,10 +107,9 @@ export default function IslandNativeMap({pins=[],stops=[],selectedId=null,onSele
   if(!svg)return;
   const wheel=e=>{
    e.preventDefault();
-   const box=svg.getBoundingClientRect();
-   if(!box.width||!box.height)return;
-   const px=Math.max(0,Math.min(1,(e.clientX-box.left)/box.width));
-   const py=Math.max(0,Math.min(1,(e.clientY-box.top)/box.height));
+   const fraction=mapFraction(svg,e.clientX,e.clientY,viewport);
+   if(!fraction||fraction.x<0||fraction.x>1||fraction.y<0||fraction.y>1)return;
+   const px=fraction.x,py=fraction.y;
    const nextZoom=Math.min(8,Math.max(1,bounded*Math.exp(-e.deltaY*.0015)));
    if(Math.abs(nextZoom-bounded)<.001)return;
    const nextExtent=1000/nextZoom;
@@ -136,7 +133,7 @@ export default function IslandNativeMap({pins=[],stops=[],selectedId=null,onSele
     <label><input type="checkbox" checked={showResources} onChange={e=>setShowResources(e.target.checked)}/> {spawnMode?'Spawn zones':'Resources'}</label>
    </div>
   </div>
-  <div className="island-map-frame">
+  <div className={'island-map-frame'+(areaDrawing?' island-map-drawing':'')}>
    <svg ref={svgRef} viewBox={`${offsetX} ${offsetY} ${extent} ${extent}`} role="img" aria-label={`${mapName} ASA map with GPS, ${spawnMode?'documented colored creature spawn zones':'wiki resource points and personal pins'}; use mouse wheel or pinch to zoom, drag to pan, tap to inspect`} preserveAspectRatio="xMidYMid meet" onClick={inspectAt} onPointerDown={beginDrag} onPointerMove={duringDrag} onPointerUp={finishDrag} onPointerCancel={finishDrag}>
     <defs>{activeZone&&<clipPath id="aberration-active-zone"><polygon points={zoneClip}/></clipPath>}<pattern id="island-gps-grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="#7187a8" strokeOpacity=".38" strokeWidth="2"/></pattern></defs>
     {terrainFailed?(mapName==='The Island'?<IslandContourTerrain/>:<rect width="1000" height="1000" fill="#121822"/>):<><image href={terrainSrc} x="0" y="0" width="1000" height="1000" opacity={activeZone?aberrationZoneOpacity:1} preserveAspectRatio="none" onError={()=>setTerrainFailed(true)}/>{activeZone&&<image href={terrainSrc} x="0" y="0" width="1000" height="1000" preserveAspectRatio="none" clipPath="url(#aberration-active-zone)" pointerEvents="none"/>}</>}
@@ -150,7 +147,7 @@ export default function IslandNativeMap({pins=[],stops=[],selectedId=null,onSele
     </g>)}
     {areaPolygon.length>1&&<polyline points={areaLine} fill="none" stroke="#dda2ff" strokeWidth="3" strokeDasharray="8 6" vectorEffect="non-scaling-stroke" pointerEvents="none"/>}
     {areaPolygon.length>=3&&<polygon points={areaLine} fill="#b38af0" fillOpacity=".17" stroke="#d9b1ff" strokeWidth="3" strokeDasharray="8 6" vectorEffect="non-scaling-stroke" pointerEvents="none"/>}
-    {areaPolygon.map((p,i)=><g key={'area-'+i} pointerEvents="none"><circle cx={p.lon*10} cy={p.lat*10} r="7" fill="#dfb3ff" stroke="#190b24" strokeWidth="2"/><text x={p.lon*10} y={p.lat*10+3} textAnchor="middle" fontSize="8" fontWeight="700" fill="#180c20">{i+1}</text></g>)}
+    {areaPolygon.map((p,i)=><g key={'area-'+i} data-area-corner={i+1} pointerEvents="none"><circle cx={p.lon*10} cy={p.lat*10} r="7" fill="#dfb3ff" stroke="#190b24" strokeWidth="2"/><text x={p.lon*10} y={p.lat*10+3} textAnchor="middle" fontSize="8" fontWeight="700" fill="#180c20">{i+1}</text></g>)}
     {plannedStops.length>1&&<polyline points={planPath} fill="none" stroke="#ffe08c" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" opacity=".95" pointerEvents="none"/>}
     {plannedStops.map((p,i)=><g key={'route-'+p.id} pointerEvents="none"><circle cx={p.lon*10} cy={p.lat*10} r="11" fill="#ffe08c" stroke="#1a2534" strokeWidth="3" vectorEffect="non-scaling-stroke"/><text x={p.lon*10} y={p.lat*10+3.7} fontSize="11" textAnchor="middle" fontWeight="800" fill="#172434">{i+1}</text></g>)}
     {stops.length>1&&<polyline points={routePath} fill="none" stroke="#f5c25b" strokeWidth="6" strokeLinejoin="round" strokeLinecap="round" vectorEffect="non-scaling-stroke" opacity=".9" pointerEvents="none"/>}

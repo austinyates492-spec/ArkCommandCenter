@@ -13,6 +13,7 @@ export function insideFarmingArea(point,polygon){
   // A point precisely on the drawn boundary counts as inside.
   const cross=(x-a.lon)*(b.lat-a.lat)-(y-a.lat)*(b.lon-a.lon);
   const dot=(x-a.lon)*(x-b.lon)+(y-a.lat)*(y-b.lat);
+  if(a.lon===b.lon&&a.lat===b.lat){if(x===a.lon&&y===a.lat)return true;continue;}
   if(Math.abs(cross)<1e-8&&dot<=0)return true;
   if((a.lat>y)!==(b.lat>y)&&x<(b.lon-a.lon)*(y-a.lat)/(b.lat-a.lat)+a.lon)inside=!inside;
  }

@@ -1,0 +1,5 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {gpsAtScreen,mapFraction,centeredMapViewport} from './map-pointer-geometry.js';
+function mockSvg(scale,left,top){return {getScreenCTM:()=>({inverse:()=>({scale,left,top})}),createSVGPoint:()=>({x:0,y:0,matrixTransform(m){return {x:(this.x-m.left)/m.scale,y:(this.y-m.top)/m.scale};}})};}
+test('GPS matches real SVG letterboxed terrain and ignores side gutters',()=>{const svg=mockSvg(.7,150,80),v={x:0,y:0,extent:1000};assert.deepEqual(gpsAtScreen(svg,500,220,v),{lat:20,lon:50});assert.equal(gpsAtScreen(svg,120,220,v),null);});
+test('GPS remains exact after zoom, pan and a layout shift',()=>{const v={x:300,y:400,extent:250};const svg=mockSvg(2,-500,-680);assert.deepEqual(gpsAtScreen(svg,300,320,v),{lat:50,lon:40});assert.deepEqual(mapFraction(svg,300,320,v),{x:.4,y:.4});assert.equal(gpsAtScreen(svg,50,320,v),null);});
+test('pan origin clamps to actual displayed view instead of drifting beyond the map',()=>{assert.deepEqual(centeredMapViewport(-100,2000,250),{x:0,y:750,extent:250});});

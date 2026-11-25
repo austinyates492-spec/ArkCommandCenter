@@ -34,3 +34,5 @@
 .shell .island-zone-select select{width:auto;max-width:220px;min-height:40px;min-width:168px;border:1px solid var(--ark-border);border-radius:9px;padding:7px 10px;color:var(--ark-heading);background:var(--ark-deep);font-size:12px}
 .shell .island-zone-note{padding:9px 12px;border:1px solid var(--ark-border);border-radius:9px;background:var(--ark-deep);color:var(--ark-muted);font-size:11px;line-height:1.5}
 @media(max-width:750px){.shell .island-map-actions .island-zone-select{justify-content:space-between;width:100%}.shell .island-zone-select select{max-width:72%;flex:1}}
+
+.shell .island-map-frame.island-map-drawing svg,.shell .island-map-frame.island-map-drawing svg:active{cursor:crosshair}

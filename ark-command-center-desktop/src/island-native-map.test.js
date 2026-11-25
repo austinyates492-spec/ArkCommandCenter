@@ -35,8 +35,7 @@ test('mobile layout has touch sized controls',()=>{
 });
 
 test('GPS calibration inspection follows same 1000 square coordinate plane as plotted pins',()=>{
- assert.ok(native.includes('(offsetX+px*extent)/10'));
- assert.ok(native.includes('(offsetY+py*extent)/10'));
+ assert.ok(native.includes('gpsAtScreen(event.currentTarget,event.clientX,event.clientY,viewport)'));
  assert.ok(native.includes('setInspected(position)'));
  assert.ok(native.includes('inspected.lon.toFixed(1)'));
  assert.ok(native.includes('inspected.lat.toFixed(1)'));

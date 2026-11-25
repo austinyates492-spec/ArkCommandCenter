@@ -68,3 +68,6 @@ test('concave region routes use boundary waypoints instead of drawing through ex
  assert.ok(route.length>2, 'Expected intermediate polygon-boundary corners');
  for(let i=1;i<route.length;i++)assert.ok(gpsSegmentInsideArea(route[i-1],route[i],concave),'Every visible line segment must stay in area');
 });
+
+test('repeated corners do not classify outside sites as inside',()=>{const repeated=[square[0],square[0],...square.slice(1)];assert.equal(insideFarmingArea({lat:92,lon:92},repeated),false);assert.equal(insideFarmingArea({lat:40,lon:40},repeated),true);});
+test('route resource selections control live map markers independently of resource atlas filters',()=>{const page=readFileSync(new URL('./ResourcePage.jsx',import.meta.url),'utf8');assert.ok(page.includes("const mapEnabled=tab==='routes'?activeRouteTypes:enabled"));assert.ok(page.includes('enabledResources={mapEnabled}'));assert.ok(page.includes('types:activeRouteTypes'));assert.ok(page.includes('aria-label="Farming route resources"'));});

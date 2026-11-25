@@ -121,3 +121,5 @@
  .shell .atlas-v3-grid.atlas-v3-resource-layout{grid-template-columns:clamp(180px,13vw,220px) minmax(0,1fr) clamp(210px,15vw,250px);grid-template-areas:'controls map guide';gap:10px;align-items:start}
 }
 @media(max-width:1099px){.shell .atlas-v3-resource-layout>.farming-guide{margin:0;min-width:0}}
+
+.shell .atlas-route-resource-filters button{min-height:44px;touch-action:manipulation}.shell .atlas-route-resource-filters button[aria-pressed="true"]{border-color:var(--ark-accent);box-shadow:inset 0 0 0 1px var(--ark-accent)}
