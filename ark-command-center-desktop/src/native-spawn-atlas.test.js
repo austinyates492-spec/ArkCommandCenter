@@ -50,13 +50,19 @@ test('all imported record regions and selection weights are finite, source-backe
  assert.ok(totalRecords>=160000,'expected full spawn rectangles, not only handpicked species');
 });
 test('relative tiers never claim a real per-creature encounter probability',()=>{
- assert.equal(relativeSpawnTier(.8),'higher');
+ assert.equal(relativeSpawnTier(.8),'veryHigh');
+ assert.equal(relativeSpawnTier(.5),'higher');
  assert.equal(relativeSpawnTier(.3),'moderate');
  assert.equal(relativeSpawnTier(.1),'lower');
  assert.equal(relativeSpawnTier(.005),'rare');
  const source=load('The Island');
  const castor=spawnZonesForCreature(source,'Castoroides','The Island');
  assert.ok(castor.count>=6);
+ assert.ok(castor.zones.every(p=>p.tier==='unverified'));
+ const quetzal=spawnZonesForCreature(source,'Quetzal','The Island');
+ assert.ok(quetzal.count>0);
+ assert.ok(quetzal.zones.every(p=>p.tier==='unverified'));
+ assert.ok(spawnZonesForCreature(source,'Castoroides','The Island','all','weight').zones.every(p=>p.tier!=='unverified'));
  assert.ok(castor.zones.every(p=>p.weight>0&&p.weight<=1));
  assert.equal(spawnLocationCoverage(source,'Nonexistent Creature','The Island').documented,false);
  assert.equal(spawnZonesForCreature(source,'Nonexistent Creature','The Island').count,0);

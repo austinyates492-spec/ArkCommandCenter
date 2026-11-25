@@ -3,25 +3,9 @@
  * with rectangles in [latitude 1, longitude 1, latitude 2, longitude 2].
  * Relative share is NOT the probability of a living creature at this point.
  */
-export const spawnTierColors={
- higher:'#47e1a1',
- moderate:'#f4d16c',
- lower:'#fb9749',
- rare:'#ed7185'
-};
-export const spawnTierNames={
- higher:'Higher relative weight',
- moderate:'Moderate relative weight',
- lower:'Lower relative weight',
- rare:'Very low relative weight'
-};
-export const spawnTierOptions=[
- {value:'all',label:'All likelihood levels'},
- {value:'higher',label:'Higher (green)'},
- {value:'moderate',label:'Moderate (yellow)'},
- {value:'lower',label:'Lower (orange)'},
- {value:'rare',label:'Very low (red)'}
-];
+export const spawnTierColors={veryHigh:'#22c55e',higher:'#84cc16',moderate:'#eab308',lower:'#f97316',rare:'#ef4444',unverified:'#737373'};
+export const spawnTierNames={veryHigh:'Very high',higher:'High',moderate:'Moderate',lower:'Low',rare:'Very low',unverified:'Unverified likelihood'};
+export const spawnTierOptions=[{value:'all',label:'All documented regions'},...Object.entries(spawnTierNames).filter(([key])=>key!=='unverified').map(([value,label])=>({value,label:label+' relative weight'}))];
 export const terrainForSpawnMap={
  'The Island':'/maps/the-island-asa.jpg',
  'Scorched Earth':'/maps/scorched-earth-asa.jpg',
@@ -72,19 +56,20 @@ export function findSpawnSpecies(dataset,creature,map){
  return [];
 }
 export function relativeSpawnTier(weight){
+ if(weight>=.75)return 'veryHigh';
  if(weight>=.45)return 'higher';
  if(weight>=.15)return 'moderate';
  if(weight>=.04)return 'lower';
  return 'rare';
 }
-export function spawnZonesForCreature(dataset,creature,map,layer='all'){
+export function spawnZonesForCreature(dataset,creature,map,layer='all',mode='documented'){
  const matched=findSpawnSpecies(dataset,creature,map);
  const zones=[];
  for(const species of matched){
   for(const row of dataset.species[species]||[]){
    const [pos,weight,container,flags]=row;
    if(!Array.isArray(pos)||(pos.length!==2&&pos.length!==4)||!Number.isFinite(weight))continue;
-   const tier=relativeSpawnTier(weight);
+   const tier=mode==='weight'?relativeSpawnTier(weight):'unverified';
    if(layer!=='all'&&tier!==layer)continue;
    zones.push({pos,weight,tier,species,container,flags});
   }

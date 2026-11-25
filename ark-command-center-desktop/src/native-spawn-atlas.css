@@ -13,7 +13,7 @@
 .native-spawn-tabs{display:flex;gap:6px;flex-wrap:wrap}
 .native-spawn-tabs button{border:1px solid var(--ark-border);background:var(--ark-surface);color:var(--ark-heading);font-size:12px;padding:10px 12px;border-radius:8px;min-height:44px;font-weight:750}
 .native-spawn-tabs button.active{border-color:var(--ark-accent);color:var(--ark-bright);background:color-mix(in srgb,var(--ark-accent) 12%,var(--ark-deep))}
-.native-spawn-legend{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.native-spawn-legend{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
 .native-spawn-legend>div{display:flex;align-items:center;gap:8px;border:1px solid var(--ark-border);padding:8px 10px;border-radius:8px;background:var(--ark-deep);color:var(--ark-heading);font-size:11px}
 .native-spawn-swatch{width:12px;height:12px;min-width:12px;border-radius:3px}
 .native-spawn-summary,.native-spawn-message{display:flex;align-items:flex-start;gap:9px;padding:10px 12px;background:var(--ark-deep);border:1px solid var(--ark-border);border-radius:9px;color:var(--ark-heading);line-height:1.5;font-size:12px}
