@@ -1,6 +1,8 @@
 import React,{useMemo,useRef,useState} from 'react';
 import {Compass,MapPin,Layers,Plus,Minus,RotateCcw,Search,Route,Trash2,LocateFixed,CheckCheck,X,Info,ExternalLink} from 'lucide-react';
 import {islandResources,islandSeedMarkers,islandResourceSources,normalizeIslandMarker,mapPoint} from './island-resource-data.js';
+import {maps,resources,resourceMapUrl,wikiResourceMapUrl} from './data';
+import EmbeddedMap from './EmbeddedMap';
 import './resource-atlas-native.css';
 
 const defaultSelected=islandResources.map(r=>r.name);
@@ -15,7 +17,7 @@ function clampView(view){
  const height=width;
  return {x:Math.max(0,Math.min(1000-width,view.x)),y:Math.max(0,Math.min(1000-height,view.y)),width,height};
 }
-export default function ResourcePage(){
+function IslandAtlas({onMapChange}){
  const [selected,setSelected]=useState(()=>{const saved=readSaved('ark.atlas.island.layers',defaultSelected);return Array.isArray(saved)?saved.filter(x=>resourceByName[x]):defaultSelected;});
  const [custom,setCustom]=useState(()=>{const saved=readSaved('ark.atlas.island.pins',[]);return Array.isArray(saved)?saved.filter(validMarker).slice(0,250):[];});
  const [route,setRoute]=useState(()=>{const saved=readSaved('ark.atlas.island.route',[]);return Array.isArray(saved)?saved.filter(x=>typeof x==='string').slice(0,50):[];});
@@ -99,7 +101,7 @@ export default function ResourcePage(){
    <section className="panel atlas-native-map-panel">
     <div className="atlas-native-head"><h2>Native Island Map</h2><span className="atlas-native-chip">GPS 0–100</span></div>
     <div className="atlas-native-toolbar">
-     <div className="atlas-native-map-choice"><MapPin size={16}/> The Island · ASA <span>Map 01</span></div>
+     <div className="atlas-native-map-choice"><MapPin size={16}/><label className="atlas-native-map-pick"><span>ARK Map</span><select aria-label="Choose ARK map" value="The Island" onChange={e=>onMapChange(e.target.value)}>{maps.map(m=><option key={m}>{m}</option>)}</select></label></div>
      <div className="atlas-native-search"><Search size={16}/><input aria-label="Search resource types" placeholder="Filter resource names..." value={query} onChange={e=>setQuery(e.target.value)}/></div>
     </div>
     <div className="atlas-native-map-holder">
@@ -170,5 +172,25 @@ export default function ResourcePage(){
    </div>
   </div>
   <section className="panel atlas-native-sources"><h2>Resource coverage and sources</h2><p>The resource catalog reflects the 13 published Island map layers. The official wiki's full resource-node dataset was not directly available for validated reuse, and its licensable material carries noncommercial terms. The native map uses our own schematic artwork, a small set of separately attributed unverified samples, and your local pins.</p><div><a href={islandResourceSources.catalog} target="_blank" rel="noopener noreferrer">ASA resource layer catalog <ExternalLink size={12}/></a><a href={islandResourceSources.samples} target="_blank" rel="noopener noreferrer">Community GPS sample source <ExternalLink size={12}/></a><a href={islandResourceSources.wiki} target="_blank" rel="noopener noreferrer">Official wiki reference <ExternalLink size={12}/></a></div></section>
+ </div>;
+}
+
+/** Preserve legacy embedded map support for all other official maps until their
+ * independent native datasets can be licensed and verified. */
+export default function ResourcePage(){
+ const [map,setMap]=useState('The Island');
+ const [resource,setResource]=useState('Metal');
+ if(map==='The Island')return <IslandAtlas onMapChange={setMap}/>;
+ return <div className="resource-atlas-native">
+  <div className="pagetitle"><span className="eyebrow">FIELD SURVIVAL / LEGACY MAP PROVIDER</span><h1>Resource Atlas</h1><p>The native resource explorer currently covers The Island. Other maps retain their original third-party provider until native data is available.</p></div>
+  <section className="panel">
+   <div className="atlas-native-head"><h2>Other ARK Maps</h2><span className="atlas-native-chip">LEGACY VIEWER</span></div>
+   <div className="resourceFilters">
+    <label className="field"><span>ARK MAP</span><select value={map} onChange={e=>setMap(e.target.value)}>{maps.map(m=><option key={m}>{m}</option>)}</select></label>
+    <label className="field"><span>RESOURCE TYPE</span><select value={resource} onChange={e=>setResource(e.target.value)}>{resources.map(r=><option key={r}>{r}</option>)}</select></label>
+   </div>
+   <EmbeddedMap key={map} url={resourceMapUrl(map)} alternativeUrl={wikiResourceMapUrl(map)} title={map+' Resource Atlas'} selection={resource} kind="resource"/>
+   <div className="notice">This map still uses the previous external provider; native Island GPS coordinates are not projected onto other maps.</div>
+  </section>
  </div>;
 }
