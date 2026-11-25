@@ -45,5 +45,5 @@ test('Center native viewer has honest attribution, source layers and saved route
  assert.ok(page.includes("savedPlans.filter(p=>p.map===map).map"));
  assert.ok(page.includes('plannedStops={generated?.stops||[]}'));
  assert.ok(map.includes("resourceSource.verifiedASA===false"));
- assert.ok(map.includes('These are NOT ASA-verified positions'));
+ assert.ok(map.includes('these are NOT ASA-verified positions'));
 });
