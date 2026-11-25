@@ -3,33 +3,32 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 const page=readFileSync(new URL('./ResourcePage.jsx',import.meta.url),'utf8');
 const data=readFileSync(new URL('./data.js',import.meta.url),'utf8');
-const style=readFileSync(new URL('./resource-atlas-native.css',import.meta.url),'utf8');
+const style=readFileSync(new URL('./atlas-production.css',import.meta.url),'utf8');
 const embedded=readFileSync(new URL('./EmbeddedMap.jsx',import.meta.url),'utf8');
-test('The Island displays authentic provider-owned artwork and pins, not a fabricated map',()=>{
+test('resource atlas uses authentic provider maps and no fictional terrain or fabricated pins',()=>{
  assert.ok(page.includes('resourceMapUrl(map)'));
  assert.ok(page.includes('wikiResourceMapUrl(map)'));
  assert.ok(page.includes('<EmbeddedMap key={map}'));
- assert.ok(page.includes("const island=map==='The Island'"));
  assert.ok(data.includes('https://wikily.gg/ark-survival-ascended/maps/'));
  assert.ok(data.includes('https://ark.wiki.gg/wiki/Resource_Map/'));
  assert.ok(!page.includes('islandSeedMarkers'));
- assert.ok(!page.includes('<svg'));
- assert.ok(!page.includes('<image href='));
  assert.ok(!page.includes('SCHEMATIC TERRAIN'));
+ assert.ok(!page.includes('<image href='));
 });
-test('reference map controls are explicit about provider-owned filters and embedding fallback',()=>{
- assert.ok(page.includes("Use the map's <b>Resources</b> layers"));
- assert.ok(page.includes('cannot safely change another site'));
- assert.ok(page.includes('Open genuine Island resource map'));
- assert.ok(page.includes('Official community wiki reference'));
+test('provider resource overlays remain separate from the local filter controls',()=>{
+ assert.ok(page.includes('Use the embedded map’s own layer controls'));
+ assert.ok(page.includes('the two sets cannot be synchronized'));
+ assert.ok(page.includes('Open detailed map'));
+ assert.ok(page.includes('Official community wiki map'));
  assert.ok(embedded.includes('Open Full Map'));
  assert.ok(embedded.includes('allow-scripts allow-same-origin'));
 });
-test('legacy maps remain available with full provider selection and map switching',()=>{
+test('official map selector and personal GPS tools are available without replacing source data',()=>{
  assert.ok(page.includes('maps.map(m=><option key={m}>{m}</option>)'));
- assert.ok(page.includes('setMap(e.target.value)'));
- assert.ok(page.includes("!island&&"));
+ assert.ok(page.includes('changeMap(e.target.value)'));
+ assert.ok(page.includes('checkAtlasPin(form,map)'));
+ assert.ok(page.includes('Add to Farming Route'));
 });
-test('authentic map has theme-matched mobile layout and external fallback',()=>{
- for(const expected of ['.resource-authentic-accuracy','.resource-authentic-panel .embedded-atlas iframe','@media(max-width:430px)','--ark-accent','--ark-border'])assert.ok(style.includes(expected));
+test('authentic map keeps theme-aware mobile layout and external links',()=>{
+ for(const expected of ['.atlas-v3-source-explainer','.atlas-v3-main .embedded-atlas iframe','@media(max-width:420px)','--ark-accent','--ark-border'])assert.ok(style.includes(expected));
 });
