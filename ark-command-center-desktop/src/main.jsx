@@ -1,8 +1,7 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {LayoutDashboard,Compass,Timer,Settings,Shield,Search,Plus,Trash2,ExternalLink,ChevronRight,Server,Activity,Egg,Calculator,CheckCircle2,Clock3,MapPin,Bell,Save,Layers,Cloud,Menu,X,Crosshair,Hand,Wrench} from 'lucide-react';
+import {LayoutDashboard,Timer,Settings,Shield,Search,Plus,Trash2,ExternalLink,ChevronRight,Server,Activity,Egg,Calculator,CheckCircle2,Clock3,MapPin,Bell,Save,Layers,Cloud,Menu,X,Crosshair,Hand,Wrench} from 'lucide-react';
 import ResourcePage from './ResourcePage';
-import SpawnPage from './SpawnPage';
 import TamingLab from './TamingLab';
 import SpecialtyLab from './SpecialtyLab';
 import BreedingLab from './BreedingLab';
@@ -28,7 +27,7 @@ import CatalogUpdatesPage from './CatalogUpdatesPage.jsx';
 import AppUpdater from './AppUpdater.jsx';
 import MobileInstall from './MobileInstall.jsx';
 import AdPlacement from './AdPlacement.jsx';
-import {species,maps,tameCreatures,defaults,hoursText,creatureSpawnUrl} from './data';
+import {species,maps,tameCreatures,defaults,hoursText} from './data';
 import './style.css';
 import './maps.css';
 import './resources.css';
@@ -38,7 +37,7 @@ import './premium.css';
 import './personality.css';
 import './mobile-polish.css';
 
-const nav=[['overview','Overview',LayoutDashboard],['taming','Taming Lab',Calculator],['breeding','Breeding Lab',Egg],['crafting','Crafting Lab',Layers],['tribe-crafting','Tribe Crafting',Layers],['servers','Server Intel',Server],['maps','Spawn Maps',Compass],['resources','Resource Atlas',Layers],['timers','Live Timers',Timer],['cloud','Tribe Cloud',Cloud],['settings','Settings',Settings]];
+const nav=[['overview','Overview',LayoutDashboard],['taming','Taming Lab',Calculator],['breeding','Breeding Lab',Egg],['crafting','Crafting Lab',Layers],['tribe-crafting','Tribe Crafting',Layers],['servers','Server Intel',Server],['resources','Resource Atlas',Layers],['timers','Live Timers',Timer],['cloud','Tribe Cloud',Cloud],['settings','Settings',Settings]];
 const tamingModes=[['taming','Knockout Tames',Crosshair],['passive','Passive Tames',Hand],['specialty','Specialty Taming',Wrench]];
 const isTamingPage=page=>tamingModes.some(([key])=>key===page);
 const statusColors={'Available':'green','Contested':'gold','Locked Down':'red','Unscouted':'muted'};
@@ -163,7 +162,6 @@ function App(){
    </div></section>}
   {page==='breeding'&&<BreedingLab rates={rates} onTimer={addTimer} clusterId={clusterId}/>}
   {page==='servers'&&<ServerIntelPage live={live} user={cloud.user} servers={servers} onOpenAccount={()=>setPage('cloud')}/>}
-  {page==='maps'&&<SpawnPage/>}
   {page==='resources'&&<ResourcePage/>}
   {page==='timers'&&<LiveTimersPage live={live} user={cloud.user} now={now-live.clockOffsetMs} onAdd={addTimer} onOpenAccount={()=>setPage('cloud')} onTestSound={()=>void unlockTimerAudio().then(ok=>{if(ok)playTimerAlarm();}).catch(()=>{})}/>}
   {page==='settings'&&<ClusterSettings rates={rates} setRates={updateRates} clusterId={clusterId} onClusterChange={onClusterChange}/>}

@@ -50,3 +50,12 @@ test('top selector styling is theme-aware and usable on small screens',()=>{
  assert.match(css,/@media\(max-width:700px\)/);
  assert.match(css,/\.taming-mode-tab:focus-visible/);
 });
+
+test('spawn atlas is only exposed within creature taming pages',()=>{
+ const main=src('main.jsx');
+ assert.doesNotMatch(main,/Spawn Maps|SpawnPage|page==='maps'/);
+ for(const name of ['TamingLab.jsx','PassiveLab.jsx','SpecialtyLab.jsx']){
+  assert.match(src(name),/<TameSpawnAtlas creature=\{creature\} map=\{map\}\/>/);
+ }
+ assert.match(main,/\['resources','Resource Atlas',Layers\]/);
+});
