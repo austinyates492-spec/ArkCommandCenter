@@ -8,9 +8,20 @@
 .shell .island-map-actions button{display:grid;place-items:center;width:44px;height:44px;border:1px solid var(--ark-border);background:var(--ark-deep);border-radius:8px;color:var(--ark-bright)}
 .shell .island-map-actions label{display:flex;align-items:center;gap:6px;min-height:44px;color:var(--ark-muted);font-size:12px}
 .shell .island-map-frame{position:relative;aspect-ratio:1;width:100%;max-height:760px;min-width:0;overflow:hidden;border:1px solid var(--ark-border);border-radius:12px;background:#0a1422}
-.shell .island-map-frame svg{display:block;width:100%;height:100%;touch-action:manipulation}
+.shell .island-map-frame svg{display:block;width:100%;height:100%;touch-action:none}
 .shell .island-map-watermark{position:absolute;bottom:10px;left:10px;right:10px;display:flex;align-items:center;gap:6px;width:fit-content;max-width:calc(100% - 20px);padding:8px 10px;background:rgba(5,10,18,.9);border:1px solid #4b617a;border-radius:7px;font-size:11px;color:#d8e5f3}
 .shell .island-map-caption{display:flex;gap:8px;align-items:flex-start;line-height:1.6;color:var(--ark-muted);font-size:11px}
 .shell .island-map-caption svg{flex-shrink:0;margin-top:2px;color:var(--ark-bright)}
 .shell .island-map-selection{padding:10px;border-radius:8px;border:1px solid var(--ark-border);background:var(--ark-deep);font-size:12px;color:var(--ark-heading)}
 @media(max-width:750px){.shell .island-map-frame{max-height:none}.shell .island-map-toolbar{align-items:stretch}.shell .island-map-actions{justify-content:flex-start}.shell .island-map-watermark{font-size:10px}.shell .island-map-actions button{min-width:44px}}
+
+/* Inspection sits below the image to avoid obscuring terrain or resource nodes. */
+.shell .island-map-inspection{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:12px;background:var(--ark-deep);border:1px solid var(--ark-border);border-radius:10px}
+.shell .island-map-inspection>div{display:grid;gap:5px;min-width:0;flex:1;color:var(--ark-heading);font-size:12px}
+.shell .island-map-inspection strong{display:flex;align-items:center;gap:6px;color:var(--ark-bright)}
+.shell .island-map-inspection span{color:var(--ark-heading)}
+.shell .island-map-inspection small{font-size:11px;color:var(--ark-muted);line-height:1.5}
+.shell .island-map-create-pin{display:flex;align-items:center;justify-content:center;gap:7px;min-height:44px;padding:10px 13px;border-radius:9px;border:1px solid var(--ark-border);color:var(--ark-bright);background:var(--ark-surface);font-size:12px;font-weight:700}
+.shell .island-map-create-pin:disabled{opacity:.4;cursor:not-allowed}
+.shell .atlas-v3-personal-only{display:block;font-size:9px;line-height:1.4;color:var(--ark-muted);font-weight:400}
+@media(max-width:750px){.shell .island-map-inspection{align-items:stretch}.shell .island-map-create-pin{width:100%}}
