@@ -48,3 +48,30 @@ if info:
    buf=io.BytesIO();img.convert("RGB").save(buf,format="JPEG",quality=90);data_bytes=buf.getvalue()
  dest=Path("ark-command-center-desktop/public/maps/astraeos-asa.jpg");dest.parent.mkdir(parents=True,exist_ok=True);dest.write_bytes(data_bytes)
  print("IMPORTED ASA ART",len(data_bytes),"FORMAT",fn,flush=True)
+
+# The explorer overlay (if available) may contain oil/water/gas veins, caves,
+# artifacts and drops, independent of the absent resource dataset.
+for explorer in ["Data:Maps/Explorer/Astraeos","Data:Maps/Explorer/Astraeos/ASA","Data:Maps/Exploration/Astraeos","Data:Maps/Explorer/Astreos"]:
+ try:
+  r=S.get(API,params={"action":"query","titles":explorer,"prop":"revisions","rvprop":"content|ids","rvslots":"main","format":"json"},timeout=25);r.raise_for_status()
+  page=list(r.json()["query"]["pages"].values())[0]
+  if "revisions" not in page: print("EXPLORER MISSING",explorer,flush=True);continue
+  rv=page["revisions"][0];obj=json.loads(rv["slots"]["main"]["*"])
+  print("EXPLORER SOURCE",explorer,"REV",rv["revid"],"KEYS",list(obj.keys()),flush=True)
+  print("EXPLORER CATEGORIES",[(k,len(v)) for k,v in obj.get("markers",{}).items()],flush=True)
+  ep=[];skip=[]
+  for cat,entries in obj.get("markers",{}).items():
+   if not any(term in cat.lower() for term in ["oil-vein","oil vein","gas-vein","gas vein","water-vein","water vein"]):continue
+   for i,p in enumerate(entries):
+    lat=p.get("lat",p.get("y"));lon=p.get("lon",p.get("x"))
+    if not isinstance(lat,(int,float)) or not isinstance(lon,(int,float)) or not(0<=lat<=100 and 0<=lon<=100):
+     skip.append((cat,i));continue
+    ep.append({"id":f"explorer-{cat}-{i}","category":cat,"lat":round(lat,3),"lon":round(lon,3),"name":str(p.get("name",""))[:90]})
+  print("EXPLORER VEIN ENTRIES",len(ep),"OMITTED",len(skip),flush=True)
+  if ep:
+   Path("ark-command-center-desktop/src/astraeos-wiki-explorer-veins.json").write_text(json.dumps({
+    "source":"https://ark.wiki.gg/wiki/"+explorer.replace(" ","_"),
+    "revision":rv["revid"],"verifiedASA":True,"omittedOutOfBoundsCount":len(skip),
+    "points":ep},separators=(",",":"))+"\\n")
+  break
+ except Exception as e: print("EXPLORER ERROR",explorer,str(e),flush=True)
