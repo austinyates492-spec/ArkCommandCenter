@@ -71,3 +71,8 @@
 @media(max-width:1190px){.shell .atlas-native-workspace{grid-template-columns:minmax(0,1fr)}.shell .atlas-native-side{grid-template-columns:repeat(2,minmax(0,1fr))}.shell .atlas-native-side>section:last-child{grid-column:1/-1}}
 @media(max-width:750px){.shell .atlas-native-side{grid-template-columns:minmax(0,1fr)}.shell .atlas-native-side>section:last-child{grid-column:auto}.shell .atlas-native-resource-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.shell .atlas-native-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:480px){.shell .atlas-native-map-holder{aspect-ratio:1/1.02;min-height:290px}.shell .atlas-native-resource-grid{gap:6px}.shell .atlas-native-resource-choice{padding:9px 7px;gap:5px;font-size:10px}.shell .atlas-native-resource-choice small{font-size:8px}.shell .atlas-native-toolbar{align-items:stretch}.shell .atlas-native-search{max-width:none;flex:1 1 100%}.shell .atlas-native-map-title{font-size:9px}}
+
+.shell .atlas-native-map-pick{display:flex;align-items:center;gap:9px;min-width:0}
+.shell .atlas-native-map-pick span{font-size:10px;color:var(--ark-muted);white-space:nowrap}
+.shell .atlas-native-map-pick select{width:auto;max-width:210px;min-width:125px;font-size:12px;color:var(--ark-heading);background:var(--ark-surface-2);border:1px solid var(--ark-line);border-radius:8px;padding:9px}
+@media(max-width:480px){.shell .atlas-native-map-pick span{display:none}.shell .atlas-native-map-pick select{max-width:100%;width:180px;font-size:16px}}
