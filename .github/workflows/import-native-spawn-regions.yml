@@ -1,0 +1,24 @@
+name: Import Wiki ASA native creature spawn region source data
+on:
+  push:
+    branches: [feature/native-spawn-heatmaps-20261125]
+  workflow_dispatch:
+permissions: {contents: write}
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          python -m pip install --quiet requests
+          python scripts/import-creature-spawn-regions.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ark-command-center-desktop/src/spawn-source/
+          if ! git diff --cached --quiet; then
+            git commit -m "Import all available ASA wiki per-species spawn region rectangles"
+            git pull --rebase origin feature/native-spawn-heatmaps-20261125
+            git push
+          fi
