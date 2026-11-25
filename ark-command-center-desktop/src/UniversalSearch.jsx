@@ -1,5 +1,5 @@
 import React,{useEffect,useMemo,useRef,useState} from 'react';
-import {Search,X,ArrowRight,Clock3,Layers,MapPin,Egg,Crosshair,Package,Map,Command} from 'lucide-react';
+import {Search,X,ArrowRight,Clock3,Layers,MapPin,Egg,Crosshair,Package,Map as MapIcon,Command} from 'lucide-react';
 import {buildSearchIndex,searchWorkspace} from './universal-search-model.js';
 import {vanillaTamesByMethod,vanillaKnockoutRoster} from './vanilla-tame-picker.js';
 import {species,maps} from './data.js';
@@ -8,8 +8,8 @@ import {starterRecipes} from './crafting-recipes.js';
 import wikiRecipes from './wiki-crafting-recipes.json' with {type:'json'};
 import communityRecipes from './community-crafting-recipes.json' with {type:'json'};
 import './universal-search.css';
-const icons={'Active timers':Clock3,'Tribe crafting':Layers,'Saved map pins':MapPin,Creatures:Crosshair,Breeding:Egg,Recipes:Package,Resources:MapPin,Maps:Map,Tools:Command};
-const creatures=[...new Map([...vanillaKnockoutRoster.map(name=>[name,{name,page:'taming'}]),...vanillaTamesByMethod.specialty.map(name=>[name,{name,page:'specialty'}]),...vanillaTamesByMethod.passive.map(name=>[name,{name,page:'passive'}])]).values()];
+const icons={'Active timers':Clock3,'Tribe crafting':Layers,'Saved map pins':MapPin,Creatures:Crosshair,Breeding:Egg,Recipes:Package,Resources:MapPin,Maps:MapIcon,Tools:Command};
+const creatures=[...new globalThis.Map([...vanillaKnockoutRoster.map(name=>[name,{name,page:'taming'}]),...vanillaTamesByMethod.specialty.map(name=>[name,{name,page:'specialty'}]),...vanillaTamesByMethod.passive.map(name=>[name,{name,page:'passive'}])]).values()];
 const mapResources=Object.fromEntries(maps.map(map=>[map,resourcesForMap(map).map(r=>r.id)]));
 const tools=[{title:'Taming Lab',page:'taming'},{title:'Breeding Lab',page:'breeding'},{title:'Crafting Lab',page:'crafting'},{title:'Tribe Crafting',page:'tribe-crafting'},{title:'Resource Atlas',page:'resources'},{title:'Live Timers',page:'timers'},{title:'Server Intel',page:'servers'},{title:'Tribe Cloud',page:'cloud'},{title:'Settings',page:'settings'}];
 const read=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key))??fallback;}catch{return fallback;}};

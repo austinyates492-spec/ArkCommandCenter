@@ -31,7 +31,8 @@ try{
     const ctx=await browser.newContext({...profile,viewport:{width,height:844}});
     try{
      const page=await ctx.newPage(),errors=[];
-     page.on('pageerror',e=>errors.push(String(e)));
+     page.on('pageerror',e=>{errors.push(String(e));console.error('Browser page error:',e.stack||String(e));});
+     page.on('console',msg=>{if(msg.type()==='error')console.error('Browser console:',msg.text());});
      await page.goto(origin,{waitUntil:'domcontentloaded'});
      await page.locator('.shell').waitFor({timeout:25000});
      const skip=page.getByRole('button',{name:'Skip intro',exact:true});
@@ -78,7 +79,7 @@ try{
      await page.getByRole('dialog',{name:'Search ARK Tribe HQ',exact:true}).waitFor({state:'hidden'});
      assert.deepEqual(errors,[],kind+' '+width+' unhandled browser errors');
      console.log('PASS '+kind+' '+width+'px: startup, mobile menu, all taming tabs, search, Rex, Aberration zones, crafting, breeding, atlas');
-    }finally{await ctx.close();}
+    }catch(error){console.error('Mobile scenario failed:',kind,width, error);throw error;}finally{await ctx.close();}
    }
   }finally{await browser.close();}
  }
