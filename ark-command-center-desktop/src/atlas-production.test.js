@@ -22,7 +22,7 @@ test('GPS pins require real user inputs and per-map valid resource types',()=>{
  assert.throws(()=>checkAtlasPin({resource:'Metal',lat:44,lon:-10},'The Island'),/between 0 and 100/);
 });
 test('native V3 overlays are honest about source map independence',()=>{
- for(const s of ['Select All','Deselect All','Farming Routes','My Pins','<EmbeddedMap key={map}','source map’s own Resources layers','map’s own layer controls','Your GPS entry','saveLocal(STORE','Add to Farming Route','BROWSER-LOCAL'])assert.ok(page.includes(s),s);
+ for(const s of ['Select All','Deselect All','Farming Routes','My Pins',"map==='The Island'?<IslandNativeMap",'Published resource nodes are not imported yet.','first-party GPS workspace','Your GPS entry','saveLocal(STORE','Add to Farming Route','BROWSER-LOCAL'])assert.ok(page.includes(s),s);
  assert.ok(!page.includes('islandSeedMarkers'));
  assert.ok(!page.includes('SCHEMATIC TERRAIN'));
  assert.ok(!page.includes('Map terrain is an original schematic'));

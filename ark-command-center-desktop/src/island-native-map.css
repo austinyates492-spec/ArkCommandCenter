@@ -1,0 +1,16 @@
+/* Independent first-party GPS map. No third-party iframes or map tiles. */
+.shell .island-native-map{display:grid;gap:10px;min-width:0}
+.shell .island-map-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.shell .island-map-toolbar>div:first-child{display:grid;gap:3px}
+.shell .island-map-toolbar strong{font-size:13px;color:var(--ark-heading)}
+.shell .island-map-toolbar small{font-size:10px;color:var(--ark-muted)}
+.shell .island-map-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.shell .island-map-actions button{display:grid;place-items:center;width:44px;height:44px;border:1px solid var(--ark-border);background:var(--ark-deep);border-radius:8px;color:var(--ark-bright)}
+.shell .island-map-actions label{display:flex;align-items:center;gap:6px;min-height:44px;color:var(--ark-muted);font-size:12px}
+.shell .island-map-frame{position:relative;aspect-ratio:1;width:100%;max-height:760px;min-width:0;overflow:hidden;border:1px solid var(--ark-border);border-radius:12px;background:#0a1422}
+.shell .island-map-frame svg{display:block;width:100%;height:100%;touch-action:manipulation}
+.shell .island-map-watermark{position:absolute;bottom:10px;left:10px;right:10px;display:flex;align-items:center;gap:6px;width:fit-content;max-width:calc(100% - 20px);padding:8px 10px;background:rgba(5,10,18,.9);border:1px solid #4b617a;border-radius:7px;font-size:11px;color:#d8e5f3}
+.shell .island-map-caption{display:flex;gap:8px;align-items:flex-start;line-height:1.6;color:var(--ark-muted);font-size:11px}
+.shell .island-map-caption svg{flex-shrink:0;margin-top:2px;color:var(--ark-bright)}
+.shell .island-map-selection{padding:10px;border-radius:8px;border:1px solid var(--ark-border);background:var(--ark-deep);font-size:12px;color:var(--ark-heading)}
+@media(max-width:750px){.shell .island-map-frame{max-height:none}.shell .island-map-toolbar{align-items:stretch}.shell .island-map-actions{justify-content:flex-start}.shell .island-map-watermark{font-size:10px}.shell .island-map-actions button{min-width:44px}}

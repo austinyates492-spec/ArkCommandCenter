@@ -3,6 +3,7 @@ import {Map,MapPin,Layers,Route,Plus,Trash2,CheckCheck,X,ExternalLink,Info,Searc
 import {maps,resourceMapUrl,wikiResourceMapUrl} from './data';
 import {resourcesForMap,mapsWithOilVeins,checkAtlasPin,atlasSourceLinks} from './atlas-resource-model.js';
 import EmbeddedMap from './EmbeddedMap';
+import IslandNativeMap from './IslandNativeMap';
 import './resource-atlas-native.css';
 import './atlas-production.css';
 
@@ -70,9 +71,9 @@ export default function ResourcePage(){
   </div>
   <div className="atlas-v3-grid">
    <section className="panel atlas-v3-main">
-    <div className="atlas-native-head"><h2><Map size={18}/> {map} <span className="atlas-v3-map-type">GENUINE SOURCE MAP</span></h2><span className="atlas-native-chip">ASA REFERENCE</span></div>
-    <div className="atlas-v3-source-explainer"><ShieldCheck size={17}/><span>The detailed terrain and published resource markers are loaded from the original community provider. This preview does <strong>not</strong> invent locations or reproduce unlicensed map artwork. Use the embedded map’s own layer controls for its resource markers.</span></div>
-    <EmbeddedMap key={map} url={resourceMapUrl(map)} alternativeUrl={wikiResourceMapUrl(map)} title={map+' Resources'} selection="Source-managed coordinates" kind="resource"/>
+    <div className="atlas-native-head"><h2><Map size={18}/> {map} <span className="atlas-v3-map-type">{map==='The Island'?'NATIVE GPS WORKSPACE':'GENUINE SOURCE MAP'}</span></h2><span className="atlas-native-chip">ASA REFERENCE</span></div>
+    <div className="atlas-v3-source-explainer"><ShieldCheck size={17}/><span>{map==='The Island'?'The Island now uses a first-party GPS workspace with no third-party iframe on desktop or mobile. Verified terrain artwork and published resource nodes have not yet been licensed/imported; only your personal pins appear.':'This map uses an external community provider. The provider controls terrain and published marker layers.'}</span></div>
+    {map==='The Island'?<IslandNativeMap pins={shownPersonal} stops={stops} selectedId={selection} onSelect={setSelection} colors={colors}/>:<EmbeddedMap key={map} url={resourceMapUrl(map)} alternativeUrl={wikiResourceMapUrl(map)} title={map+' Resources'} selection="Source-managed coordinates" kind="resource"/>}
     <div className="atlas-v3-source-links"><a href={resourceMapUrl(map)} target="_blank" rel="noopener noreferrer"><ExternalLink size={14}/> Open detailed map</a><a href={wikiResourceMapUrl(map)} target="_blank" rel="noopener noreferrer"><ExternalLink size={14}/> Official community wiki map</a></div>
     {map==='The Island'&&<div className="atlas-v3-source-note"><Info size={16}/> This map has gatherable Oil nodes, not Oil Well sites. Oil veins are only offered for maps with documented pumpable deposits.</div>}
    </section>
@@ -82,10 +83,10 @@ export default function ResourcePage(){
      <div className="atlas-v3-selectrow"><button className="primary" type="button" onClick={()=>updateFilters(resources.map(r=>r.id))}><CheckCheck size={16}/> Select All</button><button className="ghost" type="button" onClick={()=>updateFilters([])}><X size={16}/> Deselect All</button></div>
      <label className="atlas-v3-find"><Search size={15}/><input aria-label="Search my resource filters" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search resources"/></label>
      <div className="atlas-v3-filters">{resources.filter(r=>r.id.toLowerCase().includes(search.toLowerCase())).map(r=><button type="button" key={r.id} aria-pressed={enabled.includes(r.id)} className={enabled.includes(r.id)?'active':''} onClick={()=>updateFilters(enabled.includes(r.id)?enabled.filter(n=>n!==r.id):[...enabled,r.id])}><span className="atlas-v3-type-dot" style={{background:r.color}}/><span>{r.id}</span><span className="atlas-v3-checkbox">{enabled.includes(r.id)?'☑':'☐'}</span></button>)}</div>
-     <p className="atlas-v3-hint"><Info size={14}/> These filters control your personal pin list. Published resource nodes remain controlled by the source map’s own Resources layers; the two sets cannot be synchronized without a supported map-data API.</p>
+     <p className="atlas-v3-hint"><Info size={14}/> {map==='The Island'?'These filters immediately change which of your saved GPS markers are visible on the native map. Published resource nodes are not imported yet.':'These filters control your personal pin list. Published resource nodes remain controlled by the source map’s own Resources layers.'}</p>
      {mapsWithOilVeins.includes(map)&&<div className="atlas-v3-oil-note"><strong>Oil Vein / Oil Well</strong><span>Oil Pumps are built on oil veins. See the community provider for locations; we have not imported unverified coordinates.</span><a href={atlasSourceLinks.oilVein} target="_blank" rel="noopener noreferrer">Oil Vein reference <ExternalLink size={12}/></a></div>}
      <div className="atlas-v3-personal-heading"><h3>My visible GPS pins</h3><small>{shownPersonal.length}</small></div>
-     {shownPersonal.length?<div className="atlas-v3-pinlist">{shownPersonal.map(p=><button key={p.id} type="button" className={selection===p.id?'active':''} onClick={()=>setSelection(p.id)}><span style={{background:colors[p.resource]}} className="atlas-v3-type-dot"/><span>{p.resource}<small>{p.lat.toFixed(1)} LAT · {p.lon.toFixed(1)} LON</small></span></button>)}</div>:<p className="atlas-v3-empty">No personal GPS pins match these filters yet. Published source-map nodes are still available above.</p>}
+     {shownPersonal.length?<div className="atlas-v3-pinlist">{shownPersonal.map(p=><button key={p.id} type="button" className={selection===p.id?'active':''} onClick={()=>setSelection(p.id)}><span style={{background:colors[p.resource]}} className="atlas-v3-type-dot"/><span>{p.resource}<small>{p.lat.toFixed(1)} LAT · {p.lon.toFixed(1)} LON</small></span></button>)}</div>:<p className="atlas-v3-empty">No personal GPS pins match these filters yet. Check the external source links for community-published nodes.</p>}
     </section>}
     {tab==='routes'&&<section className="panel atlas-v3-panel">
      <div className="atlas-native-head"><h2><Route size={17}/> Farming Route</h2><span className="atlas-native-chip">{stops.length} STOPS</span></div>
@@ -112,6 +113,6 @@ export default function ResourcePage(){
    </div>
   </div>
   {(error||savedMessage)&&<div className="notice" role="status">{error||savedMessage}</div>}
-  <div className="atlas-v3-foot"><Compass size={16}/><span><strong>Atlas integrity:</strong> No invented terrain images, node positions, resource totals or oil-well counts. Actual map marker visibility is controlled by its publisher. A fully native visual overlay requires an authorized base map and vetted GPS dataset.</span></div>
+  <div className="atlas-v3-foot"><Compass size={16}/><span><strong>Atlas integrity:</strong> No invented terrain images, node positions, resource totals or oil-well counts. The Island native view shows only saved personal markers and routes, not community-published nodes. Full native terrain and resource coverage requires an authorized base map and verified GPS dataset.</span></div>
  </div>;
 }
