@@ -1,0 +1,112 @@
+{
+  "The Island": {
+    "status": "imported",
+    "source": "Data:Spawn Map/The Island/ASA",
+    "revision": 604251,
+    "species": 124,
+    "regions": 11696,
+    "skipped": 0,
+    "size": 749244,
+    "verifiedASA": true
+  },
+  "Scorched Earth": {
+    "status": "imported",
+    "source": "Data:Spawn Map/Scorched Earth/ASA",
+    "revision": 607544,
+    "species": 79,
+    "regions": 13104,
+    "skipped": 0,
+    "size": 873340,
+    "verifiedASA": true
+  },
+  "The Center": {
+    "status": "imported",
+    "source": "Data:Spawn Map/The Center/ASA",
+    "revision": 607543,
+    "species": 134,
+    "regions": 15266,
+    "skipped": 39,
+    "size": 1049016,
+    "verifiedASA": true
+  },
+  "Aberration": {
+    "status": "imported",
+    "source": "Data:Spawn Map/Aberration/ASA",
+    "revision": 607550,
+    "species": 73,
+    "regions": 9516,
+    "skipped": 0,
+    "size": 709078,
+    "verifiedASA": true
+  },
+  "Extinction": {
+    "status": "imported",
+    "source": "Data:Spawn Map/Extinction/ASA",
+    "revision": 607548,
+    "species": 144,
+    "regions": 17766,
+    "skipped": 209,
+    "size": 1312342,
+    "verifiedASA": true
+  },
+  "Ragnarok": {
+    "status": "imported",
+    "source": "Data:Spawn Map/Ragnarok/ASA",
+    "revision": 607545,
+    "species": 157,
+    "regions": 18775,
+    "skipped": 0,
+    "size": 1329018,
+    "verifiedASA": true
+  },
+  "Valguero": {
+    "status": "imported",
+    "source": "Data:Spawn Map/Valguero/ASA",
+    "revision": 607546,
+    "species": 194,
+    "regions": 22523,
+    "skipped": 0,
+    "size": 1678247,
+    "verifiedASA": true
+  },
+  "Astraeos": {
+    "status": "imported",
+    "source": "Data:Spawn Map/Astraeos/ASA",
+    "revision": 607549,
+    "species": 246,
+    "regions": 50304,
+    "skipped": 99,
+    "size": 3693656,
+    "verifiedASA": true
+  },
+  "Lost Colony": {
+    "status": "imported",
+    "source": "Data:Spawn Map/Lost Colony",
+    "revision": 607547,
+    "species": 138,
+    "regions": 23370,
+    "skipped": 0,
+    "size": 1601037,
+    "verifiedASA": false
+  },
+  "Genesis: Part 1": {
+    "status": "imported",
+    "source": "Data:Spawn Map/Genesis: Part 1/ASA",
+    "revision": 604257,
+    "species": 118,
+    "regions": 7864,
+    "skipped": 0,
+    "size": 567999,
+    "verifiedASA": true
+  },
+  "Genesis: Part 1 Ocean": {
+    "status": "imported",
+    "source": "Data:Spawn Map/Genesis: Part 1 Ocean/ASA",
+    "revision": 599432,
+    "species": 120,
+    "regions": 10649,
+    "skipped": 1,
+    "size": 782138,
+    "verifiedASA": true
+  }
+}
