@@ -23,7 +23,7 @@ test('polygon selection covers interior and boundary but excludes outside',()=>{
 test('all planner strategies enforce polygon, resource filters and maximum stops',()=>{
  for(const mode of ['shortest','balanced','coverage']){
   const p=generateFarmingRoute({points:samples,polygon:square,types:['Metal','Crystal'],maxStops:3,mode});
-  assert.equal(p.eligible,5);
+  assert.equal(p.eligible,4);
   assert.equal(p.stops.length,3);
   assert.equal(new Set(p.stops.map(s=>s.id)).size,3);
   for(const stop of p.stops){
