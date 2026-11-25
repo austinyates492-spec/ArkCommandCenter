@@ -5,27 +5,22 @@ import json,io,requests
 from PIL import Image
 from pathlib import Path
 API="https://ark.wiki.gg/api.php"
-TITLE="Data:Maps/Resources/The Center/ASA"
+TITLE="Data:Maps/Resources/The Center"
 session=requests.Session()
 session.headers.update({"User-Agent":"ARKTribeHQ/1.0 (noncommercial fan resource atlas; wiki attribution) Mozilla/5.0","Referer":"https://ark.wiki.gg/wiki/Resource_Map/The_Center"})
 r=session.get(API,params={"action":"query","titles":TITLE,"prop":"revisions","rvprop":"content|ids","rvslots":"main","format":"json"},timeout=35)
 r.raise_for_status()
 page=list(r.json()["query"]["pages"].values())[0]
-if "revisions" not in page:
- for term in ["Center","The Center","TheCenter"]:
-  search=session.get(API,params={"action":"query","list":"search","srsearch":term,"srnamespace":"10006","srlimit":30,"format":"json"},timeout=30)
-  print("DATA PAGES SEARCH",term,search.status_code,[(x["title"],x.get("snippet","")[:50]) for x in search.json().get("query",{}).get("search",[])],flush=True)
- for prefix in ["Maps/Resources/","Maps/"]:
-  query=session.get(API,params={"action":"query","list":"allpages","apnamespace":"10006","apprefix":prefix,"aplimit":500,"format":"json"},timeout=30)
-  print("DATA PAGE LIST",prefix,query.status_code,[x["title"] for x in query.json().get("query",{}).get("allpages",[]) if "Center" in x["title"]],flush=True)
- raise AssertionError(f"Missing exact ASA resource page: {page}")
+assert "revisions" in page, f"Missing Center resource page: {page}"
 revision=page["revisions"][0]
 data=json.loads(revision["slots"]["main"]["*"])
 print("WIKI SOURCE",page["title"],"REVISION",revision["revid"],"BACKGROUND",data.get("background"),flush=True)
 filename=data.get("background",{}).get("image")
-assert filename and "Center" in filename and "ASA" in filename, f"Unexpected map: {filename}"
+print("CENTER RESOURCE DATA BACKGROUND:",filename,flush=True)
+assert filename and "Center" in filename, f"Unexpected map: {filename}"
 markers=data["markers"]
 print("WIKI CATEGORY COUNTS",[(k,len(v)) for k,v in markers.items()],flush=True)
+print("EXAMPLE MARKERS",[(k,v[:2]) for k,v in list(markers.items())[:3]],flush=True)
 assert len(markers)>=4,"Suspiciously few resource types"
 allnodes=[];omitted=[]
 for category,items in markers.items():
@@ -37,8 +32,9 @@ for category,items in markers.items():
    omitted.append((category,i,"out of bounds"));continue
   allnodes.append({"id":f"wiki-{category}-{i}","category":category,"lon":round(x,3),"lat":round(y,3),"name":str(p.get("name",""))[:100]})
 assert len(allnodes)>50,"Unexpectedly sparse resources"
+raise SystemExit("Review wiki Center resource data background vs ASA before importing any legacy coordinates")
 Path("ark-command-center-desktop/src/center-asa-wiki-resources.json").write_text(json.dumps({
- "source":"https://ark.wiki.gg/wiki/Data:Maps/Resources/The_Center/ASA",
+ "source":"https://ark.wiki.gg/wiki/Data:Maps/Resources/The_Center",
  "revision":revision["revid"],"background":filename,"omittedOutOfBoundsCount":len(omitted),"points":allnodes
 },separators=(",",":"))+"\n")
 print("VALIDATED CENTER RESOURCES",len(allnodes),"OMITTED",len(omitted),flush=True)
