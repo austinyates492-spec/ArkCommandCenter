@@ -16,7 +16,7 @@ jobs:
       - run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add ark-command-center-desktop/src/astraeos-wiki-resources.json ark-command-center-desktop/public/maps/astraeos-asa.jpg 2>/dev/null || true
+          git add ark-command-center-desktop/src/astraeos-wiki-explorer-veins.json ark-command-center-desktop/public/maps/astraeos-asa.jpg
           if ! git diff --cached --quiet; then
             git commit -m "Import source-verified Astraeos map and resource assets"
             git pull --rebase origin feature/astraeos-asa-resource-atlas-20261125
