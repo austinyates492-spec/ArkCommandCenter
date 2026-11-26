@@ -38,7 +38,7 @@ export default function BreedingLab({rates,onTimer,initialCreature}){
  const birthLabel=data.method==='Gestation'?'Gestation':'Incubation';
  const windows=Math.max(0,Math.floor((mature-0.00001)/cuddle));
  return <div className="breeding-lab">
-  <div className="pagetitle"><span className="eyebrow">NURSERY / 02</span><h1>Breeding & Raising</h1><p>{names.length} creature profiles with 1× maturation baselines, adjusted for your selected {rates.mature}× maturation and {rates.hatch}× egg hatch settings.</p></div>
+  <div className="pagetitle"><h1>Breeding & Raising</h1></div>
   <div className="breeding-top-grid">
    <section className="panel breeding-profile-panel" aria-label="Creature profile">
     <div className="breeding-section-head"><h2>Creature Profile</h2><span className="breeding-pill">{names.length} CREATURES</span></div>
@@ -78,14 +78,14 @@ export default function BreedingLab({rates,onTimer,initialCreature}){
    </section>
   </div>
   <section className="panel breeding-timeline-panel" aria-label="Growth timeline">
-   <div className="breeding-section-head"><div><h2>Growth Timeline</h2><p>One complete raising cycle, with visual phase boundaries based on overall maturation.</p></div><span className="breeding-pill">0–100% GROWTH</span></div>
+   <div className="breeding-section-head"><div><h2>Growth Timeline</h2></div><span className="breeding-pill">0–100% GROWTH</span></div>
    <div className="breeding-timeline-track" role="img" aria-label="Baby 0 to 10 percent, Juvenile 10 to 50 percent, Adolescent 50 to 100 percent">
     {maturityStages.map(stage=><div key={stage.label} className={'breeding-timeline-'+stage.label.toLowerCase()} style={{width:(stage.end-stage.start)+'%'}}/>)}
    </div>
    <div className="breeding-timeline-labels"><span><b>0–10%</b> Baby</span><span><b>10–50%</b> Juvenile</span><span><b>50–100%</b> Adolescent</span></div>
    <div className="breeding-milestones">{milestones.map(stage=><div className="breeding-milestone-card" key={stage.name}><span>{Math.round(stage.portion*100)}% · {stage.name}</span><strong>{durationText(mature*stage.portion*3600)}</strong><small>Since hatch / birth</small></div>)}</div>
-   <p className="breeding-timeline-footnote">Baby ends at 10%, Juvenile ends at 50%, and Adolescent ends at 100%. These are elapsed times, not independent phase percentages.</p>
+   <details className="hq-inline-help"><summary>Growth phase details</summary><p>Baby ends at 10%, Juvenile ends at 50%, and Adolescent ends at 100%. These are elapsed times, not independent phase percentages.</p></details>
   </section>
-  <div className="breeding-source-note"><div><strong>ASA source-checked baselines</strong><p>This roster contains 156 base creatures and 64 verified variants. Source: ARK Smart Breeding ASA dataset {data.sourceDatasetVersion}, reviewed {data.sourceReview}. Active rates: {rates.mature}× mature, {rates.hatch}× egg hatch and {rates.breeding}× mating interval. Your {rates.cuddle}× imprint interval should be confirmed on your cluster. Incubation requires the correct temperature.</p></div><a className="ghost linkbtn" target="_blank" rel="noreferrer" href="https://www.dinoindex.com/breeding">View ASA breeding source <ExternalLink size={15}/></a></div>
+  <details className="hq-inline-help"><summary>Breeding data &amp; sources</summary><div className="breeding-source-note"><div><strong>ASA source-checked baselines</strong><p>This roster contains 156 base creatures and 64 verified variants. Source: ARK Smart Breeding ASA dataset {data.sourceDatasetVersion}, reviewed {data.sourceReview}. Active rates: {rates.mature}× mature, {rates.hatch}× egg hatch and {rates.breeding}× mating interval. Your {rates.cuddle}× imprint interval should be confirmed on your cluster. Incubation requires the correct temperature.</p></div><a className="ghost linkbtn" target="_blank" rel="noreferrer" href="https://www.dinoindex.com/breeding">View ASA breeding source <ExternalLink size={15}/></a></div></details>
  </div>;
 }

@@ -55,7 +55,7 @@ export default function OverviewDashboard({user,live,servers=[],rates,clusterLab
    <div className="overview-command-copy">
     <span className="overview-kicker">{user?.tribeName?user.tribeName.toUpperCase()+' / TRIBE HQ':'TRIBE OPERATIONS CENTER'}</span>
     <h1>Your tribe.<br/><em>Your command.</em></h1>
-    <p>One place to organize your creatures, coordinate active operations and plan your next move.{!user?' Sign in to share live progress with your tribe.':''}</p>
+    {!user&&<p>Sign in to share progress with your tribe.</p>}
     <div className="overview-hero-actions">
      <button type="button" className="primary" onClick={onOpenTimer}><Plus size={17}/> New Tribe Timer</button>
      <button type="button" className="ghost" onClick={onOpenTaming}>Open Taming Lab <ChevronRight size={16}/></button>

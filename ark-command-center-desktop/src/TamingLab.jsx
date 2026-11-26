@@ -53,9 +53,8 @@ export default function TamingLab({rates,onTimer,onNavigate,clusterId='nomadark'
  const dododexUrl=`https://www.dododex.com/taming/${encodeURIComponent(creature.toLowerCase().replaceAll(' ','-'))}`;
  return <>
   <div className="pagetitle taming-compact-title">
-   <span className="eyebrow">FIELD OPERATIONS / 01</span>
+   
    <h1>Taming Lab</h1>
-   <p>All {vanillaKnockoutRoster.length} official ASA knockout tames and forms. Search the complete knockout roster; passive and specialty-only creatures have their own labs. Special knockout methods remain clearly labeled and never use ordinary tranq estimates.</p>
   </div>
   <div className="taming-workspace">
    <section className="panel taming-combined-panel" aria-label="Creature loadout and tame plan">
@@ -143,7 +142,7 @@ export default function TamingLab({rates,onTimer,onNavigate,clusterId='nomadark'
     <a className="taming-ko-source" href="https://ark.wiki.gg/wiki/Tranquilizer_Comparison_Table" target="_blank" rel="noreferrer">Ammo calculation reference <ExternalLink size={14}/></a>
     <div className="taming-maintenance-inline" aria-label="Keeping your tame unconscious">
     <div className="taming-maintenance-heading"><h3><ShieldCheck size={18}/> Keep It Unconscious</h3><span className="badge gold">TAMING SUPPLIES</span></div>
-    <p>Estimate each torpor consumable separately using <strong>{selectedFood||'the chosen food'}</strong>, {rates.taming}× taming and {rates.food}× food drain. Selecting different food can change the Narcotic estimate dramatically. Counts are alternatives, not items to add together.</p>
+    <p>Alternative supplies — do not add counts together.</p><details className="hq-inline-help"><summary>Torpor calculation details</summary><p>Estimates use <strong>{selectedFood||'the chosen food'}</strong>, {rates.taming}× taming and {rates.food}× food drain. Changing food can change the Narcotic estimate.</p></details>
     <div className="taming-ko-settings">
      <label className="field"><span>Wild torpor drain multiplier (1× official)</span><input type="number" min="0.01" max="1000" step="0.1" value={torporDrainMultiplier} onChange={event=>setTorporDrainMultiplier(event.target.value)}/></label>
      <label className="field"><span>Tame duration override (minutes, optional)</span><input type="number" min="0.01" max="525600" step="0.1" value={observedTameMinutes} onChange={event=>setObservedTameMinutes(event.target.value)} placeholder={result.ok?String(Math.round(result.minutes*10)/10):'Observed remaining minutes'}/></label>

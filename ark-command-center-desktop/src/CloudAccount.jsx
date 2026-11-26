@@ -27,7 +27,7 @@ export default function CloudAccount({cloud}){
   finally{setWorking(false);}
  };
  return <div className="cloud-workspace">
-  <div className="pagetitle"><span className="eyebrow">TRIBE NETWORK / CLOUD</span><h1>{cloud.user?.tribeName||'Tribe Accounts'}</h1><p>Create a tribe or join one with its private invite code. Only members of your own tribe share timers, crafting and server intelligence.</p></div>
+  <div className="pagetitle"><h1>{cloud.user?.tribeName||'Tribe Accounts'}</h1><details className="hq-inline-help"><summary>Account & privacy</summary><p>Create a tribe or join one with its private invite code. Only members of your own tribe share timers, crafting and server intelligence.</p></details></div>
   {!cloud.configured?<section className="panel"><h2>Cloud connection not configured</h2><p>This installer was built without an API address. Install the cloud-enabled release to sign in. Your local data is safe.</p></section>:
   !cloud.user?<section className="panel cloud-auth"><div className="panelhead"><h2>{mode==='login'?'Sign in':mode==='register'?'Join a tribe':'Create your tribe'}</h2><span className="badge gold">PRIVATE TRIBE WORKSPACES</span></div>
    <form onSubmit={submit}>
@@ -52,6 +52,6 @@ export default function CloudAccount({cloud}){
    {cloud.status==='choose-data'&&<div className="cloud-choice"><strong>This PC and the cloud contain different data.</strong><p>Choose which copy to use. Keeping this PC's data replaces the cloud copy on the next sync. Downloading cloud data replaces the matching data on this PC.</p><div className="cloud-actions"><button className="primary" onClick={cloud.chooseCloud}><Cloud size={16}/> Use cloud data</button><button className="ghost" onClick={cloud.chooseLocal}><CloudUpload size={16}/> Keep this PC's data</button></div></div>}
    {cloud.error&&<div className="notice cloud-error">{cloud.error}</div>}
    <div className="cloud-actions"><button className="ghost" onClick={cloud.syncNow} disabled={cloud.status!=='connected'}><CloudUpload size={16}/> Save now</button><button className="ghost" onClick={cloud.retry}><RefreshCcw size={16}/> Reconnect</button><button className="ghost" onClick={cloud.logout}><LogOut size={16}/> Sign out</button></div>
-  </section><section className="panel"><h2>How syncing works</h2><p>Shared timers, tribe crafting and server records are written directly to the cloud and streamed to other members immediately, with a 12-second refresh fallback. Personal preferences are saved locally and periodically synced to your account. Signing in with Remember this PC keeps a revocable 30-day session that automatically renews without storing your password. Signing out revokes it.</p></section></>}
+  </section><details className="panel hq-collapsible-panel"><summary className="hq-section-summary">How syncing works</summary><p>Shared timers, tribe crafting and server records are written directly to the cloud and streamed to other members immediately, with a 12-second refresh fallback. Personal preferences are saved locally and periodically synced to your account. Signing in with Remember this PC keeps a revocable 30-day session that automatically renews without storing your password. Signing out revokes it.</p></details></>}
  </div>;
 }

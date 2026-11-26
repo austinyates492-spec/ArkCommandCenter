@@ -69,7 +69,7 @@ export default function CraftingPage({liveRecipes={},live,user,onOpenAccount,onO
  const totals=Object.entries(result?.materials||{}).sort((a,b)=>b[1]-a[1]);
  const crafts=Object.entries(result?.crafts||{}).sort((a,b)=>b[1]-a[1]);
  return <div className="craft-workspace crafting-lab-v3">
-  <div className="pagetitle"><span className="eyebrow">COMMAND CENTER / LOGISTICS</span><h1>Crafting Lab <span className="craftv3-release-label">NEW DESIGN</span></h1><p>Plan. Gather. Craft. Coordinate. Expand ingredient dependencies and combine production projects without losing your existing recipes.</p></div>
+  <div className="pagetitle"><h1>Crafting Lab</h1></div>
   <div className="craftv3-upper">
    <section className="panel craftv3-planner" aria-label="Recipe planner">
     <div className="craftv3-head"><h2>Recipe Planner</h2><span className="craftv3-pill">01 / PLAN</span></div>
@@ -85,7 +85,7 @@ export default function CraftingPage({liveRecipes={},live,user,onOpenAccount,onO
     {currentRecipe?.verification&&<div className="notice">Source-backed but not individually ASA-verified. Confirm item availability, ingredients and batch yields.</div>}
     <label className="field"><span>Quantity to produce</span><div className="craftv3-quantity"><button type="button" className="ghost" aria-label="Decrease quantity" onClick={()=>setQuantity(Math.max(1,(validQty?currentQty:1)-10))}><Minus size={16}/></button><input type="number" min="1" max="1000000" value={quantity} onChange={e=>setQuantity(e.target.value)}/><button type="button" className="ghost" aria-label="Increase quantity" onClick={()=>setQuantity(Math.min(1000000,(validQty?currentQty:1)+10))}><Plus size={16}/></button></div></label>
     <button className="primary full" disabled={!currentName||!validQty} onClick={add}><Plus size={17}/> Add to Crafting Queue</button>
-    <div className="craftv3-features"><span>Nested calculations</span><span>Multiple projects</span><span>Raw resource totals</span></div>
+    
     <details className="craftv3-advanced"><summary>Custom recipes and catalog import</summary>
      <div className="notice"><strong>{Object.keys(wikiRecipes).length.toLocaleString()} Official Community Wiki recipe records</strong> and 22 reviewed starter recipes are included. Not all records have been checked for ASA availability or batch yields.</div>
      <label className="field"><span><input type="checkbox" checked={includeCommunity} onChange={e=>{setIncludeCommunity(e.target.checked);setSearch('');}}/> Expanded community recipe candidates (unverified)</span></label>
@@ -118,7 +118,7 @@ export default function CraftingPage({liveRecipes={},live,user,onOpenAccount,onO
   <div className="craftv3-lower">
    <section className="panel craftv3-tree-panel">
     <div className="craftv3-head"><h2>Crafting Breakdown</h2><span className="craftv3-pill">02 / COMPONENTS</span></div>
-    <p className="craftv3-explain">Expand each production branch to see every intermediate crafting step. Queue totals consolidate overlapping raw material requirements.</p>
+    
     {result?.trees?.length?<div className="craftv3-tree">
       {result.trees.map(tree=><div className="craft-tree-root" key={tree.name}><RecipeNode node={tree}/></div>)}
     </div>:<div className="empty">Add a recipe to the queue to generate the complete production tree.</div>}
@@ -141,7 +141,7 @@ export default function CraftingPage({liveRecipes={},live,user,onOpenAccount,onO
      <button className="primary" disabled={!cart.length||sending} onClick={sendToTribe}><Cloud size={16}/>{sending?'Sending…':user?'Send to Tribe Crafting':'Sign in to share'}</button></div>
     {user&&<button type="button" className="craftv3-open-shared" onClick={onOpenTribeCrafting}>Open Shared Tribe Crafting <ChevronRight size={16}/></button>}
     {error&&<div className="notice" role="status">{error}</div>}
-    <p className="craftv3-explain">Sending adds the current local projects to the live tribe crafting queue. Local-only custom recipes must first be made available in the shared catalog.</p>
+    <details className="hq-inline-help"><summary>Sharing details</summary><p>Sending adds the current local projects to the live tribe crafting queue. Local-only custom recipes must first be made available in the shared catalog.</p></details>
    </section>
   </div>
   <section className="panel craftv3-custom-panel"><details className="craftv3-custom-details"><summary>Advanced · Create or import recipes</summary>
@@ -154,6 +154,6 @@ export default function CraftingPage({liveRecipes={},live,user,onOpenAccount,onO
    </div>
    <label className="craft-import"><Upload size={16}/> Import JSON Recipe Catalog <input type="file" accept=".json,application/json" onChange={e=>importData(e.target.files?.[0])}/></label>
   </details></section>
-  <div className="notice">Source: ARK Official Community Wiki Craftables table (cross-edition). Known Primitive Plus and mobile-only entries are excluded, but the catalog is not yet a certified official ASA-only manifest. Some unreviewed recipes assume one-item batch output. Optional community data may include mods; resource substitutions are not automatically optimized.</div>
+  <details className="hq-inline-help"><summary>Recipe catalog &amp; source limitations</summary><p>Source: ARK Official Community Wiki Craftables table (cross-edition). Known Primitive Plus and mobile-only entries are excluded, but the catalog is not yet a certified official ASA-only manifest. Some unreviewed recipes assume one-item batch output. Optional community data may include mods; resource substitutions are not automatically optimized.</p></details>
  </div>;
 }

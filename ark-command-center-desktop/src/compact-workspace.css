@@ -1,0 +1,25 @@
+/* Compact, theme-aware section hierarchy across the workspace. */
+.shell .content :is(.panelhead,.craftv3-head,.tribe-v3-head,.intel-v2-head,.atlas-native-head,.breeding-section-head,.overview-panel-header,.taming-small-title,.taming-ammo-header,.taming-maintenance-heading,.timer-phase-header,.timer-duration-head,.timer-manual-heading,.intel-v2-note-heading,.atlas-v3-personal-heading,.hq-section-summary){
+ background:var(--ark-sidebar);
+ background:color-mix(in srgb,var(--ark-surface) 76%,#000);
+ border:1px solid var(--ark-line);
+ border-bottom-color:var(--ark-border);
+ border-radius:8px;
+ padding:10px 12px;
+ min-width:0;
+}
+.shell .content :is(.panelhead,.craftv3-head,.tribe-v3-head,.intel-v2-head,.atlas-native-head,.breeding-section-head,.overview-panel-header) h2{margin:0;line-height:1.3}
+.shell .content .sectioncap{background:var(--ark-sidebar);border-left:2px solid var(--ark-accent);padding:8px 10px;border-radius:4px}
+.shell .content .pagetitle h1{font-size:clamp(27px,3vw,44px);letter-spacing:-.045em}
+.shell .content .pagetitle{margin-bottom:16px}
+.shell .content .hq-inline-help{margin:8px 0;color:var(--ark-muted);font-size:12px;min-width:0}
+.shell .content .hq-inline-help>summary{color:var(--ark-bright);cursor:pointer;padding:7px 8px;border-radius:6px;width:fit-content;max-width:100%;line-height:1.5;overflow-wrap:anywhere}
+.shell .content .hq-inline-help>summary:hover{background:var(--ark-surface-2)}
+.shell .content .hq-inline-help[open]>summary{margin-bottom:4px}
+.shell .content .hq-inline-help>p{line-height:1.5;margin:4px 8px 8px}
+.shell .content .hq-collapsible-panel>.hq-section-summary{cursor:pointer;font-weight:750;color:var(--ark-heading);line-height:1.4}
+.shell .content .hq-collapsible-panel>.hq-section-summary .badge{margin-left:9px;vertical-align:middle}
+.shell .content .hq-collapsible-panel[open]>.hq-section-summary{margin-bottom:14px}
+.shell .content .hq-saved-routes>summary{background:var(--ark-sidebar);border:1px solid var(--ark-line);width:100%}
+.shell .content :is(.hq-inline-help,.hq-collapsible-panel)>summary:focus-visible{outline:2px solid var(--ark-accent);outline-offset:2px}
+@media(max-width:750px){.shell .content :is(.panelhead,.craftv3-head,.tribe-v3-head,.intel-v2-head,.atlas-native-head,.breeding-section-head,.overview-panel-header,.hq-section-summary){padding:9px 10px}.shell .content .hq-inline-help>summary{min-height:40px;display:list-item;padding:10px 8px}.shell .content .hq-section-summary{min-height:44px}}

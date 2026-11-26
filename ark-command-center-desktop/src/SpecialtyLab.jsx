@@ -37,9 +37,8 @@ export default function SpecialtyLab({rates,onTimer,selectedCreature,artPreview=
  const wiki=method?.source||`https://ark.wiki.gg/wiki/${encodeURIComponent(creature.replaceAll(' ','_'))}`;
  return <>
   <div className="pagetitle taming-compact-title">
-   <span className="eyebrow">FIELD OPERATIONS / SPECIALTY</span>
+   
    <h1>Specialty Taming Lab</h1>
-   <p>All {specialtyRoster.length} official specialty tames and forms. The same artwork-first layout as the Knockout Taming Lab, with creature-specific heavy weapons, trust, egg, and other nonstandard interactions.</p>
   </div>
   <div className="taming-workspace">
    <section className="panel taming-combined-panel" aria-label="Specialty creature loadout and tame plan">
@@ -91,7 +90,7 @@ export default function SpecialtyLab({rates,onTimer,selectedCreature,artPreview=
     {method?.status==='documented'&&!knockout.ok&&(!feeding.ok||!Number.isFinite(feeding.minutes))&&<div className="taming-compact-fields"><label className="field"><span>Your observed item count (optional)</span><input type="number" min="1" placeholder="Manual, not auto-verified" value={manualCount} onChange={e=>setManualCount(e.target.value)}/></label><label className="field"><span>Your observed duration (minutes)</span><input type="number" min="0.1" step="0.1" placeholder="Manual timer" value={minutes} onChange={e=>setMinutes(e.target.value)}/></label></div>}
     {manualCount&&Number(manualCount)>0&&<div className="taming-plan-notes"><div className="taming-note-heading"><strong>Manual Supply</strong></div><p>{manualCount} items observed on your server (not auto-verified).</p></div>}
     <button className="primary taming-start-btn" disabled={!canTimer} onClick={()=>onTimer(creature+' Lv '+level+' · '+map,estimatedMinutes,'Specialty Tame')}>Start Timer <Timer size={16}/></button>
-    <div className="taming-plan-notes"><div className="taming-note-heading"><strong>Calculation Notes</strong><span>{rates.taming}× TAMING</span></div><p>Heavy-weapon math: {knockout.ok?'Species-specific estimate available':'Not applicable or unverified'}. Supply count: {feeding.model==='bloodstalker'?'Published blood-pack baseline':feeding.model==='octopus-biotoxin'?'Minimum Bio Toxin hits':feeding.ok?'Food-affinity baseline':fixedSupply?'Known fixed supply':'Interaction-specific / unquantified'}. Treat unknown quantities as unknown, never zero.</p></div>
+    <details className="hq-inline-help"><summary>Calculation notes</summary><p>Heavy-weapon math: {knockout.ok?'Species-specific estimate available':'Not applicable or unverified'}. Supply count: {feeding.model==='bloodstalker'?'Published blood-pack baseline':feeding.model==='octopus-biotoxin'?'Minimum Bio Toxin hits':feeding.ok?'Food-affinity baseline':fixedSupply?'Known fixed supply':'Interaction-specific / unquantified'}. Treat unknown quantities as unknown, never zero.</p></details>
     <a className="taming-ko-source" href={wiki} target="_blank" rel="noreferrer">Read species method <ExternalLink size={14}/></a>
    </section>
   </div>

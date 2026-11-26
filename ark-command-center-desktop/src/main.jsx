@@ -37,6 +37,7 @@ import './mobile.css';
 import './premium.css';
 import './personality.css';
 import './mobile-polish.css';
+import './compact-workspace.css';
 
 const nav=[['overview','Overview',LayoutDashboard],['taming','Taming Lab',Calculator],['breeding','Breeding Lab',Egg],['crafting','Crafting Lab',Layers],['tribe-crafting','Tribe Crafting',Layers],['servers','Server Intel',Server],['resources','Resource Atlas',Layers],['timers','Live Timers',Timer],['cloud','Tribe Cloud',Cloud],['settings','Settings',Settings]];
 const tamingModes=[['taming','Knockout Tames',Crosshair],['passive','Passive Tames',Hand],['specialty','Specialty Taming',Wrench]];
@@ -178,7 +179,7 @@ function App(){
   {page==='settings'&&<ClusterSettings rates={rates} setRates={updateRates} clusterId={clusterId} onClusterChange={onClusterChange}/>}
   {page==='settings'&&<CoveragePanel/>}
   {page==='settings'&&<ThemePicker value={theme} onChange={setTheme}/>}
-  {page==='settings'&&<section className="panel"><div className="panelhead"><h2>Opening Animation</h2></div><label className="startup-preference"><input type="checkbox" checked={showStartup} onChange={event=>setShowStartup(event.target.checked)}/><span>Play the cinematic intro when I open the website or launch the app</span></label><button className="ghost" type="button" onClick={()=>window.dispatchEvent(new Event('ark:replay-intro'))}>Replay opening animation</button><p className="notice">The intro is always skippable and does not play when navigating between pages. Reduced Motion disables it automatically.</p></section>}
+  {page==='settings'&&<section className="panel"><div className="panelhead"><h2>Opening Animation</h2></div><label className="startup-preference"><input type="checkbox" checked={showStartup} onChange={event=>setShowStartup(event.target.checked)}/><span>Play the cinematic intro when I open the website or launch the app</span></label><button className="ghost" type="button" onClick={()=>window.dispatchEvent(new Event('ark:replay-intro'))}>Replay opening animation</button><details className="hq-inline-help"><summary>Animation details</summary><p className="notice">The intro is always skippable and does not play when navigating between pages. Reduced Motion disables it automatically.</p></details></section>}
   {page==='cloud'&&<CloudAccount cloud={cloud}/>}
   {page==='crafting'&&<CraftingPage liveRecipes={catalog.recipes} key={targetFor('crafting')?.sequence||'crafting'} initialRecipe={targetFor('crafting')?.recipe} live={live} user={cloud.user} onOpenAccount={()=>setPage('cloud')} onOpenTribeCrafting={()=>setPage('tribe-crafting')}/>}
   {page==='tribe-crafting'&&<TribeCraftingPage live={live} key={targetFor('tribe-crafting')?.sequence||'tribe-crafting'} targetProject={targetFor('tribe-crafting')?.project} user={cloud.user} liveRecipes={catalog.recipes} onOpenAccount={()=>setPage('cloud')}/>}

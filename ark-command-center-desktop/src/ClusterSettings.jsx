@@ -8,7 +8,7 @@ const labels={taming:'Taming speed',hatch:'Egg hatch / gestation speed',mature:'
 export default function ClusterSettings({rates,setRates,clusterId,onClusterChange}){
  const preset=presetById(clusterId);
  return <>
-  <div className="pagetitle"><span className="eyebrow">CONFIGURATION / SERVER PROFILES</span><h1>Cluster Settings</h1><p>Switch between official game modes and your private cluster in the top-right menu. Multipliers immediately update the taming and breeding calculators.</p></div>
+  <div className="pagetitle"><h1>Cluster Settings</h1><details className="hq-inline-help"><summary>How rates work</summary><p>Switch between official game modes and your private cluster in the top-right menu. Multipliers immediately update the taming and breeding calculators.</p></details></div>
   <div className="two wideleft">
    <section className="panel"><div className="panelhead"><h2>{preset.label} · Rates</h2><span className={`badge ${preset.verified?'green':'gold'}`}>{preset.verified?'BASELINE SOURCE':'VERIFY WITH SERVER'}</span></div>
     <label className="field"><span>Active cluster</span><select value={clusterId} onChange={event=>onClusterChange(event.target.value)}>{clusterPresets.map(item=><option key={item.id} value={item.id}>{item.label}</option>)}</select></label>

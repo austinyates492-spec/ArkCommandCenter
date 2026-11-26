@@ -51,7 +51,7 @@ export default function ServerIntelPage({live,user,servers=[],onOpenAccount}){
  };
  const removeNote=(server,note)=>void run(()=>live.removeScoutingNote(server.id,note.id),'Scouting note removed from '+server.name+'.');
  return <div className="intel-v2">
-  <div className="pagetitle"><span className="eyebrow">COMMAND CENTER / CLUSTER INTELLIGENCE</span><h1>Server Intel <span className="intel-v2-new">NEW DESIGN</span></h1><p>Your tribe's tactical server scouting board. Mark dangerous areas without necessarily locking down an entire server.</p></div>
+  <div className="pagetitle"><h1>Server Intel</h1></div>
   {!user?<section className="panel intel-v2-signin"><Cloud size={28}/><h2>Tribe sign-in required</h2><p>Server statuses and scouting notes are stored in the shared tribe database.</p><button className="primary" onClick={onOpenAccount}><Cloud size={17}/> Open Tribe Cloud</button></section>:<>
    <div className="intel-v2-summary">
     {statuses.map((status,i)=><div className={'intel-v2-stat intel-v2-'+['available','contested','locked','unscouted'][i]} key={status}><span>{status}</span><strong>{summary[status]||0}</strong><small>{['Open for scouting','Activity reported','Restricted servers','Awaiting reports'][i]}</small></div>)}
@@ -109,8 +109,7 @@ export default function ServerIntelPage({live,user,servers=[],onOpenAccount}){
       <label className="field"><span>Initial server notes (optional)</span><textarea rows="3" maxLength="3000" value={form.notes} onChange={e=>setForm(p=>({...p,notes:e.target.value}))} placeholder="Summary of overall server conditions. Categorized notes can be added from each server card."/></label>
       <button className="primary full" disabled={busy||!form.name.trim()} type="submit"><Plus size={16}/> Save for Entire Tribe</button>
      </form>
-     <div className="intel-v2-help"><strong><ShieldAlert size={16}/> Dangerous areas ≠ locked servers</strong><p>Keep a server Available or Contested when only one cave or territory is defended. Log the specific danger under its expandable notes instead.</p></div>
-     <div className="intel-v2-help"><strong><Users size={16}/> Shared scouting records</strong><p>Notes show their category, reporting member and date. The tribe receives live updates when reports are added or removed.</p></div>
+     <details className="hq-inline-help"><summary>Scouting &amp; sharing guidance</summary><p>Keep a server Available or Contested when only one cave or territory is defended. Log the specific danger under its expandable notes instead.</p><p>Notes show their category, reporting member and date. The tribe receives live updates when reports are added or removed.</p></details>
      {!!oldServers.length&&!imported&&<button className="ghost intel-v2-import" disabled={busy} onClick={importOld}><Upload size={15}/> Import {oldServers.length} old local entries</button>}
      {feedback&&<div role="status" className="notice">{feedback}</div>}
      {live.error&&<div role="alert" className="notice">{live.error}</div>}

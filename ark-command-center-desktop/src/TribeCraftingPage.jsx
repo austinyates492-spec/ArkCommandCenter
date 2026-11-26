@@ -50,9 +50,9 @@ export default function TribeCraftingPage({live,user,onOpenAccount,liveRecipes={
   catch(e){setFeedback('Shared update failed: '+e.message);}
   finally{setBusy(false);}
  };
- if(!user)return <div className="craft-workspace tribe-crafting-page tribe-crafting-v3"><div className="pagetitle"><span className="eyebrow">LOGISTICS / TRIBE</span><h1>Tribe Crafting <span className="tribe-v3-release">NEW DESIGN</span></h1><p>Coordinate your entire tribe's shared production queue in one live workspace.</p></div><section className="panel tribe-v3-signin"><Cloud size={30}/><h2>Connect your tribe</h2><p>Sign in to see shared crafting projects, combined materials and real-time updates from tribe members.</p><button className="primary" onClick={onOpenAccount}><Cloud size={16}/> Open Tribe Cloud</button></section></div>;
+ if(!user)return <div className="craft-workspace tribe-crafting-page tribe-crafting-v3"><div className="pagetitle"><h1>Tribe Crafting</h1></div><section className="panel tribe-v3-signin"><Cloud size={30}/><h2>Connect your tribe</h2><p>Sign in to see shared crafting projects, combined materials and real-time updates from tribe members.</p><button className="primary" onClick={onOpenAccount}><Cloud size={16}/> Open Tribe Cloud</button></section></div>;
  return <div className="craft-workspace tribe-crafting-page tribe-crafting-v3">
-  <div className="pagetitle"><span className="eyebrow">COMMAND CENTER / SHARED LOGISTICS</span><h1>Tribe Crafting <span className="tribe-v3-release">NEW DESIGN</span></h1><p>Plan, organize and manage production together. Your tribe sees the same live queue and combined resource requirements.</p></div>
+  <div className="pagetitle"><h1>Tribe Crafting</h1></div>
   <section className="tribe-v3-summary" aria-label="Tribe production summary">
    <div className="tribe-v3-stat"><span><ClipboardList size={17}/> Shared Projects</span><strong>{queue.length}</strong><small>Active crafting requests</small></div>
    <div className="tribe-v3-stat"><span><Package size={17}/> Finished Items</span><strong>{fmt.format(totalItems)}</strong><small>Across queued projects</small></div>
@@ -72,20 +72,20 @@ export default function TribeCraftingPage({live,user,onOpenAccount,liveRecipes={
     </div>}
     <label className="field"><span>Quantity to add</span><input type="number" min="1" max="1000000" value={quantity} onChange={e=>setQuantity(e.target.value)}/></label>
     <button className="primary full" disabled={!selectedName||busy} onClick={add}><Plus size={16}/> Add to Tribe Queue</button>
-    <p className="tribe-v3-description">New projects synchronize to the same shared crafting database used by all tribe members.</p>
+    
    </section>
    <section className="panel tribe-v3-material-panel" aria-label="Combined materials for shared projects">
     <div className="tribe-v3-head"><h2>Resource Requirements</h2><span className="tribe-v3-pill">{totals.length} MATERIAL TYPES</span></div>
     <div className="tribe-v3-material-summary"><div><small>Queued projects</small><strong>{queue.length}</strong></div><div><small>Total resource units</small><strong>{fmt.format(totalUnits)}</strong></div><div><small>Intermediate batches</small><strong>{fmt.format(crafts.reduce((sum,[,count])=>sum+count,0))}</strong></div></div>
     {planError&&<div className="notice" role="alert">{planError}</div>}
     {totals.length?<div className="tribe-v3-resources">{totals.map(([name,count],index)=><div className="tribe-v3-resource" key={name}><span className="tribe-v3-resource-icon">{index%2?'◆':'⬡'}</span><strong>{name}</strong><span>{fmt.format(count)} <small>required</small></span></div>)}</div>:<div className="empty">The combined raw resource list appears when the tribe adds its first project.</div>}
-    <p className="tribe-v3-description">These totals are calculated from live shared projects. Gathered inventory is not yet recorded or synchronized by the tribe backend.</p>
+    <p className="tribe-v3-description">Shared inventory tracking is not yet available.</p>
    </section>
   </div>
   <div className="tribe-v3-bottom">
    <section className="panel tribe-v3-tree-panel" aria-label="Shared crafting dependencies">
     <div className="tribe-v3-head"><h2>Crafting Breakdown</h2><span className="tribe-v3-pill">02 / COMPONENTS</span></div>
-    <p className="tribe-v3-description">Expand a branch to see each intermediate craft and raw ingredient. Multiple projects share consolidated material totals.</p>
+    
     {plan?.trees?.length?<div className="tribe-v3-trees">{plan.trees.map(tree=><div className="craft-tree-root" key={tree.name}><Node item={tree}/></div>)}</div>:<div className="empty">Add recipes to see your tribe's complete crafting dependency trees.</div>}
     {!!crafts.length&&<div className="tribe-v3-batches"><h3 className="sectioncap">INTERMEDIATE CRAFTING BATCHES</h3>{crafts.map(([name,count])=><div className="keyrow" key={name}><span>{name}</span><strong>{fmt.format(count)} crafts</strong></div>)}</div>}
    </section>
@@ -95,7 +95,7 @@ export default function TribeCraftingPage({live,user,onOpenAccount,liveRecipes={
     <div className="tribe-v3-queue-actions"><button className="ghost" disabled={busy} onClick={()=>act(()=>live.refresh('crafting'),'Shared crafting information refreshed.')}><RefreshCcw size={15}/> Refresh</button>{queue.length>0&&<button className="ghost" disabled={busy} onClick={()=>{if(window.confirm('Clear every tribe crafting project for all members?'))void act(()=>live.clearCraft(),'Cleared the shared crafting queue.');}}><Trash2 size={15}/> Clear Tribe Queue</button>}</div>
     {feedback&&<div className="notice" role="status">{feedback}</div>}
     {live.error&&<div className="notice" role="alert">{live.error}</div>}
-    <p className="tribe-v3-description">Edits are saved to the tribe's shared queue. Quantity changes save when you leave the field or press Enter.</p>
+    <details className="hq-inline-help"><summary>Editing projects</summary><p>Edits are shared. Quantity changes save on Enter or when leaving the field.</p></details>
    </section>
   </div>
   <div className="notice">Shared across your tribe accounts. The recipe tree uses the official-community-wiki catalog and reviewed starter recipes. Unverified ASA batch yields and map-specific recipes may still need checking. Inventory gathering completion is not currently part of shared tribe crafting.</div>

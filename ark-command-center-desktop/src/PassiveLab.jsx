@@ -33,9 +33,8 @@ export default function PassiveLab({rates,onTimer,selectedCreature,artPreview=nu
  const method=getTamingMethod(creature);
  return <>
   <div className="pagetitle taming-compact-title">
-   <span className="eyebrow">FIELD OPERATIONS / PASSIVE</span>
+   
    <h1>Passive Taming Lab</h1>
-   <p>All {passiveRoster.length} official passive tames and forms. The creature sketch, loadout, and feeding planner share the same layout as the Knockout Taming Lab; no tranquilizers are used here.</p>
   </div>
   <div className="taming-workspace">
    <section className="panel taming-combined-panel" aria-label="Passive creature loadout and tame plan">
@@ -85,7 +84,7 @@ export default function PassiveLab({rates,onTimer,selectedCreature,artPreview=nu
     {!plan.ok&&<label className="field"><span>Verified food count (optional)</span><input type="number" min="1" value={foodCount} onChange={e=>setFoodCount(e.target.value)} placeholder="Verified on your cluster"/></label>}
     {(!plan.ok||plan.seconds===0)&&<label className="field"><span>Verified duration or next feed reminder (minutes)</span><input type="number" min="0.1" step="0.1" placeholder="Manual timer" value={minutes} onChange={e=>setMinutes(e.target.value)}/></label>}
     <button className="primary taming-start-btn" disabled={!canTimer} onClick={()=>onTimer(creature+' passive Lv '+level+' · '+map,duration,'Passive Taming')}>Start Passive Timer <Timer size={16}/></button>
-    <div className="taming-plan-notes"><div className="taming-note-heading"><strong>Method &amp; Data</strong><span>PASSIVE</span></div><p>Food estimate: {plan.ok?(plan.approximate?'Wiki affinity baseline':'Reviewed fixed quantity'):'Awaiting verified data'}. The tame timer uses the species-specific estimate where available; otherwise it uses your verified minutes.</p></div>
+    <details className="hq-inline-help"><summary>Method &amp; data</summary><p>Food estimate: {plan.ok?(plan.approximate?'Wiki affinity baseline':'Reviewed fixed quantity'):'Awaiting verified data'}. The tame timer uses the species-specific estimate where available; otherwise it uses your verified minutes.</p></details>
     <a className="taming-ko-source" target="_blank" rel="noreferrer" href={method?.source||'https://ark.wiki.gg/wiki/'+encodeURIComponent(creature.replaceAll(' ','_'))}>Read species method <ExternalLink size={14}/></a>
    </section>
   </div>
